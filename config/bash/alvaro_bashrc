@@ -1,0 +1,4 @@
+source .portable_bashrc
+
+# TODO(alvaroramirez): Load platform-specific based on OS.
+source .mac_bashrc
