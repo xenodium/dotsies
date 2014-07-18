@@ -2,12 +2,10 @@
 set -o nounset
 set -o errexit
 
-# TODO(alvaro): Copy based on OS.
-cp -i mac_bashrc ~/.mac_bashrc
-cp -i portable_bashrc ~/.portable_bashrc
-cp -i alvaro_bashrc ~/.alvaro_bashrc
+cp -i bashrc_overrides ~/.bashrc_overrides
 
-cd ~/
-source .alvaro_bashrc
-
-echo "Don't forget to 'source .alvaro_bashrc'"
+if ! grep -q 'bashrc_overrides' ~/.bashrc; then
+ echo 'adding .bashrc_overrides to .bashrc'
+ echo 'source ~/.bashrc_overrides' >> ~/.bashrc
+fi
+source ~/.bashrc

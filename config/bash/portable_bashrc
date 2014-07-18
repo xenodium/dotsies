@@ -1,7 +1,0 @@
-## Aliases
-
-# Emacs client (no wait).
-alias ec='emacsclient -n'
-
-# Development directory.
-alias dev='cd ~/development'
