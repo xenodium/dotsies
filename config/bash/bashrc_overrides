@@ -1,0 +1,66 @@
+# Generic bash config.
+
+### Environment variables ### start
+
+export STUFF_DIR=~/stuff
+
+### Environment variables ### end
+
+### Functions ### start
+
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+get-stuff-dir() {
+  stuff_dir="${STUFF_DIR}"
+  if [[ -z ${stuff_dir} ]]; then
+    err "Error: STUFF_DIR env variable not set."
+    return
+  fi
+
+  echo "${stuff_dir}"
+}
+
+cd-stuff() {
+  cd $(get-stuff-dir)
+}
+
+get-inactive-dir() {
+  echo "$(get-stuff-dir)/inactive"
+}
+
+get-active-dir() {
+  echo "$(get-stuff-dir)/active"
+}
+
+cd-active() {
+  cd $(get-active-dir)
+}
+
+cd-inactive() {
+  cd $(get-inactive-dir)
+}
+
+archive() {
+  source=$1
+  if [[ -z $source ]]; then
+    echo 'usage: archive path/to/file/to/archive'
+    return
+  fi
+  mv "${source}" $(get-inactive-dir)
+}
+
+function ff {
+  find . -iname "*${1}*"
+}
+
+### Functions ### end
+
+### Aliases ### start
+
+alias ec="emacsclient -n"
+alias a="cd-active"
+alias i="cd-inactive"
+
+### Aliases ### end
