@@ -1,3 +1,7 @@
+;; Add melpa package repository.
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 ;; Electric pair mode.
 ;; Automatically closes brackets.
 (electric-pair-mode)
@@ -25,7 +29,7 @@
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 ;; Requires: color-theme (install from melpa).
-(require 'color-theme)
+(package-install color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 
@@ -34,10 +38,6 @@
           (lambda ()
             (set-fill-column 100)))
 
-;; Add melpa package repository.
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
 (defun new-browser-tab ()
   "Open a new browser tab in the default browser."
   (interactive)
@@ -45,7 +45,6 @@
 (global-set-key (kbd "C-x t") 'new-browser-tab)
 
 ;; Interactively do things.
-(require 'ido)
 (ido-mode t)
 
 ;; Disable backup.
