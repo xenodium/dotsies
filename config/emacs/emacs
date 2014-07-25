@@ -21,6 +21,7 @@
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 ;; Requires: color-theme (install from melpa).
+(require 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 
