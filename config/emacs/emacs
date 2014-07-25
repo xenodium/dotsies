@@ -1,3 +1,9 @@
+;; Display line numbers.
+(linum-mode t)
+
+;; Display column numbers.
+(column-number-mode t)
+
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
