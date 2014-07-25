@@ -1,3 +1,14 @@
+;; Partially use path in buffer name.
+(setq uniquify-buffer-name-style 'forward)
+
+;; Get rid of splash screens.
+;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
+(eval-after-load "startup" '(fset 'display-startup-echo-area-message (lambda ())))
+
+;; Enabling subword mode (ie. navigate cameCase)
+;; From http://www.emacswiki.org/emacs/CamelCase
+(c-subword-mode 1)
+
 ;; Display line numbers.
 (linum-mode t)
 
@@ -6,6 +17,7 @@
 
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
+;; Requires: color-theme (install from melpa).
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 
