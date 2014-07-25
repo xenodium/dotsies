@@ -1,3 +1,6 @@
+;; Start emacs daemon
+(server-start)
+
 ;; Partially use path in buffer name.
 (setq uniquify-buffer-name-style 'forward)
 
@@ -7,7 +10,7 @@
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
-(c-subword-mode 1)
+(subword-mode t)
 
 ;; Display line numbers.
 (linum-mode t)
