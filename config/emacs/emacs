@@ -1,3 +1,8 @@
+;; Load molokai theme.
+;; From https://github.com/alloy-d/color-theme-molokai
+(load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
+(color-theme-molokai)
+
 ;; 100-column limit for google java style.
 (add-hook 'java-mode-hook
           (lambda ()
