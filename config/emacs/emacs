@@ -1,3 +1,7 @@
+;; Electric pair mode.
+;; Automatically closes brackets.
+(electric-pair-mode)
+
 ;; Start emacs daemon
 (server-start)
 
