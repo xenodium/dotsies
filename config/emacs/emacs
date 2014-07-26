@@ -2,6 +2,16 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+;; Hide toolbar.
+(tool-bar-mode -1)
+
+;; Hide menu bar.
+(menu-bar-mode -1)
+
+;; Prevent Extraneous Tabs.
+;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
+(setq-default indent-tabs-mode nil)
+
 ;; Electric pair mode.
 ;; Automatically closes brackets.
 (electric-pair-mode)
@@ -29,14 +39,17 @@
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 ;; Requires: color-theme (install from melpa).
-(package-install color-theme)
+(require 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 
-;; 100-column limit for google java style.
+;; 100-column limit for java.
 (add-hook 'java-mode-hook
           (lambda ()
             (set-fill-column 100)))
+;; 2-char indent for java.
+(add-hook 'java-mode-hook (lambda ()
+                            (setq c-basic-offset 2)))
 
 (defun new-browser-tab ()
   "Open a new browser tab in the default browser."
