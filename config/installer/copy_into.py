@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 
@@ -6,7 +7,6 @@ def _read_file(path):
   with open(path, 'r') as text_file:
     text = text_file.read()
   return text
-
 
 def _write_file(text, path):
   with open(path, 'w') as text_file:
@@ -46,7 +46,10 @@ def main():
   delimiter = sys.argv[4]
 
   from_file_text = _read_file(from_file_path)
-  to_file_text = _read_file(to_file_path)
+
+  to_file_text = ""
+  if os.path.exists(to_file_path):
+    to_file_text = _read_file(to_file_path)
 
   new_text = _paste_text_into(from_file_text, to_file_text, name, delimiter)
 
