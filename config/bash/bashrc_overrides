@@ -3,7 +3,7 @@ source ~/.git-prompt.sh
 
 ### Environment variables ### start
 
-export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+export PS1='[\h \W$(__git_ps1 " (%s)")]\$ '
 export STUFF_DIR=~/stuff
 export PATH=~/local/bin:~/homebrew/bin:$PATH
 
@@ -61,5 +61,7 @@ archive() {
 alias ec="emacsclient -n"
 alias a="cd_active"
 alias i="cd_inactive"
+alias t="tmux attach-session"
+alias td="tmux attach-session -d"
 
 ### Aliases ### end
