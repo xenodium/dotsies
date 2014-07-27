@@ -1,9 +1,10 @@
 source ~/.git-completion.sh
 source ~/.git-prompt.sh
+source ~/.colors.sh
 
 ### Prompt ### start
 
-export PS1='\[\033[1;33m\][\h \W$(__git_ps1 " (%s)")]\n\$ \[\033[0;32m\]'
+export PS1="${BYellow}[\h \W$(__git_ps1 ' (%s)')]\n\$ ${Color_Off}"
 
 ### Prompt ### end
 
