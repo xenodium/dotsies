@@ -2,6 +2,11 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+;; Find files in repository (install from melpa).
+;; From https://github.com/hoffstaetter/find-file-in-repository
+(require 'find-file-in-repository)
+(global-set-key (kbd "C-x f") 'find-file-in-repository)
+
 ;; Hide toolbar.
 (tool-bar-mode -1)
 
@@ -24,7 +29,7 @@
 
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
-(eval-after-load "startup" '(fset 'display-startup-echo-area-message (lambda ())))
+(setq inhibit-splash-screen t)
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
@@ -51,14 +56,27 @@
 (add-hook 'java-mode-hook (lambda ()
                             (setq c-basic-offset 2)))
 
-(defun new-browser-tab ()
-  "Open a new browser tab in the default browser."
-  (interactive)
-  (shell-command "google-chrome http://google.com"))
+;; New browser tab.
+(cond
+ ((string-equal system-type "darwin") ; Mac OS X
+    (defun new-browser-tab ()
+      "Open a new browser tab in the default browser."
+      (interactive)
+      (shell-command "open http://google.com")
+      ))
+ ((string-equal system-type "gnu/linux") ; Linux
+    (defun new-browser-tab ()
+      "Open a new browser tab in the default browser."
+      (interactive)
+      (shell-command "google-chrome http://google.com")
+      ))
+ )
 (global-set-key (kbd "C-x t") 'new-browser-tab)
 
 ;; Interactively do things.
 (ido-mode t)
+;; Remember buffers even if closed.
+'(ido-use-virtual-buffers t)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
