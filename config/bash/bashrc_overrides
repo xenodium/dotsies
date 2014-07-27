@@ -4,7 +4,8 @@ source ~/.colors.sh
 
 ### Prompt ### start
 
-export PS1="${BYellow}[\h \W$(__git_ps1 ' (%s)')]\n\$ ${Color_Off}"
+prompt_icon=$(echo -e '\xe2\x98\x86\x0a')
+export PS1="${BYellow}[\h \W$(__git_ps1 ' (%s)')]\n ${Red}${prompt_icon} ${Color_Off}"
 
 ### Prompt ### end
 
