@@ -1,6 +1,11 @@
 ;; Add melpa package repository.
+(require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+;; Show trailing whitespace.
+(setq show-trailing-whitespace t)
 
 ;; Find files in repository (install from melpa).
 ;; From https://github.com/hoffstaetter/find-file-in-repository
