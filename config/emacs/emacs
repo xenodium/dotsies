@@ -5,7 +5,7 @@
 (package-initialize)
 
 ;; Show trailing whitespace.
-(setq show-trailing-whitespace t)
+(setq-default show-trailing-whitespace t)
 
 ;; Find files in repository (install from melpa).
 ;; From https://github.com/hoffstaetter/find-file-in-repository
