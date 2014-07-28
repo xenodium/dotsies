@@ -1,4 +1,4 @@
-all: emacs molokai
+all: emacs molokai dot_emacs
 
 dot_emacs:
 	python ../installer/copy_into.py emacs ~/.emacs "my-emacs" ";;"
