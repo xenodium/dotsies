@@ -4,6 +4,9 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;; Automatically scroll build output.
+(setq compilation-scroll-output t)
+
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
 
