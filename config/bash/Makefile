@@ -1,4 +1,5 @@
 install:
+	cp -i inputrc ~/.inputrc
 	cp -i bashrc_overrides ~/.bashrc_overrides
 	cp -i colors.bash ~/.colors.sh
 	sh patch_bashrc.sh
