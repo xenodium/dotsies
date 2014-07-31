@@ -5,7 +5,7 @@
 (package-initialize)
 
 ;; Best way (so far) to search for files in repo.
-(package-install 'helm-projectile)
+;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
 ;; Automatically scroll build output.
@@ -51,7 +51,7 @@
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 ;; Requires: color-theme (install from melpa).
-(package-install 'color-theme)
+;; (package-install 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 
