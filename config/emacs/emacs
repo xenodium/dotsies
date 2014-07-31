@@ -4,16 +4,15 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;; Best way (so far) to search for files in repo.
+(package-install 'helm-projectile)
+(global-set-key (kbd "C-x f") 'helm-projectile)
+
 ;; Automatically scroll build output.
 (setq compilation-scroll-output t)
 
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
-
-;; Find files in repository (install from melpa).
-;; From https://github.com/hoffstaetter/find-file-in-repository
-(require 'find-file-in-repository)
-(global-set-key (kbd "C-x f") 'find-file-in-repository)
 
 ;; Hide toolbar.
 (tool-bar-mode -1)
@@ -52,9 +51,14 @@
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
 ;; Requires: color-theme (install from melpa).
-(require 'color-theme)
+(package-install 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
+
+;; Highlights current line to a particular color (overriding theme)
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "red")
+
 
 ;; 100-column limit for java.
 (add-hook 'java-mode-hook
