@@ -67,6 +67,9 @@ archive() {
 
 ### Aliases ### start
 
+alias vim="emacsclient -t"
+alias vi="emacsclient -t"
+alias e="emacsclient -t"
 alias ec="emacsclient -n"
 alias a="cd_active"
 alias i="cd_inactive"
