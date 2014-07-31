@@ -4,6 +4,12 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;; Highlight lines longer than 100 columns.
+(require 'whitespace)
+(setq whitespace-line-column 100
+      whitespace-style '(face lines tabs))
+(global-whitespace-mode 1)
+
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
