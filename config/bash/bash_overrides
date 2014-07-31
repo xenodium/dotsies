@@ -10,7 +10,10 @@ export PS1='[\h \W$(__git_ps1 " (%s)")]\$ '
 
 ### Environment variables ### start
 
-export STUFF_DIR=~/stuff
+if [[ -z $STUFF_DIR ]]; then
+   export STUFF_DIR=~/stuff
+fi
+
 export PATH=~/local/bin:~/homebrew/bin:$PATH
 
 ### Environment variables ### end
