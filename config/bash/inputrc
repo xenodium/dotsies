@@ -1,0 +1,7 @@
+# From http://www.burtonini.com/wordpress/2014/02/05/better-bash-completion
+
+set completion-display-width 1
+set completion-ignore-case on
+set completion-prefix-display-length 2
+set show-all-if-ambiguous on
+Control-t: menu-complete
