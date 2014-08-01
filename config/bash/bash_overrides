@@ -66,11 +66,11 @@ archive() {
 ### Functions ### end
 
 ### Aliases ### start
-
-alias vim="emacsclient -t"
-alias vi="emacsclient -t"
-alias e="emacsclient -t"
-alias ec="emacsclient -n"
+alias vim="TERM=xterm-256color emacsclient -t"
+alias vi="TERM=xterm-256color emacsclient -t"
+alias es="TERM=xterm-256color emacs --daemon"
+alias e="TERM=xterm-256color emacsclient -t"
+alias ec="TERM=xterm-256color emacsclient -n"
 alias a="cd_active"
 alias i="cd_inactive"
 alias t="tmux attach-session"
