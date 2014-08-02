@@ -8,3 +8,5 @@ git_prompt:
 	rm -f ~/.git-prompt.sh
 	curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh
 
+git_config:
+	python ../installer/copy_into.py gitconfig ~/.gitconfig "gitconfig" "#"
