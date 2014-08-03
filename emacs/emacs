@@ -21,7 +21,7 @@
   (window-configuration-to-register my-ediff-bwin-reg))
 
 (defun my-ediff-aswh ()
-"setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
+  "setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
 (defun my-ediff-qh ()
