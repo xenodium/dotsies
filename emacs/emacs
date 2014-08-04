@@ -113,9 +113,6 @@
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
 
-;; Hide toolbar.
-(tool-bar-mode -1)
-
 ;; Hide menu bar.
 (menu-bar-mode -1)
 
@@ -125,12 +122,10 @@
 
 ;; Electric pair mode.
 ;; Automatically closes brackets.
-(electric-pair-mode)
-
-;; Start emacs daemon
-(server-start)
+(global-electric-pair-mode)
 
 ;; Partially use path in buffer name.
+(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Get rid of splash screens.
@@ -139,13 +134,13 @@
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
-(subword-mode t)
+(global-subword-mode t)
 
 ;; Display line numbers.
-(linum-mode t)
+(global-inum-mode t)
 
 ;; Display column numbers.
-(column-number-mode t)
+(global-column-number-mode t)
 
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
