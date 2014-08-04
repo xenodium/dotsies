@@ -35,6 +35,7 @@
 (add-hook 'ediff-quit-hook 'my-ediff-qh)
 
 ;; Fix cursor position.
+;; Requires: centered-cursor-mode (install from melpa).
 (require 'centered-cursor-mode)
 (global-centered-cursor-mode +1)
 
@@ -142,7 +143,7 @@
 (subword-mode t)
 
 ;; Display line numbers.
-(linum-mode t)
+(global-linum-mode t)
 
 ;; Display column numbers.
 (column-number-mode t)
