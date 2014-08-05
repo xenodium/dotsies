@@ -34,11 +34,6 @@
 (add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
 (add-hook 'ediff-quit-hook 'my-ediff-qh)
 
-;; Fix cursor position.
-;; Requires: centered-cursor-mode (install from melpa).
-(require 'centered-cursor-mode)
-(global-centered-cursor-mode +1)
-
 ;; Customizing mode line.
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
 (setq-default mode-line-format
@@ -102,7 +97,7 @@
 (require 'whitespace)
 (setq whitespace-line-column 100
       whitespace-style '(face lines tabs))
-(global-whitespace-mode 1)
+(setq-default whitespace-mode 1)
 
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
@@ -123,7 +118,7 @@
 
 ;; Electric pair mode.
 ;; Automatically closes brackets.
-(global-electric-pair-mode)
+(setq-default electric-pair-mode t)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -141,7 +136,7 @@
 (global-linum-mode t)
 
 ;; Display column numbers.
-(global-column-number-mode t)
+(setq-default column-number-mode t)
 
 ;; Load molokai theme.
 ;; From https://github.com/alloy-d/color-theme-molokai
