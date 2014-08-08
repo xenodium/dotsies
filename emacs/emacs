@@ -34,6 +34,12 @@
 (add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
 (add-hook 'ediff-quit-hook 'my-ediff-qh)
 
+;; Fuzzy-searching M-x.
+;; (package-install 'smex)
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+
 ;; Customizing mode line.
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
 (setq-default mode-line-format
@@ -138,26 +144,39 @@
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
-;; Load molokai theme.
-;; From https://github.com/alloy-d/color-theme-molokai
+;; Choose a theme.
+;; https://github.com/bbatsov/zenburn-emacs
 ;; Requires: color-theme (install from melpa).
 ;; (package-install 'color-theme)
+(require 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
+;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
+;;(load-theme 'zenburn t)
+;;(load "~/.emacs.d/downloads/darkburn/darkburn-theme.el")
+;;(load-theme 'darkburn t)
 
-;; Highlights current line to a particular color (overriding theme)
+;; Highlights current line.
 (require 'hl-line)
 (global-hl-line-mode 1)
-(set-face-background 'hl-line "color-235")
+;; Set color as current line's background face.
+(set-face-background 'hl-line "brightblack")
+;; Keep syntax highlighting in the current line.
+(set-face-foreground 'highlight nil)
 
 
-;; 100-column limit for java.
-(add-hook 'java-mode-hook
-          (lambda ()
-            (set-fill-column 100)))
-;; 2-char indent for java.
-(add-hook 'java-mode-hook (lambda ()
-                            (setq c-basic-offset 2)))
+(require 'whitespace)
+(setq whitespace-line-column 100)
+(setq whitespace-style '(face lines-tail))
+(add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; ;; 100-column limit for java.
+;; (add-hook 'java-mode-hook
+;;           (lambda ()
+;;             (set-fill-column 100)))
+;; ;; 2-char indent for java.
+;; (add-hook 'java-mode-hook (lambda ()
+;;                             (setq c-basic-offset 2)))
 
 ;; New browser tab.
 (cond
