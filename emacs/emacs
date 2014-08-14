@@ -34,9 +34,11 @@
 (add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
 (add-hook 'ediff-quit-hook 'my-ediff-qh)
 
-;; Fix cursor position.
-(require 'centered-cursor-mode)
-(global-centered-cursor-mode +1)
+;; Fuzzy-searching M-x.
+;; (package-install 'smex)
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
 
 ;; Customizing mode line.
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
@@ -101,7 +103,7 @@
 (require 'whitespace)
 (setq whitespace-line-column 100
       whitespace-style '(face lines tabs))
-(global-whitespace-mode 1)
+(setq-default whitespace-mode 1)
 
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
@@ -113,9 +115,6 @@
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
 
-;; Hide toolbar.
-(tool-bar-mode -1)
-
 ;; Hide menu bar.
 (menu-bar-mode -1)
 
@@ -125,12 +124,10 @@
 
 ;; Electric pair mode.
 ;; Automatically closes brackets.
-(electric-pair-mode)
-
-;; Start emacs daemon
-(server-start)
+(setq-default electric-pair-mode t)
 
 ;; Partially use path in buffer name.
+(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Get rid of splash screens.
@@ -139,34 +136,47 @@
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
-(subword-mode t)
+(global-subword-mode t)
 
 ;; Display line numbers.
-(linum-mode t)
+(global-linum-mode t)
 
 ;; Display column numbers.
-(column-number-mode t)
+(setq-default column-number-mode t)
 
-;; Load molokai theme.
-;; From https://github.com/alloy-d/color-theme-molokai
+;; Choose a theme.
+;; https://github.com/bbatsov/zenburn-emacs
 ;; Requires: color-theme (install from melpa).
 ;; (package-install 'color-theme)
+(require 'color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
+;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
+;;(load-theme 'zenburn t)
+;;(load "~/.emacs.d/downloads/darkburn/darkburn-theme.el")
+;;(load-theme 'darkburn t)
 
-;; Highlights current line to a particular color (overriding theme)
+;; Highlights current line.
 (require 'hl-line)
 (global-hl-line-mode 1)
-(set-face-background 'hl-line "color-235")
+;; Set color as current line's background face.
+(set-face-background 'hl-line "brightblack")
+;; Keep syntax highlighting in the current line.
+(set-face-foreground 'highlight nil)
 
 
-;; 100-column limit for java.
-(add-hook 'java-mode-hook
-          (lambda ()
-            (set-fill-column 100)))
-;; 2-char indent for java.
-(add-hook 'java-mode-hook (lambda ()
-                            (setq c-basic-offset 2)))
+(require 'whitespace)
+(setq whitespace-line-column 100)
+(setq whitespace-style '(face lines-tail))
+(add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; ;; 100-column limit for java.
+;; (add-hook 'java-mode-hook
+;;           (lambda ()
+;;             (set-fill-column 100)))
+;; ;; 2-char indent for java.
+;; (add-hook 'java-mode-hook (lambda ()
+;;                             (setq c-basic-offset 2)))
 
 ;; New browser tab.
 (cond
