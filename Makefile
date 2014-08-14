@@ -4,4 +4,3 @@ all:
 	make -C emacs
 	make -C tmux
 	make -C vim
-
