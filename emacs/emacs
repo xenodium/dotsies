@@ -25,6 +25,11 @@
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-c f") 'helm-recentf)
+(global-set-key (kbd "C-h ,") 'helm-apropos)
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
@@ -53,6 +58,10 @@
  helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
                                         ; useful in helm-mini that lists buffers
  )
+
+;; Longer buffer for helm filename column
+;; http://comments.gmane.org/gmane.emacs.helm.user/325
+(setq helm-buffer-max-length nil)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
@@ -283,3 +292,60 @@
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)
       (progn (copy-file filename newname 1) (delete-file filename) (set-visited-file-name newname) (set-buffer-modified-p nil) t))))
+
+; http://scottmcpeak.com/elisp/scott.emacs.el
+; ------------------- yes-or-no-p ---------------------
+; There are a number of situations where Emacs wants to ask me a question,
+; but the answer is always the same (or, it's easy to get the effect of
+; the other answer afterwards).  The main example is the question:
+;
+;   File foo.txt has changed on disk.  Reread from disk?
+;
+; This question is annoying because it gets asked while I'm moving around
+; in a debugger stack trace, and often don't care about the file I happen
+; to be at (because I want to move past that frame anyway).  Moreover,
+; my F12 binding lets me re-read files with a single keystroke, so if I
+; actually *do* want to re-read it's easy to do.
+
+; First, I need the original definition of yes-or-no-p so I can call it
+; after I've replaced its definition.  In case .emacs gets re-read
+; after startup, avoid losing the original definition.
+(if (fboundp 'orig-yes-or-no-p)
+    nil        ; it's already bound, don't re-bind
+  (fset 'orig-yes-or-no-p (symbol-function 'yes-or-no-p))
+)
+
+; Now, define my version in terms of `orig-yes-or-no-p'.
+(defun yes-or-no-p (prompt)
+  "Ask user a yes-or-no question.  Return t if answer is yes, nil if no.
+This is a wrapper around `orig-yes-or-no'."
+  (if (string-match
+       ; This message is created in lisp/files.el, and there are four
+       ; variations.  I'm intentionally matching two of them.
+       "File .* changed on disk.  Reread from disk"
+       prompt)
+
+      ; it's that question; the answer is no, but I *do* want to know
+      ; that it has changed
+      (progn (message "Note: File has changed on disk.") nil)
+
+    ; it's a different question; for now, just ask me; I'll probably
+    ; add more patterns to the above as I think of other questions that
+    ; I don't want asked
+    (orig-yes-or-no-p prompt)
+    )
+)
+
+;; Use vc-ediff as default.
+(eval-after-load "vc-hooks"
+  '(define-key vc-prefix-map "=" 'vc-ediff))
+
+;; Spellcheck comments and documentation
+;; From http://mwolson.org/projects/emacs-config/init.el.html
+(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
+(eval-after-load "cc-mode"
+  '(progn
+     (add-hook 'java-mode-hook 'my-java-mode-stuff)
+     (add-hook 'java-mode-hook 'flyspell-prog-mode)
+     (add-hook 'c-mode-hook 'flyspell-prog-mode)))
