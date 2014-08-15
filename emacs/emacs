@@ -349,3 +349,16 @@ This is a wrapper around `orig-yes-or-no'."
      (add-hook 'java-mode-hook 'my-java-mode-stuff)
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+
+;; If eclim is your cup of tea.
+;; (require 'eclim)
+;; (global-eclim-mode)
+;; (custom-set-variables
+;;  '(eclim-eclipse-dirs '("~/tools/eclipse"))
+;;  '(eclim-executable "~/tools/eclipse/eclim"))
+;; (require 'eclimd)
+
+;; (require 'company)
+;; (require 'company-emacs-eclim)
+;; (company-emacs-eclim-setup)
+;; (global-company-mode t)
