@@ -4,6 +4,11 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+(unless (fboundp 'hungry-delete-mode)
+  (package-install 'hungry-delete))
+(require 'hungry-delete)
+(global-hungry-delete-mode)
+
 (require 'helm)
 
 ;; From http://tuhdo.github.io/helm-intro.html
@@ -27,7 +32,7 @@
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h ,") 'helm-apropos)
 
@@ -43,7 +48,7 @@
  helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
  helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
 
- helm-split-window-default-side 'other ;; open helm buffer in another window
+ helm-split-window-default-side 'below ;; open helm buffer below.
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
@@ -71,7 +76,6 @@
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
-
 
 
 (require 'ediff)
@@ -182,9 +186,11 @@
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
-;; Electric pair mode.
 ;; Automatically closes brackets.
-(setq-default electric-pair-mode t)
+(unless (fboundp 'smartparens-mode)
+  (package-install 'smartparens))
+(require 'smartparens)
+(smartparens-global-strict-mode)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -339,6 +345,10 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
+(global-set-key (kbd "C-x g") 'magit-status)
+
+;; Sort lines (ie. package imports or headers).
+(global-set-key (kbd "M-s l") 'sort-lines)
 
 ;; Spellcheck comments and documentation
 ;; From http://mwolson.org/projects/emacs-config/init.el.html
