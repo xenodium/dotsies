@@ -9,6 +9,11 @@
 (require 'hungry-delete)
 (global-hungry-delete-mode)
 
+;;(unless (fboundp 'expand-region)
+;;  (package-install 'expand-region))
+(require 'expand-region)
+;;(global-set-key (kbd "C-@") 'er/expand-region)
+
 (require 'helm)
 
 ;; From http://tuhdo.github.io/helm-intro.html
@@ -76,7 +81,6 @@
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
-
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
