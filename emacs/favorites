@@ -1,4 +1,4 @@
-ediff-revision
+ediff-revion
 eval-buffer
 eval-region
 helm-apropos
@@ -12,6 +12,3 @@ save-some-buffers
 vc-ediff
 expand-region
 guide-key
-
-ido-at-point
-project-archetypes
