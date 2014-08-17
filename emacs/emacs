@@ -12,7 +12,7 @@
 ;;(unless (fboundp 'expand-region)
 ;;  (package-install 'expand-region))
 (require 'expand-region)
-;;(global-set-key (kbd "C-@") 'er/expand-region)
+(global-set-key (kbd "C-c w") 'er/expand-region)
 
 (require 'helm)
 
@@ -194,7 +194,7 @@
 (unless (fboundp 'smartparens-mode)
   (package-install 'smartparens))
 (require 'smartparens)
-(smartparens-global-strict-mode)
+(smartparens-global-mode)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -226,11 +226,13 @@
 ;;(load "~/.emacs.d/downloads/darkburn/darkburn-theme.el")
 ;;(load-theme 'darkburn t)
 
+(set-cursor-color "#0087ff")
+
 ;; Highlights current line.
 (require 'hl-line)
 (global-hl-line-mode 1)
 ;; Set color as current line's background face.
-(set-face-background 'hl-line "brightblack")
+(set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
 (set-face-foreground 'highlight nil)
 
