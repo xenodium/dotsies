@@ -4,6 +4,16 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+(unless (fboundp 'hungry-delete-mode)
+  (package-install 'hungry-delete))
+(require 'hungry-delete)
+(global-hungry-delete-mode)
+
+;;(unless (fboundp 'expand-region)
+;;  (package-install 'expand-region))
+(require 'expand-region)
+(global-set-key (kbd "C-c w") 'er/expand-region)
+
 (require 'helm)
 
 ;; From http://tuhdo.github.io/helm-intro.html
@@ -27,7 +37,7 @@
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h ,") 'helm-apropos)
 
@@ -43,7 +53,7 @@
  helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
  helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
 
- helm-split-window-default-side 'other ;; open helm buffer in another window
+ helm-split-window-default-side 'below ;; open helm buffer below.
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
@@ -71,8 +81,6 @@
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
-
-
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -182,9 +190,11 @@
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
-;; Electric pair mode.
 ;; Automatically closes brackets.
-(setq-default electric-pair-mode t)
+(unless (fboundp 'smartparens-mode)
+  (package-install 'smartparens))
+(require 'smartparens)
+(smartparens-global-mode)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -216,11 +226,13 @@
 ;;(load "~/.emacs.d/downloads/darkburn/darkburn-theme.el")
 ;;(load-theme 'darkburn t)
 
+(set-cursor-color "#0087ff")
+
 ;; Highlights current line.
 (require 'hl-line)
 (global-hl-line-mode 1)
 ;; Set color as current line's background face.
-(set-face-background 'hl-line "brightblack")
+(set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
 (set-face-foreground 'highlight nil)
 
@@ -339,6 +351,10 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
+(global-set-key (kbd "C-x g") 'magit-status)
+
+;; Sort lines (ie. package imports or headers).
+(global-set-key (kbd "M-s l") 'sort-lines)
 
 ;; Spellcheck comments and documentation
 ;; From http://mwolson.org/projects/emacs-config/init.el.html
@@ -349,3 +365,16 @@ This is a wrapper around `orig-yes-or-no'."
      (add-hook 'java-mode-hook 'my-java-mode-stuff)
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+
+;; If eclim is your cup of tea.
+;; (require 'eclim)
+;; (global-eclim-mode)
+;; (custom-set-variables
+;;  '(eclim-eclipse-dirs '("~/tools/eclipse"))
+;;  '(eclim-executable "~/tools/eclipse/eclim"))
+;; (require 'eclimd)
+
+;; (require 'company)
+;; (require 'company-emacs-eclim)
+;; (company-emacs-eclim-setup)
+;; (global-company-mode t)
