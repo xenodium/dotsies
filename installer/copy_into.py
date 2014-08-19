@@ -8,6 +8,7 @@ def _read_file(path):
     text = text_file.read()
   return text
 
+
 def _write_file(text, path):
   with open(path, 'w') as text_file:
     text_file.write(text)
