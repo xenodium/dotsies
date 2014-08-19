@@ -2,6 +2,8 @@ source ~/.git-completion.sh
 source ~/.git-prompt.sh
 source ~/.colors.sh
 
+export TERM="screen-256color"
+
 ### Prompt ### start
 
 export PS1='[\h \W$(__git_ps1 " (%s)")]\$ '
