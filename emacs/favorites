@@ -1,0 +1,14 @@
+ediff-revion
+eval-buffer
+eval-region
+helm-apropos
+helm-imenu
+helm-mini
+helm-projectile
+helm-show-kill-ring
+ibuffer
+magit-status
+save-some-buffers
+vc-ediff
+expand-region
+guide-key
