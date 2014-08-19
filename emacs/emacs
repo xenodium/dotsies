@@ -82,6 +82,25 @@
 ;; (package-install 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
+;; ggtags code indexing.
+;; https://github.com/leoliu/ggtags
+;; https://github.com/leoliu/ggtags/wiki/Install-Global-with-support-for-exuberant-ctags
+;; Linux
+;; Install exuberant ctags from trunk.
+;; Install GNU Global using ./configure --with-exuberant-ctags=PATH_TO_CTAGS_EXECUTABLE
+;; Mac OS
+;; brew install --HEAD ctags
+;; brew install global --with-exuberant-ctags
+;; (package-install 'ggtags)
+(require 'ggtags)
+;; (package-install 'helm-gtags)
+(require 'helm-gtags)
+(helm-gtags-mode 1)
+(global-set-key (kbd "M-.") 'helm-gtags-dwim)
+
+;; (package-install 'projectile)
+(projectile-global-mode 1)
+
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-horizontally)
