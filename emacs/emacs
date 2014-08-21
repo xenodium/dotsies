@@ -217,7 +217,7 @@
   (package-install 'smartparens))
 (require 'smartparens)
 (smartparens-global-mode)
-(show-paren-mode)
+(show-smartparens-global-mode +1)
 (electric-indent-mode)
 
 ;; Partially use path in buffer name.
