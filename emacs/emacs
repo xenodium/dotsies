@@ -81,10 +81,6 @@
 
 (helm-mode 1)
 
-;; Best way (so far) to search for files in repo.
-;; (package-install 'helm-projectile)
-(global-set-key (kbd "C-x f") 'helm-projectile)
-
 ;; ggtags code indexing.
 ;; https://github.com/leoliu/ggtags
 ;; https://github.com/leoliu/ggtags/wiki/Install-Global-with-support-for-exuberant-ctags
@@ -102,7 +98,12 @@
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
 ;; (package-install 'projectile)
-(projectile-global-mode 1)
+(require 'projectile)
+(projectile-global-mode)
+
+;; Best way (so far) to search for files in repo.
+;; (package-install 'helm-projectile)
+(global-set-key (kbd "C-x f") 'helm-projectile)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
