@@ -1,0 +1,10 @@
+yasnippets
+key-chord
+helm-for-files
+rainbow-parentheses
+rainbow-delimiters
+
+expand-region
+(after 'expand-region-autoloads
+(esc-key "C-@" 'er/expand-region))')')
+

@@ -1,4 +1,5 @@
 backward-list
+comment-dwim
 ediff-revion
 eval-buffer
 eval-region
@@ -14,12 +15,11 @@ helm-projectile-switch-project
 helm-show-kill-ring
 ibuffer
 magit-status
+newline-and-indent
 save-some-buffers
 transpose-chars
 transpose-words
 vc-ediff
-
-expand-region
-yasnippets?
-key-chord?
-expand-region
+previous-buffer
+next-buffer
+git-gutter
