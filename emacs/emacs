@@ -9,6 +9,9 @@
 (require 'hungry-delete)
 (global-hungry-delete-mode)
 
+(global-auto-revert-mode)
+(global-font-lock-mode)
+
 ;;(unless (fboundp 'expand-region)
 ;;  (package-install 'expand-region))
 (require 'expand-region)
@@ -229,6 +232,12 @@
 
 ;; Display line numbers.
 (global-linum-mode t)
+
+;; Highlight git hunks.
+;; (package-install 'git-gutter)
+(require 'git-gutter)
+(global-git-gutter-mode +1)
+(git-gutter:linum-setup)
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
