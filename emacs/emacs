@@ -383,6 +383,7 @@ This is a wrapper around `orig-yes-or-no'."
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
 (global-set-key (kbd "C-x g") 'magit-status)
+(setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 ;; Sort lines (ie. package imports or headers).
 (global-set-key (kbd "M-s l") 'sort-lines)
@@ -396,6 +397,38 @@ This is a wrapper around `orig-yes-or-no'."
      (add-hook 'java-mode-hook 'my-java-mode-stuff)
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+
+;; Thank you Xah Lee.
+;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+(defun xah-open-in-external-app (&optional file)
+  "Open the current file or dired marked files in external app. The app is chosen from your OS's preference."
+  (interactive)
+  (let ( doIt
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((not file) (list (buffer-file-name)))
+           (file (list file)))))
+    (setq doIt (if (<= (length myFileList) 5)
+                   t
+                 (y-or-n-p "Open more than 5 files? ") ) )
+    (when doIt
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
+       ((string-equal system-type "darwin")
+        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
+       ((string-equal system-type "gnu/linux")
+        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
+(global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
+
+(setq ring-bell-function 'ignore)
+
+(set-face-attribute 'linum nil :background "#333333")
+(set-face-attribute 'fringe nil :background "#333333")
+
+;; (package-install 'ido-vertical-mode)
+(ido-vertical-mode)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
