@@ -29,6 +29,7 @@
 (require 'helm-files)
 (require 'helm-grep)
 (require 'helm-eshell)
+(require 'helm-buffers)
 
 ;; Language-aware editing commands. Useful for imenu-menu.
 (semantic-mode 1)
@@ -60,6 +61,7 @@
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
+ helm-buffer-max-length nil
  helm-candidate-number-limit 200 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
@@ -71,10 +73,6 @@
  helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
                                         ; useful in helm-mini that lists buffers
  )
-
-;; Longer buffer for helm filename column
-;; http://comments.gmane.org/gmane.emacs.helm.user/325
-(setq helm-buffer-max-length nil)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
@@ -103,6 +101,7 @@
 
 ;; Best way (so far) to search for files in repo.
 ;; (package-install 'helm-projectile)
+(require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
 (require 'ediff)
