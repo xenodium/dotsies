@@ -1,7 +1,7 @@
-all: dot_emacs zenburn molokai dark_zenburn
+all: init zenburn molokai dark_zenburn
 
-dot_emacs:
-	python ../installer/copy_into.py emacs ~/.emacs "my-emacs" ";;"
+init:
+	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 
 dark_zenburn:
 	curl https://raw.githubusercontent.com/gorauskas/darkburn-theme/master/darkburn-theme.el -o /tmp/darkburn-theme.el
