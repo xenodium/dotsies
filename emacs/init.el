@@ -438,6 +438,10 @@ This is a wrapper around `orig-yes-or-no'."
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+(setq display-time-world-list '(("Europe/Paris" "Paris")
+                                ("Europe/London" "London")
+                                ("America/Los_Angeles" "Los Angeles")))
+
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
