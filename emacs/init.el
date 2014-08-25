@@ -46,6 +46,11 @@
 (require 'helm-grep)
 (require 'helm-eshell)
 (require 'helm-buffers)
+;;(package-install 'helm-swoop)
+(require 'helm-swoop)
+(global-set-key (kbd "M-C-s") 'helm-swoop)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
 (require 'recentf)
 (setq recentf-max-saved-items 200
@@ -515,6 +520,14 @@ point reaches the beginning or end of the buffer, stop there."
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'sacha/smarter-move-beginning-of-line)
+
+;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
