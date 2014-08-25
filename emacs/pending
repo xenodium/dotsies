@@ -1,10 +1,16 @@
-yasnippets
-key-chord
+abbrevs
+deft
 helm-for-files
-rainbow-parentheses
+key-chord
 rainbow-delimiters
+rainbow-parentheses
+view-lossage
+yasnippets
+bind-key
+registers
 
 expand-region
 (after 'expand-region-autoloads
 (esc-key "C-@" 'er/expand-region))')')
 
+b
