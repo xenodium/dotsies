@@ -300,6 +300,8 @@
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq backup-inhibited t)
+; Disable auto save.
+(setq auto-save-default nil)
 
 ;; Disable auto save.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
