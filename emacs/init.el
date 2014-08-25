@@ -4,6 +4,22 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;;  (package-install 'bind-key))
+(require 'bind-key)
+
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
+;; Transpose stuff with M-t
+(bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t l" 'transpose-lines)
+(bind-key "M-t w" 'transpose-words)
+(bind-key "M-t t" 'transpose-words)
+(bind-key "M-t M-t" 'transpose-words)
+(bind-key "M-t s" 'transpose-sexps)
+
+;; (package-install 'rainbow-delimiters)
+(require 'rainbow-delimiters)
+(global-rainbow-delimiters-mode)
+
 (unless (fboundp 'hungry-delete-mode)
   (package-install 'hungry-delete))
 (require 'hungry-delete)
@@ -30,6 +46,11 @@
 (require 'helm-grep)
 (require 'helm-eshell)
 (require 'helm-buffers)
+
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
 
 ;; Language-aware editing commands. Useful for imenu-menu.
 (semantic-mode 1)
@@ -453,6 +474,47 @@ This is a wrapper around `orig-yes-or-no'."
     (message "Current buffer does not have an associated file.")))
 
 (global-set-key "\M-/" 'hippie-expand)
+
+;; Thank you Sacha Chua.
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode +1)
+(setq savehist-save-minibuffer-history +1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
+(defun sacha/smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap move-beginning-of-line]
+                'sacha/smarter-move-beginning-of-line)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
