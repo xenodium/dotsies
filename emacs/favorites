@@ -1,9 +1,11 @@
 backward-list
 comment-dwim
+delete-blank-lines
 ediff-revion
 eval-buffer
 eval-region
 forward-list
+git-gutter
 helm-all-mark-rings
 helm-apropos
 helm-buffers-list
@@ -16,10 +18,10 @@ helm-show-kill-ring
 ibuffer
 magit-status
 newline-and-indent
+next-buffer
+previous-buffer
 save-some-buffers
 transpose-chars
 transpose-words
 vc-ediff
-previous-buffer
-next-buffer
-git-gutter
+mark-whole-buffer
