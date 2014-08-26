@@ -4,8 +4,14 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-;;  (package-install 'bind-key))
-(require 'bind-key)
+(if (not (package-installed-p 'use-package))
+    (progn
+      (package-refresh-contents)
+      (package-install 'use-package)))
+(require 'use-package)
+
+(use-package bind-key
+  :ensure bind-key)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -16,24 +22,22 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
-;; (package-install 'rainbow-delimiters)
-(require 'rainbow-delimiters)
+(use-package rainbow-delimiters
+  :ensure rainbow-delimiters)
 (global-rainbow-delimiters-mode)
 
-(unless (fboundp 'hungry-delete-mode)
-  (package-install 'hungry-delete))
-(require 'hungry-delete)
+(use-package hungry-delete
+  :ensure hungry-delete)
 (global-hungry-delete-mode)
-
 (global-auto-revert-mode)
 (global-font-lock-mode)
 
-;;(unless (fboundp 'expand-region)
-;;  (package-install 'expand-region))
-(require 'expand-region)
+(use-package expand-region
+  :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
-(require 'helm)
+(use-package helm
+  :ensure helm)
 
 ;; From http://tuhdo.github.io/helm-intro.html
 ;; must set before helm-config,  otherwise helm use default
@@ -46,8 +50,10 @@
 (require 'helm-grep)
 (require 'helm-eshell)
 (require 'helm-buffers)
-;;(package-install 'helm-swoop)
-(require 'helm-swoop)
+
+(use-package helm-swoop
+  :ensure helm-swoop)
+
 (global-set-key (kbd "M-C-s") 'helm-swoop)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -61,7 +67,6 @@
 (semantic-mode 1)
 
 (global-set-key (kbd "C-c h o") 'helm-occur)
-
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -114,20 +119,20 @@
 ;; Mac OS
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
-;; (package-install 'ggtags)
-(require 'ggtags)
-;; (package-install 'helm-gtags)
-(require 'helm-gtags)
+(use-package ggtags
+  :ensure ggtags)
+(use-package helm-gtags
+  :ensure helm-gtags)
 (helm-gtags-mode 1)
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
-;; (package-install 'projectile)
-(require 'projectile)
+(use-package projectile
+  :ensure projectile)
 (projectile-global-mode)
 
 ;; Best way (so far) to search for files in repo.
-;; (package-install 'helm-projectile)
-(require 'helm-projectile)
+(use-package helm-projectile
+  :ensure helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
 (require 'ediff)
@@ -239,15 +244,13 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Automatically closes brackets.
-(unless (fboundp 'smartparens-mode)
-  (package-install 'smartparens))
-(require 'smartparens)
+(use-package smartparens
+  :ensure smartparens)
 (smartparens-global-mode)
 (show-smartparens-global-mode +1)
 (electric-indent-mode)
 
 ;; Partially use path in buffer name.
-(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Get rid of splash screens.
@@ -262,8 +265,8 @@
 (global-linum-mode t)
 
 ;; Highlight git hunks.
-;; (package-install 'git-gutter)
-(require 'git-gutter)
+(use-package git-gutter
+  :ensure git-gutter)
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
 
@@ -273,8 +276,8 @@
 ;; Choose a theme.
 ;; https://github.com/bbatsov/zenburn-emacs
 ;; Requires: color-theme (install from melpa).
-;; (package-install 'color-theme)
-(require 'color-theme)
+(use-package color-theme
+  :ensure color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 ;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
@@ -454,10 +457,12 @@ This is a wrapper around `orig-yes-or-no'."
 (set-face-attribute 'linum nil :background "#333333")
 (set-face-attribute 'fringe nil :background "#333333")
 
-;; (package-install 'ido-vertical-mode)
+(use-package ido-vertical-mode
+  :ensure ido-vertical-mode)
 (ido-vertical-mode)
 
-;; (package-install 'markdown-mode+)
+(use-package markdown-mode+
+  :ensure markdown-mode+)
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
