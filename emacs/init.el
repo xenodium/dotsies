@@ -302,13 +302,13 @@
 (setq whitespace-style '(face lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
-;; ;; 100-column limit for java.
-;; (add-hook 'java-mode-hook
-;;           (lambda ()
-;;             (set-fill-column 100)))
-;; ;; 2-char indent for java.
-;; (add-hook 'java-mode-hook (lambda ()
-;;                             (setq c-basic-offset 2)))
+;; 100-column limit for java.
+(add-hook 'java-mode-hook
+          (lambda ()
+            (set-fill-column 100)))
+;; 2-char indent for java.
+(add-hook 'java-mode-hook (lambda ()
+                            (setq c-basic-offset 2)))
 
 ;; New browser tab.
 (cond
