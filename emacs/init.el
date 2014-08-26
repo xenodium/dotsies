@@ -251,6 +251,7 @@
 (electric-indent-mode)
 
 ;; Partially use path in buffer name.
+(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Get rid of splash screens.
