@@ -28,5 +28,4 @@ transpose-words
 vc-ediff
 
 yasnippets?
-key-chord?
-mark-whole-buffer
+
