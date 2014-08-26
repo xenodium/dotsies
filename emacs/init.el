@@ -4,17 +4,40 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-(unless (fboundp 'hungry-delete-mode)
-  (package-install 'hungry-delete))
-(require 'hungry-delete)
-(global-hungry-delete-mode)
+(if (not (package-installed-p 'use-package))
+    (progn
+      (package-refresh-contents)
+      (package-install 'use-package)))
+(require 'use-package)
 
-;;(unless (fboundp 'expand-region)
-;;  (package-install 'expand-region))
-(require 'expand-region)
+(use-package bind-key
+  :ensure bind-key)
+
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
+;; Transpose stuff with M-t
+(bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t l" 'transpose-lines)
+(bind-key "M-t w" 'transpose-words)
+(bind-key "M-t t" 'transpose-words)
+(bind-key "M-t M-t" 'transpose-words)
+(bind-key "M-t s" 'transpose-sexps)
+
+(use-package rainbow-delimiters
+  :ensure rainbow-delimiters)
+(global-rainbow-delimiters-mode)
+
+(use-package hungry-delete
+  :ensure hungry-delete)
+(global-hungry-delete-mode)
+(global-auto-revert-mode)
+(global-font-lock-mode)
+
+(use-package expand-region
+  :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
-(require 'helm)
+(use-package helm
+  :ensure helm)
 
 ;; From http://tuhdo.github.io/helm-intro.html
 ;; must set before helm-config,  otherwise helm use default
@@ -26,12 +49,24 @@
 (require 'helm-files)
 (require 'helm-grep)
 (require 'helm-eshell)
+(require 'helm-buffers)
+
+(use-package helm-swoop
+  :ensure helm-swoop)
+
+(global-set-key (kbd "M-C-s") 'helm-swoop)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
 
 ;; Language-aware editing commands. Useful for imenu-menu.
 (semantic-mode 1)
 
 (global-set-key (kbd "C-c h o") 'helm-occur)
-
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -57,6 +92,7 @@
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
+ helm-buffer-max-length nil
  helm-candidate-number-limit 200 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
@@ -69,18 +105,10 @@
                                         ; useful in helm-mini that lists buffers
  )
 
-;; Longer buffer for helm filename column
-;; http://comments.gmane.org/gmane.emacs.helm.user/325
-(setq helm-buffer-max-length nil)
-
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
 (helm-mode 1)
-
-;; Best way (so far) to search for files in repo.
-;; (package-install 'helm-projectile)
-(global-set-key (kbd "C-x f") 'helm-projectile)
 
 ;; ggtags code indexing.
 ;; https://github.com/leoliu/ggtags
@@ -91,15 +119,21 @@
 ;; Mac OS
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
-;; (package-install 'ggtags)
-(require 'ggtags)
-;; (package-install 'helm-gtags)
-(require 'helm-gtags)
+(use-package ggtags
+  :ensure ggtags)
+(use-package helm-gtags
+  :ensure helm-gtags)
 (helm-gtags-mode 1)
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
-;; (package-install 'projectile)
-(projectile-global-mode 1)
+(use-package projectile
+  :ensure projectile)
+(projectile-global-mode)
+
+;; Best way (so far) to search for files in repo.
+(use-package helm-projectile
+  :ensure helm-projectile)
+(global-set-key (kbd "C-x f") 'helm-projectile)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -210,13 +244,13 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Automatically closes brackets.
-(unless (fboundp 'smartparens-mode)
-  (package-install 'smartparens))
-(require 'smartparens)
+(use-package smartparens
+  :ensure smartparens)
 (smartparens-global-mode)
+(show-smartparens-global-mode +1)
+(electric-indent-mode)
 
 ;; Partially use path in buffer name.
-(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Get rid of splash screens.
@@ -230,14 +264,20 @@
 ;; Display line numbers.
 (global-linum-mode t)
 
+;; Highlight git hunks.
+(use-package git-gutter
+  :ensure git-gutter)
+(global-git-gutter-mode +1)
+(git-gutter:linum-setup)
+
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
 ;; Choose a theme.
 ;; https://github.com/bbatsov/zenburn-emacs
 ;; Requires: color-theme (install from melpa).
-;; (package-install 'color-theme)
-(require 'color-theme)
+(use-package color-theme
+  :ensure color-theme)
 (load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
 (color-theme-molokai)
 ;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
@@ -289,6 +329,8 @@
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq backup-inhibited t)
+; Disable auto save.
+(setq auto-save-default nil)
 
 ;; Disable auto save.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -371,6 +413,7 @@ This is a wrapper around `orig-yes-or-no'."
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
 (global-set-key (kbd "C-x g") 'magit-status)
+(setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 ;; Sort lines (ie. package imports or headers).
 (global-set-key (kbd "M-s l") 'sort-lines)
@@ -384,6 +427,129 @@ This is a wrapper around `orig-yes-or-no'."
      (add-hook 'java-mode-hook 'my-java-mode-stuff)
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+
+;; Thank you Xah Lee.
+;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+(defun xah-open-in-external-app (&optional file)
+  "Open the current file or dired marked files in external app. The app is chosen from your OS's preference."
+  (interactive)
+  (let ( doIt
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((not file) (list (buffer-file-name)))
+           (file (list file)))))
+    (setq doIt (if (<= (length myFileList) 5)
+                   t
+                 (y-or-n-p "Open more than 5 files? ") ) )
+    (when doIt
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
+       ((string-equal system-type "darwin")
+        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
+       ((string-equal system-type "gnu/linux")
+        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
+(global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
+
+(setq ring-bell-function 'ignore)
+
+(set-face-attribute 'linum nil :background "#333333")
+(set-face-attribute 'fringe nil :background "#333333")
+
+(use-package ido-vertical-mode
+  :ensure ido-vertical-mode)
+(ido-vertical-mode)
+
+(use-package markdown-mode+
+  :ensure markdown-mode+)
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+(setq display-time-world-list '(("Europe/Paris" "Paris")
+                                ("Europe/London" "London")
+                                ("America/Los_Angeles" "Los Angeles")))
+
+;; From http://wenshanren.org/?p=298#more-298
+(defun wenshan-edit-current-file-as-root ()
+  "Edit the file that is associated with the current buffer as root"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+        (find-file file))
+    (message "Current buffer does not have an associated file.")))
+
+(global-set-key "\M-/" 'hippie-expand)
+
+;; Thank you Sacha Chua.
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode +1)
+(setq savehist-save-minibuffer-history +1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
+(defun sacha/smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap move-beginning-of-line]
+                'sacha/smarter-move-beginning-of-line)
+
+;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+
+;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
+(defun vsplit-last-buffer ()
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil)
+  (switch-to-next-buffer)
+  )
+(defun hsplit-last-buffer ()
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1 nil)
+  (switch-to-next-buffer)
+  )
+
+(global-set-key (kbd "C-x 2") 'vsplit-last-buffer)
+(global-set-key (kbd "C-x 3") 'hsplit-last-buffer)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)

@@ -1,8 +1,12 @@
 backward-list
+comment-dwim
+delete-blank-lines
 ediff-revion
 eval-buffer
 eval-region
+expand-region
 forward-list
+git-gutter
 helm-all-mark-rings
 helm-apropos
 helm-buffers-list
@@ -12,15 +16,17 @@ helm-imenu
 helm-projectile
 helm-projectile-switch-project
 helm-show-kill-ring
+helm-swoop
 ibuffer
 magit-status
+newline-and-indent
+next-buffer
+previous-buffer
 save-some-buffers
 transpose-chars
 transpose-words
 vc-ediff
 
-expand-region
 yasnippets?
 key-chord?
-expand-region
-helm-swoop
+mark-whole-buffer
