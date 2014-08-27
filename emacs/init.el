@@ -45,6 +45,14 @@
   :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
+
+;; Language-aware editing commands. Useful for imenu-menu.
+(semantic-mode 1)
+
 (use-package helm
   :ensure helm)
 
@@ -66,15 +74,6 @@
 (global-set-key (kbd "M-C-s") 'helm-swoop)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
-
-;; Language-aware editing commands. Useful for imenu-menu.
-(semantic-mode 1)
-
 (global-set-key (kbd "C-c h o") 'helm-occur)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
@@ -266,6 +265,7 @@
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
 (setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
@@ -560,6 +560,62 @@ point reaches the beginning or end of the buffer, stop there."
 
 (global-set-key (kbd "C-x 2") 'vsplit-last-buffer)
 (global-set-key (kbd "C-x 3") 'hsplit-last-buffer)
+
+;; Thank you Bozhidar.
+;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L340
+(defun prelude-swap-windows ()
+  "If you have 2 windows, it swaps them."
+  (interactive)
+  (if (/= (count-windows) 2)
+      (message "You need exactly 2 windows to do this.")
+    (let* ((w1 (car (window-list)))
+           (w2 (cadr (window-list)))
+           (b1 (window-buffer w1))
+           (b2 (window-buffer w2))
+           (s1 (window-start w1))
+           (s2 (window-start w2)))
+      (set-window-buffer w1 b2)
+      (set-window-buffer w2 b1)
+      (set-window-start w1 s2)
+      (set-window-start w2 s1)))
+  (other-window 1))
+(bind-key "C-\\" 'prelude-swap-windows)
+
+;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L111
+(defun prelude-smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(defun prelude-smart-open-line (arg)
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode.
+With a prefix ARG open line above the current line."
+  (interactive "P")
+  (if arg
+      (prelude-smart-open-line-above)
+    (progn
+      (move-end-of-line nil)
+      (newline-and-indent))))
+
+(global-set-key (kbd "C-o") 'prelude-smart-open-line)
+
+(use-package ace-jump-mode
+  :ensure ace-jump-mode)
+(require 'ace-jump-mode)
+
+(use-package key-chord
+  :ensure key-chord)
+(require 'key-chord)
+(key-chord-define-global "jj" 'ace-jump-word-mode)
+(key-chord-define-global "jl" 'ace-jump-line-mode)
+(key-chord-define-global "jk" 'ace-jump-char-mode)
+(key-chord-define-global "xx" 'execute-extended-command)
+(key-chord-mode +1)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
