@@ -53,6 +53,15 @@
 ;; Language-aware editing commands. Useful for imenu-menu.
 (semantic-mode 1)
 
+(use-package auto-complete
+  :ensure auto-complete)
+
+(use-package yasnippet
+  :ensure yasnippet)
+(setq yas-snippet-dirs "~/.emacs.d/lib/snippet")
+(yas-global-mode 1)
+(yas--initialize)
+
 (use-package helm
   :ensure helm)
 
@@ -617,6 +626,20 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-mode +1)
 
+;; Relies on manual installation (ie. make emaxcode)
+(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
+(require 'emaXcode)
+
+(use-package company
+  :ensure company)
+(require 'company)
+(company-mode)
+(global-set-key (kbd "<backtab>") 'company-yasnippet)
+
+(use-package helm-c-yasnippet
+  :ensure helm-c-yasnippet)
+(require 'helm-c-yasnippet)
+
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
@@ -624,8 +647,6 @@ With a prefix ARG open line above the current line."
 ;;  '(eclim-eclipse-dirs '("~/tools/eclipse"))
 ;;  '(eclim-executable "~/tools/eclipse/eclim"))
 ;; (require 'eclimd)
-
-;; (require 'company)
 ;; (require 'company-emacs-eclim)
 ;; (company-emacs-eclim-setup)
 ;; (global-company-mode t)
