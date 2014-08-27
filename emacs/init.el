@@ -22,6 +22,15 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
+(use-package elfeed
+  :ensure elfeed)
+(setq elfeed-feeds
+      '(("http://planet.emacsen.org/atom.xml" blog emacs)
+        ("http://blogs.gnome.org/feed" blog gnome)))
+
+(use-package hackernews
+  :ensure hackernews)
+
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
 (global-rainbow-delimiters-mode)
