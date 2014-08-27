@@ -36,6 +36,14 @@
   :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
+
+;; Language-aware editing commands. Useful for imenu-menu.
+(semantic-mode 1)
+
 (use-package helm
   :ensure helm)
 
@@ -57,15 +65,6 @@
 (global-set-key (kbd "M-C-s") 'helm-swoop)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
-
-;; Language-aware editing commands. Useful for imenu-menu.
-(semantic-mode 1)
-
 (global-set-key (kbd "C-c h o") 'helm-occur)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
