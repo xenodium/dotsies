@@ -79,5 +79,6 @@ alias t="tmux attach-session"
 alias td="tmux attach-session -d"
 alias tail_ios="tail -f ~/Library/Logs/iOS\ Simulator/7.1/system.log"
 alias grep="grep --color=always"
+alias git_gc="git gc --aggressive --prune=now"
 
 ### Aliases ### end
