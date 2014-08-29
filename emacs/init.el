@@ -283,6 +283,9 @@
 ;; Display line numbers.
 (global-linum-mode t)
 
+(use-package git-timemachine
+  :ensure git-timemachine)
+
 ;; Highlight git hunks.
 (use-package git-gutter
   :ensure git-gutter)
