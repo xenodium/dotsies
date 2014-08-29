@@ -1,4 +1,4 @@
-all: init zenburn molokai dark_zenburn emaxcode
+all: init zenburn dark_zenburn emaxcode
 
 init:
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
@@ -12,11 +12,6 @@ zenburn:
 	curl https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el -o /tmp/zenburn-theme.el
 	mkdir -p ~/.emacs.d/downloads/zenburn
 	mv /tmp/zenburn-theme.el ~/.emacs.d/downloads/zenburn/
-
-molokai:
-	curl https://raw.githubusercontent.com/alloy-d/color-theme-molokai/master/color-theme-molokai.el -o /tmp/color-theme-molokai.el
-	mkdir -p ~/.emacs.d/downloads/molokai
-	mv /tmp/color-theme-molokai.el ~/.emacs.d/downloads/molokai/
 
 emaxcode:
 	mkdir -p ~/.emacs.d/lib/snippet

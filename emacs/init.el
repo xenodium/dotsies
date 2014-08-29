@@ -300,7 +300,8 @@
 ;; Requires: color-theme (install from melpa).
 (use-package color-theme
   :ensure color-theme)
-(load "~/.emacs.d/downloads/molokai/color-theme-molokai.el")
+(use-package molokai-theme
+  :ensure molokai-theme)
 (color-theme-molokai)
 ;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
 ;;(load-theme 'zenburn t)
