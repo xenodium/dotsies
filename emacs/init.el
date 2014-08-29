@@ -323,14 +323,6 @@
 (setq whitespace-style '(face lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
-;; 100-column limit for java.
-(add-hook 'java-mode-hook
-          (lambda ()
-            (set-fill-column 100)))
-;; 2-char indent for java.
-(add-hook 'java-mode-hook (lambda ()
-                            (setq c-basic-offset 2)))
-
 ;; New browser tab.
 (cond
  ((string-equal system-type "darwin") ; Mac OS X
@@ -446,7 +438,13 @@ This is a wrapper around `orig-yes-or-no'."
 (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
 (eval-after-load "cc-mode"
   '(progn
-     (add-hook 'java-mode-hook 'my-java-mode-stuff)
+     ;; 100-column limit for java.
+     (add-hook 'java-mode-hook
+               (lambda ()
+                 (set-fill-column 100)))
+     ;; 2-char indent for java.
+     (add-hook 'java-mode-hook (lambda ()
+                                 (setq c-basic-offset 2)))
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
 
