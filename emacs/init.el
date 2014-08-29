@@ -295,18 +295,9 @@
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
-;; Choose a theme.
-;; https://github.com/bbatsov/zenburn-emacs
-;; Requires: color-theme (install from melpa).
-(use-package color-theme
   :ensure color-theme)
 (use-package molokai-theme
   :ensure molokai-theme)
-(color-theme-molokai)
-;;(load "~/.emacs.d/downloads/zenburn/zenburn-theme.el")
-;;(load-theme 'zenburn t)
-;;(load "~/.emacs.d/downloads/darkburn/darkburn-theme.el")
-;;(load-theme 'darkburn t)
 
 (set-cursor-color "#0087ff")
 
