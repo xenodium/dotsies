@@ -295,7 +295,6 @@
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
-  :ensure color-theme)
 (use-package molokai-theme
   :ensure molokai-theme)
 
