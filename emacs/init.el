@@ -627,6 +627,12 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-mode +1)
 
+;; Needs clang-format installed.
+;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
+;; See http://clang.llvm.org/docs/ClangFormat.html
+(use-package clang-format
+  :ensure clang-format)
+
 ;; Relies on manual installation (ie. make emaxcode)
 (load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 (require 'emaXcode)
