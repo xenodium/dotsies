@@ -151,6 +151,7 @@
 (use-package helm-projectile
   :ensure helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
+(global-set-key (kbd "C-x p") 'helm-projectile-switch-project)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -637,6 +638,14 @@ With a prefix ARG open line above the current line."
 (use-package helm-c-yasnippet
   :ensure helm-c-yasnippet)
 (require 'helm-c-yasnippet)
+
+(use-package discover
+  :ensure discover)
+
+(use-package drag-stuff
+  :ensure drag-stuff)
+(global-set-key (kbd "ESC <up>") 'drag-stuff-up)
+(global-set-key (kbd "ESC <down>") 'drag-stuff-down)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
