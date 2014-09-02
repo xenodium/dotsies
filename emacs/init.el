@@ -282,7 +282,9 @@
 (global-subword-mode t)
 
 ;; Display line numbers.
-(global-linum-mode t)
+(use-package nlinum
+  :ensure nlinum)
+(global-nlinum-mode t)
 
 (use-package git-timemachine
   :ensure git-timemachine)
