@@ -649,6 +649,9 @@ With a prefix ARG open line above the current line."
 (global-set-key (kbd "ESC <up>") 'drag-stuff-up)
 (global-set-key (kbd "ESC <down>") 'drag-stuff-down)
 
+;; Avoid creating lock files (ie. .#some-file.el)
+(setq create-lockfiles nil)
+
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
