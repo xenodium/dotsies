@@ -127,6 +127,13 @@
 
 (helm-mode 1)
 
+(defun helm-do-grep-recursive (&optional non-recursive)
+  "Like `helm-do-grep', but greps recursively by default."
+  (interactive "P")
+  (let* ((current-prefix-arg (not non-recursive))
+         (helm-current-prefix-arg non-recursive))
+    (call-interactively 'helm-do-grep)))
+
 ;; ggtags code indexing.
 ;; https://github.com/leoliu/ggtags
 ;; https://github.com/leoliu/ggtags/wiki/Install-Global-with-support-for-exuberant-ctags
