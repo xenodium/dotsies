@@ -194,6 +194,8 @@
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
 (setq-default mode-line-format
       (list
+       ;;"★ "
+       "✪ "
        ;; the buffer name; the file name as a tool tip
        '(:eval (propertize "%b"
                            'face 'font-lock-keyword-face
@@ -244,9 +246,6 @@
                            'help-echo
                            (concat (format-time-string "%c; ")
                                    (emacs-uptime "Uptime:%hh"))))
-       ;; i don't want to see minor-modes; but if you want, uncomment this:
-       ;; minor-mode-alist  ;; list of minor modes
-       "% " ;; fill with '-'
        ))
 
 ;; Highlight lines longer than 100 columns.
