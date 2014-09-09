@@ -53,9 +53,6 @@
 ;; Language-aware editing commands. Useful for imenu-menu.
 (semantic-mode 1)
 
-(use-package auto-complete
-  :ensure auto-complete)
-
 (use-package yasnippet
   :ensure yasnippet)
 (setq yas-snippet-dirs "~/.emacs.d/lib/snippet")
@@ -633,10 +630,6 @@ With a prefix ARG open line above the current line."
 (use-package clang-format
   :ensure clang-format)
 
-;; Relies on manual installation (ie. make emaxcode)
-(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
-(require 'emaXcode)
-
 (use-package company
   :ensure company)
 (require 'company)
@@ -668,3 +661,8 @@ With a prefix ARG open line above the current line."
 ;; (require 'company-emacs-eclim)
 ;; (company-emacs-eclim-setup)
 ;; (global-company-mode t)
+
+;; Relies on manual installation (ie. make emaxcode)
+;; Disabled for the time being.
+;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
+;;(require 'emaXcode)
