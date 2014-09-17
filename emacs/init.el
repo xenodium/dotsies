@@ -651,6 +651,9 @@ With a prefix ARG open line above the current line."
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
 
+(use-package rainbow-mode
+  :ensure rainbow-mode)
+
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
@@ -666,3 +669,4 @@ With a prefix ARG open line above the current line."
 ;; Disabled for the time being.
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+
