@@ -22,6 +22,9 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
+;; Alternative to grepping from shell.
+(bind-key "C-x s" 'helm-ag-r-from-git-repo)
+
 (use-package elfeed
   :ensure elfeed)
 (setq elfeed-feeds
