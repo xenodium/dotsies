@@ -85,6 +85,7 @@
   :ensure helm-swoop)
 (require 'helm-swoop)
 
+(global-set-key (kbd "C-c i") 'helm-imenu)
 (global-set-key (kbd "M-C-s") 'helm-swoop)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
@@ -627,6 +628,7 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
+(key-chord-define-global "dd" 'kill-whole-line)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -674,4 +676,3 @@ With a prefix ARG open line above the current line."
 ;; Disabled for the time being.
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
-
