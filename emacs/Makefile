@@ -1,4 +1,7 @@
-all: init zenburn dark_zenburn emaxcode
+all: init zenburn dark_zenburn emaxcode silver_searcher
+
+silver_searcher:
+	brew install ag || apt-get install silversearcher-a
 
 init:
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
