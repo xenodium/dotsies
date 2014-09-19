@@ -10,6 +10,10 @@
       (package-install 'use-package)))
 (require 'use-package)
 
+(use-package async
+  :ensure async)
+(require 'async-bytecomp)
+
 (use-package bind-key
   :ensure bind-key)
 
