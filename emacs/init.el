@@ -635,7 +635,7 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
-(key-chord-define-global "dd" 'kill-whole-line)
+(key-chord-define-global "kk" 'kill-whole-line)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -667,6 +667,14 @@ With a prefix ARG open line above the current line."
 
 (use-package rainbow-mode
   :ensure rainbow-mode)
+
+;; Activate smerge on conflicts.
+(defun sm-try-smerge ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+(add-hook 'find-file-hook 'sm-try-smerge t)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
