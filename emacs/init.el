@@ -166,7 +166,6 @@
   :ensure helm-projectile)
 (require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
-(global-set-key (kbd "C-x p") 'helm-projectile-switch-project)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
