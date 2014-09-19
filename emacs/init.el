@@ -301,6 +301,10 @@
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
 
+;; Handy pop-up messages with git info.
+(use-package git-messenger
+  :ensure git-messenger)
+
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
