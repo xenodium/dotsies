@@ -26,6 +26,9 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
+;; Alternative to grepping from shell.
+(bind-key "C-x s" 'helm-ag-r-from-git-repo)
+
 (use-package elfeed
   :ensure elfeed)
 (setq elfeed-feeds
@@ -78,13 +81,16 @@
 (require 'helm-eshell)
 (require 'helm-buffers)
 
+(use-package helm-ag-r
+  :ensure helm-ag-r)
+(require 'helm-ag-r)
+
 (use-package helm-swoop
   :ensure helm-swoop)
+(require 'helm-swoop)
 
+(global-set-key (kbd "C-c i") 'helm-imenu)
 (global-set-key (kbd "M-C-s") 'helm-swoop)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-c h o") 'helm-occur)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -110,7 +116,7 @@
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
- helm-buffer-max-length nil
+ helm-buffer-max-length 30
  helm-candidate-number-limit 200 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
@@ -158,6 +164,7 @@
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
   :ensure helm-projectile)
+(require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 (global-set-key (kbd "C-x p") 'helm-projectile-switch-project)
 
@@ -622,10 +629,10 @@ With a prefix ARG open line above the current line."
 (use-package key-chord
   :ensure key-chord)
 (require 'key-chord)
-(key-chord-define-global "jj" 'ace-jump-word-mode)
+(key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
-(key-chord-define-global "jk" 'ace-jump-char-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
+(key-chord-define-global "dd" 'kill-whole-line)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -654,6 +661,9 @@ With a prefix ARG open line above the current line."
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
+
+(use-package rainbow-mode
+  :ensure rainbow-mode)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
