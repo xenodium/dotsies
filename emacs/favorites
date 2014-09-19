@@ -26,6 +26,4 @@ save-some-buffers
 transpose-chars
 transpose-words
 vc-ediff
-
-yasnippets?
-
+yasnippets
