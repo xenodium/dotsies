@@ -26,8 +26,10 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
-;; Alternative to grepping from shell.
-(bind-key "C-x s" 'helm-ag-r-from-git-repo)
+;; Alternative to grepping repo.
+(bind-key "C-c s r" 'helm-ag-r-from-git-repo)
+;; Alternative to grepping from current location.
+(bind-key "C-c s d" 'helm-ag-r)
 
 (use-package elfeed
   :ensure elfeed)
@@ -40,7 +42,7 @@
 
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
-(global-rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (use-package hungry-delete
   :ensure hungry-delete)
@@ -89,6 +91,9 @@
   :ensure helm-swoop)
 (require 'helm-swoop)
 
+(global-set-key (kbd "C-s") 'helm-swoop)
+(global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
+(global-set-key (kbd "C-r") nil)
 (global-set-key (kbd "C-c i") 'helm-imenu)
 (global-set-key (kbd "M-C-s") 'helm-swoop)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
