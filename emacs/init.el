@@ -695,3 +695,13 @@ With a prefix ARG open line above the current line."
 ;; Disabled for the time being.
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+
+;; No Objective-C 'other file' support out of the box. Fix that.
+(setq cc-other-file-alist
+      `(("\\.cpp$" (".hpp" ".h"))
+        ("\\.h$" (".c" ".cpp" ".m" ".mm"))
+        ("\\.hpp$" (".cpp" ".c"))
+        ("\\.m$" (".h"))
+        ("\\.mm$" (".h"))
+        ))
+(add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
