@@ -91,9 +91,7 @@
   :ensure helm-swoop)
 (require 'helm-swoop)
 
-(global-set-key (kbd "C-s") 'helm-swoop)
 (global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
-(global-set-key (kbd "C-r") nil)
 (global-set-key (kbd "C-c i") 'helm-imenu)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
