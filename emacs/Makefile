@@ -4,6 +4,7 @@ silver_searcher:
 	brew install ag || apt-get install silversearcher-a
 
 init:
+	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 
 emaxcode:
