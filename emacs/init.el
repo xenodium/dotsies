@@ -645,13 +645,16 @@ With a prefix ARG open line above the current line."
 
 (use-package company
   :ensure company)
+(use-package company-c-headers
+  :ensure company-c-headers)
 (require 'company)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
 (setq company-show-numbers t)
 (global-company-mode)
-(global-set-key (kbd "<backtab>") 'company-yasnippet)
+(add-to-list 'company-backends 'company-c-headers)
+(global-set-key (kbd "<backtab>") 'company-complete)
 
 (use-package helm-c-yasnippet
   :ensure helm-c-yasnippet)
