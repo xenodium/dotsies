@@ -1,0 +1,28 @@
+# Mac OS setup
+
+# NOTE: /HOMEBREW/INSTALL/DIR must be set!
+
+# brew install --HEAD ctags
+# brew install global --with-exuberant-ctags
+
+# Verify support:
+# ctags --list-kinds=all
+
+# ctags for Objective-C:
+# ctags --langmap=ObjectiveC:.m.h Cultural/Common/CIExpandableTextContentView.h
+
+default:\
+	:tc=ctags:
+ctags:\
+	:tc=exuberant-ctags:
+
+exuberant-ctags|plugin-example|setting to use Exuberant Ctags plug-in parser:\
+	:langmap=Java\:.java:\
+        :langmap=ObjectiveC\:.m.h:\
+	:langmap=ObjectiveC++\:.mm.hh.h:\
+	:gtags_parser=Java\:/HOMEBREW/INSTALL/DIR/lib/gtags/exuberant-ctags.la:\
+	:gtags_parser=ObjectiveC\:/HOMEBREW/INSTALL/DIR/lib/gtags/exuberant-ctags.la:\
+	:gtags_parser=ObjectiveC++\:/HOMEBREW/INSTALL/DIR/lib/gtags/exuberant-ctags.la:\
+
+# Append libpath if need be. For example:
+# export GTAGSLIBPATH=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk
