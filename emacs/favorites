@@ -23,6 +23,7 @@ newline-and-indent
 next-buffer
 previous-buffer
 save-some-buffers
+smerge-mode
 transpose-chars
 transpose-words
 vc-ediff
