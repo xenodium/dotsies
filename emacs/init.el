@@ -277,10 +277,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Automatically closes brackets.
-(use-package smartparens
-  :ensure smartparens)
-(smartparens-global-mode)
-(show-smartparens-global-mode +1)
+(electric-pair-mode)
 (electric-indent-mode)
 
 ;; Partially use path in buffer name.
@@ -703,3 +700,10 @@ With a prefix ARG open line above the current line."
         ("\\.mm$" (".h"))
         ))
 (add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer
+        (delq (current-buffer)
+              (remove-if-not 'buffer-file-name (buffer-list)))))
