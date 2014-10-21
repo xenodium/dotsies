@@ -10,6 +10,10 @@
       (package-install 'use-package)))
 (require 'use-package)
 
+(use-package async
+  :ensure async)
+(require 'async-bytecomp)
+
 (use-package bind-key
   :ensure bind-key)
 
@@ -22,8 +26,10 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
-;; Alternative to grepping from shell.
-(bind-key "C-x s" 'helm-ag-r-from-git-repo)
+;; Alternative to grepping repo.
+(bind-key "C-c s r" 'helm-ag-r-from-git-repo)
+;; Alternative to grepping from current location.
+(bind-key "C-c s d" 'helm-ag-r)
 
 (use-package elfeed
   :ensure elfeed)
@@ -36,7 +42,7 @@
 
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
-(global-rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (use-package hungry-delete
   :ensure hungry-delete)
@@ -85,8 +91,8 @@
   :ensure helm-swoop)
 (require 'helm-swoop)
 
+(global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
 (global-set-key (kbd "C-c i") 'helm-imenu)
-(global-set-key (kbd "M-C-s") 'helm-swoop)
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -162,7 +168,6 @@
   :ensure helm-projectile)
 (require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
-(global-set-key (kbd "C-x p") 'helm-projectile-switch-project)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -272,10 +277,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Automatically closes brackets.
-(use-package smartparens
-  :ensure smartparens)
-(smartparens-global-mode)
-(show-smartparens-global-mode +1)
+(electric-pair-mode)
 (electric-indent-mode)
 
 ;; Partially use path in buffer name.
@@ -292,9 +294,9 @@
 (global-subword-mode t)
 
 ;; Display line numbers.
-(use-package nlinum
-  :ensure nlinum)
-(global-nlinum-mode t)
+(use-package linum
+  :ensure linum)
+(global-linum-mode)
 
 (use-package git-timemachine
   :ensure git-timemachine)
@@ -304,6 +306,10 @@
   :ensure git-gutter)
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
+
+;; Handy pop-up messages with git info.
+(use-package git-messenger
+  :ensure git-messenger)
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
@@ -628,7 +634,7 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
-(key-chord-define-global "dd" 'kill-whole-line)
+(key-chord-define-global "kk" 'kill-whole-line)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -639,9 +645,16 @@ With a prefix ARG open line above the current line."
 
 (use-package company
   :ensure company)
+(use-package company-c-headers
+  :ensure company-c-headers)
 (require 'company)
-(company-mode)
-(global-set-key (kbd "<backtab>") 'company-yasnippet)
+(setq company-backends (delete 'company-semantic company-backends))
+(setq company-minimum-prefix-length 2)
+(setq company-idle-delay 0.5)
+(setq company-show-numbers t)
+(global-company-mode)
+(add-to-list 'company-backends 'company-c-headers)
+(global-set-key (kbd "<backtab>") 'company-complete)
 
 (use-package helm-c-yasnippet
   :ensure helm-c-yasnippet)
@@ -661,6 +674,14 @@ With a prefix ARG open line above the current line."
 (use-package rainbow-mode
   :ensure rainbow-mode)
 
+;; Activate smerge on conflicts.
+(defun sm-try-smerge ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+(add-hook 'find-file-hook 'sm-try-smerge t)
+
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
@@ -677,10 +698,10 @@ With a prefix ARG open line above the current line."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-(use-package ycmd
-  :ensure ycmd)
-(require 'ycmd)
 
+;;(use-package ycmd
+;;  :ensure ycmd)
+;;(require 'ycmd)
 ;;(concat (getenv "HOME") "/.emacs.d/ycmd/ycmd")
 ;;(setq ar-ycmd-package-dir (concat (getenv "HOME") "/emacs.d/ycmd/ycmd"))
 ;; (set-variable 'ycmd-server-command (list "python" ar-ycmd-package-dir))
@@ -688,3 +709,21 @@ With a prefix ARG open line above the current line."
 ;;   :ensure company-ycmd)
 ;; (require 'company-ycmd)
 ;; (company-ycmd-setup)
+
+;; No Objective-C 'other file' support out of the box. Fix that.
+(setq cc-other-file-alist
+      `(("\\.cpp$" (".hpp" ".h"))
+        ("\\.h$" (".c" ".cpp" ".m" ".mm"))
+        ("\\.hpp$" (".cpp" ".c"))
+        ("\\.m$" (".h"))
+        ("\\.mm$" (".h"))
+        ))
+(add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer
+        (delq (current-buffer)
+              (remove-if-not 'buffer-file-name (buffer-list)))))
+
