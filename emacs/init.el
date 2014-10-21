@@ -676,3 +676,15 @@ With a prefix ARG open line above the current line."
 ;; Disabled for the time being.
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+
+(use-package ycmd
+  :ensure ycmd)
+(require 'ycmd)
+
+;;(concat (getenv "HOME") "/.emacs.d/ycmd/ycmd")
+;;(setq ar-ycmd-package-dir (concat (getenv "HOME") "/emacs.d/ycmd/ycmd"))
+;; (set-variable 'ycmd-server-command (list "python" ar-ycmd-package-dir))
+;; (use-package company-ycmd
+;;   :ensure company-ycmd)
+;; (require 'company-ycmd)
+;; (company-ycmd-setup)
