@@ -9,7 +9,7 @@
 # ctags --list-kinds=all
 
 # ctags for Objective-C:
-# ctags --langmap=ObjectiveC:.m.h Cultural/Common/CIExpandableTextContentView.h
+# ctags --langmap=ObjectiveC:.m.h path/to/source/File.h
 
 default:\
 	:tc=ctags:
