@@ -433,6 +433,8 @@ This is a wrapper around `orig-yes-or-no'."
     )
 )
 
+(use-package magit
+  :ensure magit)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
@@ -514,7 +516,15 @@ This is a wrapper around `orig-yes-or-no'."
     (message "Current buffer does not have an associated file.")))
 
 (global-set-key "\M-/" 'hippie-expand)
-
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible
+                                         try-expand-dabbrev
+                                         try-expand-dabbrev-all-buffers
+                                         try-expand-dabbrev-from-kill
+                                         try-complete-file-name-partially
+                                         try-complete-file-name
+                                         try-expand-all-abbrevs
+                                         try-expand-list
+                                         try-expand-line))
 ;; Thank you Sacha Chua.
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
 (fset 'yes-or-no-p 'y-or-n-p)
