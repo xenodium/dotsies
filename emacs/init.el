@@ -298,6 +298,22 @@
   :ensure linum)
 (global-linum-mode)
 
+;; Right-justify linum
+;; From https://github.com/echosa/emacs.d#line-numbers
+(setq linum-format (lambda
+                     (line)
+                     (propertize
+                      (format (concat "%"
+                                      (number-to-string
+                                       (length
+                                        (number-to-string
+                                         (line-number-at-pos
+                                          (point-max)))))
+                                      "d ")
+                              line)
+                      'face
+                      'linum)))
+
 (use-package git-timemachine
   :ensure git-timemachine)
 
@@ -679,6 +695,7 @@ With a prefix ARG open line above the current line."
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
 
+;; displays hex strings representing colors
 (use-package rainbow-mode
   :ensure rainbow-mode)
 
