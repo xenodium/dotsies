@@ -316,7 +316,8 @@
 
 (use-package molokai-theme
   :ensure molokai-theme)
-
+(set-face-attribute 'linum nil :background "#1B1D1E")
+(set-face-attribute 'fringe nil :background "#1B1D1E")
 (set-cursor-color "#0087ff")
 
 ;; Highlights current line.
@@ -485,9 +486,6 @@ This is a wrapper around `orig-yes-or-no'."
 (global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
 
 (setq ring-bell-function 'ignore)
-
-(set-face-attribute 'linum nil :background "#333333")
-(set-face-attribute 'fringe nil :background "#333333")
 
 (use-package ido-vertical-mode
   :ensure ido-vertical-mode)
