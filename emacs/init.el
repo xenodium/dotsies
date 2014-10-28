@@ -95,6 +95,7 @@
   :ensure helm-dash)
 (require 'helm-dash)
 (setq helm-dash-browser-func 'eww)
+;; No need to show trailing whitespace in eww mode.
 (add-hook 'eww-mode-hook ' (lambda ()
                              (setq-default show-trailing-whitespace nil)))
 
@@ -108,6 +109,8 @@
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h ,") 'helm-apropos)
+;; Duplicate line.
+(global-set-key "\C-c\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
