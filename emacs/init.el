@@ -64,7 +64,9 @@
 
 (use-package yasnippet
   :ensure yasnippet)
-(setq yas-snippet-dirs "~/.emacs.d/lib/snippet")
+(setq yas-snippet-dirs
+      '("~/.emacs.d/yasnippets/personal"
+        "~/.emacs.d/yasnippets/work"))
 (yas-global-mode 1)
 (yas--initialize)
 
@@ -687,6 +689,27 @@ With a prefix ARG open line above the current line."
 (add-to-list 'company-backends 'company-c-headers)
 (global-set-key (kbd "<backtab>") 'company-complete)
 
+;; Potential company theming.
+;; (let ((bg (face-attribute 'default :background)))
+;;   (custom-set-faces
+;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
+;; (add-to-list 'load-path
+;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
+;; (require 'rtags)
+;; (require 'company-rtags)
+;; (setq rtags-path
+;;       (concat (getenv "HOME") "/.emacs.d/downloads/rtags/bin"))
+;; (setq company-backends (delete 'company-clang company-backends))
+;; (setq company-rtags-begin-after-member-access t)
+;; (setq rtags-completions-enabled t)
+;; (add-to-list 'company-backends 'company-rtags)
+;; (rtags-diagnostics)
+
 (use-package helm-c-yasnippet
   :ensure helm-c-yasnippet)
 (require 'helm-c-yasnippet)
@@ -730,17 +753,20 @@ With a prefix ARG open line above the current line."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-
-;;(use-package ycmd
+;; (use-package ycmd
 ;;  :ensure ycmd)
-;;(require 'ycmd)
-;;(concat (getenv "HOME") "/.emacs.d/ycmd/ycmd")
-;;(setq ar-ycmd-package-dir (concat (getenv "HOME") "/emacs.d/ycmd/ycmd"))
-;; (set-variable 'ycmd-server-command (list "python" ar-ycmd-package-dir))
+;; (require 'ycmd)
+;; (setq company-backends (delete 'company-clang company-backends))
+;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
+;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
+;; (setq ycmd--log-enabled t)
+
 ;; (use-package company-ycmd
 ;;   :ensure company-ycmd)
 ;; (require 'company-ycmd)
 ;; (company-ycmd-setup)
+;; (company-ycmd-enable-comprehensive-automatic-completion)
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -752,11 +778,24 @@ With a prefix ARG open line above the current line."
         ))
 (add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
-(defun kill-other-buffers ()
+(defun ar-kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
               (remove-if-not 'buffer-file-name (buffer-list)))))
+
+(defun ar-delete-this-buffer-and-file ()
+  "Removes file connected to current buffer and kills buffer."
+  (interactive)
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (when (yes-or-no-p "Are you sure you want to remove this file? ")
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "File '%s' successfully removed" filename)))))
 
 (server-start)
