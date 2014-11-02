@@ -1,4 +1,4 @@
-all: init emaxcode silver_searcher
+all: init emaxcode silver_searcher rtags rtags_setup
 
 silver_searcher:
 	brew install ag || apt-get install silversearcher-a
@@ -7,8 +7,40 @@ init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 
+yasnippets:
+	mkdir -p ~/.emacs.d/yasnippets
+	cp -rf yasnippets/* ~/.emacs.d/yasnippets
+
 emaxcode:
 	mkdir -p ~/.emacs.d/lib/snippet
 	curl https://raw.githubusercontent.com/ShingoFukuyama/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
 	mkdir -p ~/.emacs.d/downloads/emaXcode
 	mv /tmp/emaXcode.el ~/.emacs.d/downloads/emaXcode
+
+local_path := ~/local
+ifeq ($(shell uname), Darwin)
+  local_path := ~/homebrew
+endif
+rtags:
+	rm -rf ~/.emacs.d/downloads/rtags
+	git clone https://github.com/Andersbakken/rtags.git ~/.emacs.d/downloads/rtags
+	cd ~/.emacs.d/downloads/rtags && git submodule init && git submodule update
+	cd ~/.emacs.d/downloads/rtags && cmake . && make
+
+rtags_setup:
+	ln -s ~/.emacs.d/downloads/rtags/bin/gcc-rtags-wrapper.sh $(local_path)/bin/gcc
+	ln -s ~/.emacs.d/downloads/rtags/bin/gcc-rtags-wrapper.sh $(local_path)/bin/c++
+	ln -s ~/.emacs.d/downloads/rtags/bin/gcc-rtags-wrapper.sh $(local_path)/bin/cc
+	ln -s ~/.emacs.d/downloads/rtags/bin/gcc-rtags-wrapper.sh $(local_path)/bin/g++
+
+rtags_reset:
+	rm -f $(local_path)/bin/gcc
+	rm -f $(local_path)/bin/c++
+	rm -f $(local_path)/bin/cc
+	rm -f $(local_path)/bin/g++
+
+ycmd:
+	rm -rf ~/.emacs.d/downloads/ycmd
+	git clone https://github.com/Valloric/ycmd.git ~/.emacs.d/downloads/ycmd
+	cd ~/.emacs.d/downloads/ycmd && git submodule update --init --recursive
+	cd ~/.emacs.d/downloads/ycmd && ./build.sh --clang-completer
