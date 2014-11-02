@@ -1,0 +1,11 @@
+#name : init implementation
+#key : initi
+# --
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    $1
+  }
+  return self;
+}
+$0
