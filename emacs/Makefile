@@ -7,12 +7,11 @@ init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 
-yasnippets:
+yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
 
 emaxcode:
-	mkdir -p ~/.emacs.d/lib/snippet
 	curl https://raw.githubusercontent.com/ShingoFukuyama/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
 	mkdir -p ~/.emacs.d/downloads/emaXcode
 	mv /tmp/emaXcode.el ~/.emacs.d/downloads/emaXcode
