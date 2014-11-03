@@ -805,6 +805,7 @@ With a prefix ARG open line above the current line."
   :ensure go-mode)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
+;; go get -u code.google.com/p/rog-go/exp/cmd/godef
 (use-package company-go
   :ensure company-go)
 (require 'company-go)
