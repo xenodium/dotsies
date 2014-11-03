@@ -806,6 +806,11 @@ With a prefix ARG open line above the current line."
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
 ;; go get -u code.google.com/p/rog-go/exp/cmd/godef
+;; go get -u code.google.com/p/go.tools/cmd/goimports
+;; Useful info at:
+;; http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
+;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
+;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (use-package company-go
   :ensure company-go)
 (require 'company-go)
