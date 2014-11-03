@@ -1,7 +1,7 @@
 ;; Add melpa package repository.
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
 (if (not (package-installed-p 'use-package))
