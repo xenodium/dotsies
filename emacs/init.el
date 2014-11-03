@@ -801,4 +801,15 @@ With a prefix ARG open line above the current line."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+(use-package go-mode
+  :ensure go-mode)
+;; Requires gocode daemon. Install with:
+;; go get -u github.com/nsf/gocode
+(use-package company-go
+  :ensure company-go)
+(require 'company-go)
+(add-hook 'go-mode-hook (lambda ()
+                          (set (make-local-variable 'company-backends) '(company-go))
+                          (company-mode)))
+
 (server-start)
