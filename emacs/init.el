@@ -756,20 +756,25 @@ With a prefix ARG open line above the current line."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-;; (use-package ycmd
-;;  :ensure ycmd)
-;; (require 'ycmd)
-;; (setq company-backends (delete 'company-clang company-backends))
-;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
-;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
-;; (setq ycmd--log-enabled t)
+(use-package ycmd
+ :ensure ycmd)
+(require 'ycmd)
+(setq company-backends (delete 'company-clang company-backends))
+(setq company-backends (add-to-list 'company-backends 'company-ycmd))
+(setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+(setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
+(setq ycmd--log-enabled t)
 
-;; (use-package company-ycmd
-;;   :ensure company-ycmd)
-;; (require 'company-ycmd)
+(use-package company-ycmd
+  :ensure company-ycmd)
+(require 'company-ycmd)
+;; (add-hook 'objc-mode-hook (lambda ()
+;;                             (set (make-local-variable 'company-backends) '(company-ycmd))
+;;                             (company-mode)))
 ;; (company-ycmd-setup)
-;; (company-ycmd-enable-comprehensive-automatic-completion)
+(setq company-backends '(company-ycmd))
+(company-ycmd-enable-comprehensive-automatic-completion)
+
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -816,6 +821,8 @@ With a prefix ARG open line above the current line."
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
-                          (company-mode)))
+                          (company-mode)
+                          (setq tab-width 2 indent-tabs-mode 1)
+                          (add-hook 'before-save-hook 'gofmt-before-save)))
 
 (server-start)
