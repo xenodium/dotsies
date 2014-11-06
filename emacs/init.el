@@ -277,6 +277,16 @@
 
 ;; Automatically scroll build output.
 (setq compilation-scroll-output t)
+;; Automatically hide successful builds window.
+(setq compilation-finish-functions 'ar-compile-autoclose)
+(defun ar-compile-autoclose (buffer string)
+  (cond ((string-match "finished" string)
+         (message "Build finished")
+         (run-with-timer 2 nil
+                         'delete-window
+                         (get-buffer-window buffer t)))
+        (t
+         (message "Compilation exited abnormally: %s" string))))
 
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
@@ -765,15 +775,15 @@ With a prefix ARG open line above the current line."
 (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
 (setq ycmd--log-enabled t)
 
-(use-package company-ycmd
-  :ensure company-ycmd)
-(require 'company-ycmd)
+;; (use-package company-ycmd
+;;  :ensure company-ycmd)
+;; (require 'company-ycmd)
 ;; (add-hook 'objc-mode-hook (lambda ()
 ;;                             (set (make-local-variable 'company-backends) '(company-ycmd))
 ;;                             (company-mode)))
 ;; (company-ycmd-setup)
-(setq company-backends '(company-ycmd))
-(company-ycmd-enable-comprehensive-automatic-completion)
+;; (setq company-backends '(company-ycmd))
+;; (company-ycmd-enable-comprehensive-automatic-completion)
 
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
