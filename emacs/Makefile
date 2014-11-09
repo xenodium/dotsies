@@ -7,7 +7,7 @@ init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 
-yasnippets:
+yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
 
