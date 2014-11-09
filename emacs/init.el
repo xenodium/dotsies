@@ -112,7 +112,10 @@
 (global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h ,") 'helm-apropos)
 ;; Duplicate line.
-(global-set-key "\C-c\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+(global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+;; On Mac, this is effectively fn-M-backspace.
+(global-set-key (kbd "M-(") 'kill-word)
+(global-set-key (kbd "C-q") 'previous-buffer)
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
@@ -286,6 +289,7 @@
                          'delete-window
                          (get-buffer-window buffer t)))
         (t
+         (next-error)
          (message "Compilation exited abnormally: %s" string))))
 
 ;; Show trailing whitespace.
@@ -566,7 +570,7 @@ This is a wrapper around `orig-yes-or-no'."
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-(setq savehist-file "~/.emacs.d/savehist")
+(setq savehist-file "~/.emacs.d/savehist"))
 (savehist-mode +1)
 (setq savehist-save-minibuffer-history +1)
 (setq savehist-additional-variables
@@ -656,6 +660,12 @@ Position the cursor at it's beginning, according to the current mode."
   (newline-and-indent)
   (forward-line -1)
   (indent-according-to-mode))
+
+(use-package multiple-cursors
+  :ensure multiple-cursors)
+(multiple-cursors-mode)
+(global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
 
 (defun prelude-smart-open-line (arg)
   "Insert an empty line after the current line.
@@ -831,6 +841,8 @@ With a prefix ARG open line above the current line."
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
+                          (let ((m go-mode-map))
+                            (define-key m [f6] 'recompile))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook 'gofmt-before-save)))
