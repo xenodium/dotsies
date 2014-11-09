@@ -570,7 +570,7 @@ This is a wrapper around `orig-yes-or-no'."
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-(setq savehist-file "~/.emacs.d/savehist"))
+(setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode +1)
 (setq savehist-save-minibuffer-history +1)
 (setq savehist-additional-variables
