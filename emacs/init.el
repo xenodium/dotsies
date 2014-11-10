@@ -112,7 +112,10 @@
 (global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h ,") 'helm-apropos)
 ;; Duplicate line.
-(global-set-key "\C-c\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+(global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+;; On Mac, this is effectively fn-M-backspace.
+(global-set-key (kbd "M-(") 'kill-word)
+(global-set-key (kbd "C-q") 'previous-buffer)
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
@@ -277,6 +280,17 @@
 
 ;; Automatically scroll build output.
 (setq compilation-scroll-output t)
+;; Automatically hide successful builds window.
+(setq compilation-finish-functions 'ar-compile-autoclose)
+(defun ar-compile-autoclose (buffer string)
+  (cond ((string-match "finished" string)
+         (message "Build finished")
+         (run-with-timer 2 nil
+                         'delete-window
+                         (get-buffer-window buffer t)))
+        (t
+         (next-error)
+         (message "Compilation exited abnormally: %s" string))))
 
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
@@ -647,6 +661,12 @@ Position the cursor at it's beginning, according to the current mode."
   (forward-line -1)
   (indent-according-to-mode))
 
+(use-package multiple-cursors
+  :ensure multiple-cursors)
+(multiple-cursors-mode)
+(global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
+
 (defun prelude-smart-open-line (arg)
   "Insert an empty line after the current line.
 Position the cursor at its beginning, according to the current mode.
@@ -663,6 +683,10 @@ With a prefix ARG open line above the current line."
 (use-package ace-jump-mode
   :ensure ace-jump-mode)
 (require 'ace-jump-mode)
+
+(use-package golden-ratio
+  :ensure golden-ratio)
+(golden-ratio-mode)
 
 (use-package key-chord
   :ensure key-chord)
@@ -756,20 +780,25 @@ With a prefix ARG open line above the current line."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-;; (use-package ycmd
-;;  :ensure ycmd)
-;; (require 'ycmd)
-;; (setq company-backends (delete 'company-clang company-backends))
-;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
-;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
-;; (setq ycmd--log-enabled t)
+(use-package ycmd
+ :ensure ycmd)
+(require 'ycmd)
+(setq company-backends (delete 'company-clang company-backends))
+(setq company-backends (add-to-list 'company-backends 'company-ycmd))
+(setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+(setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
+(setq ycmd--log-enabled t)
 
 ;; (use-package company-ycmd
-;;   :ensure company-ycmd)
+;;  :ensure company-ycmd)
 ;; (require 'company-ycmd)
+;; (add-hook 'objc-mode-hook (lambda ()
+;;                             (set (make-local-variable 'company-backends) '(company-ycmd))
+;;                             (company-mode)))
 ;; (company-ycmd-setup)
+;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
+
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -816,6 +845,10 @@ With a prefix ARG open line above the current line."
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
-                          (company-mode)))
+                          (let ((m go-mode-map))
+                            (define-key m [f6] 'recompile))
+                          (company-mode)
+                          (setq tab-width 2 indent-tabs-mode 1)
+                          (add-hook 'before-save-hook 'gofmt-before-save)))
 
 (server-start)
