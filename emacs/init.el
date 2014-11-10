@@ -65,8 +65,7 @@
 (use-package yasnippet
   :ensure yasnippet)
 (setq yas-snippet-dirs
-      '("~/.emacs.d/yasnippets/personal"
-        "~/.emacs.d/yasnippets/work"))
+      '("~/.emacs.d/yasnippets/personal"))
 (yas-global-mode 1)
 (yas--initialize)
 
