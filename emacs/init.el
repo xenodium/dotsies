@@ -684,6 +684,10 @@ With a prefix ARG open line above the current line."
   :ensure ace-jump-mode)
 (require 'ace-jump-mode)
 
+(use-package golden-ratio
+  :ensure golden-ratio)
+(golden-ratio-mode)
+
 (use-package key-chord
   :ensure key-chord)
 (require 'key-chord)
