@@ -1,0 +1,7 @@
+#name : err
+#key : err
+# --
+if err != nil {
+	log.Fatal(err)
+	return ${1:nil}, err
+}
