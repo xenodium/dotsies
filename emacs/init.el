@@ -780,14 +780,15 @@ With a prefix ARG open line above the current line."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-(use-package ycmd
- :ensure ycmd)
-(require 'ycmd)
-(setq company-backends (delete 'company-clang company-backends))
-(setq company-backends (add-to-list 'company-backends 'company-ycmd))
-(setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-(setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
-(setq ycmd--log-enabled t)
+;; ycmd currently under development. Disabling for now.
+;; (use-package ycmd
+;;  :ensure ycmd)
+;; (require 'ycmd)
+;; (setq company-backends (delete 'company-clang company-backends))
+;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
+;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
+;; (setq ycmd--log-enabled t)
 
 ;; (use-package company-ycmd
 ;;  :ensure company-ycmd)
