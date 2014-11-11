@@ -177,6 +177,7 @@
 (use-package projectile
   :ensure projectile)
 (projectile-global-mode)
+(setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
