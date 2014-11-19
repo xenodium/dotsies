@@ -177,6 +177,7 @@
 (use-package projectile
   :ensure projectile)
 (projectile-global-mode)
+(setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
@@ -791,14 +792,15 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
-(use-package ycmd
- :ensure ycmd)
-(require 'ycmd)
-(setq company-backends (delete 'company-clang company-backends))
-(setq company-backends (add-to-list 'company-backends 'company-ycmd))
-(setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-(setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
-(setq ycmd--log-enabled t)
+;; ycmd currently under development. Disabling for now.
+;; (use-package ycmd
+;;  :ensure ycmd)
+;; (require 'ycmd)
+;; (setq company-backends (delete 'company-clang company-backends))
+;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
+;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
+;; (setq ycmd--log-enabled t)
 
 ;; (use-package company-ycmd
 ;;  :ensure company-ycmd)
@@ -863,3 +865,16 @@ Repeated invocations toggle between the two most recently open buffers."
                           (add-hook 'before-save-hook 'gofmt-before-save)))
 
 (server-start)
+
+;; Load bash configs. Handy for shell-command and compile.
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
+
+;; Customize vertical window divider:
+;; Reverse colors for the border to have nicer line.
+(set-face-inverse-video-p 'vertical-border nil)
+(set-face-background 'vertical-border (face-background 'default))
+;; Set symbol for the border.
+(set-display-table-slot standard-display-table
+                        'vertical-border
+                        (make-glyph-code ?|))
