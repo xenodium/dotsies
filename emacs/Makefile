@@ -12,7 +12,6 @@ yasnippet:
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
 
 emaxcode:
-	mkdir -p ~/.emacs.d/lib/snippet
 	curl https://raw.githubusercontent.com/ShingoFukuyama/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
 	mkdir -p ~/.emacs.d/downloads/emaXcode
 	mv /tmp/emaXcode.el ~/.emacs.d/downloads/emaXcode
