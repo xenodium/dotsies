@@ -661,6 +661,10 @@ Position the cursor at it's beginning, according to the current mode."
   (forward-line -1)
   (indent-according-to-mode))
 
+;; Do not auto indent current line when pressing <RET>.
+(add-hook 'sgml-mode-hook
+          (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
+
 (use-package multiple-cursors
   :ensure multiple-cursors)
 (multiple-cursors-mode)
@@ -695,6 +699,13 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "kk" 'kill-whole-line)
+;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
+(defun ar-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+(key-chord-define-global "JJ" 'ar-switch-to-previous-buffer)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
