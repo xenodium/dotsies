@@ -854,3 +854,16 @@ With a prefix ARG open line above the current line."
                           (add-hook 'before-save-hook 'gofmt-before-save)))
 
 (server-start)
+
+;; Load bash configs. Handy for shell-command and compile.
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
+
+;; Customize vertical window divider:
+;; Reverse colors for the border to have nicer line.
+(set-face-inverse-video-p 'vertical-border nil)
+(set-face-background 'vertical-border (face-background 'default))
+;; Set symbol for the border.
+(set-display-table-slot standard-display-table
+                        'vertical-border
+                        (make-glyph-code ?|))
