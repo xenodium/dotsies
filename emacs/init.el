@@ -503,6 +503,7 @@ This is a wrapper around `orig-yes-or-no'."
                                  (setq c-basic-offset 2)))
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+(setq css-indent-offset 2)
 
 ;; Thank you Xah Lee.
 ;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
