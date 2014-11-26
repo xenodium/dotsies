@@ -7,6 +7,8 @@ alias full	move	screenOriginX;screenOriginY screenSizeX;screenSizeY
 layout		1monitor	'Terminal':REPEAT ${full}
 layout		1monitor	'Xcode':REPEAT ${full}
 
+bind x:${hyper} focus 'Xcode'
+bind d:${hyper} focus 'Terminal'
 bind a:${hyper} ${full}
 bind f:${hyper} ${lefthalf}
 bind j:${hyper} ${righthalf}
