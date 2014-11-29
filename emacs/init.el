@@ -116,6 +116,7 @@
 ;; On Mac, this is effectively fn-M-backspace.
 (global-set-key (kbd "M-(") 'kill-word)
 (global-set-key (kbd "C-q") 'previous-buffer)
+(global-set-key (kbd "C-z") 'next-buffer)
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
@@ -282,8 +283,8 @@
 ;; Automatically scroll build output.
 (setq compilation-scroll-output t)
 ;; Automatically hide successful builds window.
-(setq compilation-finish-functions 'ar-compile-autoclose)
-(defun ar-compile-autoclose (buffer string)
+(setq compilation-finish-functions 'ar/compile-autoclose)
+(defun ar/compile-autoclose (buffer string)
   (cond ((string-match "finished" string)
          (message "Build finished")
          (run-with-timer 2 nil
@@ -702,12 +703,12 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "kk" 'kill-whole-line)
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
-(defun ar-switch-to-previous-buffer ()
+(defun ar/switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-(key-chord-define-global "JJ" 'ar-switch-to-previous-buffer)
+(key-chord-define-global "JJ" 'ar/switch-to-previous-buffer)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -823,15 +824,16 @@ Repeated invocations toggle between the two most recently open buffers."
         ("\\.mm$" (".h"))
         ))
 (add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . objc-mode))
 
-(defun ar-kill-other-buffers ()
+(defun ar/kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
               (remove-if-not 'buffer-file-name (buffer-list)))))
 
-(defun ar-delete-this-buffer-and-file ()
+(defun ar/delete-this-buffer-and-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
   (let ((filename (buffer-file-name))
