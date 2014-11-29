@@ -813,6 +813,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (company-ycmd-setup)
 ;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
+(add-hook 'objc-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-gtags))
+                            (company-mode)))
 
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
