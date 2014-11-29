@@ -559,8 +559,8 @@ This is a wrapper around `orig-yes-or-no'."
     (message "Current buffer does not have an associated file.")))
 
 (global-set-key "\M-/" 'hippie-expand)
-(setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible
-                                         try-expand-dabbrev
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev
+                                         try-expand-dabbrev-visible
                                          try-expand-dabbrev-all-buffers
                                          try-expand-dabbrev-from-kill
                                          try-complete-file-name-partially
