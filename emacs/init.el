@@ -308,6 +308,9 @@
 (electric-pair-mode)
 (electric-indent-mode)
 
+;; Highlight matching parenthesis.
+(show-paren-mode)
+
 ;; Partially use path in buffer name.
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
