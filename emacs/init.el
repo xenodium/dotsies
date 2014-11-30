@@ -874,10 +874,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (server-start)
 
-;; Load bash configs. Handy for shell-command and compile.
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
-
 ;; Customize vertical window divider:
 ;; Reverse colors for the border to have nicer line.
 (set-face-inverse-video-p 'vertical-border nil)
