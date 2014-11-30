@@ -816,6 +816,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (company-ycmd-setup)
 ;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
+(use-package objc-font-lock
+  :ensure objc-font-lock)
+(objc-font-lock-global-mode)
+(setq objc-font-lock-background-face 'bold)
+
 (add-hook 'objc-mode-hook (lambda ()
                             (set (make-local-variable 'company-backends)
                                  ;; List with multiple back-ends for mutual inclusion.
