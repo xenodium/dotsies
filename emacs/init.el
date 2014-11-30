@@ -827,7 +827,9 @@ Repeated invocations toggle between the two most recently open buffers."
         ("\\.mm$" (".h"))
         ))
 (add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
-(add-to-list 'auto-mode-alist '("\\.h\\'" . objc-mode))
+(use-package dummy-h-mode
+  :ensure dummy-h-mode)
+(add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
 (defun ar/kill-other-buffers ()
   "Kill all other buffers."
