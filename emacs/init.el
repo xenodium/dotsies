@@ -789,10 +789,13 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (company-emacs-eclim-setup)
 ;; (global-company-mode t)
 
-;; Relies on manual installation (ie. make emaxcode)
-;; Disabled for the time being.
+;; Relies on manual installation (ie. make emaXcode).
+;; Enable auto-complete to use emaXcode while generating snippets.
+;;(use-package auto-complete
+;;  :ensure auto-complete)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+(load "~/.emacs.d/yasnippets/personal/objc-mode/.yas-compiled-snippets.el")
 
 ;; ycmd currently under development. Disabling for now.
 ;; (use-package ycmd
@@ -814,9 +817,13 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
 (add-hook 'objc-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-gtags))
+                            (set (make-local-variable 'company-backends)
+                                 ;; List with multiple back-ends for mutual inclusion.
+                                 '((company-yasnippet
+                                    company-gtags
+                                    company-dabbrev-code
+                                    company-files)))
                             (company-mode)))
-
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
