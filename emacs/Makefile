@@ -1,4 +1,4 @@
-all: init emaxcode silver_searcher rtags rtags_setup
+all: init emaxcode silver_searcher rtags rtags_setup global
 
 silver_searcher:
 	brew install ag || apt-get install silversearcher-a
@@ -6,6 +6,9 @@ silver_searcher:
 init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
+
+global:
+	cp -i global/.globalrc ~/
 
 yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
