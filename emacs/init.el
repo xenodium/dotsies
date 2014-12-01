@@ -801,6 +801,8 @@ With a prefix ARG open line above the current line."
 ;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
 
+(add-hook 'objc-mode-hook (lambda ()
+                          (add-hook 'before-save-hook 'clang-format-region)))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -867,3 +869,10 @@ With a prefix ARG open line above the current line."
 (set-display-table-slot standard-display-table
                         'vertical-border
                         (make-glyph-code ?|))
+
+(defun ar/split-camel-region ()
+  "Splits camelCaseWord to camel case word"
+  (interactive)
+  (progn (replace-regexp "\\([A-Z]\\)" " \\1" nil (region-beginning)(region-end))
+         (downcase-region (region-beginning)(region-end))))
+(global-set-key (kbd "C-c l") 'ar/split-camel-region)
