@@ -17,6 +17,10 @@
 (use-package bind-key
   :ensure bind-key)
 
+;; Enable upcase and downcase region (disabled by default).
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
 (bind-key "M-t" nil) ;; which used to be transpose-words
