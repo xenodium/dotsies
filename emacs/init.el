@@ -116,6 +116,7 @@
 ;; On Mac, this is effectively fn-M-backspace.
 (global-set-key (kbd "M-(") 'kill-word)
 (global-set-key (kbd "C-q") 'previous-buffer)
+(global-set-key (kbd "C-z") 'next-buffer)
 
 (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
@@ -282,8 +283,8 @@
 ;; Automatically scroll build output.
 (setq compilation-scroll-output t)
 ;; Automatically hide successful builds window.
-(setq compilation-finish-functions 'ar-compile-autoclose)
-(defun ar-compile-autoclose (buffer string)
+(setq compilation-finish-functions 'ar/compile-autoclose)
+(defun ar/compile-autoclose (buffer string)
   (cond ((string-match "finished" string)
          (message "Build finished")
          (run-with-timer 2 nil
@@ -306,6 +307,9 @@
 ;; Automatically closes brackets.
 (electric-pair-mode)
 (electric-indent-mode)
+
+;; Highlight matching parenthesis.
+(show-paren-mode)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -503,6 +507,7 @@ This is a wrapper around `orig-yes-or-no'."
                                  (setq c-basic-offset 2)))
      (add-hook 'java-mode-hook 'flyspell-prog-mode)
      (add-hook 'c-mode-hook 'flyspell-prog-mode)))
+(setq css-indent-offset 2)
 
 ;; Thank you Xah Lee.
 ;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
@@ -557,8 +562,8 @@ This is a wrapper around `orig-yes-or-no'."
     (message "Current buffer does not have an associated file.")))
 
 (global-set-key "\M-/" 'hippie-expand)
-(setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible
-                                         try-expand-dabbrev
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev
+                                         try-expand-dabbrev-visible
                                          try-expand-dabbrev-all-buffers
                                          try-expand-dabbrev-from-kill
                                          try-complete-file-name-partially
@@ -662,6 +667,10 @@ Position the cursor at it's beginning, according to the current mode."
   (forward-line -1)
   (indent-according-to-mode))
 
+;; Do not auto indent current line when pressing <RET>.
+(add-hook 'sgml-mode-hook
+          (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
+
 (use-package multiple-cursors
   :ensure multiple-cursors)
 (multiple-cursors-mode)
@@ -696,6 +705,13 @@ With a prefix ARG open line above the current line."
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "kk" 'kill-whole-line)
+;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
+(defun ar/switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+(key-chord-define-global "JJ" 'ar/switch-to-previous-buffer)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -776,10 +792,13 @@ With a prefix ARG open line above the current line."
 ;; (company-emacs-eclim-setup)
 ;; (global-company-mode t)
 
-;; Relies on manual installation (ie. make emaxcode)
-;; Disabled for the time being.
+;; Relies on manual installation (ie. make emaXcode).
+;; Enable auto-complete to use emaXcode while generating snippets.
+;;(use-package auto-complete
+;;  :ensure auto-complete)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+(load "~/.emacs.d/yasnippets/personal/objc-mode/.yas-compiled-snippets.el")
 
 ;; ycmd currently under development. Disabling for now.
 ;; (use-package ycmd
@@ -800,9 +819,19 @@ With a prefix ARG open line above the current line."
 ;; (company-ycmd-setup)
 ;; (setq company-backends '(company-ycmd))
 ;; (company-ycmd-enable-comprehensive-automatic-completion)
+(use-package objc-font-lock
+  :ensure objc-font-lock)
+(objc-font-lock-global-mode)
+(setq objc-font-lock-background-face 'bold)
 
 (add-hook 'objc-mode-hook (lambda ()
-                          (add-hook 'before-save-hook 'clang-format-region)))
+                            (set (make-local-variable 'company-backends)
+                                 ;; List with multiple back-ends for mutual inclusion.
+                                 '((company-yasnippet
+                                    company-gtags
+                                    company-dabbrev-code
+                                    company-files)))
+                            (company-mode)))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -813,15 +842,18 @@ With a prefix ARG open line above the current line."
         ("\\.mm$" (".h"))
         ))
 (add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+(use-package dummy-h-mode
+  :ensure dummy-h-mode)
+(add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
-(defun ar-kill-other-buffers ()
+(defun ar/kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
               (remove-if-not 'buffer-file-name (buffer-list)))))
 
-(defun ar-delete-this-buffer-and-file ()
+(defun ar/delete-this-buffer-and-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
   (let ((filename (buffer-file-name))
@@ -856,10 +888,6 @@ With a prefix ARG open line above the current line."
                           (add-hook 'before-save-hook 'gofmt-before-save)))
 
 (server-start)
-
-;; Load bash configs. Handy for shell-command and compile.
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
 
 ;; Customize vertical window divider:
 ;; Reverse colors for the border to have nicer line.
