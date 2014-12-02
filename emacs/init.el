@@ -912,4 +912,5 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
   :ensure elisp-slime-nav)
-(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook 'turn-on-elisp-slime-nav-mode))
