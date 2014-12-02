@@ -908,3 +908,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (progn (replace-regexp "\\([A-Z]\\)" " \\1" nil (region-beginning)(region-end))
          (downcase-region (region-beginning)(region-end))))
 (global-set-key (kbd "C-c l") 'ar/split-camel-region)
+
+;; M-. elisp navigation.
+(use-package elisp-slime-nav
+  :ensure elisp-slime-nav)
+(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
