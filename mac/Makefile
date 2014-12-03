@@ -1,0 +1,2 @@
+yasnippet:
+	cp slate ~/.slate
