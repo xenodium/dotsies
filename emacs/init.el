@@ -913,3 +913,8 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure elisp-slime-nav)
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
+
+;; Save current point to p register.
+(fset 'ar/save-point
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("r p" 0 "%d")) arg)))
+(global-set-key (kbd "C-c `") 'ar/save-point)
