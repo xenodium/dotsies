@@ -1,0 +1,18 @@
+alias hyper ctrl;alt
+
+alias lefthalf	move	screenOriginX;screenOriginY screenSizeX/2;screenSizeY
+alias righthalf	move	screenOriginX+screenSizeX/2;screenOriginY screenSizeX/2;screenSizeY
+alias full	move	screenOriginX;screenOriginY screenSizeX;screenSizeY
+
+layout		1monitor	'Terminal':REPEAT ${full}
+layout		1monitor	'Xcode':REPEAT ${full}
+
+bind x:${hyper} focus 'Xcode'
+bind d:${hyper} focus 'Terminal'
+bind a:${hyper} ${full}
+bind f:${hyper} ${lefthalf}
+bind j:${hyper} ${righthalf}
+bind 5:${hyper} grid padding:5 0:2,1
+bind ':${hyper} grid padding:5 0:1,2
+bind h:${hyper} hint fjdksl
+bind l:${hyper} layout 1monitor
