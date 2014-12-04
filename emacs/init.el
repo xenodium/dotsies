@@ -913,25 +913,28 @@ Repeated invocations toggle between the two most recently open buffers."
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
 
-(defun ar/save-point-to-p-register ()
-  "Saves point to register p."
+(defun ar/save-point ()
+  "Saves point to register 9999."
   (interactive)
-  (kmacro-exec-ring-item (quote ("\C-xr p" 0 "%d")) nil))
+  (point-to-register 9999)
+  )
 
-(defun ar/jump-to-p-register ()
+(defun ar/jump-to-saved-point ()
   "Jumps cursor to p register value."
   (interactive)
-  (kmacro-exec-ring-item (quote ("\C-xrjp" 0 "%d")) nil))
-(global-set-key (kbd "C-c `") 'ar/jump-to-p-register)
+  (jump-to-register 9999))
+(global-set-key (kbd "C-c `") 'ar/jump-to-saved-point)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Executes for all text changes in prog-mode."
   ;; Saving point to register enables jumping back to last change at any time.
-  (ar/save-point-to-p-register))
+  (ar/save-point))
 
 (defun ar/prog-mode-hook ()
   "Called when entering all programming modes."
-  (add-to-list (make-local-variable 'after-change-functions)
-               'ar/after-prog-mode-text-change))
+  (add-hook 'after-change-functions
+            'ar/after-prog-mode-text-change
+            t
+            t))
 
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
