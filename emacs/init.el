@@ -883,8 +883,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
-                          (let ((m go-mode-map))
-                            (define-key m [f6] 'recompile))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook 'gofmt-before-save)))
@@ -934,7 +932,8 @@ Repeated invocations toggle between the two most recently open buffers."
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
             'ar/after-prog-mode-text-change
-            t
-            t))
+            t t)
+  (let ((m prog-mode-map))
+    (define-key m [f6] 'recompile)))
 
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
