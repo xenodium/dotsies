@@ -801,7 +801,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;  :ensure auto-complete)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
-(load "~/.emacs.d/yasnippets/personal/objc-mode/.yas-compiled-snippets.el")
 
 ;; ycmd currently under development. Disabling for now.
 ;; (use-package ycmd
@@ -914,7 +913,25 @@ Repeated invocations toggle between the two most recently open buffers."
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
 
-;; Save current point to p register.
-(fset 'ar/save-point
-   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("r p" 0 "%d")) arg)))
-(global-set-key (kbd "C-c `") 'ar/save-point)
+(defun ar/save-point-to-p-register ()
+  "Saves point to register p."
+  (interactive)
+  (kmacro-exec-ring-item (quote ("\C-xr p" 0 "%d")) nil))
+
+(defun ar/jump-to-p-register ()
+  "Jumps cursor to p register value."
+  (interactive)
+  (kmacro-exec-ring-item (quote ("\C-xrjp" 0 "%d")) nil))
+(global-set-key (kbd "C-c `") 'ar/jump-to-p-register)
+
+(defun ar/after-prog-mode-text-change (beg end len)
+  "Executes for all text changes in prog-mode."
+  ;; Saving point to register enables jumping back to last change at any time.
+  (ar/save-point-to-p-register))
+
+(defun ar/prog-mode-hook ()
+  "Called when entering all programming modes."
+  (add-to-list (make-local-variable 'after-change-functions)
+               'ar/after-prog-mode-text-change))
+
+(add-hook 'prog-mode-hook 'ar/prog-mode-hook)
