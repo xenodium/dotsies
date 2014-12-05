@@ -117,7 +117,7 @@
   :ensure elfeed)
 (setq elfeed-feeds
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
-        ("http://blogs.gnome.org/feed" blog gnome)))
+        ("http://planet.gnome.org/rss20.xml" blog gnome)))
 ;; Start off with elfeed.
 
 (use-package bind-key
