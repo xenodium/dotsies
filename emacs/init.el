@@ -954,3 +954,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package maxframe
   :ensure maxframe)
 (add-hook 'window-setup-hook 'maximize-frame t)
+
+(use-package centered-cursor-mode
+  :ensure centered-cursor-mode)
+(global-centered-cursor-mode +1)
