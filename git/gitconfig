@@ -1,2 +1,4 @@
 [core]
 	editor = emacsclient -t
+[rerere]
+	enabled = true
