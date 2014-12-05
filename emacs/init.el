@@ -100,9 +100,6 @@
   :ensure helm-dash)
 (require 'helm-dash)
 (setq helm-dash-browser-func 'eww)
-;; No need to show trailing whitespace in eww mode.
-(add-hook 'eww-mode-hook ' (lambda ()
-                             (setq-default show-trailing-whitespace nil)))
 
 (global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
 (global-set-key (kbd "C-c i") 'helm-imenu)
@@ -296,9 +293,6 @@
         (t
          (next-error)
          (message "Compilation exited abnormally: %s" string))))
-
-;; Show trailing whitespace.
-(setq-default show-trailing-whitespace t)
 
 ;; Hide UI.
 (menu-bar-mode -1)
@@ -943,7 +937,10 @@ Repeated invocations toggle between the two most recently open buffers."
             'ar/after-prog-mode-text-change
             t t)
   (let ((m prog-mode-map))
-    (define-key m [f6] 'recompile)))
+    (define-key m [f6] 'recompile))
+  ;; Show trailing whitespace.
+  (set (make-local-variable 'show-trailing-whitespace)
+       t))
 
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
 
