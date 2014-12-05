@@ -827,7 +827,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package objc-font-lock
   :ensure objc-font-lock)
 (objc-font-lock-global-mode)
-(setq objc-font-lock-background-face 'bold)
+(setq objc-font-lock-background-face nil)
 
 (add-hook 'objc-mode-hook (lambda ()
                             (set (make-local-variable 'company-backends)
