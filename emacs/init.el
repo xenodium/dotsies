@@ -307,7 +307,6 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
-
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
@@ -361,6 +360,8 @@
   :ensure git-gutter)
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
+(global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk)
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger
@@ -395,8 +396,11 @@
     (defun new-browser-tab ()
       "Open a new browser tab in the default browser."
       (interactive)
-      (shell-command "open http://google.com")
-      ))
+      (shell-command "open http://google.com"))
+    ;; Ensures PATH is loaded from shell.
+    (use-package exec-path-from-shell
+      :ensure exec-path-from-shell)
+    (exec-path-from-shell-initialize))
  ((string-equal system-type "gnu/linux") ; Linux
     (defun new-browser-tab ()
       "Open a new browser tab in the default browser."
@@ -942,3 +946,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (define-key m [f6] 'recompile)))
 
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
+
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil :height 180)
