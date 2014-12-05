@@ -300,8 +300,13 @@
 ;; Show trailing whitespace.
 (setq-default show-trailing-whitespace t)
 
-;; Hide menu bar.
+;; Hide UI.
 (menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
