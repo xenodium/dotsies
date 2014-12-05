@@ -949,3 +949,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
+
+;; Ensure window is maximized.
+(use-package maxframe
+  :ensure maxframe)
+(add-hook 'window-setup-hook 'maximize-frame t)
