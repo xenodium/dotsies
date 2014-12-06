@@ -127,9 +127,13 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(use-package anchored-transpose
+  :ensure anchored-transpose)
+
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
 (bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t r" 'anchored-transpose)
 (bind-key "M-t l" 'transpose-lines)
 (bind-key "M-t w" 'transpose-words)
 (bind-key "M-t t" 'transpose-words)
@@ -777,8 +781,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package drag-stuff
   :ensure drag-stuff)
-(global-set-key (kbd "ESC <up>") 'drag-stuff-up)
-(global-set-key (kbd "ESC <down>") 'drag-stuff-down)
+(global-set-key (kbd "M-<up>") 'drag-stuff-up)
+(global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
