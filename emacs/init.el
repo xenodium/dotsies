@@ -157,8 +157,12 @@
 (use-package hungry-delete
   :ensure hungry-delete)
 (global-hungry-delete-mode)
-(global-auto-revert-mode)
 (global-font-lock-mode)
+
+(global-auto-revert-mode)
+;; Let auto-revert-mode update vc/git info.
+;; Need it for mode-line-format to stay up to date.
+(setq auto-revert-check-vc-info t)
 
 (use-package expand-region
   :ensure expand-region)
