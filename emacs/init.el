@@ -160,6 +160,9 @@
 (global-auto-revert-mode)
 (global-font-lock-mode)
 
+;; Overwrite selections when typing.
+(delete-selection-mode)
+
 (use-package expand-region
   :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
