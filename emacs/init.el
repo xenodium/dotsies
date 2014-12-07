@@ -14,6 +14,112 @@
   :ensure async)
 (require 'async-bytecomp)
 
+;; Display line numbers.
+(use-package linum
+  :ensure linum)
+(global-linum-mode)
+
+;; Right-justify linum
+;; From https://github.com/echosa/emacs.d#line-numbers
+(setq linum-format (lambda (line)
+                     (propertize
+                      (format (concat "%"
+                                      (number-to-string
+                                       (length
+                                        (number-to-string
+                                         (line-number-at-pos
+                                          (point-max)))))
+                                      "d ")
+                              line)
+                      'face
+                      'linum)))
+
+(use-package molokai-theme
+  :ensure molokai-theme)
+(set-face-attribute 'linum nil :background "#1B1D1E")
+(set-face-attribute 'fringe nil :background "#1B1D1E")
+(set-cursor-color "#0087ff")
+
+;; Hide UI.
+(menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
+;; Customizing mode line.
+;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
+(setq-default mode-line-format
+      (list
+       ;;"★ "
+       "✪ "
+       ;; the buffer name; the file name as a tool tip
+       '(:eval (propertize "%b"
+                           'face 'font-lock-keyword-face
+                           'help-echo (buffer-file-name)))
+       " | "
+       ;; line and column, '%02' to set to 2 chars at least
+       ;; prevents flickering
+       (propertize "%02l" 'face 'font-lock-type-face)
+       ","
+       (propertize "%02c" 'face 'font-lock-type-face)
+       " | "
+
+       ;; relative position, size of file
+       (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
+       "/"
+       (propertize "%I" 'face 'font-lock-constant-face) ;; size
+       " | "
+
+       ;; the current major mode for the buffer.
+       '(:eval (propertize "%m"
+                           'face
+                           'font-lock-string-face
+                           'help-echo buffer-file-coding-system))
+       " | "
+
+
+       ;; insert vs overwrite mode, input-method in a tooltip
+       '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
+                           'face 'font-lock-preprocessor-face
+                           'help-echo (concat "Buffer is in "
+                                              (if overwrite-mode "overwrite" "insert") " mode")))
+
+       ;; was this buffer modified since the last save?
+       '(:eval (when (buffer-modified-p)
+                 (concat ","  (propertize "Mod"
+                                          'face 'font-lock-warning-face
+                                          'help-echo "Buffer has been modified"))))
+
+       ;; is this buffer read-only?
+       '(:eval (when buffer-read-only
+                 (concat ","  (propertize "RO"
+                                          'face 'font-lock-type-face
+                                          'help-echo "Buffer is read-only"))))
+       " | "
+
+       ;; add the time, with the date and the emacs uptime in the tooltip
+       '(:eval (propertize (format-time-string "%H:%M")
+                           'help-echo
+                           (concat (format-time-string "%c; ")
+                                   (emacs-uptime "Uptime:%hh"))))
+       ))
+
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil :height 180)
+
+;; Ensure window is maximized.
+(use-package maxframe
+  :ensure maxframe)
+(add-hook 'window-setup-hook 'maximize-frame t)
+
+(use-package elfeed
+  :ensure elfeed)
+(setq elfeed-feeds
+      '(("http://planet.emacsen.org/atom.xml" blog emacs)
+        ("http://planet.gnome.org/rss20.xml" blog gnome)))
+;; Start off with elfeed.
+
 (use-package bind-key
   :ensure bind-key)
 
@@ -21,9 +127,13 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(use-package anchored-transpose
+  :ensure anchored-transpose)
+
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
 (bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t r" 'anchored-transpose)
 (bind-key "M-t l" 'transpose-lines)
 (bind-key "M-t w" 'transpose-words)
 (bind-key "M-t t" 'transpose-words)
@@ -34,12 +144,6 @@
 (bind-key "C-c s r" 'helm-ag-r-from-git-repo)
 ;; Alternative to grepping from current location.
 (bind-key "C-c s d" 'helm-ag-r)
-
-(use-package elfeed
-  :ensure elfeed)
-(setq elfeed-feeds
-      '(("http://planet.emacsen.org/atom.xml" blog emacs)
-        ("http://blogs.gnome.org/feed" blog gnome)))
 
 (use-package hackernews
   :ensure hackernews)
@@ -216,64 +320,6 @@
 (add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
 (add-hook 'ediff-quit-hook 'my-ediff-qh)
 
-;; Customizing mode line.
-;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
-(setq-default mode-line-format
-      (list
-       ;;"★ "
-       "✪ "
-       ;; the buffer name; the file name as a tool tip
-       '(:eval (propertize "%b"
-                           'face 'font-lock-keyword-face
-                           'help-echo (buffer-file-name)))
-       " | "
-       ;; line and column, '%02' to set to 2 chars at least
-       ;; prevents flickering
-       (propertize "%02l" 'face 'font-lock-type-face)
-       ","
-       (propertize "%02c" 'face 'font-lock-type-face)
-       " | "
-
-       ;; relative position, size of file
-       (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-       "/"
-       (propertize "%I" 'face 'font-lock-constant-face) ;; size
-       " | "
-
-       ;; the current major mode for the buffer.
-       '(:eval (propertize "%m"
-                           'face
-                           'font-lock-string-face
-                           'help-echo buffer-file-coding-system))
-       " | "
-
-
-       ;; insert vs overwrite mode, input-method in a tooltip
-       '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                           'face 'font-lock-preprocessor-face
-                           'help-echo (concat "Buffer is in "
-                                              (if overwrite-mode "overwrite" "insert") " mode")))
-
-       ;; was this buffer modified since the last save?
-       '(:eval (when (buffer-modified-p)
-                 (concat ","  (propertize "Mod"
-                                          'face 'font-lock-warning-face
-                                          'help-echo "Buffer has been modified"))))
-
-       ;; is this buffer read-only?
-       '(:eval (when buffer-read-only
-                 (concat ","  (propertize "RO"
-                                          'face 'font-lock-type-face
-                                          'help-echo "Buffer is read-only"))))
-       " | "
-
-       ;; add the time, with the date and the emacs uptime in the tooltip
-       '(:eval (propertize (format-time-string "%H:%M")
-                           'help-echo
-                           (concat (format-time-string "%c; ")
-                                   (emacs-uptime "Uptime:%hh"))))
-       ))
-
 ;; Highlight lines longer than 100 columns.
 (require 'whitespace)
 (setq whitespace-line-column 100
@@ -293,13 +339,6 @@
         (t
          (next-error)
          (message "Compilation exited abnormally: %s" string))))
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -325,27 +364,6 @@
 ;; From http://www.emacswiki.org/emacs/CamelCase
 (global-subword-mode t)
 
-;; Display line numbers.
-(use-package linum
-  :ensure linum)
-(global-linum-mode)
-
-;; Right-justify linum
-;; From https://github.com/echosa/emacs.d#line-numbers
-(setq linum-format (lambda
-                     (line)
-                     (propertize
-                      (format (concat "%"
-                                      (number-to-string
-                                       (length
-                                        (number-to-string
-                                         (line-number-at-pos
-                                          (point-max)))))
-                                      "d ")
-                              line)
-                      'face
-                      'linum)))
-
 (use-package git-timemachine
   :ensure git-timemachine)
 
@@ -363,12 +381,6 @@
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
-
-(use-package molokai-theme
-  :ensure molokai-theme)
-(set-face-attribute 'linum nil :background "#1B1D1E")
-(set-face-attribute 'fringe nil :background "#1B1D1E")
-(set-cursor-color "#0087ff")
 
 ;; Highlights current line.
 (require 'hl-line)
@@ -769,8 +781,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package drag-stuff
   :ensure drag-stuff)
-(global-set-key (kbd "ESC <up>") 'drag-stuff-up)
-(global-set-key (kbd "ESC <down>") 'drag-stuff-down)
+(global-set-key (kbd "M-<up>") 'drag-stuff-up)
+(global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
@@ -943,14 +955,6 @@ Repeated invocations toggle between the two most recently open buffers."
        t))
 
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
-
-;; Set font face height. Value is 1/10pt.
-(set-face-attribute 'default nil :height 180)
-
-;; Ensure window is maximized.
-(use-package maxframe
-  :ensure maxframe)
-(add-hook 'window-setup-hook 'maximize-frame t)
 
 (use-package centered-cursor-mode
   :ensure centered-cursor-mode)
