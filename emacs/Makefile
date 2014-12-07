@@ -1,4 +1,4 @@
-all: init emaxcode silver_searcher rtags rtags_setup global
+all: init emaxcode silver_searcher global yasnippet
 
 silver_searcher:
 	brew install ag || apt-get install silversearcher-a
