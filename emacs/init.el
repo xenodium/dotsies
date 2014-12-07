@@ -989,3 +989,13 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (add-to-list 'find-file-not-found-functions
              #'ar/create-non-existent-directory)
+
+;; C-u magit-status presents list of repositories.
+(eval-after-load "projectile"
+  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
+                                          (substring dir 0 -1))
+                                        (remove-if-not (lambda (project)
+                                                         (file-directory-p (concat project "/.git/")))
+                                                       (projectile-relevant-known-projects)))
+
+                magit-repo-dirs-depth 1)))
