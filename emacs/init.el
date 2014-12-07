@@ -47,6 +47,17 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
+
+;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
+(defvar ac/vc-mode-line
+  '(" " (:propertize
+         ;; Strip the backend name from the VC status information
+         (:eval (let ((backend (symbol-name (vc-backend (buffer-file-name)))))
+                  (substring vc-mode (+ (length backend) 2))))
+         face font-lock-variable-name-face))
+  "Mode line format for VC Mode.")
+(put 'ac/vc-mode-line 'risky-local-variable t)
+
 ;; Customizing mode line.
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
 (setq-default mode-line-format
@@ -57,7 +68,8 @@
        '(:eval (propertize "%b"
                            'face 'font-lock-keyword-face
                            'help-echo (buffer-file-name)))
-       '(vc-mode vc-mode)
+
+       '(vc-mode ac/vc-mode-line)
 
        " | "
        ;; line and column, '%02' to set to 2 chars at least
