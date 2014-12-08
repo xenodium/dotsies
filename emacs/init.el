@@ -999,3 +999,6 @@ Repeated invocations toggle between the two most recently open buffers."
                                                        (projectile-relevant-known-projects)))
 
                 magit-repo-dirs-depth 1)))
+
+;; Select help window by default.
+(setq help-window-select t)
