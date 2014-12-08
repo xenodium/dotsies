@@ -1002,3 +1002,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Select help window by default.
 (setq help-window-select t)
+
+;; No need to confirm killing buffers.
+(global-set-key [(control x) (k)] 'kill-this-buffer)
