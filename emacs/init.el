@@ -1005,3 +1005,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; No need to confirm killing buffers.
 (global-set-key [(control x) (k)] 'kill-this-buffer)
+
+;; Keep same window for pop-ups (ie. help-mode).
+;; From http://www.emacswiki.org/emacs/OneWindow
+(setq pop-up-windows nil)
