@@ -797,6 +797,9 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure helm-c-yasnippet)
 (require 'helm-c-yasnippet)
 
+(use-package helm-make
+  :ensure helm-make)
+
 (use-package discover
   :ensure discover)
 
