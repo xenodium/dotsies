@@ -14,6 +14,126 @@
   :ensure async)
 (require 'async-bytecomp)
 
+;; Display line numbers.
+(use-package linum
+  :ensure linum)
+(global-linum-mode)
+
+;; Right-justify linum
+;; From https://github.com/echosa/emacs.d#line-numbers
+(setq linum-format (lambda (line)
+                     (propertize
+                      (format (concat "%"
+                                      (number-to-string
+                                       (length
+                                        (number-to-string
+                                         (line-number-at-pos
+                                          (point-max)))))
+                                      "d ")
+                              line)
+                      'face
+                      'linum)))
+
+(use-package molokai-theme
+  :ensure molokai-theme)
+(set-face-attribute 'linum nil :background "#1B1D1E")
+(set-face-attribute 'fringe nil :background "#1B1D1E")
+(set-cursor-color "#0087ff")
+
+;; Hide UI.
+(menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
+
+;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
+(defvar ac/vc-mode-line
+  '(" " (:propertize
+         ;; Strip the backend name from the VC status information
+         (:eval (let ((backend (symbol-name (vc-backend (buffer-file-name)))))
+                  (substring vc-mode (+ (length backend) 2))))
+         face font-lock-variable-name-face))
+  "Mode line format for VC Mode.")
+(put 'ac/vc-mode-line 'risky-local-variable t)
+
+;; Customizing mode line.
+;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
+(setq-default mode-line-format
+      (list
+       ;;"★ "
+       "✪ "
+       ;; the buffer name; the file name as a tool tip
+       '(:eval (propertize "%b"
+                           'face 'font-lock-keyword-face
+                           'help-echo (buffer-file-name)))
+
+       '(vc-mode ac/vc-mode-line)
+
+       " | "
+       ;; line and column, '%02' to set to 2 chars at least
+       ;; prevents flickering
+       (propertize "%02l" 'face 'font-lock-type-face)
+       ","
+       (propertize "%02c" 'face 'font-lock-type-face)
+       " | "
+
+       ;; relative position, size of file
+       (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
+       "/"
+       (propertize "%I" 'face 'font-lock-constant-face) ;; size
+       " | "
+
+       ;; the current major mode for the buffer.
+       '(:eval (propertize "%m"
+                           'face
+                           'font-lock-string-face
+                           'help-echo buffer-file-coding-system))
+       " | "
+
+
+       ;; insert vs overwrite mode, input-method in a tooltip
+       '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
+                           'face 'font-lock-preprocessor-face
+                           'help-echo (concat "Buffer is in "
+                                              (if overwrite-mode "overwrite" "insert") " mode")))
+
+       ;; was this buffer modified since the last save?
+       '(:eval (when (buffer-modified-p)
+                 (concat ","  (propertize "Mod"
+                                          'face 'font-lock-warning-face
+                                          'help-echo "Buffer has been modified"))))
+
+       ;; is this buffer read-only?
+       '(:eval (when buffer-read-only
+                 (concat ","  (propertize "RO"
+                                          'face 'font-lock-type-face
+                                          'help-echo "Buffer is read-only"))))
+       " | "
+
+       ;; add the time, with the date and the emacs uptime in the tooltip
+       '(:eval (propertize (format-time-string "%H:%M")
+                           'help-echo
+                           (concat (format-time-string "%c; ")
+                                   (emacs-uptime "Uptime:%hh"))))
+       ))
+
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil :height 180)
+
+;; Ensure window is maximized.
+(use-package maxframe
+  :ensure maxframe)
+(add-hook 'window-setup-hook 'maximize-frame t)
+
+(use-package elfeed
+  :ensure elfeed)
+(setq elfeed-feeds
+      '(("http://planet.emacsen.org/atom.xml" blog emacs)
+        ("http://planet.gnome.org/rss20.xml" blog gnome)))
+;; Start off with elfeed.
+
 (use-package bind-key
   :ensure bind-key)
 
@@ -21,9 +141,13 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(use-package anchored-transpose
+  :ensure anchored-transpose)
+
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
 (bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t r" 'anchored-transpose)
 (bind-key "M-t l" 'transpose-lines)
 (bind-key "M-t w" 'transpose-words)
 (bind-key "M-t t" 'transpose-words)
@@ -35,24 +159,24 @@
 ;; Alternative to grepping from current location.
 (bind-key "C-c s d" 'helm-ag-r)
 
-(use-package elfeed
-  :ensure elfeed)
-(setq elfeed-feeds
-      '(("http://planet.emacsen.org/atom.xml" blog emacs)
-        ("http://blogs.gnome.org/feed" blog gnome)))
-
 (use-package hackernews
   :ensure hackernews)
 
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (use-package hungry-delete
   :ensure hungry-delete)
 (global-hungry-delete-mode)
-(global-auto-revert-mode)
 (global-font-lock-mode)
+
+(global-auto-revert-mode)
+;; Let auto-revert-mode update vc/git info.
+;; Need it for mode-line-format to stay up to date.
+(setq auto-revert-check-vc-info t)
+
+;; Overwrite selections when typing.
+(delete-selection-mode)
 
 (use-package expand-region
   :ensure expand-region)
@@ -152,7 +276,7 @@
 
 (helm-mode 1)
 
-(defun helm-do-grep-recursive (&optional non-recursive)
+(defun ar/helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default."
   (interactive "P")
   (let* ((current-prefix-arg (not non-recursive))
@@ -191,88 +315,30 @@
 (setq ediff-split-window-function 'split-window-horizontally)
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
-(defvar my-ediff-bwin-config nil "Window configuration before ediff.")
-(defcustom my-ediff-bwin-reg ?b
-  "*Register to be set up to hold `my-ediff-bwin-config'
+(defvar ar/ediff-bwin-config nil "Window configuration before ediff.")
+(defcustom ar/ediff-bwin-reg ?b
+  "*Register to be set up to hold `ar/ediff-bwin-config'
     configuration.")
 
-(defun my-ediff-bsh ()
+(defun ar/ediff-bsh ()
   "Function to be called before any buffers or window setup for
     ediff."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
-  (window-configuration-to-register my-ediff-bwin-reg))
+  (window-configuration-to-register ar/ediff-bwin-reg))
 
-(defun my-ediff-aswh ()
+(defun ar/ediff-aswh ()
   "setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
-(defun my-ediff-qh ()
+(defun ar/ediff-qh ()
   "Function to be called when ediff quits."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
   (ediff-cleanup-mess)
-  (jump-to-register my-ediff-bwin-reg))
+  (jump-to-register ar/ediff-bwin-reg))
 
-(add-hook 'ediff-before-setup-hook 'my-ediff-bsh)
-(add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
-(add-hook 'ediff-quit-hook 'my-ediff-qh)
-
-;; Customizing mode line.
-;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
-(setq-default mode-line-format
-      (list
-       ;;"★ "
-       "✪ "
-       ;; the buffer name; the file name as a tool tip
-       '(:eval (propertize "%b"
-                           'face 'font-lock-keyword-face
-                           'help-echo (buffer-file-name)))
-       " | "
-       ;; line and column, '%02' to set to 2 chars at least
-       ;; prevents flickering
-       (propertize "%02l" 'face 'font-lock-type-face)
-       ","
-       (propertize "%02c" 'face 'font-lock-type-face)
-       " | "
-
-       ;; relative position, size of file
-       (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-       "/"
-       (propertize "%I" 'face 'font-lock-constant-face) ;; size
-       " | "
-
-       ;; the current major mode for the buffer.
-       '(:eval (propertize "%m"
-                           'face
-                           'font-lock-string-face
-                           'help-echo buffer-file-coding-system))
-       " | "
-
-
-       ;; insert vs overwrite mode, input-method in a tooltip
-       '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                           'face 'font-lock-preprocessor-face
-                           'help-echo (concat "Buffer is in "
-                                              (if overwrite-mode "overwrite" "insert") " mode")))
-
-       ;; was this buffer modified since the last save?
-       '(:eval (when (buffer-modified-p)
-                 (concat ","  (propertize "Mod"
-                                          'face 'font-lock-warning-face
-                                          'help-echo "Buffer has been modified"))))
-
-       ;; is this buffer read-only?
-       '(:eval (when buffer-read-only
-                 (concat ","  (propertize "RO"
-                                          'face 'font-lock-type-face
-                                          'help-echo "Buffer is read-only"))))
-       " | "
-
-       ;; add the time, with the date and the emacs uptime in the tooltip
-       '(:eval (propertize (format-time-string "%H:%M")
-                           'help-echo
-                           (concat (format-time-string "%c; ")
-                                   (emacs-uptime "Uptime:%hh"))))
-       ))
+(add-hook 'ediff-before-setup-hook 'ar/ediff-bsh)
+(add-hook 'ediff-after-setup-windows-hook 'ar/ediff-aswh);
+(add-hook 'ediff-quit-hook 'ar/ediff-qh)
 
 ;; Highlight lines longer than 100 columns.
 (require 'whitespace)
@@ -293,13 +359,6 @@
         (t
          (next-error)
          (message "Compilation exited abnormally: %s" string))))
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -325,27 +384,6 @@
 ;; From http://www.emacswiki.org/emacs/CamelCase
 (global-subword-mode t)
 
-;; Display line numbers.
-(use-package linum
-  :ensure linum)
-(global-linum-mode)
-
-;; Right-justify linum
-;; From https://github.com/echosa/emacs.d#line-numbers
-(setq linum-format (lambda
-                     (line)
-                     (propertize
-                      (format (concat "%"
-                                      (number-to-string
-                                       (length
-                                        (number-to-string
-                                         (line-number-at-pos
-                                          (point-max)))))
-                                      "d ")
-                              line)
-                      'face
-                      'linum)))
-
 (use-package git-timemachine
   :ensure git-timemachine)
 
@@ -364,12 +402,6 @@
 ;; Display column numbers.
 (setq-default column-number-mode t)
 
-(use-package molokai-theme
-  :ensure molokai-theme)
-(set-face-attribute 'linum nil :background "#1B1D1E")
-(set-face-attribute 'fringe nil :background "#1B1D1E")
-(set-cursor-color "#0087ff")
-
 ;; Highlights current line.
 (require 'hl-line)
 (global-hl-line-mode 1)
@@ -382,12 +414,11 @@
 (require 'whitespace)
 (setq whitespace-line-column 100)
 (setq whitespace-style '(face lines-tail))
-(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; New browser tab.
 (cond
  ((string-equal system-type "darwin") ; Mac OS X
-    (defun new-browser-tab ()
+    (defun ar/new-browser-tab ()
       "Open a new browser tab in the default browser."
       (interactive)
       (shell-command "open http://google.com"))
@@ -396,13 +427,13 @@
       :ensure exec-path-from-shell)
     (exec-path-from-shell-initialize))
  ((string-equal system-type "gnu/linux") ; Linux
-    (defun new-browser-tab ()
+    (defun ar/new-browser-tab ()
       "Open a new browser tab in the default browser."
       (interactive)
       (shell-command "google-chrome http://google.com")
       ))
  )
-(global-set-key (kbd "C-x t") 'new-browser-tab)
+(global-set-key (kbd "C-x t") 'ar/new-browser-tab)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -419,7 +450,7 @@
 
 ;; Rename file and buffer.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun rename-file-and-buffer (new-name)
+(defun ar/rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME." (interactive "sNew name: ")
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
@@ -431,7 +462,7 @@
 
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun move-buffer-file (dir)
+(defun ar/move-buffer-file (dir)
   "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
@@ -498,21 +529,6 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Sort lines (ie. package imports or headers).
 (global-set-key (kbd "M-s l") 'sort-lines)
 
-;; Spellcheck comments and documentation
-;; From http://mwolson.org/projects/emacs-config/init.el.html
-(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
-(eval-after-load "cc-mode"
-  '(progn
-     ;; 100-column limit for java.
-     (add-hook 'java-mode-hook
-               (lambda ()
-                 (set-fill-column 100)))
-     ;; 2-char indent for java.
-     (add-hook 'java-mode-hook (lambda ()
-                                 (setq c-basic-offset 2)))
-     (add-hook 'java-mode-hook 'flyspell-prog-mode)
-     (add-hook 'c-mode-hook 'flyspell-prog-mode)))
 (setq css-indent-offset 2)
 
 ;; Thank you Xah Lee.
@@ -764,13 +780,16 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure helm-c-yasnippet)
 (require 'helm-c-yasnippet)
 
+(use-package helm-make
+  :ensure helm-make)
+
 (use-package discover
   :ensure discover)
 
 (use-package drag-stuff
   :ensure drag-stuff)
-(global-set-key (kbd "ESC <up>") 'drag-stuff-up)
-(global-set-key (kbd "ESC <down>") 'drag-stuff-down)
+(global-set-key (kbd "M-<up>") 'drag-stuff-up)
+(global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
@@ -931,6 +950,14 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
+(defun ar/java-mode-hook ()
+  "Called when entering java-mode"
+  ;; 100-column limit for java.
+  (set-fill-column 100)
+  ;; 2-char indent for java.
+  (setq c-basic-offset 2))
+(add-hook 'java-mode-hook 'ar/java-mode-hook)
+
 (defun ar/prog-mode-hook ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -939,19 +966,39 @@ Repeated invocations toggle between the two most recently open buffers."
   (let ((m prog-mode-map))
     (define-key m [f6] 'recompile))
   ;; Show trailing whitespace.
-  (set (make-local-variable 'show-trailing-whitespace)
-       t))
-
+  (set (make-local-variable 'show-trailing-whitespace) t)
+  ;; Spellcheck comments and documentation
+  ;; From http://mwolson.org/projects/emacs-config/init.el.html
+  (flyspell-prog-mode)
+  (whitespace-mode)
+  (rainbow-delimiters-mode))
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
-
-;; Set font face height. Value is 1/10pt.
-(set-face-attribute 'default nil :height 180)
-
-;; Ensure window is maximized.
-(use-package maxframe
-  :ensure maxframe)
-(add-hook 'window-setup-hook 'maximize-frame t)
 
 (use-package centered-cursor-mode
   :ensure centered-cursor-mode)
 (global-centered-cursor-mode +1)
+
+(defun ar/create-non-existent-directory ()
+  (let ((parent-directory (file-name-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+               (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+      (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions
+             #'ar/create-non-existent-directory)
+
+;; C-u magit-status presents list of repositories.
+(eval-after-load "projectile"
+  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
+                                          (substring dir 0 -1))
+                                        (remove-if-not (lambda (project)
+                                                         (file-directory-p (concat project "/.git/")))
+                                                       (projectile-relevant-known-projects)))
+
+                magit-repo-dirs-depth 1)))
+
+;; Select help window by default.
+(setq help-window-select t)
+
+;; No need to confirm killing buffers.
+(global-set-key [(control x) (k)] 'kill-this-buffer)
