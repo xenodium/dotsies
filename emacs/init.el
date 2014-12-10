@@ -824,6 +824,32 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
+;; From http://sakito.jp/emacs/emacsobjectivec.html#xcode
+(defun ar/xc:build ()
+  (interactive)
+  (do-applescript
+   (format
+    (concat
+     "tell application \"Xcode\" to activate \r"
+     "tell application \"System Events\" \r"
+     "     tell process \"Xcode\" \r"
+     "          key code 11 using {command down} \r"
+     "    end tell \r"
+     "end tell \r"
+     ))))
+
+(defun ar/xc:run ()
+  (interactive)
+  (do-applescript
+   (format
+    (concat
+     "tell application \"Xcode\" to activate \r"
+     "tell application \"System Events\" \r"
+     "     tell process \"Xcode\" \r"
+     "          key code 15 using {command down} \r"
+     "    end tell \r"
+     "end tell \r"
+     ))))
 ;; ycmd currently under development. Disabling for now.
 ;; (use-package ycmd
 ;;  :ensure ycmd)
@@ -855,7 +881,9 @@ Repeated invocations toggle between the two most recently open buffers."
                                     company-gtags
                                     company-dabbrev-code
                                     company-files)))
-                            (company-mode)))
+                            (company-mode)
+                            (define-key objc-mode-map [f7] 'ar/xc:build)
+                            (define-key objc-mode-map [f8] 'ar/xc:run)))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
