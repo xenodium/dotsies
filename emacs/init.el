@@ -164,7 +164,6 @@
 
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (use-package hungry-delete
   :ensure hungry-delete)
@@ -277,7 +276,7 @@
 
 (helm-mode 1)
 
-(defun helm-do-grep-recursive (&optional non-recursive)
+(defun ar/helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default."
   (interactive "P")
   (let* ((current-prefix-arg (not non-recursive))
@@ -316,30 +315,30 @@
 (setq ediff-split-window-function 'split-window-horizontally)
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
-(defvar my-ediff-bwin-config nil "Window configuration before ediff.")
-(defcustom my-ediff-bwin-reg ?b
-  "*Register to be set up to hold `my-ediff-bwin-config'
+(defvar ar/ediff-bwin-config nil "Window configuration before ediff.")
+(defcustom ar/ediff-bwin-reg ?b
+  "*Register to be set up to hold `ar/ediff-bwin-config'
     configuration.")
 
-(defun my-ediff-bsh ()
+(defun ar/ediff-bsh ()
   "Function to be called before any buffers or window setup for
     ediff."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
-  (window-configuration-to-register my-ediff-bwin-reg))
+  (window-configuration-to-register ar/ediff-bwin-reg))
 
-(defun my-ediff-aswh ()
+(defun ar/ediff-aswh ()
   "setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
-(defun my-ediff-qh ()
+(defun ar/ediff-qh ()
   "Function to be called when ediff quits."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
   (ediff-cleanup-mess)
-  (jump-to-register my-ediff-bwin-reg))
+  (jump-to-register ar/ediff-bwin-reg))
 
-(add-hook 'ediff-before-setup-hook 'my-ediff-bsh)
-(add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
-(add-hook 'ediff-quit-hook 'my-ediff-qh)
+(add-hook 'ediff-before-setup-hook 'ar/ediff-bsh)
+(add-hook 'ediff-after-setup-windows-hook 'ar/ediff-aswh);
+(add-hook 'ediff-quit-hook 'ar/ediff-qh)
 
 ;; Highlight lines longer than 100 columns.
 (require 'whitespace)
@@ -415,12 +414,11 @@
 (require 'whitespace)
 (setq whitespace-line-column 100)
 (setq whitespace-style '(face lines-tail))
-(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; New browser tab.
 (cond
  ((string-equal system-type "darwin") ; Mac OS X
-    (defun new-browser-tab ()
+    (defun ar/new-browser-tab ()
       "Open a new browser tab in the default browser."
       (interactive)
       (shell-command "open http://google.com"))
@@ -429,13 +427,13 @@
       :ensure exec-path-from-shell)
     (exec-path-from-shell-initialize))
  ((string-equal system-type "gnu/linux") ; Linux
-    (defun new-browser-tab ()
+    (defun ar/new-browser-tab ()
       "Open a new browser tab in the default browser."
       (interactive)
       (shell-command "google-chrome http://google.com")
       ))
  )
-(global-set-key (kbd "C-x t") 'new-browser-tab)
+(global-set-key (kbd "C-x t") 'ar/new-browser-tab)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -452,7 +450,7 @@
 
 ;; Rename file and buffer.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun rename-file-and-buffer (new-name)
+(defun ar/rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME." (interactive "sNew name: ")
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
@@ -464,7 +462,7 @@
 
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun move-buffer-file (dir)
+(defun ar/move-buffer-file (dir)
   "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
@@ -531,21 +529,6 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Sort lines (ie. package imports or headers).
 (global-set-key (kbd "M-s l") 'sort-lines)
 
-;; Spellcheck comments and documentation
-;; From http://mwolson.org/projects/emacs-config/init.el.html
-(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
-(eval-after-load "cc-mode"
-  '(progn
-     ;; 100-column limit for java.
-     (add-hook 'java-mode-hook
-               (lambda ()
-                 (set-fill-column 100)))
-     ;; 2-char indent for java.
-     (add-hook 'java-mode-hook (lambda ()
-                                 (setq c-basic-offset 2)))
-     (add-hook 'java-mode-hook 'flyspell-prog-mode)
-     (add-hook 'c-mode-hook 'flyspell-prog-mode)))
 (setq css-indent-offset 2)
 
 ;; Thank you Xah Lee.
@@ -967,6 +950,14 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
+(defun ar/java-mode-hook ()
+  "Called when entering java-mode"
+  ;; 100-column limit for java.
+  (set-fill-column 100)
+  ;; 2-char indent for java.
+  (setq c-basic-offset 2))
+(add-hook 'java-mode-hook 'ar/java-mode-hook)
+
 (defun ar/prog-mode-hook ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -975,9 +966,12 @@ Repeated invocations toggle between the two most recently open buffers."
   (let ((m prog-mode-map))
     (define-key m [f6] 'recompile))
   ;; Show trailing whitespace.
-  (set (make-local-variable 'show-trailing-whitespace)
-       t))
-
+  (set (make-local-variable 'show-trailing-whitespace) t)
+  ;; Spellcheck comments and documentation
+  ;; From http://mwolson.org/projects/emacs-config/init.el.html
+  (flyspell-prog-mode)
+  (whitespace-mode)
+  (rainbow-delimiters-mode))
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
 
 (use-package centered-cursor-mode
@@ -1008,7 +1002,3 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; No need to confirm killing buffers.
 (global-set-key [(control x) (k)] 'kill-this-buffer)
-
-;; Keep same window for pop-ups (ie. help-mode).
-;; From http://www.emacswiki.org/emacs/OneWindow
-(setq pop-up-windows nil)
