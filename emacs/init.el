@@ -882,6 +882,18 @@ Repeated invocations toggle between the two most recently open buffers."
                                     company-dabbrev-code
                                     company-files)))
                             (company-mode)
+                            ;; List targets with xcodebuild -list
+                            ;; List SDKS with xcodebuild -sdk -version, for example:
+                            ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
+                            ;; SDKVersion: 7.1
+                            ;; Path: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
+                            ;; PlatformPath: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
+                            ;; ProductBuildVersion: 11D167
+                            ;; ProductCopyright: 1983-2014 Apple Inc.
+                            ;; ProductName: iPhone OS
+                            ;; ProductVersion: 7.1
+                            (setq compile-command "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+                            (define-key objc-mode-map [f6] 'recompile)
                             (define-key objc-mode-map [f7] 'ar/xc:build)
                             (define-key objc-mode-map [f8] 'ar/xc:run)))
 
