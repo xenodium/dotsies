@@ -921,7 +921,7 @@ Repeated invocations toggle between the two most recently open buffers."
   )
 
 (defun ar/jump-to-saved-point ()
-  "Jumps cursor to p register value."
+  "Jumps cursor to register 9999's value."
   (interactive)
   (jump-to-register 9999))
 (global-set-key (kbd "C-c `") 'ar/jump-to-saved-point)
