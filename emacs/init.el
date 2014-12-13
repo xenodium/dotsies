@@ -1043,9 +1043,13 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; No need to confirm killing buffers.
 (global-set-key [(control x) (k)] 'kill-this-buffer)
 
-(use-package shell-pop
-  :ensure shell-pop)
-(setq shell-pop-shell-type "ansi-term")
+;; Customize shell-pop.
 (setq shell-pop-term-shell "/bin/bash")
+(setq shell-pop-shell-type '("ansi-term"
+                             "*ansi-term*"
+                             (lambda
+                               nil (ansi-term shell-pop-term-shell))))
 (setq shell-pop-window-position "bottom")
 (global-set-key [f5] 'shell-pop)
+(use-package shell-pop
+  :ensure shell-pop)
