@@ -1042,3 +1042,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; No need to confirm killing buffers.
 (global-set-key [(control x) (k)] 'kill-this-buffer)
+
+;; From http://emacsredux.com/blog/2013/03/29/terminal-at-your-fingertips
+(defun ar/visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (progn
+        (split-window-sensibly (selected-window))
+        (other-window 1)
+        (ansi-term (getenv "SHELL")))
+    (switch-to-buffer-other-window "*ansi-term*")))
+(global-set-key (kbd "C-c t") 'ar/visit-term-buffer)
