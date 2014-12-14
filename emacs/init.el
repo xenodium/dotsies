@@ -194,8 +194,7 @@
   :ensure yasnippet)
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
-(yas-global-mode 1)
-(yas--initialize)
+(yas-reload-all)
 
 (use-package helm
   :ensure helm)
@@ -1011,7 +1010,9 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
   (flyspell-prog-mode)
   (whitespace-mode)
-  (rainbow-delimiters-mode))
+  (rainbow-delimiters-mode)
+  (yas-minor-mode))
+
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
 
 (use-package centered-cursor-mode
