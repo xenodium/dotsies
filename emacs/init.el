@@ -162,6 +162,10 @@
 (use-package hackernews
   :ensure hackernews)
 
+;; Stack Exchange viewer.
+(use-package sx
+  :ensure sx)
+
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
 
@@ -522,7 +526,7 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
-(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-c g") 'magit-status)
 (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 ;; Sort lines (ie. package imports or headers).
