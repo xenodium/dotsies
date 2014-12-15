@@ -1058,3 +1058,20 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
   :ensure shell-pop)
+
+;; Comment current line or region.
+(defun ar/comment-dwim ()
+  (interactive)
+  (let ((start (line-beginning-position))
+        (end (line-end-position)))
+    (when (region-active-p)
+      (setq start (save-excursion
+                    (goto-char (region-beginning))
+                    (beginning-of-line)
+                    (point))
+            end (save-excursion
+                  (goto-char (region-end))
+                  (end-of-line)
+                  (point))))
+    (comment-or-uncomment-region start end)))
+(global-set-key (kbd "M-;") 'ar/comment-dwim)
