@@ -518,6 +518,9 @@ This is a wrapper around `orig-yes-or-no'."
     )
 )
 
+(use-package git-link
+  :ensure git-link)
+
 (use-package magit
   :ensure magit)
 ;; Use vc-ediff as default.
@@ -719,6 +722,12 @@ With a prefix ARG open line above the current line."
 (use-package golden-ratio
   :ensure golden-ratio)
 (golden-ratio-mode)
+
+(use-package auto-dim-other-buffers
+  :ensure auto-dim-other-buffers)
+(add-hook 'after-init-hook (lambda ()
+                             (when (fboundp 'auto-dim-other-buffers-mode)
+                               (auto-dim-other-buffers-mode t))))
 
 (use-package key-chord
   :ensure key-chord)
