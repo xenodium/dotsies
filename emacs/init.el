@@ -1087,3 +1087,24 @@ Repeated invocations toggle between the two most recently open buffers."
                   (point))))
     (comment-or-uncomment-region start end)))
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
+
+(defun ar/new-file-with-template (name extension mode template)
+  "Create file with NAME, EXTENSION, MODE, and TEMPLATE"
+  (find-file (format "%s%s" name extension))
+  (funcall mode)
+  (insert template)
+  (yas-expand-from-trigger-key)
+  (yas-exit-all-snippets))
+
+(defun ar/new-objc-file ()
+  "Create and yas-expand Objective-C interface header/implementation files."
+  (interactive)
+  (let ((interface-name (read-from-minibuffer "Interface name: ")))
+    (ar/new-file-with-template interface-name
+                               ".h"
+                               'objc-mode
+                               "inter")
+    (ar/new-file-with-template interface-name
+                               ".m"
+                               'objc-mode
+                               "impl")))
