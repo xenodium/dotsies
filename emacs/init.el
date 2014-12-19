@@ -1108,3 +1108,6 @@ Repeated invocations toggle between the two most recently open buffers."
                                ".m"
                                'objc-mode
                                "impl")))
+
+;; Hide dired details by default.
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
