@@ -166,6 +166,10 @@
 (use-package sx
   :ensure sx)
 
+;; Twitter.
+(use-package twittering-mode
+  :ensure twittering-mode)
+
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters)
 
@@ -407,7 +411,7 @@
 
 ;; Highlights current line.
 (require 'hl-line)
-(global-hl-line-mode 1)
+(global-hl-line-mode +1)
 ;; Set color as current line's background face.
 (set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
