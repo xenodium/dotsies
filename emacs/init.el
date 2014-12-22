@@ -183,9 +183,6 @@
 ;; Need it for mode-line-format to stay up to date.
 (setq auto-revert-check-vc-info t)
 
-;; Overwrite selections when typing.
-(delete-selection-mode)
-
 (use-package expand-region
   :ensure expand-region)
 (global-set-key (kbd "C-c w") 'er/expand-region)
@@ -234,7 +231,7 @@
 
 (global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
 (global-set-key (kbd "C-c i") 'helm-imenu)
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 (global-set-key (kbd "M-x") 'helm-M-x)
@@ -465,7 +462,10 @@
         (message "Buffer '%s' is not visiting a file!" name)
       (if (get-buffer new-name)
           (message "A buffer named '%s' already exists!" new-name)
-        (progn  (rename-file name new-name 1)  (rename-buffer new-name)  (set-visited-file-name new-name)  (set-buffer-modified-p nil)))))) ;;
+        (progn  (rename-file name new-name 1)
+                (rename-buffer new-name)
+                (set-visited-file-name new-name)
+                (set-buffer-modified-p nil))))))
 
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
@@ -473,14 +473,17 @@
   "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
-         (dir
-          (if (string-match dir "\\(?:/\\|\\\\)$")
-              (substring dir 0 -1) dir))
+         (dir (if (string-match dir "\\(?:/\\|\\\\)$")
+                  (substring dir 0 -1)
+                dir))
          (newname (concat dir "/" name)))
 
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)
-      (progn (copy-file filename newname 1) (delete-file filename) (set-visited-file-name newname) (set-buffer-modified-p nil) t))))
+      (progn (copy-file filename newname 1)
+             (delete-file filename)
+             (set-visited-file-name newname)
+             (set-buffer-modified-p nil) t))))
 
 ; http://scottmcpeak.com/elisp/scott.emacs.el
 ; ------------------- yes-or-no-p ---------------------
@@ -525,12 +528,15 @@ This is a wrapper around `orig-yes-or-no'."
     )
 )
 
+(use-package git-link
+  :ensure git-link)
+
 (use-package magit
   :ensure magit)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
-(global-set-key (kbd "C-c g") 'magit-status)
+(global-set-key (kbd "C-x g") 'magit-status)
 (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 ;; Sort lines (ie. package imports or headers).
@@ -726,6 +732,12 @@ With a prefix ARG open line above the current line."
 (use-package golden-ratio
   :ensure golden-ratio)
 (golden-ratio-mode)
+
+(use-package auto-dim-other-buffers
+  :ensure auto-dim-other-buffers)
+(add-hook 'after-init-hook (lambda ()
+                             (when (fboundp 'auto-dim-other-buffers-mode)
+                               (auto-dim-other-buffers-mode t))))
 
 (use-package key-chord
   :ensure key-chord)
@@ -1079,3 +1091,27 @@ Repeated invocations toggle between the two most recently open buffers."
                   (point))))
     (comment-or-uncomment-region start end)))
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
+
+(defun ar/new-file-with-template (name extension mode template)
+  "Create file with NAME, EXTENSION, MODE, and TEMPLATE"
+  (find-file (format "%s%s" name extension))
+  (funcall mode)
+  (insert template)
+  (yas-expand-from-trigger-key)
+  (yas-exit-all-snippets))
+
+(defun ar/new-objc-file ()
+  "Create and yas-expand Objective-C interface header/implementation files."
+  (interactive)
+  (let ((interface-name (read-from-minibuffer "Interface name: ")))
+    (ar/new-file-with-template interface-name
+                               ".h"
+                               'objc-mode
+                               "inter")
+    (ar/new-file-with-template interface-name
+                               ".m"
+                               'objc-mode
+                               "impl")))
+
+;; Hide dired details by default.
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
