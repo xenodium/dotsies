@@ -729,6 +729,12 @@ With a prefix ARG open line above the current line."
   :ensure ace-jump-mode)
 (require 'ace-jump-mode)
 
+(use-package ace-jump-zap
+  :ensure ace-jump-zap
+  :bind
+  (("M-z" . ace-jump-zap-up-to-char-dwim)
+   ("C-M-z" . ace-jump-zap-to-char-dwim)))
+
 (use-package golden-ratio
   :ensure golden-ratio)
 (golden-ratio-mode)
