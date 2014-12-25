@@ -61,63 +61,63 @@
 ;; Customizing mode line.
 ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
 (setq-default mode-line-format
-      (list
-       ;;"★ "
-       "✪ "
-       ;; the buffer name; the file name as a tool tip
-       '(:eval (propertize "%b"
-                           'face 'font-lock-keyword-face
-                           'help-echo (buffer-file-name)))
+              (list
+               ;;"★ "
+               "✪ "
+               ;; the buffer name; the file name as a tool tip
+               '(:eval (propertize "%b"
+                                   'face 'font-lock-keyword-face
+                                   'help-echo (buffer-file-name)))
 
-       '(vc-mode ac/vc-mode-line)
+               '(vc-mode ac/vc-mode-line)
 
-       " | "
-       ;; line and column, '%02' to set to 2 chars at least
-       ;; prevents flickering
-       (propertize "%02l" 'face 'font-lock-type-face)
-       ","
-       (propertize "%02c" 'face 'font-lock-type-face)
-       " | "
+               " | "
+               ;; line and column, '%02' to set to 2 chars at least
+               ;; prevents flickering
+               (propertize "%02l" 'face 'font-lock-type-face)
+               ","
+               (propertize "%02c" 'face 'font-lock-type-face)
+               " | "
 
-       ;; relative position, size of file
-       (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-       "/"
-       (propertize "%I" 'face 'font-lock-constant-face) ;; size
-       " | "
+               ;; relative position, size of file
+               (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
+               "/"
+               (propertize "%I" 'face 'font-lock-constant-face) ;; size
+               " | "
 
-       ;; the current major mode for the buffer.
-       '(:eval (propertize "%m"
-                           'face
-                           'font-lock-string-face
-                           'help-echo buffer-file-coding-system))
-       " | "
+               ;; the current major mode for the buffer.
+               '(:eval (propertize "%m"
+                                   'face
+                                   'font-lock-string-face
+                                   'help-echo buffer-file-coding-system))
+               " | "
 
 
-       ;; insert vs overwrite mode, input-method in a tooltip
-       '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                           'face 'font-lock-preprocessor-face
-                           'help-echo (concat "Buffer is in "
-                                              (if overwrite-mode "overwrite" "insert") " mode")))
+               ;; insert vs overwrite mode, input-method in a tooltip
+               '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
+                                   'face 'font-lock-preprocessor-face
+                                   'help-echo (concat "Buffer is in "
+                                                      (if overwrite-mode "overwrite" "insert") " mode")))
 
-       ;; was this buffer modified since the last save?
-       '(:eval (when (buffer-modified-p)
-                 (concat ","  (propertize "Mod"
-                                          'face 'font-lock-warning-face
-                                          'help-echo "Buffer has been modified"))))
+               ;; was this buffer modified since the last save?
+               '(:eval (when (buffer-modified-p)
+                         (concat ","  (propertize "Mod"
+                                                  'face 'font-lock-warning-face
+                                                  'help-echo "Buffer has been modified"))))
 
-       ;; is this buffer read-only?
-       '(:eval (when buffer-read-only
-                 (concat ","  (propertize "RO"
-                                          'face 'font-lock-type-face
-                                          'help-echo "Buffer is read-only"))))
-       " | "
+               ;; is this buffer read-only?
+               '(:eval (when buffer-read-only
+                         (concat ","  (propertize "RO"
+                                                  'face 'font-lock-type-face
+                                                  'help-echo "Buffer is read-only"))))
+               " | "
 
-       ;; add the time, with the date and the emacs uptime in the tooltip
-       '(:eval (propertize (format-time-string "%H:%M")
-                           'help-echo
-                           (concat (format-time-string "%c; ")
-                                   (emacs-uptime "Uptime:%hh"))))
-       ))
+               ;; add the time, with the date and the emacs uptime in the tooltip
+               '(:eval (propertize (format-time-string "%H:%M")
+                                   'help-echo
+                                   (concat (format-time-string "%c; ")
+                                           (emacs-uptime "Uptime:%hh"))))
+               ))
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
@@ -269,11 +269,8 @@
  '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
  helm-ff-file-name-history-use-recentf t
  helm-move-to-line-cycle-in-source t ; move to end or beginning of source
-                                        ; when reaching top or bottom of source.
- ido-use-virtual-buffers t      ; Needed in helm-buffers-list
- helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
-                                        ; useful in helm-mini that lists buffers
- )
+ ido-use-virtual-buffers t
+ helm-buffers-fuzzy-matching t)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
@@ -422,27 +419,27 @@
 ;; New browser tab.
 (cond
  ((string-equal system-type "darwin") ; Mac OS X
-    (defun ar/new-browser-tab ()
-      "Open a new browser tab in the default browser."
-      (interactive)
-      (shell-command "open http://google.com"))
-    ;; Ensures PATH is loaded from shell.
-    (use-package exec-path-from-shell
-      :ensure exec-path-from-shell)
-    (exec-path-from-shell-initialize))
+  (defun ar/new-browser-tab ()
+    "Open a new browser tab in the default browser."
+    (interactive)
+    (shell-command "open http://google.com"))
+  ;; Ensures PATH is loaded from shell.
+  (use-package exec-path-from-shell
+    :ensure exec-path-from-shell)
+  (exec-path-from-shell-initialize))
  ((string-equal system-type "gnu/linux") ; Linux
-    (defun ar/new-browser-tab ()
-      "Open a new browser tab in the default browser."
-      (interactive)
-      (shell-command "google-chrome http://google.com")
-      ))
- )
+  (defun ar/new-browser-tab ()
+    "Open a new browser tab in the default browser."
+    (interactive)
+    (shell-command "google-chrome http://google.com")
+    )))
 (global-set-key (kbd "C-x t") 'ar/new-browser-tab)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq backup-inhibited t)
-; Disable auto save.
+
+;; Disable auto save.
 (setq auto-save-default nil)
 
 ;; Disable auto save.
@@ -485,48 +482,46 @@
              (set-visited-file-name newname)
              (set-buffer-modified-p nil) t))))
 
-; http://scottmcpeak.com/elisp/scott.emacs.el
-; ------------------- yes-or-no-p ---------------------
-; There are a number of situations where Emacs wants to ask me a question,
-; but the answer is always the same (or, it's easy to get the effect of
-; the other answer afterwards).  The main example is the question:
-;
-;   File foo.txt has changed on disk.  Reread from disk?
-;
-; This question is annoying because it gets asked while I'm moving around
-; in a debugger stack trace, and often don't care about the file I happen
-; to be at (because I want to move past that frame anyway).  Moreover,
-; my F12 binding lets me re-read files with a single keystroke, so if I
-; actually *do* want to re-read it's easy to do.
+;;  http://scottmcpeak.com/elisp/scott.emacs.el
+;;  ------------------- yes-or-no-p ---------------------
+;;  There are a number of situations where Emacs wants to ask me a question,
+;;  but the answer is always the same (or, it's easy to get the effect of
+;;  the other answer afterwards).  The main example is the question:
+;;
+;;    File foo.txt has changed on disk.  Reread from disk?
+;;
+;;  This question is annoying because it gets asked while I'm moving around
+;;  in a debugger stack trace, and often don't care about the file I happen
+;;  to be at (because I want to move past that frame anyway).  Moreover,
+;;  my F12 binding lets me re-read files with a single keystroke, so if I
+;;  actually *do* want to re-read it's easy to do.
 
-; First, I need the original definition of yes-or-no-p so I can call it
-; after I've replaced its definition.  In case .emacs gets re-read
-; after startup, avoid losing the original definition.
+;;  First, I need the original definition of yes-or-no-p so I can call it
+;;  after I've replaced its definition.  In case .emacs gets re-read
+;;  after startup, avoid losing the original definition.
 (if (fboundp 'orig-yes-or-no-p)
     nil        ; it's already bound, don't re-bind
-  (fset 'orig-yes-or-no-p (symbol-function 'yes-or-no-p))
-)
+  (fset 'orig-yes-or-no-p (symbol-function 'yes-or-no-p)))
 
-; Now, define my version in terms of `orig-yes-or-no-p'.
+;;  Now, define my version in terms of `orig-yes-or-no-p'.
 (defun yes-or-no-p (prompt)
   "Ask user a yes-or-no question.  Return t if answer is yes, nil if no.
 This is a wrapper around `orig-yes-or-no'."
   (if (string-match
-       ; This message is created in lisp/files.el, and there are four
-       ; variations.  I'm intentionally matching two of them.
+;;  This message is created in lisp/files.el, and there are four
+;;  variations.  I'm intentionally matching two of them.
        "File .* changed on disk.  Reread from disk"
        prompt)
 
-      ; it's that question; the answer is no, but I *do* want to know
-      ; that it has changed
+;;  it's that question; the answer is no, but I *do* want to know
+;;  that it has changed
       (progn (message "Note: File has changed on disk.") nil)
 
-    ; it's a different question; for now, just ask me; I'll probably
-    ; add more patterns to the above as I think of other questions that
-    ; I don't want asked
+;;  it's a different question; for now, just ask me; I'll probably
+;;  add more patterns to the above as I think of other questions that
+;;  I don't want asked
     (orig-yes-or-no-p prompt)
-    )
-)
+    ))
 
 (use-package git-link
   :ensure git-link)
