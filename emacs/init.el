@@ -154,11 +154,6 @@
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
 
-;; Alternative to grepping repo.
-(bind-key "C-c s r" 'helm-ag-r-from-git-repo)
-;; Alternative to grepping from current location.
-(bind-key "C-c s d" 'helm-ag-r)
-
 (use-package hackernews
   :ensure hackernews)
 
@@ -201,32 +196,37 @@
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
 
-(use-package helm
-  :ensure helm)
-
 ;; From http://tuhdo.github.io/helm-intro.html
 ;; must set before helm-config,  otherwise helm use default
 ;; prefix "C-x c", which is inconvenient because you can
 ;; accidentially pressed "C-x C-c"
 (setq helm-command-prefix-key "C-c h")
 
-(require 'helm-config)
-(require 'helm-files)
-(require 'helm-grep)
-(require 'helm-eshell)
-(require 'helm-buffers)
+(use-package helm
+  :init
+  (progn
+    (use-package helm-ag
+      :ensure helm-ag)
+    (use-package helm-buffers)
+    (use-package helm-files)
+    (use-package helm-grep)
+    (use-package helm-swoop)
+    (use-package helm-config))
+  :ensure helm)
 
-(use-package helm-ag-r
-  :ensure helm-ag-r)
-(require 'helm-ag-r)
+(defun ar/projectile-helm-ag ()
+  (interactive)
+  (helm-do-ag (projectile-project-root)))
 
-(use-package helm-swoop
-  :ensure helm-swoop)
-(require 'helm-swoop)
+;; Use ag for grepping git project.
+(bind-key "C-c s r" 'ar/projectile-helm-ag)
+;; Use ag for grepping from current location.
+(bind-key "C-c s d" 'helm-do-ag)
 
 (use-package helm-dash
-  :ensure helm-dash)
-(require 'helm-dash)
+  :ensure helm-dash
+  :demand)
+;;(require 'helm-dash)
 (setq helm-dash-browser-func 'eww)
 
 (global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
@@ -893,29 +893,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (objc-font-lock-global-mode)
 (setq objc-font-lock-background-face nil)
 
-(add-hook 'objc-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends)
-                                 ;; List with multiple back-ends for mutual inclusion.
-                                 '((company-yasnippet
-                                    company-gtags
-                                    company-dabbrev-code
-                                    company-files)))
-                            (company-mode)
-                            ;; List targets with xcodebuild -list
-                            ;; List SDKS with xcodebuild -sdk -version, for example:
-                            ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
-                            ;; SDKVersion: 7.1
-                            ;; Path: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
-                            ;; PlatformPath: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
-                            ;; ProductBuildVersion: 11D167
-                            ;; ProductCopyright: 1983-2014 Apple Inc.
-                            ;; ProductName: iPhone OS
-                            ;; ProductVersion: 7.1
-                            (setq compile-command "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-                            (define-key objc-mode-map [f6] 'recompile)
-                            (define-key objc-mode-map [f7] 'ar/xc:build)
-                            (define-key objc-mode-map [f8] 'ar/xc:run)))
-
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
       `(("\\.cpp$" (".hpp" ".h"))
@@ -1009,6 +986,30 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
+(defun ar/objc-mode-hook ()
+  "Called when entering objc-mode"
+  (set (make-local-variable 'company-backends)
+       ;; List with multiple back-ends for mutual inclusion.
+       '((company-yasnippet
+          company-gtags
+          company-dabbrev-code
+          company-files)))
+  ;; List targets with xcodebuild -list
+  ;; List SDKS with xcodebuild -sdk -version, for example:
+  ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
+  ;; SDKVersion: 7.1
+  ;; Path: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
+  ;; PlatformPath: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
+  ;; ProductBuildVersion: 11D167
+  ;; ProductCopyright: 1983-2014 Apple Inc.
+  ;; ProductName: iPhone OS
+  ;; ProductVersion: 7.1
+  (setq compile-command "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+  (define-key objc-mode-map [f6] 'recompile)
+  (define-key objc-mode-map [f7] 'ar/xc:build)
+  (define-key objc-mode-map [f8] 'ar/xc:run))
+(add-hook 'objc-mode-hook 'ar/objc-mode-hook)
+
 (defun ar/java-mode-hook ()
   "Called when entering java-mode"
   ;; 100-column limit for java.
@@ -1032,7 +1033,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (whitespace-mode)
   (rainbow-delimiters-mode)
   (yas-minor-mode))
-
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
 
 (use-package centered-cursor-mode
