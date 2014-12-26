@@ -1117,11 +1117,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
-(defun ar/find-dired-current-dir ()
+(defun ar/find-all-dired-current-dir ()
   "Invokes find-dired for current dir."
   (interactive)
   (let ((dir (if buffer-file-name
                  (file-name-directory buffer-file-name)
                ".")))
     (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
-(bind-key "C-c s f" 'ar/find-dired-current-dir)
+(bind-key "C-c s f" 'ar/find-all-dired-current-dir)
