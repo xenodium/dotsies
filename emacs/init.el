@@ -1095,13 +1095,14 @@ Repeated invocations toggle between the two most recently open buffers."
     (comment-or-uncomment-region start end)))
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
 
-(defun ar/new-file-with-template (name extension mode template)
+(defun ar/new-file-with-template (name extension mode template-name &optional interactive-snippet-p)
   "Create file with NAME, EXTENSION, MODE, and TEMPLATE"
   (find-file (format "%s%s" name extension))
   (funcall mode)
-  (insert template)
+  (insert template-name)
   (yas-expand-from-trigger-key)
-  (yas-exit-all-snippets))
+  (unless interactive-snippet-p
+    (yas-exit-all-snippets)))
 
 (defun ar/new-objc-file ()
   "Create and yas-expand Objective-C interface header/implementation files."
@@ -1115,6 +1116,19 @@ Repeated invocations toggle between the two most recently open buffers."
                                ".m"
                                'objc-mode
                                "impl")))
+
+(defun ar/new-blog-post-file ()
+  "Create and yas-expand Objective-C interface header/implementation files."
+  (interactive)
+  (let* ((post-title (read-from-minibuffer "Post title: "))
+         (post-date (format-time-string "%Y-%m-%d"))
+         (post-file-name (format "%s-%s" post-date post-title)))
+    (ar/new-file-with-template post-file-name
+                               ".markdown"
+                               'markdown-mode
+                               "post"
+                               ;; interactive-snippet-p
+                               t)))
 
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
