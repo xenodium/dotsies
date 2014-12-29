@@ -1037,6 +1037,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (rainbow-delimiters-mode)
   (yas-minor-mode))
 (add-hook 'prog-mode-hook 'ar/prog-mode-hook)
+(add-hook 'markdown-mode-hook 'ar/prog-mode-hook)
 
 (use-package centered-cursor-mode
   :ensure centered-cursor-mode)
@@ -1095,11 +1096,11 @@ Repeated invocations toggle between the two most recently open buffers."
     (comment-or-uncomment-region start end)))
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
 
-(defun ar/new-file-with-template (name extension mode template-name &optional interactive-snippet-p)
-  "Create file with NAME, EXTENSION, MODE, and TEMPLATE"
+(defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
+  "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P"
   (find-file (format "%s%s" name extension))
   (funcall mode)
-  (insert template-name)
+  (insert snippet-name)
   (yas-expand-from-trigger-key)
   (unless interactive-snippet-p
     (yas-exit-all-snippets)))
@@ -1108,14 +1109,14 @@ Repeated invocations toggle between the two most recently open buffers."
   "Create and yas-expand Objective-C interface header/implementation files."
   (interactive)
   (let ((interface-name (read-from-minibuffer "Interface name: ")))
-    (ar/new-file-with-template interface-name
-                               ".h"
-                               'objc-mode
-                               "inter")
-    (ar/new-file-with-template interface-name
-                               ".m"
-                               'objc-mode
-                               "impl")))
+    (ar/new-file-with-snippet interface-name
+                              ".h"
+                              'objc-mode
+                              "inter")
+    (ar/new-file-with-snippet interface-name
+                              ".m"
+                              'objc-mode
+                              "impl")))
 
 (defun ar/new-blog-post-file ()
   "Create and yas-expand Objective-C interface header/implementation files."
@@ -1123,12 +1124,12 @@ Repeated invocations toggle between the two most recently open buffers."
   (let* ((post-title (read-from-minibuffer "Post title: "))
          (post-date (format-time-string "%Y-%m-%d"))
          (post-file-name (format "%s-%s" post-date post-title)))
-    (ar/new-file-with-template post-file-name
-                               ".markdown"
-                               'markdown-mode
-                               "post"
-                               ;; interactive-snippet-p
-                               t)))
+    (ar/new-file-with-snippet post-file-name
+                              ".markdown"
+                              'markdown-mode
+                              "post"
+                              ;; interactive-snippet-p
+                              t)))
 
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
