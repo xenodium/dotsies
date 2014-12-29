@@ -1164,3 +1164,11 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
+
+;;  Guarantee that Emacs never loads outdated byte code files.
+(setq load-prefer-newer t)
+(use-package auto-compile
+  :ensure auto-compile
+  :demand)
+(auto-compile-on-load-mode 1)
+(auto-compile-on-save-mode 1)
