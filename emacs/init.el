@@ -1141,3 +1141,13 @@ Repeated invocations toggle between the two most recently open buffers."
                ".")))
     (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
 (bind-key "C-c s f" 'ar/find-all-dired-current-dir)
+
+;; Quickly undo pop-ups or other window configurations.
+(use-package winner
+  :ensure winner
+  :init (winner-mode 1))
+
+(use-package helm-descbinds
+  :ensure
+  :bind (("C-h b" . helm-descbinds)
+         ("C-h w" . helm-descbinds)))
