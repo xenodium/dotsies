@@ -153,6 +153,8 @@
 (bind-key "M-t t" 'transpose-words)
 (bind-key "M-t M-t" 'transpose-words)
 (bind-key "M-t s" 'transpose-sexps)
+(bind-key "C-+" 'text-scale-increase)
+(bind-key "C--" 'text-scale-decrease)
 
 (use-package hackernews
   :ensure hackernews)
@@ -238,7 +240,7 @@
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-c f") 'helm-recentf)
-(global-set-key (kbd "C-h ,") 'helm-apropos)
+(global-set-key (kbd "C-h a") 'helm-apropos)
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 ;; On Mac, this is effectively fn-M-backspace.
