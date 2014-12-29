@@ -904,7 +904,9 @@ Repeated invocations toggle between the two most recently open buffers."
         ("\\.m$" (".h"))
         ("\\.mm$" (".h"))
         ))
-(add-hook 'c-mode-common-hook (lambda() (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+(add-hook 'c-mode-common-hook (lambda()
+                                (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+
 (use-package dummy-h-mode
   :ensure dummy-h-mode)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -969,8 +971,15 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
   :ensure elisp-slime-nav)
-(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-  (add-hook hook 'turn-on-elisp-slime-nav-mode))
+
+(defun ar/add-functions-to-mode-hooks (hook-functions hooks)
+  "Adds HOOK-FUNCTIONS to mode HOOKS."
+  (dolist (hook hooks)
+    (dolist (hook-function hook-functions)
+      (add-hook hook hook-function))))
+
+(ar/add-functions-to-mode-hooks '(turn-on-elisp-slime-nav-mode)
+                                '(emacs-lisp-mode-hook ielm-mode-hook))
 
 (defun ar/save-point ()
   "Saves point to register 9999."
@@ -989,7 +998,7 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
-(defun ar/objc-mode-hook ()
+(defun ar/objc-mode-hook-function ()
   "Called when entering objc-mode"
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
@@ -1011,17 +1020,17 @@ Repeated invocations toggle between the two most recently open buffers."
   (define-key objc-mode-map [f6] 'recompile)
   (define-key objc-mode-map [f7] 'ar/xc:build)
   (define-key objc-mode-map [f8] 'ar/xc:run))
-(add-hook 'objc-mode-hook 'ar/objc-mode-hook)
+(add-hook 'objc-mode-hook 'ar/objc-mode-hook-function)
 
-(defun ar/java-mode-hook ()
+(defun ar/java-mode-hook-function ()
   "Called when entering java-mode"
   ;; 100-column limit for java.
   (set-fill-column 100)
   ;; 2-char indent for java.
   (setq c-basic-offset 2))
-(add-hook 'java-mode-hook 'ar/java-mode-hook)
+(add-hook 'java-mode-hook 'ar/java-mode-hook-function)
 
-(defun ar/prog-mode-hook ()
+(defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
             'ar/after-prog-mode-text-change
@@ -1036,8 +1045,11 @@ Repeated invocations toggle between the two most recently open buffers."
   (whitespace-mode)
   (rainbow-delimiters-mode)
   (yas-minor-mode))
-(add-hook 'prog-mode-hook 'ar/prog-mode-hook)
-(add-hook 'markdown-mode-hook 'ar/prog-mode-hook)
+(add-hook 'prog-mode-hook 'ar/prog-mode-hook-function)
+(add-hook 'markdown-mode-hook 'ar/prog-mode-hook-function)
+
+(ar/add-functions-to-mode-hooks '(prog-mode-hook markdown-mode-hook)
+                                '(ar/prog-mode-hook-function))
 
 (use-package centered-cursor-mode
   :ensure centered-cursor-mode)
