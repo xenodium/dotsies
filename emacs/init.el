@@ -1172,3 +1172,52 @@ Repeated invocations toggle between the two most recently open buffers."
   :demand)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
+
+(defun ar/char-upcasep (letter)
+  (eq letter (upcase letter)))
+
+;;  Capitalize word toggle.
+;;  http://oremacs.com/2014/12/25/ode-to-toggle
+(defun ar/capitalize-word-toggle ()
+  (interactive)
+  (let ((start
+         (car
+          (bounds-of-thing-at-point 'symbol))))
+    (if start
+        (save-excursion
+          (goto-char start)
+          (funcall
+           (if (ar/char-upcasep (char-after))
+               'downcase-region
+             'upcase-region)
+           start (1+ start)))
+      (capitalize-word -1))))
+(global-set-key (kbd "C-c c") 'ar/capitalize-word-toggle)
+
+(defun ar/upcase-word-toggle ()
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol))
+        beg end
+        (regionp
+         (if (eq this-command last-command)
+             (get this-command 'regionp)
+           (put this-command 'regionp nil))))
+    (cond
+     ((or (region-active-p) regionp)
+      (setq beg (region-beginning)
+            end (region-end))
+      (put this-command 'regionp t))
+     (bounds
+      (setq beg (car bounds)
+            end (cdr bounds)))
+     (t
+      (setq beg (point)
+            end (1+ beg))))
+    (save-excursion
+      (goto-char (1- beg))
+      (and (re-search-forward "[A-Za-z]" end t)
+           (funcall (if (ar/char-upcasep (char-before))
+                        'downcase-region
+                      'upcase-region)
+                    beg end)))))
+(global-set-key (kbd "C-c u") 'upcase-word-toggle)
