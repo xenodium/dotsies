@@ -131,7 +131,8 @@
   :ensure elfeed)
 (setq elfeed-feeds
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
-        ("http://planet.gnome.org/rss20.xml" blog gnome)))
+        ("http://planet.gnome.org/rss20.xml" blog gnome)
+        ("http://reddit.com/r/emacs/.rss" blog reddit)))
 ;; Start off with elfeed.
 
 (use-package bind-key
@@ -1221,3 +1222,4 @@ Repeated invocations toggle between the two most recently open buffers."
                       'upcase-region)
                     beg end)))))
 (global-set-key (kbd "C-c u") 'upcase-word-toggle)
+(global-set-key (kbd "C-c r") 'cua-rectangle-mark-mode)
