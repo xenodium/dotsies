@@ -537,8 +537,12 @@ This is a wrapper around `orig-yes-or-no'."
 (global-set-key (kbd "C-x g") 'magit-status)
 (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
+(defun ar/sort-lines-ignore-case ()
+  (interactive)
+  (let ((sort-fold-case t))
+    (call-interactively 'sort-lines)))
 ;; Sort lines (ie. package imports or headers).
-(global-set-key (kbd "M-s l") 'sort-lines)
+(global-set-key (kbd "M-s l") 'ar/sort-lines-ignore-case)
 
 (setq css-indent-offset 2)
 
