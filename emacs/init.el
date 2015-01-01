@@ -878,25 +878,22 @@ Repeated invocations toggle between the two most recently open buffers."
      "    end tell \r"
      "end tell \r"
      ))))
-;; ycmd currently under development. Disabling for now.
-;; (use-package ycmd
-;;  :ensure ycmd)
-;; (require 'ycmd)
-;; (setq company-backends (delete 'company-clang company-backends))
-;; (setq company-backends (add-to-list 'company-backends 'company-ycmd))
-;; (setq ycmd-server-command (list "python" (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-;; (setq ycmd-extra-conf-whitelist '("~/stuff/active/*"))
-;; (setq ycmd--log-enabled t)
 
+;;  Enable for compile_commands.json
+;; (use-package ycmd
+;;   :ensure ycmd)
+;;
 ;; (use-package company-ycmd
-;;  :ensure company-ycmd)
-;; (require 'company-ycmd)
+;;   :ensure company-ycmd)
+;;
+;; (setq ycmd-server-command (list "python"
+;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
+;; (setq ycmd--log-enabled t)
 ;; (add-hook 'objc-mode-hook (lambda ()
-;;                             (set (make-local-variable 'company-backends) '(company-ycmd))
-;;                             (company-mode)))
+;;                             (ycmd-mode)
+;;                             (set (make-local-variable 'company-backends) '(company-ycmd))))
 ;; (company-ycmd-setup)
-;; (setq company-backends '(company-ycmd))
-;; (company-ycmd-enable-comprehensive-automatic-completion)
+
 (use-package objc-font-lock
   :ensure objc-font-lock)
 (objc-font-lock-global-mode)
