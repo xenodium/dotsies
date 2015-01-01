@@ -230,7 +230,7 @@
 (use-package helm-dash
   :ensure helm-dash
   :demand)
-;;(require 'helm-dash)
+(bind-key "C-h y" 'helm-dash-at-point)
 (setq helm-dash-browser-func 'eww)
 
 (global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
@@ -951,6 +951,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure company-go)
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
+                          (helm-dash-activate-docset "Go")
                           (set (make-local-variable 'company-backends) '(company-go))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
@@ -984,7 +985,11 @@ Repeated invocations toggle between the two most recently open buffers."
     (dolist (hook-function hook-functions)
       (add-hook hook hook-function))))
 
-(ar/add-functions-to-mode-hooks '(turn-on-elisp-slime-nav-mode)
+(defun ar/emacs-lisp-mode-hook-function ()
+  "Called when entering emacs-lisp-mode."
+  (helm-dash-activate-docset "Emacs Lisp")
+  (turn-on-elisp-slime-nav-mode))
+(ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
 
@@ -1007,6 +1012,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/objc-mode-hook-function ()
   "Called when entering objc-mode"
+  (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
        '((company-yasnippet
