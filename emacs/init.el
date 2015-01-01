@@ -985,7 +985,8 @@ Repeated invocations toggle between the two most recently open buffers."
       (add-hook hook hook-function))))
 
 (ar/add-functions-to-mode-hooks '(turn-on-elisp-slime-nav-mode)
-                                '(emacs-lisp-mode-hook ielm-mode-hook))
+                                '(emacs-lisp-mode-hook
+                                  ielm-mode-hook))
 
 (defun ar/save-point ()
   "Saves point to register 9999."
@@ -1051,11 +1052,18 @@ Repeated invocations toggle between the two most recently open buffers."
   (whitespace-mode)
   (rainbow-delimiters-mode)
   (yas-minor-mode))
-(add-hook 'prog-mode-hook 'ar/prog-mode-hook-function)
-(add-hook 'markdown-mode-hook 'ar/prog-mode-hook-function)
 
-(ar/add-functions-to-mode-hooks '(prog-mode-hook markdown-mode-hook)
-                                '(ar/prog-mode-hook-function))
+(defun ar/markdown-mode-hook-function ()
+  "Called when entering markdown-mode."
+  (setq markdown-indent-on-enter nil)
+  (define-key markdown-mode-map (kbd "RET") 'electric-newline-and-maybe-indent))
+
+(ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
+                                '(prog-mode-hook))
+
+(ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function
+                                  ar/markdown-mode-hook-function)
+                                '(markdown-mode-hook))
 
 (use-package centered-cursor-mode
   :ensure centered-cursor-mode)
