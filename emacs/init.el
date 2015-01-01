@@ -880,6 +880,7 @@ Repeated invocations toggle between the two most recently open buffers."
      ))))
 
 ;;  Enable for compile_commands.json
+;;  TODO: Add sample compile_commands.json and .ycm_extra_conf.py
 ;; (use-package ycmd
 ;;   :ensure ycmd)
 ;;
