@@ -1240,3 +1240,8 @@ Repeated invocations toggle between the two most recently open buffers."
                     beg end)))))
 (global-set-key (kbd "C-c u") 'upcase-word-toggle)
 (global-set-key (kbd "C-c r") 'cua-rectangle-mark-mode)
+
+;;  Make a shell script executable automatically on save.
+;;  From https://github.com/bbatsov/prelude
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
