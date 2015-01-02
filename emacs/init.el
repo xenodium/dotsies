@@ -133,6 +133,7 @@
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
         ("http://planet.gnome.org/rss20.xml" blog gnome)
         ("http://sachachua.com/blog/feed" blog sachachua)
+        ("http://blog.roteiv.com/atom.xml" blog vietor)
         ("http://reddit.com/r/emacs/.rss" blog reddit)))
 ;; Start off with elfeed.
 
