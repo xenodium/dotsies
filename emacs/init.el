@@ -880,8 +880,13 @@ Repeated invocations toggle between the two most recently open buffers."
      "end tell \r"
      ))))
 
-;;  Enable for compile_commands.json
-;;  TODO: Add sample compile_commands.json and .ycm_extra_conf.py
+;;  Note: For ycmd.
+;;  * No need for global_ycm_extra_conf.py
+;;    (Use .ycm_extra_conf.py)
+;;  * Needs .ycm_extra_conf.py (pointing to compile_commands.json location)
+;;    (See emacs/ycmd/.ycm_extra_conf.py)
+;;  * Needs compile_commands.json
+;;    (See http://blog.patspam.com/2014/vim-objc-code-completion)
 ;; (use-package ycmd
 ;;   :ensure ycmd)
 ;;
