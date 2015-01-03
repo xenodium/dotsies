@@ -897,10 +897,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (setq ycmd-server-command (list "python"
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
-;; (add-hook 'objc-mode-hook (lambda ()
-;;                             (ycmd-mode)
-;;                             (set (make-local-variable 'company-backends) '(company-ycmd))))
-;; (company-ycmd-setup)
 
 (use-package objc-font-lock
   :ensure objc-font-lock)
@@ -1020,10 +1016,13 @@ Repeated invocations toggle between the two most recently open buffers."
   (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
-       '((company-yasnippet
+       '((;;company-ycmd
+          company-yasnippet
           company-gtags
           company-dabbrev-code
           company-files)))
+  ;;(ycmd-mode)
+
   ;; List targets with xcodebuild -list
   ;; List SDKS with xcodebuild -sdk -version, for example:
   ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
