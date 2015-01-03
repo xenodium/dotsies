@@ -887,6 +887,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;    (See emacs/ycmd/.ycm_extra_conf.py)
 ;;  * Needs compile_commands.json
 ;;    (See http://blog.patspam.com/2014/vim-objc-code-completion)
+;;  * Add objc-mode to company-ycmd--extended-features-modes in company-ycmd.el
 ;; (use-package ycmd
 ;;   :ensure ycmd)
 ;;
