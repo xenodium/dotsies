@@ -1111,6 +1111,11 @@ Repeated invocations toggle between the two most recently open buffers."
                              (lambda
                                nil (ansi-term shell-pop-term-shell))))
 (setq shell-pop-window-position "bottom")
+
+;;  No need for linum under ansi-term, also avoids flickering.
+(add-hook 'term-mode-hook (lambda ()
+                            (linum-mode -1)))
+
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
   :ensure shell-pop)
