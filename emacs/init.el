@@ -1114,6 +1114,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;;  No need for linum under ansi-term, also avoids flickering.
 (add-hook 'term-mode-hook (lambda ()
+                            (centered-cursor-mode -1)
                             (linum-mode -1)))
 
 (global-set-key [f5] 'shell-pop)
