@@ -1313,3 +1313,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (desktop-save-mode 1)
 ;;  Number of buffers to restore immediately.
 (setq desktop-restore-eager 10)
+
+(defun ar/desktop-save ()
+  "Write the desktop save file to ~/.emacs.d"
+  (desktop-save (expand-file-name "~/.emacs.d/")))
+
+(run-with-idle-timer 300 t 'ar/desktop-save)
