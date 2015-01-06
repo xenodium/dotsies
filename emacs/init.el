@@ -421,9 +421,26 @@
 (setq whitespace-line-column 100)
 (setq whitespace-style '(face lines-tail))
 
+;;  From http://doc.rix.si/org/fsem.html
+(defun ar/gnulinuxp ()
+  "Returns t if the system is a GNU/Linux machine, otherwise nil"
+  (string-equal system-type "gnu/linux"))
+
+(defun ar/osxp ()
+  "Returns t if the system is a Mac OS X machine, otherwise nil"
+  (string-equal system-type "darwin"))
+
+(defun ar/cygwinp ()
+  "Returns t if Emacs is running inside of Cygwin on Windows, otherwise nil"
+  (string-equal system-type "cygwin"))
+
+(defun ar/windowsp ()
+  "Returns t if the system is a native Emacs for Windows, otherwise nil"
+  (string-equal system-type "windows"))
+
 ;; New browser tab.
 (cond
- ((string-equal system-type "darwin") ; Mac OS X
+ ((ar/osxp) ; Mac OS X
   (defun ar/new-browser-tab ()
     "Open a new browser tab in the default browser."
     (interactive)
@@ -432,7 +449,7 @@
   (use-package exec-path-from-shell
     :ensure exec-path-from-shell)
   (exec-path-from-shell-initialize))
- ((string-equal system-type "gnu/linux") ; Linux
+ ((ar/gnulinuxp) ; Linux
   (defun ar/new-browser-tab ()
     "Open a new browser tab in the default browser."
     (interactive)
@@ -564,11 +581,11 @@ This is a wrapper around `orig-yes-or-no'."
                  (y-or-n-p "Open more than 5 files? ") ) )
     (when doIt
       (cond
-       ((string-equal system-type "windows-nt")
+       ((ar/windowsp)
         (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
-       ((string-equal system-type "darwin")
+       ((ar/osxp)
         (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
-       ((string-equal system-type "gnu/linux")
+       ((ar/gnulinuxp)
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 (global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
 
