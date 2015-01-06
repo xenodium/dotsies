@@ -1281,3 +1281,13 @@ Repeated invocations toggle between the two most recently open buffers."
                   (indent-region (region-beginning) (region-end) nil))))))
 
 (global-set-key (kbd "C-x C-r") 'eval-region)
+
+;;  From http://oremacs.com/2015/01/05/youtube-dl
+(defun ar/youtube-dowload ()
+  (interactive)
+  (let* ((str (current-kill 0))
+         (default-directory "~/Downloads")
+         (proc (get-buffer-process (ansi-term "/bin/bash"))))
+    (term-send-string
+     proc
+     (concat "cd ~/Downloads && youtube-dl " str "\n"))))
