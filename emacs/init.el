@@ -2,21 +2,22 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
+(setq package-enable-at-startup nil)
 (package-initialize)
 
-(if (not (package-installed-p 'use-package))
-    (progn
-      (package-refresh-contents)
-      (package-install 'use-package)))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 (require 'use-package)
 
 (use-package async
-  :ensure async)
+  :ensure t)
 (require 'async-bytecomp)
 
 ;; Display line numbers.
 (use-package linum
-  :ensure linum)
+  :ensure t)
 (global-linum-mode)
 
 ;; Right-justify linum
@@ -35,7 +36,7 @@
                       'linum)))
 
 (use-package molokai-theme
-  :ensure molokai-theme)
+  :ensure t)
 (set-face-attribute 'linum nil :background "#1B1D1E")
 (set-face-attribute 'fringe nil :background "#1B1D1E")
 (set-cursor-color "#0087ff")
@@ -124,11 +125,11 @@
 
 ;; Ensure window is maximized.
 (use-package maxframe
-  :ensure maxframe)
+  :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
 (use-package elfeed
-  :ensure elfeed)
+  :ensure t)
 (setq elfeed-feeds
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
         ("http://planet.gnome.org/rss20.xml" blog gnome)
@@ -138,14 +139,14 @@
 ;; Start off with elfeed.
 
 (use-package bind-key
-  :ensure bind-key)
+  :ensure t)
 
 ;; Enable upcase and downcase region (disabled by default).
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (use-package anchored-transpose
-  :ensure anchored-transpose)
+  :ensure t)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -160,21 +161,21 @@
 (bind-key "C--" 'text-scale-decrease)
 
 (use-package hackernews
-  :ensure hackernews)
+  :ensure t)
 
 ;; Stack Exchange viewer.
 (use-package sx
-  :ensure sx)
+  :ensure t)
 
 ;; Twitter.
 (use-package twittering-mode
-  :ensure twittering-mode)
+  :ensure t)
 
 (use-package rainbow-delimiters
-  :ensure rainbow-delimiters)
+  :ensure t)
 
 (use-package hungry-delete
-  :ensure hungry-delete)
+  :ensure t)
 (global-hungry-delete-mode)
 (global-font-lock-mode)
 
@@ -184,7 +185,7 @@
 (setq auto-revert-check-vc-info t)
 
 (use-package expand-region
-  :ensure expand-region)
+  :ensure t)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
 (require 'recentf)
@@ -196,7 +197,7 @@
 (semantic-mode 1)
 
 (use-package yasnippet
-  :ensure yasnippet)
+  :ensure t)
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
@@ -211,13 +212,13 @@
   :init
   (progn
     (use-package helm-ag
-      :ensure helm-ag)
+      :ensure t)
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
     (use-package helm-swoop)
     (use-package helm-config))
-  :ensure helm)
+  :ensure t)
 
 (defun ar/projectile-helm-ag ()
   (interactive)
@@ -229,7 +230,7 @@
 (bind-key "C-c s d" 'helm-do-ag)
 
 (use-package helm-dash
-  :ensure helm-dash
+  :ensure t
   :demand)
 (bind-key "C-h y" 'helm-dash-at-point)
 (setq helm-dash-browser-func 'eww)
@@ -299,20 +300,20 @@
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
 (use-package ggtags
-  :ensure ggtags)
+  :ensure t)
 (use-package helm-gtags
-  :ensure helm-gtags)
+  :ensure t)
 (helm-gtags-mode 1)
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
 (use-package projectile
-  :ensure projectile)
+  :ensure t)
 (projectile-global-mode)
 (setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
-  :ensure helm-projectile)
+  :ensure t)
 (require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
@@ -391,11 +392,11 @@
 (global-subword-mode t)
 
 (use-package git-timemachine
-  :ensure git-timemachine)
+  :ensure t)
 
 ;; Highlight git hunks.
 (use-package git-gutter
-  :ensure git-gutter)
+  :ensure t)
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
 (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
@@ -403,7 +404,7 @@
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger
-  :ensure git-messenger)
+  :ensure t)
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
@@ -447,7 +448,7 @@
     (shell-command "open http://google.com"))
   ;; Ensures PATH is loaded from shell.
   (use-package exec-path-from-shell
-    :ensure exec-path-from-shell)
+    :ensure t)
   (exec-path-from-shell-initialize))
  ((ar/gnulinuxp) ; Linux
   (defun ar/new-browser-tab ()
@@ -531,10 +532,10 @@ This is a wrapper around `orig-yes-or-no'."
     ))
 
 (use-package git-link
-  :ensure git-link)
+  :ensure t)
 
 (use-package magit
-  :ensure magit)
+  :ensure t)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
@@ -577,11 +578,11 @@ This is a wrapper around `orig-yes-or-no'."
 (setq ring-bell-function 'ignore)
 
 (use-package ido-vertical-mode
-  :ensure ido-vertical-mode)
+  :ensure t)
 (ido-vertical-mode)
 
 (use-package markdown-mode+
-  :ensure markdown-mode+)
+  :ensure t)
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -713,7 +714,7 @@ Position the cursor at it's beginning, according to the current mode."
           (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
 
 (use-package multiple-cursors
-  :ensure multiple-cursors)
+  :ensure t)
 (multiple-cursors-mode)
 (global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
@@ -732,27 +733,27 @@ With a prefix ARG open line above the current line."
 (global-set-key (kbd "C-o") 'prelude-smart-open-line)
 
 (use-package ace-jump-mode
-  :ensure ace-jump-mode)
+  :ensure t)
 (require 'ace-jump-mode)
 
 (use-package ace-jump-zap
-  :ensure ace-jump-zap
+  :ensure t
   :bind
   (("M-z" . ace-jump-zap-up-to-char-dwim)
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
 (use-package golden-ratio
-  :ensure golden-ratio)
+  :ensure t)
 (golden-ratio-mode)
 
 (use-package auto-dim-other-buffers
-  :ensure auto-dim-other-buffers)
+  :ensure t)
 (add-hook 'after-init-hook (lambda ()
                              (when (fboundp 'auto-dim-other-buffers-mode)
                                (auto-dim-other-buffers-mode t))))
 
 (use-package key-chord
-  :ensure key-chord)
+  :ensure t)
 (require 'key-chord)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
@@ -771,12 +772,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format
-  :ensure clang-format)
+  :ensure t)
 
 (use-package company
-  :ensure company)
+  :ensure t)
 (use-package company-c-headers
-  :ensure company-c-headers)
+  :ensure t)
 (require 'company)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
@@ -808,17 +809,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (rtags-diagnostics)
 
 (use-package helm-c-yasnippet
-  :ensure helm-c-yasnippet)
+  :ensure t)
 (require 'helm-c-yasnippet)
 
 (use-package helm-make
-  :ensure helm-make)
+  :ensure t
 
 (use-package discover
-  :ensure discover)
+  :ensure t)
 
 (use-package drag-stuff
-  :ensure drag-stuff)
+  :ensure t)
 (global-set-key (kbd "M-<up>") 'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
@@ -827,7 +828,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; displays hex strings representing colors
 (use-package rainbow-mode
-  :ensure rainbow-mode)
+  :ensure t)
 
 ;; Activate smerge on conflicts.
 (defun sm-try-smerge ()
@@ -851,7 +852,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Relies on manual installation (ie. make emaXcode).
 ;; Enable auto-complete to use emaXcode while generating snippets.
 ;;(use-package auto-complete
-;;  :ensure auto-complete)
+;;  :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
@@ -891,17 +892,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;    (See http://blog.patspam.com/2014/vim-objc-code-completion)
 ;;  * Add objc-mode to company-ycmd--extended-features-modes in company-ycmd.el
 ;; (use-package ycmd
-;;   :ensure ycmd)
+;;   :ensure t)
 ;;
 ;; (use-package company-ycmd
-;;   :ensure company-ycmd)
+;;   :ensure t)
 ;;
 ;; (setq ycmd-server-command (list "python"
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
 (use-package objc-font-lock
-  :ensure objc-font-lock)
+  :ensure t)
 (objc-font-lock-global-mode)
 (setq objc-font-lock-background-face nil)
 
@@ -917,7 +918,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                 (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
 (use-package dummy-h-mode
-  :ensure dummy-h-mode)
+  :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
 (defun ar/kill-other-buffers ()
@@ -955,7 +956,7 @@ Repeated invocations toggle between the two most recently open buffers."
           (kill-buffer))))))
 
 (use-package go-mode
-  :ensure go-mode)
+  :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
 ;; go get -u code.google.com/p/rog-go/exp/cmd/godef
@@ -965,7 +966,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (use-package company-go
-  :ensure company-go)
+  :ensure t)
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
@@ -994,7 +995,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
-  :ensure elisp-slime-nav)
+  :ensure t)
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
   "Adds HOOK-FUNCTIONS to mode HOOKS."
@@ -1092,7 +1093,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                 '(markdown-mode-hook))
 
 (use-package centered-cursor-mode
-  :ensure centered-cursor-mode)
+  :ensure t)
 (global-centered-cursor-mode +1)
 
 (defun ar/create-non-existent-directory ()
@@ -1135,7 +1136,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
-  :ensure shell-pop)
+  :ensure t)
 
 ;; Comment current line or region.
 (defun ar/comment-dwim ()
@@ -1203,7 +1204,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner
-  :ensure winner
+  :ensure t
   :init (winner-mode 1))
 
 (use-package helm-descbinds
@@ -1214,7 +1215,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;  Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 (use-package auto-compile
-  :ensure auto-compile
+  :ensure t
   :demand)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
