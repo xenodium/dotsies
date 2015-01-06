@@ -1291,3 +1291,8 @@ Repeated invocations toggle between the two most recently open buffers."
     (term-send-string
      proc
      (concat "cd ~/Downloads && youtube-dl " str "\n"))))
+
+;;  Save Emacs state from one session to another.
+(desktop-save-mode 1)
+;;  Number of buffers to restore immediately.
+(setq desktop-restore-eager 10)
