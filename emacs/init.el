@@ -803,7 +803,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (require 'helm-c-yasnippet)
 
 (use-package helm-make
-  :ensure t
+  :ensure t)
 
 (use-package discover
   :ensure t)
@@ -1082,6 +1082,8 @@ Repeated invocations toggle between the two most recently open buffers."
                                   ar/markdown-mode-hook-function)
                                 '(markdown-mode-hook))
 
+;; Workaround to use centered-cursor-mode in --nw.
+(defvar mouse-wheel-mode nil)
 (use-package centered-cursor-mode
   :ensure t)
 (global-centered-cursor-mode +1)
