@@ -215,7 +215,8 @@
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
-    (use-package helm-swoop)
+    (use-package helm-swoop
+      :ensure t)
     (use-package helm-config))
   :ensure t)
 
