@@ -4,19 +4,19 @@
              '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
-(if (not (package-installed-p 'use-package))
-    (progn
-      (package-refresh-contents)
-      (package-install 'use-package)))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 (require 'use-package)
 
 (use-package async
-  :ensure async)
+  :ensure t)
 (require 'async-bytecomp)
 
 ;; Display line numbers.
 (use-package linum
-  :ensure linum)
+  :ensure t)
 (global-linum-mode)
 
 ;; Right-justify linum
@@ -35,7 +35,7 @@
                       'linum)))
 
 (use-package molokai-theme
-  :ensure molokai-theme)
+  :ensure t)
 (set-face-attribute 'linum nil :background "#1B1D1E")
 (set-face-attribute 'fringe nil :background "#1B1D1E")
 (set-cursor-color "#0087ff")
@@ -124,11 +124,11 @@
 
 ;; Ensure window is maximized.
 (use-package maxframe
-  :ensure maxframe)
+  :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
 (use-package elfeed
-  :ensure elfeed)
+  :ensure t)
 (setq elfeed-feeds
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
         ("http://planet.gnome.org/rss20.xml" blog gnome)
@@ -138,14 +138,14 @@
 ;; Start off with elfeed.
 
 (use-package bind-key
-  :ensure bind-key)
+  :ensure t)
 
 ;; Enable upcase and downcase region (disabled by default).
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (use-package anchored-transpose
-  :ensure anchored-transpose)
+  :ensure t)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -160,21 +160,21 @@
 (bind-key "C--" 'text-scale-decrease)
 
 (use-package hackernews
-  :ensure hackernews)
+  :ensure t)
 
 ;; Stack Exchange viewer.
 (use-package sx
-  :ensure sx)
+  :ensure t)
 
 ;; Twitter.
 (use-package twittering-mode
-  :ensure twittering-mode)
+  :ensure t)
 
 (use-package rainbow-delimiters
-  :ensure rainbow-delimiters)
+  :ensure t)
 
 (use-package hungry-delete
-  :ensure hungry-delete)
+  :ensure t)
 (global-hungry-delete-mode)
 (global-font-lock-mode)
 
@@ -184,7 +184,7 @@
 (setq auto-revert-check-vc-info t)
 
 (use-package expand-region
-  :ensure expand-region)
+  :ensure t)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
 (require 'recentf)
@@ -196,7 +196,7 @@
 (semantic-mode 1)
 
 (use-package yasnippet
-  :ensure yasnippet)
+  :ensure t)
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
@@ -211,13 +211,13 @@
   :init
   (progn
     (use-package helm-ag
-      :ensure helm-ag)
+      :ensure t)
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
     (use-package helm-swoop)
     (use-package helm-config))
-  :ensure helm)
+  :ensure t)
 
 (defun ar/projectile-helm-ag ()
   (interactive)
@@ -229,7 +229,7 @@
 (bind-key "C-c s d" 'helm-do-ag)
 
 (use-package helm-dash
-  :ensure helm-dash
+  :ensure t
   :demand)
 (bind-key "C-h y" 'helm-dash-at-point)
 (setq helm-dash-browser-func 'eww)
@@ -299,20 +299,20 @@
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
 (use-package ggtags
-  :ensure ggtags)
+  :ensure t)
 (use-package helm-gtags
-  :ensure helm-gtags)
+  :ensure t)
 (helm-gtags-mode 1)
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
 (use-package projectile
-  :ensure projectile)
+  :ensure t)
 (projectile-global-mode)
 (setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
-  :ensure helm-projectile)
+  :ensure t)
 (require 'helm-projectile)
 (global-set-key (kbd "C-x f") 'helm-projectile)
 
@@ -391,11 +391,11 @@
 (global-subword-mode t)
 
 (use-package git-timemachine
-  :ensure git-timemachine)
+  :ensure t)
 
 ;; Highlight git hunks.
 (use-package git-gutter
-  :ensure git-gutter)
+  :ensure t)
 (global-git-gutter-mode +1)
 (git-gutter:linum-setup)
 (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
@@ -403,7 +403,7 @@
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger
-  :ensure git-messenger)
+  :ensure t)
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
@@ -421,18 +421,35 @@
 (setq whitespace-line-column 100)
 (setq whitespace-style '(face lines-tail))
 
+;;  From http://doc.rix.si/org/fsem.html
+(defun ar/gnulinuxp ()
+  "Returns t if the system is a GNU/Linux machine, otherwise nil"
+  (string-equal system-type "gnu/linux"))
+
+(defun ar/osxp ()
+  "Returns t if the system is a Mac OS X machine, otherwise nil"
+  (string-equal system-type "darwin"))
+
+(defun ar/cygwinp ()
+  "Returns t if Emacs is running inside of Cygwin on Windows, otherwise nil"
+  (string-equal system-type "cygwin"))
+
+(defun ar/windowsp ()
+  "Returns t if the system is a native Emacs for Windows, otherwise nil"
+  (string-equal system-type "windows"))
+
 ;; New browser tab.
 (cond
- ((string-equal system-type "darwin") ; Mac OS X
+ ((ar/osxp) ; Mac OS X
   (defun ar/new-browser-tab ()
     "Open a new browser tab in the default browser."
     (interactive)
     (shell-command "open http://google.com"))
   ;; Ensures PATH is loaded from shell.
   (use-package exec-path-from-shell
-    :ensure exec-path-from-shell)
+    :ensure t)
   (exec-path-from-shell-initialize))
- ((string-equal system-type "gnu/linux") ; Linux
+ ((ar/gnulinuxp) ; Linux
   (defun ar/new-browser-tab ()
     "Open a new browser tab in the default browser."
     (interactive)
@@ -453,21 +470,6 @@
 
 ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
 (setq dabbrev-case-fold-search nil)
-
-;; Rename file and buffer.
-;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun ar/rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME." (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn  (rename-file name new-name 1)
-                (rename-buffer new-name)
-                (set-visited-file-name new-name)
-                (set-buffer-modified-p nil))))))
 
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
@@ -529,10 +531,10 @@ This is a wrapper around `orig-yes-or-no'."
     ))
 
 (use-package git-link
-  :ensure git-link)
+  :ensure t)
 
 (use-package magit
-  :ensure magit)
+  :ensure t)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
@@ -564,22 +566,22 @@ This is a wrapper around `orig-yes-or-no'."
                  (y-or-n-p "Open more than 5 files? ") ) )
     (when doIt
       (cond
-       ((string-equal system-type "windows-nt")
+       ((ar/windowsp)
         (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
-       ((string-equal system-type "darwin")
+       ((ar/osxp)
         (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
-       ((string-equal system-type "gnu/linux")
+       ((ar/gnulinuxp)
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 (global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
 (use-package ido-vertical-mode
-  :ensure ido-vertical-mode)
+  :ensure t)
 (ido-vertical-mode)
 
 (use-package markdown-mode+
-  :ensure markdown-mode+)
+  :ensure t)
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -711,7 +713,7 @@ Position the cursor at it's beginning, according to the current mode."
           (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
 
 (use-package multiple-cursors
-  :ensure multiple-cursors)
+  :ensure t)
 (multiple-cursors-mode)
 (global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
@@ -730,27 +732,27 @@ With a prefix ARG open line above the current line."
 (global-set-key (kbd "C-o") 'prelude-smart-open-line)
 
 (use-package ace-jump-mode
-  :ensure ace-jump-mode)
+  :ensure t)
 (require 'ace-jump-mode)
 
 (use-package ace-jump-zap
-  :ensure ace-jump-zap
+  :ensure t
   :bind
   (("M-z" . ace-jump-zap-up-to-char-dwim)
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
 (use-package golden-ratio
-  :ensure golden-ratio)
+  :ensure t)
 (golden-ratio-mode)
 
 (use-package auto-dim-other-buffers
-  :ensure auto-dim-other-buffers)
+  :ensure t)
 (add-hook 'after-init-hook (lambda ()
                              (when (fboundp 'auto-dim-other-buffers-mode)
                                (auto-dim-other-buffers-mode t))))
 
 (use-package key-chord
-  :ensure key-chord)
+  :ensure t)
 (require 'key-chord)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
@@ -769,12 +771,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format
-  :ensure clang-format)
+  :ensure t)
 
 (use-package company
-  :ensure company)
+  :ensure t)
 (use-package company-c-headers
-  :ensure company-c-headers)
+  :ensure t)
 (require 'company)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
@@ -783,15 +785,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-company-mode)
 (add-to-list 'company-backends 'company-c-headers)
 (global-set-key (kbd "<backtab>") 'company-complete)
-
-;; Potential company theming.
-;; (let ((bg (face-attribute 'default :background)))
-;;   (custom-set-faces
-;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -806,17 +799,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (rtags-diagnostics)
 
 (use-package helm-c-yasnippet
-  :ensure helm-c-yasnippet)
+  :ensure t)
 (require 'helm-c-yasnippet)
 
 (use-package helm-make
-  :ensure helm-make)
+  :ensure t)
 
 (use-package discover
-  :ensure discover)
+  :ensure t)
 
 (use-package drag-stuff
-  :ensure drag-stuff)
+  :ensure t)
 (global-set-key (kbd "M-<up>") 'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
@@ -825,7 +818,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; displays hex strings representing colors
 (use-package rainbow-mode
-  :ensure rainbow-mode)
+  :ensure t)
 
 ;; Activate smerge on conflicts.
 (defun sm-try-smerge ()
@@ -849,7 +842,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Relies on manual installation (ie. make emaXcode).
 ;; Enable auto-complete to use emaXcode while generating snippets.
 ;;(use-package auto-complete
-;;  :ensure auto-complete)
+;;  :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
@@ -889,17 +882,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;    (See http://blog.patspam.com/2014/vim-objc-code-completion)
 ;;  * Add objc-mode to company-ycmd--extended-features-modes in company-ycmd.el
 ;; (use-package ycmd
-;;   :ensure ycmd)
+;;   :ensure t)
 ;;
 ;; (use-package company-ycmd
-;;   :ensure company-ycmd)
+;;   :ensure t)
 ;;
 ;; (setq ycmd-server-command (list "python"
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
 (use-package objc-font-lock
-  :ensure objc-font-lock)
+  :ensure t)
 (objc-font-lock-global-mode)
 (setq objc-font-lock-background-face nil)
 
@@ -915,7 +908,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                 (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
 (use-package dummy-h-mode
-  :ensure dummy-h-mode)
+  :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
 (defun ar/kill-other-buffers ()
@@ -925,21 +918,35 @@ Repeated invocations toggle between the two most recently open buffers."
         (delq (current-buffer)
               (remove-if-not 'buffer-file-name (buffer-list)))))
 
-(defun ar/delete-this-buffer-and-file ()
-  "Removes file connected to current buffer and kills buffer."
+;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
+(defun ar/rename-current-file-and-buffer ()
+  "Rename the current buffer and file it is visiting."
   (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
+  (let ((filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (when (yes-or-no-p "Are you sure you want to remove this file? ")
-        (delete-file filename)
-        (kill-buffer buffer)
-        (message "File '%s' successfully removed" filename)))))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t
+          (rename-file filename new-name t)
+          (set-visited-file-name new-name t t)))))))
+
+;;  From http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun ar/delete-current-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
 
 (use-package go-mode
-  :ensure go-mode)
+  :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
 ;; go get -u code.google.com/p/rog-go/exp/cmd/godef
@@ -949,7 +956,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (use-package company-go
-  :ensure company-go)
+  :ensure t)
 (require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
@@ -978,7 +985,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
-  :ensure elisp-slime-nav)
+  :ensure t)
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
   "Adds HOOK-FUNCTIONS to mode HOOKS."
@@ -1075,8 +1082,10 @@ Repeated invocations toggle between the two most recently open buffers."
                                   ar/markdown-mode-hook-function)
                                 '(markdown-mode-hook))
 
+;; Workaround to use centered-cursor-mode in --nw.
+(defvar mouse-wheel-mode nil)
 (use-package centered-cursor-mode
-  :ensure centered-cursor-mode)
+  :ensure t)
 (global-centered-cursor-mode +1)
 
 (defun ar/create-non-existent-directory ()
@@ -1119,7 +1128,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
-  :ensure shell-pop)
+  :ensure t)
 
 ;; Comment current line or region.
 (defun ar/comment-dwim ()
@@ -1187,7 +1196,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner
-  :ensure winner
+  :ensure t
   :init (winner-mode 1))
 
 (use-package helm-descbinds
@@ -1198,7 +1207,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;  Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 (use-package auto-compile
-  :ensure auto-compile
+  :ensure t
   :demand)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
@@ -1281,3 +1290,24 @@ Repeated invocations toggle between the two most recently open buffers."
                   (indent-region (region-beginning) (region-end) nil))))))
 
 (global-set-key (kbd "C-x C-r") 'eval-region)
+
+;;  From http://oremacs.com/2015/01/05/youtube-dl
+(defun ar/youtube-dowload ()
+  (interactive)
+  (let* ((str (current-kill 0))
+         (default-directory "~/Downloads")
+         (proc (get-buffer-process (ansi-term "/bin/bash"))))
+    (term-send-string
+     proc
+     (concat "cd ~/Downloads && youtube-dl " str "\n"))))
+
+;;  Save Emacs state from one session to another.
+(desktop-save-mode 1)
+;;  Number of buffers to restore immediately.
+(setq desktop-restore-eager 10)
+
+(defun ar/desktop-save ()
+  "Write the desktop save file to ~/.emacs.d"
+  (desktop-save (expand-file-name "~/.emacs.d/")))
+
+(run-with-idle-timer 300 t 'ar/desktop-save)
