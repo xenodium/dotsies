@@ -41,7 +41,7 @@ rtags_reset:
 	rm -f $(local_path)/bin/cc
 	rm -f $(local_path)/bin/g++
 
-ycmd:
+ycmd_install:
 	rm -rf ~/.emacs.d/downloads/ycmd
 	git clone https://github.com/Valloric/ycmd.git ~/.emacs.d/downloads/ycmd
 	cd ~/.emacs.d/downloads/ycmd && git submodule update --init --recursive
