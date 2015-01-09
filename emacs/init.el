@@ -1313,3 +1313,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (desktop-save (expand-file-name "~/.emacs.d/")))
 
 (run-with-idle-timer 300 t 'ar/desktop-save)
+
+(defun ar/load-all-files (pattern)
+  "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')"
+  (dolist (file (file-expand-wildcards pattern))
+    (load file)))
