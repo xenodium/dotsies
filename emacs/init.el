@@ -766,6 +766,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 (key-chord-define-global "JJ" 'ar/switch-to-previous-buffer)
+(key-chord-define-global "BB" 'other-window)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
