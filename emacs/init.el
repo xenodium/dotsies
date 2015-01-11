@@ -1041,8 +1041,8 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; ProductCopyright: 1983-2014 Apple Inc.
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
-  (setq compile-command "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (define-key objc-mode-map [f6] 'recompile)
+  (set (make-local-variable 'compile-command)
+        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (define-key objc-mode-map [f7] 'ar/xc:build)
   (define-key objc-mode-map [f8] 'ar/xc:run))
 (add-hook 'objc-mode-hook 'ar/objc-mode-hook-function)
@@ -1105,7 +1105,6 @@ Repeated invocations toggle between the two most recently open buffers."
                                         (remove-if-not (lambda (project)
                                                          (file-directory-p (concat project "/.git/")))
                                                        (projectile-relevant-known-projects)))
-
                 magit-repo-dirs-depth 1)))
 
 ;; Select help window by default.
