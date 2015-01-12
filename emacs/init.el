@@ -1321,3 +1321,5 @@ Repeated invocations toggle between the two most recently open buffers."
   "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')"
   (dolist (file (file-expand-wildcards pattern))
     (load file)))
+
+(ar/load-all-files "~/.emacs.d/local/*.el")
