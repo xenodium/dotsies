@@ -749,6 +749,9 @@ With a prefix ARG open line above the current line."
 (use-package golden-ratio
   :ensure t)
 (golden-ratio-mode)
+(setq golden-ratio-exclude-modes '("ediff-mode"
+                                   "term-mode"
+                                   "dired-mode"))
 
 (use-package auto-dim-other-buffers
   :ensure t)
@@ -1203,6 +1206,10 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package winner
   :ensure t
   :init (winner-mode 1))
+(setq winner-boring-buffers
+      (append winner-boring-buffers '("*helm M-x*"
+                                      "helm mini*"
+                                      "*helm projectile*")))
 
 (use-package helm-descbinds
   :ensure
