@@ -1323,3 +1323,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (load file)))
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
+
+(use-package google-translate
+  :ensure t)
