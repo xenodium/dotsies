@@ -10,6 +10,10 @@
 
 (require 'use-package)
 
+;; Enhanced list-packages replacement.
+(use-package paradox
+  :ensure t)
+
 (use-package async
   :ensure t)
 (require 'async-bytecomp)
