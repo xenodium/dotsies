@@ -1333,3 +1333,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package google-translate
   :ensure t)
+
+;; Prevent inadvertently editing invisible areas in Org.
+(setq org-catch-invisible-edits t)
