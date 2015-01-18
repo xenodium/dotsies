@@ -1336,3 +1336,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits t)
+
+;; All Org leading stars become invisible.
+(setq org-hide-leading-stars t)
+
+;; Skipe Org's odd indentation levels (2, 4, ...).
+(setq org-odd-levels-only t)
+
+;; Disable auto isearch within org-goto.
+(setq org-goto-auto-isearch nil)
+
+;; Enable RET to follow Org links.
+(setq org-return-follows-link t)
