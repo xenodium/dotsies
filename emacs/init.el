@@ -1348,3 +1348,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
+
+;; Does what it says on tin. Save/restore scratch.
+(use-package persistent-scratch
+  :ensure t)
+
+(persistent-scratch-autosave-mode)
