@@ -581,10 +581,6 @@ This is a wrapper around `orig-yes-or-no'."
 
 (setq ring-bell-function 'ignore)
 
-(use-package ido-vertical-mode
-  :ensure t)
-(ido-vertical-mode)
-
 (use-package markdown-mode+
   :ensure t)
 (autoload 'markdown-mode "markdown-mode"
@@ -1333,6 +1329,23 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package google-translate
   :ensure t)
+
+;; From http://ergoemacs.org/emacs/emacs_copy_file_path.html
+(defun ar/copy-file-path (&optional φdir-path-only-p)
+  "Copy the current buffer's file path or dired path to `kill-ring'.
+If `universal-argument' is called, copy only the dir path.
+Version 2015-01-14
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
+  (interactive "P")
+  (let ((fPath
+         (if (equal major-mode 'dired-mode)
+             default-directory
+           (buffer-file-name))))
+    (kill-new
+     (if (equal φdir-path-only-p nil)
+         fPath
+       (file-name-directory fPath)))
+    (message "File path copied: %s" fPath)))
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits t)
