@@ -1361,9 +1361,3 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
 
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
-
-;; Does what it says on tin. Save/restore scratch.
-(use-package persistent-scratch
-  :ensure t)
-
-(persistent-scratch-autosave-mode)
