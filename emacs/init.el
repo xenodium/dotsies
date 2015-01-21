@@ -581,10 +581,6 @@ This is a wrapper around `orig-yes-or-no'."
 
 (setq ring-bell-function 'ignore)
 
-(use-package ido-vertical-mode
-  :ensure t)
-(ido-vertical-mode)
-
 (use-package markdown-mode+
   :ensure t)
 (autoload 'markdown-mode "markdown-mode"
@@ -1129,10 +1125,14 @@ Repeated invocations toggle between the two most recently open buffers."
                                nil (ansi-term shell-pop-term-shell))))
 (setq shell-pop-window-position "bottom")
 
+(defun ar/disable-non-prog-minor-modes ()
+  "Disables non-programming minor modes, likely slowing things down."
+  (centered-cursor-mode -1)
+  (linum-mode -1))
+
 ;;  No need for linum under ansi-term, also avoids flickering.
-(add-hook 'term-mode-hook (lambda ()
-                            (centered-cursor-mode -1)
-                            (linum-mode -1)))
+(add-hook 'term-mode-hook #'ar/disable-non-prog-minor-modes)
+(add-hook 'magit-mode-hook #'ar/disable-non-prog-minor-modes)
 
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
@@ -1192,6 +1192,14 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+;; Use RET instead of "a" in dired.
+(define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+
+;; Use ^ in dired to cd to parent.
+(defun ar/dired-cd-to-parent ()
+  (interactive)
+  (find-alternate-file ".."))
+(define-key dired-mode-map (kbd "^") 'ar/dired-cd-to-parent)
 
 (defun ar/find-all-dired-current-dir ()
   "Invokes find-dired for current dir."
@@ -1348,9 +1356,3 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
-
-;; Does what it says on tin. Save/restore scratch.
-(use-package persistent-scratch
-  :ensure t)
-
-(persistent-scratch-autosave-mode)
