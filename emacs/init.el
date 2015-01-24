@@ -1,5 +1,10 @@
-;; Add melpa package repository.
+;;; init.el --- Emacs initialization entry point.
+;;; Commentary:
+;; Just another init.el file.
+;;; Code:
+
 (require 'package)
+
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
@@ -225,6 +230,7 @@
   :ensure t)
 
 (defun ar/projectile-helm-ag ()
+  "Search current repo/project using ag."
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
@@ -288,7 +294,8 @@
 (helm-mode 1)
 
 (defun ar/helm-do-grep-recursive (&optional non-recursive)
-  "Like `helm-do-grep', but greps recursively by default."
+  "Like `helm-do-grep', but greps recursively by default.
+Optional argument NON-RECURSIVE to shallow-search."
   (interactive "P")
   (let* ((current-prefix-arg (not non-recursive))
          (helm-current-prefix-arg non-recursive))
@@ -328,17 +335,15 @@
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
 (defvar ar/ediff-bwin-config nil "Window configuration before ediff.")
 (defcustom ar/ediff-bwin-reg ?b
-  "*Register to be set up to hold `ar/ediff-bwin-config'
-    configuration.")
+  "Register to be set up to hold ar/ediff-bwin-config configuration.")
 
 (defun ar/ediff-bsh ()
-  "Function to be called before any buffers or window setup for
-    ediff."
+  "Function to be called before any buffers or window setup for ediff."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
   (window-configuration-to-register ar/ediff-bwin-reg))
 
-(defun ar/ediff-aswh ()
-  "setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
+(defun ar/ediff-Aswh ()
+  "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
 (defun ar/ediff-qh ()
@@ -428,19 +433,19 @@
 
 ;;  From http://doc.rix.si/org/fsem.html
 (defun ar/gnulinuxp ()
-  "Returns t if the system is a GNU/Linux machine, otherwise nil"
+  "Return t if the system is a GNU/Linux machine, otherwise nil."
   (string-equal system-type "gnu/linux"))
 
 (defun ar/osxp ()
-  "Returns t if the system is a Mac OS X machine, otherwise nil"
+  "Return t if the system is a Mac OS X machine, otherwise nil."
   (string-equal system-type "darwin"))
 
 (defun ar/cygwinp ()
-  "Returns t if Emacs is running inside of Cygwin on Windows, otherwise nil"
+  "Return t if Emacs is running inside of Cygwin on Windows, otherwise nil."
   (string-equal system-type "cygwin"))
 
 (defun ar/windowsp ()
-  "Returns t if the system is a native Emacs for Windows, otherwise nil"
+  "Return t if the system is a native Emacs for Windows, otherwise nil."
   (string-equal system-type "windows"))
 
 ;; New browser tab.
@@ -479,7 +484,7 @@
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 (defun ar/move-buffer-file (dir)
-  "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
+  "Move both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
          (dir (if (string-match dir "\\(?:/\\|\\\\)$")
@@ -518,7 +523,8 @@
 ;;  Now, define my version in terms of `orig-yes-or-no-p'.
 (defun yes-or-no-p (prompt)
   "Ask user a yes-or-no question.  Return t if answer is yes, nil if no.
-This is a wrapper around `orig-yes-or-no'."
+This is a wrapper around `orig-yes-or-no'.
+Argument PROMPT to check for additional prompt."
   (if (string-match
 ;;  This message is created in lisp/files.el, and there are four
 ;;  variations.  I'm intentionally matching two of them.
@@ -547,6 +553,7 @@ This is a wrapper around `orig-yes-or-no'."
 (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 (defun ar/sort-lines-ignore-case ()
+  "Sort region (case-insensitive)."
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively 'sort-lines)))
@@ -558,7 +565,8 @@ This is a wrapper around `orig-yes-or-no'."
 ;; Thank you Xah Lee.
 ;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
 (defun xah-open-in-external-app (&optional file)
-  "Open the current file or dired marked files in external app. The app is chosen from your OS's preference."
+  "Open the current file, optional FILE, or dired marked files in external app.
+The app is chosen from your OS's preference."
   (interactive)
   (let ( doIt
          (myFileList
@@ -595,7 +603,7 @@ This is a wrapper around `orig-yes-or-no'."
 
 ;; From http://wenshanren.org/?p=298#more-298
 (defun wenshan-edit-current-file-as-root ()
-  "Edit the file that is associated with the current buffer as root"
+  "Edit the file that is associated with the current buffer as root."
   (interactive)
   (if (buffer-file-name)
       (progn
@@ -664,12 +672,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun vsplit-last-buffer ()
+  "Vertically splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-vertically)
   (other-window 1 nil)
   (switch-to-next-buffer)
   )
 (defun hsplit-last-buffer ()
+  "Horizontally splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-horizontally)
   (other-window 1 nil)
@@ -853,6 +863,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; From http://sakito.jp/emacs/emacsobjectivec.html#xcode
 (defun ar/xc:build ()
+  "Tell Xcode to build."
   (interactive)
   (do-applescript
    (format
@@ -866,6 +877,7 @@ Repeated invocations toggle between the two most recently open buffers."
      ))))
 
 (defun ar/xc:run ()
+  "Tell Xcode to run."
   (interactive)
   (do-applescript
    (format
@@ -982,7 +994,7 @@ Repeated invocations toggle between the two most recently open buffers."
                         (make-glyph-code ?|))
 
 (defun ar/split-camel-region ()
-  "Splits camelCaseWord to camel case word"
+  "Splits camelCaseWord to camel case word."
   (interactive)
   (progn (replace-regexp "\\([A-Z]\\)" " \\1" nil (region-beginning)(region-end))
          (downcase-region (region-beginning)(region-end))))
@@ -993,13 +1005,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t)
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
-  "Adds HOOK-FUNCTIONS to mode HOOKS."
+  "Add HOOK-FUNCTIONS to mode HOOKS."
   (dolist (hook hooks)
     (dolist (hook-function hook-functions)
       (add-hook hook hook-function))))
 
 (defun ar/emacs-lisp-mode-hook-function ()
-  "Called when entering emacs-lisp-mode."
+  "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
   (turn-on-elisp-slime-nav-mode))
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
@@ -1007,7 +1019,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                   ielm-mode-hook))
 
 (defun ar/save-point ()
-  "Saves point to register 9999."
+  "Save point to register 9999."
   (interactive)
   (point-to-register 9999)
   )
@@ -1019,12 +1031,15 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c `") 'ar/jump-to-saved-point)
 
 (defun ar/after-prog-mode-text-change (beg end len)
-  "Executes for all text changes in prog-mode."
+  "Execute for all text modifications in `prog-mode'.
+Argument BEG beginning.
+Argument END end.
+Argument LEN Length."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
 (defun ar/objc-mode-hook-function ()
-  "Called when entering objc-mode"
+  "Called when entering `objc-mode'."
   (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
@@ -1052,7 +1067,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (add-hook 'objc-mode-hook 'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
-  "Called when entering java-mode"
+  "Called when entering `java-mode'."
   ;; 100-column limit for java.
   (set-fill-column 100)
   ;; 2-char indent for java.
@@ -1076,7 +1091,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode))
 
 (defun ar/markdown-mode-hook-function ()
-  "Called when entering markdown-mode."
+  "Called when entering `markdown-mode'."
   (setq markdown-indent-on-enter nil)
   (define-key markdown-mode-map (kbd "RET") 'electric-newline-and-maybe-indent))
 
@@ -1096,7 +1111,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/create-non-existent-directory ()
   (let ((parent-directory (file-name-directory buffer-file-name)))
     (when (and (not (file-exists-p parent-directory))
-               (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+               (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
       (make-directory parent-directory t))))
 
 (add-to-list 'find-file-not-found-functions
@@ -1126,7 +1141,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq shell-pop-window-position "bottom")
 
 (defun ar/disable-non-prog-minor-modes ()
-  "Disables non-programming minor modes, likely slowing things down."
+  "Disable non-programming minor modes, likely slowing things down."
   (centered-cursor-mode -1)
   (linum-mode -1))
 
@@ -1138,8 +1153,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package shell-pop
   :ensure t)
 
-;; Comment current line or region.
 (defun ar/comment-dwim ()
+  "Comment current line or region."
   (interactive)
   (let ((start (line-beginning-position))
         (end (line-end-position)))
@@ -1156,7 +1171,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
 
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
-  "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P"
+  "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
   (find-file (format "%s%s" name extension))
   (funcall mode)
   (insert snippet-name)
@@ -1165,7 +1180,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (yas-exit-all-snippets)))
 
 (defun ar/new-objc-file ()
-  "Create and yas-expand Objective-C interface header/implementation files."
+  "Create and `yas-expand' Objective-C interface header/implementation files."
   (interactive)
   (let ((interface-name (read-from-minibuffer "Interface name: ")))
     (ar/new-file-with-snippet interface-name
@@ -1178,7 +1193,7 @@ Repeated invocations toggle between the two most recently open buffers."
                               "impl")))
 
 (defun ar/new-blog-post-file ()
-  "Create and yas-expand Objective-C interface header/implementation files."
+  "Create and `yas-expand' Objective-C interface header/implementation files."
   (interactive)
   (let* ((post-title (read-from-minibuffer "Post title: "))
          (post-date (format-time-string "%Y-%m-%d"))
@@ -1195,14 +1210,14 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Use RET instead of "a" in dired.
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
 
-;; Use ^ in dired to cd to parent.
 (defun ar/dired-cd-to-parent ()
+  "Use ^ in dired to cd to parent."
   (interactive)
   (find-alternate-file ".."))
 (define-key dired-mode-map (kbd "^") 'ar/dired-cd-to-parent)
 
 (defun ar/find-all-dired-current-dir ()
-  "Invokes find-dired for current dir."
+  "Invokes `find-dired' for current dir."
   (interactive)
   (let ((dir (if buffer-file-name
                  (file-name-directory buffer-file-name)
@@ -1235,9 +1250,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/char-upcasep (letter)
   (eq letter (upcase letter)))
 
-;;  Capitalize word toggle.
 ;;  http://oremacs.com/2014/12/25/ode-to-toggle
 (defun ar/capitalize-word-toggle ()
+  "Capitalize word toggle."
   (interactive)
   (let ((start
          (car
@@ -1254,6 +1269,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c c") 'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
+  "Toggle word case at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol))
         beg end
@@ -1313,6 +1329,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-dowload ()
+  "Download youtube video from url in clipboard."
   (interactive)
   (let* ((str (current-kill 0))
          (default-directory "~/Downloads")
@@ -1327,13 +1344,13 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq desktop-restore-eager 10)
 
 (defun ar/desktop-save ()
-  "Write the desktop save file to ~/.emacs.d"
+  "Write the desktop save file to ~/.emacs.d."
   (desktop-save (expand-file-name "~/.emacs.d/")))
 
 (run-with-idle-timer 300 t 'ar/desktop-save)
 
 (defun ar/load-all-files (pattern)
-  "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')"
+  "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')."
   (dolist (file (file-expand-wildcards pattern))
     (load file)))
 
@@ -1347,7 +1364,8 @@ Repeated invocations toggle between the two most recently open buffers."
   "Copy the current buffer's file path or dired path to `kill-ring'.
 If `universal-argument' is called, copy only the dir path.
 Version 2015-01-14
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
   (interactive "P")
   (let ((fPath
          (if (equal major-mode 'dired-mode)
@@ -1358,6 +1376,19 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
          fPath
        (file-name-directory fPath)))
     (message "File path copied: %s" fPath)))
+
+(use-package flycheck
+  :ensure t)
+
+;; Override default flycheck triggers
+(setq flycheck-check-syntax-automatically
+      '(save idle-change mode-enabled)
+      flycheck-idle-change-delay 0.8)
+
+(setq flycheck-display-errors-function
+      #'flycheck-display-error-messages-unless-error-list)
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits t)
@@ -1373,3 +1404,6 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
 
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
+
+(provide 'init)
+;;; init.el ends here
