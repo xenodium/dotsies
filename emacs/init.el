@@ -662,13 +662,9 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'sacha/smarter-move-beginning-of-line)
 
-;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
+(use-package whole-line-or-region
+  :ensure t)
+(whole-line-or-region-mode)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun vsplit-last-buffer ()
