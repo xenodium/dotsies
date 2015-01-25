@@ -15,6 +15,15 @@
 
 (require 'use-package)
 
+;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
+(if (fboundp 'with-eval-after-load)
+    (defalias 'after-load 'with-eval-after-load)
+  (defmacro after-load (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+       '(progn ,@body))))
+
 ;; Enhanced list-packages replacement.
 (use-package paradox
   :ensure t)
@@ -56,6 +65,20 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
+(use-package fullframe
+  :ensure t)
+
+(after-load 'magit
+            (fullframe magit-status magit-mode-quit-window))
+
+(after-load 'paradox
+  (fullframe paradox-list-packages paradox-quit-and-close))
+
+(after-load 'ibuffer
+  (fullframe ibuffer ibuffer-quit))
+
+(after-load 'dired
+  (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
@@ -152,6 +175,7 @@
 ;; Enable upcase and downcase region (disabled by default).
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (use-package anchored-transpose
   :ensure t)
