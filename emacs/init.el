@@ -348,9 +348,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
-  :ensure t)
-(require 'helm-projectile)
-(global-set-key (kbd "C-x f") 'helm-projectile)
+  :ensure t
+  :bind (("C-x f" . helm-projectile)))
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -764,7 +763,6 @@ With a prefix ARG open line above the current line."
 
 (use-package ace-jump-mode
   :ensure t)
-(require 'ace-jump-mode)
 
 (use-package ace-jump-zap
   :ensure t
@@ -772,8 +770,16 @@ With a prefix ARG open line above the current line."
   (("M-z" . ace-jump-zap-up-to-char-dwim)
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
-(use-package golden-ratio
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . ace-window)))
+
+
+;; Interactively resize current window.
+(use-package windsize
   :ensure t)
+(windsize-default-keybindings)
+
 (golden-ratio-mode)
 (setq golden-ratio-exclude-modes '("ediff-mode"
                                    "term-mode"
@@ -787,7 +793,6 @@ With a prefix ARG open line above the current line."
 
 (use-package key-chord
   :ensure t)
-(require 'key-chord)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
@@ -812,7 +817,6 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t)
 (use-package company-c-headers
   :ensure t)
-(require 'company)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
@@ -835,7 +839,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-c-yasnippet
   :ensure t)
-(require 'helm-c-yasnippet)
 
 (use-package helm-make
   :ensure t)
@@ -994,7 +997,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (use-package company-go
   :ensure t)
-(require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
                           (set (make-local-variable 'company-backends) '(company-go))
