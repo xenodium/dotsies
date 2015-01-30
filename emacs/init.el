@@ -351,6 +351,9 @@ Optional argument NON-RECURSIVE to shallow-search."
   :ensure t
   :bind (("C-x f" . helm-projectile)))
 
+;; Prevent split-window-sensibly to split horizontally.
+(setq split-width-threshold nil)
+
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-horizontally)
