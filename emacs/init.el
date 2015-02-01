@@ -474,24 +474,31 @@ Optional argument NON-RECURSIVE to shallow-search."
   "Return t if the system is a native Emacs for Windows, otherwise nil."
   (string-equal system-type "windows"))
 
-;; New browser tab.
-(cond
- ((ar/osxp) ; Mac OS X
-  (defun ar/new-browser-tab ()
-    "Open a new browser tab in the default browser."
-    (interactive)
-    (shell-command "open http://google.com"))
-  ;; Ensures PATH is loaded from shell.
-  (use-package exec-path-from-shell
-    :ensure t)
-  (exec-path-from-shell-initialize))
- ((ar/gnulinuxp) ; Linux
-  (defun ar/new-browser-tab ()
-    "Open a new browser tab in the default browser."
-    (interactive)
-    (shell-command "google-chrome http://google.com")
-    )))
+(defun ar/new-browser-tab-shell-command ()
+  "Return new browser tab shell command."
+  (cond
+   ((ar/osxp)
+    "open http://google.com")
+   ((ar/gnulinuxp)
+    "google-chrome http://google.com")
+   (nil)))
+
+(defun ar/new-browser-tab ()
+  "Open a new browser tab in the default browser."
+  (interactive)
+  (let ((command (ar/new-browser-tab-shell-command)))
+    (message command)
+    (if command
+        (shell-command command)
+      (message "Unrecognized platform."))))
 (global-set-key (kbd "C-x t") 'ar/new-browser-tab)
+
+(defun ar/init-for-osx ()
+  "Perform initializations for Mac OS X."
+  (when (ar/osxp)
+    ;; Sets the command (Apple) key as Meta.
+    (setq mac-command-modifier 'meta)))
+(ar/init-for-osx)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
