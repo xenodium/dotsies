@@ -359,8 +359,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq ediff-split-window-function 'split-window-horizontally)
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
-(defvar ar/ediff-bwin-config nil "Window configuration before ediff.")
-(defcustom ar/ediff-bwin-reg ?b
+(defvar ar/ediff-bwin-config nil
+  "Window configuration before ediff.")
+
+(defvar ar/ediff-bwin-reg ?b
   "Register to be set up to hold ar/ediff-bwin-config configuration.")
 
 (defun ar/ediff-bsh ()
@@ -595,6 +597,20 @@ Argument PROMPT to check for additional prompt."
 
 (setq css-indent-offset 2)
 
+(defun ar/open-in-external-app-lambda ()
+  "Return a function to open FPATH externally."
+  (cond
+   ((ar/windowsp)
+    (lambda (fPath)
+      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))))
+   ((ar/osxp)
+    (lambda (fPath)
+      (shell-command (format "open \"%s\"" fPath))))
+   ((ar/gnulinuxp)
+    (lambda (fPath)
+      (let ((process-connection-type nil))
+        (start-process "" nil "xdg-open" fPath))))))
+
 ;; Thank you Xah Lee.
 ;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
 (defun xah-open-in-external-app (&optional file)
@@ -609,15 +625,10 @@ The app is chosen from your OS's preference."
            (file (list file)))))
     (setq doIt (if (<= (length myFileList) 5)
                    t
-                 (y-or-n-p "Open more than 5 files? ") ) )
+                 (y-or-n-p "Open more than 5 files? ")))
     (when doIt
-      (cond
-       ((ar/windowsp)
-        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
-       ((ar/osxp)
-        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
-       ((ar/gnulinuxp)
-        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
+      (mapc (ar/open-in-external-app-lambda) myFileList))))
+
 (global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
 
 (setq ring-bell-function 'ignore)
@@ -1021,9 +1032,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (server-start)
 
 ;; Customize vertical window divider:
-;; Reverse colors for the border to have nicer line.
-(set-face-inverse-video-p 'vertical-border nil)
-(set-face-background 'vertical-border (face-background 'default))
 ;; Set symbol for the border.
 (set-display-table-slot standard-display-table
                         'vertical-border
@@ -1037,7 +1045,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-  (global-set-key (kbd "C-c l") 'ar/split-camel-region)
+(global-set-key (kbd "C-c l") 'ar/split-camel-region)
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
@@ -1100,17 +1108,17 @@ Argument LEN Length."
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
   (set (make-local-variable 'compile-command)
-        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (define-key objc-mode-map [f7] 'ar/xc:build)
-  (define-key objc-mode-map [f8] 'ar/xc:run))
-(add-hook 'objc-mode-hook 'ar/objc-mode-hook-function)
+       "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+  (local-set-key (kbd "<f7>") 'ar/xc:build)
+  (local-set-key (kbd "<f8>") 'ar/xc:run))
+(add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
   ;; 100-column limit for java.
   (set-fill-column 100)
   ;; 2-char indent for java.
-  (setq c-basic-offset 2))
+  (set (make-local-variable 'c-basic-offset) 2))
 (add-hook 'java-mode-hook 'ar/java-mode-hook-function)
 
 (defun ar/prog-mode-hook-function ()
@@ -1131,8 +1139,8 @@ Argument LEN Length."
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
-  (setq markdown-indent-on-enter nil)
-  (define-key markdown-mode-map (kbd "RET") 'electric-newline-and-maybe-indent))
+  (set (make-local-variable 'markdown-indent-on-enter) nil)
+  (local-set-key (kbd "RET") 'electric-newline-and-maybe-indent))
 
 (ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
                                 '(prog-mode-hook))
@@ -1160,9 +1168,11 @@ Argument LEN Length."
 (eval-after-load "projectile"
   '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
                                           (substring dir 0 -1))
-                                        (remove-if-not (lambda (project)
-                                                         (file-directory-p (concat project "/.git/")))
-                                                       (projectile-relevant-known-projects)))
+                                        ;; Disables "required at runtime" warning for cl package.
+                                        (with-no-warnings
+                                          (remove-if-not (lambda (project)
+                                                           (file-directory-p (concat project "/.git/")))
+                                                         (projectile-relevant-known-projects))))
                 magit-repo-dirs-depth 1)))
 
 ;; Select help window by default.
