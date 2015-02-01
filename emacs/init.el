@@ -968,7 +968,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
-              (remove-if-not 'buffer-file-name (buffer-list)))))
+              ;; Disables "required at runtime" warning for cl package.
+              (with-no-warnings
+                (remove-if-not 'buffer-file-name (buffer-list))))))
 
 ;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
 (defun ar/rename-current-file-and-buffer ()
@@ -1030,9 +1032,12 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
   (interactive)
-  (progn (replace-regexp "\\([A-Z]\\)" " \\1" nil (region-beginning)(region-end))
-         (downcase-region (region-beginning)(region-end))))
-(global-set-key (kbd "C-c l") 'ar/split-camel-region)
+  (let ((case-fold-search nil))
+    (while (re-search-forward "[A-Z]" (region-end) t)
+      (replace-match (format " %s"
+                             (downcase (match-string 0)))
+                     t nil))))
+  (global-set-key (kbd "C-c l") 'ar/split-camel-region)
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav
