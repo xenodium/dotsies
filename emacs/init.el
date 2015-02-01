@@ -1173,6 +1173,8 @@ Argument LEN Length."
                              (lambda
                                nil (ansi-term shell-pop-term-shell))))
 (setq shell-pop-window-position "bottom")
+;; Do not auto cd to working directory.
+(setq shell-pop-autocd-to-working-dir nil)
 
 (defun ar/disable-non-prog-minor-modes ()
   "Disable non-programming minor modes, likely slowing things down."
