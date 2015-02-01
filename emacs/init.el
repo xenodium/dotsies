@@ -818,6 +818,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company
   :ensure t)
+(use-package company-quickhelp
+  :ensure t)
 (use-package company-c-headers
   :ensure t)
 (setq company-backends (delete 'company-semantic company-backends))
