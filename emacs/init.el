@@ -499,7 +499,9 @@ Optional argument NON-RECURSIVE to shallow-search."
   "Perform initializations for Mac OS X."
   (when (ar/osxp)
     ;; Sets the command (Apple) key as Meta.
-    (setq mac-command-modifier 'meta)))
+    (setq mac-command-modifier 'meta)
+    ;; Sets the option (Apple) key also as Meta.
+    (setq mac-option-modifier 'meta)))
 (ar/init-for-osx)
 
 ;; Disable backup.
