@@ -613,25 +613,24 @@ Argument PROMPT to check for additional prompt."
       (let ((process-connection-type nil))
         (start-process "" nil "xdg-open" fPath))))))
 
-;; Thank you Xah Lee.
-;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun xah-open-in-external-app (&optional file)
-  "Open the current file, optional FILE, or dired marked files in external app.
-The app is chosen from your OS's preference."
-  (interactive)
-  (let ( doIt
-         (myFileList
-          (cond
-           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
-           ((not file) (list (buffer-file-name)))
-           (file (list file)))))
-    (setq doIt (if (<= (length myFileList) 5)
-                   t
-                 (y-or-n-p "Open more than 5 files? ")))
-    (when doIt
-      (mapc (ar/open-in-external-app-lambda) myFileList))))
+;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+(defun ar/-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
 
-(global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
+Version 2015-01-26
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
+  (interactive)
+  (let* ((ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+    (when ξdo-it-p
+      (mapc (ar/open-in-external-app-lambda) ξfile-list))))
+(global-set-key (kbd "C-M-o") 'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
