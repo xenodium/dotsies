@@ -258,11 +258,6 @@
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
-;; Use ag for grepping git project.
-(bind-key "C-c s r" 'ar/projectile-helm-ag)
-;; Use ag for grepping from current location.
-(bind-key "C-c s d" 'helm-do-ag)
-
 (use-package helm-dash
   :ensure t
   :demand)
@@ -1275,7 +1270,6 @@ Argument LEN Length."
                  (file-name-directory buffer-file-name)
                ".")))
     (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
-(bind-key "C-c s f" 'ar/find-all-dired-current-dir)
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner
@@ -1484,6 +1478,22 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package flycheck-pos-tip
   :ensure t)
+
+(use-package hydra
+  :ensure t)
+(setq hydra-is-helpful t)
+
+(global-set-key
+ (kbd "C-c s")
+ (defhydra hydra-toggle (:color blue)
+   "search"
+   ;; Use ag for grepping from current location.
+   ("d" helm-do-ag "directory")
+   ;; Use ag for grepping git project.
+   ("r" ar/projectile-helm-ag "repository")
+   ;; Find all files from current location.
+   ("f" ar/find-all-dired-current-dir "find all")
+   ("q" nil "cancel")))
 
 ;; Override default flycheck triggers
 (setq flycheck-check-syntax-automatically
