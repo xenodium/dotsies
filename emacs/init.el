@@ -1485,7 +1485,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (global-set-key
  (kbd "C-c s")
- (defhydra hydra-toggle (:color blue)
+ (defhydra hydra-search (:color blue)
    "search"
    ;; Use ag for grepping from current location.
    ("d" helm-do-ag "directory")
@@ -1494,6 +1494,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
    ("q" nil "cancel")))
+
+;; (global-set-key
+;;  (kbd "C-c y")
+;;  (defhydra hydra-root (:color blue)
+;;    "cheatsheet"
+;;    ("C-c s" hydra-search/body "search")
+;;    ("q" nil "cancel")))
 
 ;; Override default flycheck triggers
 (setq flycheck-check-syntax-automatically
