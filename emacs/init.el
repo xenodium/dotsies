@@ -1365,7 +1365,7 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
 ;; All Org leading stars become invisible.
 (setq org-hide-leading-stars t)
 
-;; Skipe Org's odd indentation levels (2, 4, ...).
+;; Skip Org's odd indentation levels (1, 3, ...).
 (setq org-odd-levels-only t)
 
 ;; Disable auto isearch within org-goto.
