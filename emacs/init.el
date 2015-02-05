@@ -365,7 +365,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
   (window-configuration-to-register ar/ediff-bwin-reg))
 
-(defun ar/ediff-Aswh ()
+(defun ar/ediff-aswh ()
   "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
