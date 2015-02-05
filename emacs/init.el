@@ -609,7 +609,7 @@ Argument PROMPT to check for additional prompt."
         (start-process "" nil "xdg-open" fPath))))))
 
 ;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun ar/-open-in-external-app ()
+(defun ar/open-in-external-app ()
   "Open the current file or dired marked files in external app.
 The app is chosen from your OS's preference.
 
@@ -1423,8 +1423,8 @@ Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
        (file-name-directory fPath)))
     (message "File path copied: %s" fPath)))
 
-(defun ar/open-file-at-cursor ()
-  "Open the file path under cursor.
+(defun ar/open-file-at-point ()
+  "Open the file path at point.
 If there is text selection, uses the text selection for path.
 If the path starts with “http://”, open the URL in browser.
 Input path can be {relative, full path, URL}.
@@ -1463,14 +1463,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                       (goto-char 1)
                       (forward-line (1- ξline-num)))
                   (progn
-                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfpath))
+                    (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξfpath))
                       (find-file ξfpath))))))
           (progn
             (if (file-exists-p ξpath)
                 (find-file ξpath)
               (if (file-exists-p (concat ξpath ".el"))
                   (find-file (concat ξpath ".el"))
-                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξpath))
+                (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξpath))
                   (find-file ξpath ))))))))))
 
 (use-package flycheck
@@ -1493,6 +1493,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("r" ar/projectile-helm-ag "repository")
    ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-c o")
+ (defhydra hydra-search (:color blue)
+   "open"
+   ("o" ar/open-in-external-app "externally")
+   ("p" ar/open-file-at-point "path at point")
    ("q" nil "cancel")))
 
 ;; (global-set-key
