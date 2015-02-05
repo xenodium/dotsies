@@ -1,5 +1,10 @@
-;; Add melpa package repository.
+;;; init.el --- Emacs initialization entry point.
+;;; Commentary:
+;; Just another init.el file.
+;;; Code:
+
 (require 'package)
+
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
@@ -9,6 +14,15 @@
   (package-install 'use-package))
 
 (require 'use-package)
+
+;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
+(if (fboundp 'with-eval-after-load)
+    (defalias 'after-load 'with-eval-after-load)
+  (defmacro after-load (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+       '(progn ,@body))))
 
 ;; Enhanced list-packages replacement.
 (use-package paradox
@@ -51,6 +65,20 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
+(use-package fullframe
+  :ensure t)
+
+(after-load 'magit
+            (fullframe magit-status magit-mode-quit-window))
+
+(after-load 'paradox
+  (fullframe paradox-list-packages paradox-quit-and-close))
+
+(after-load 'ibuffer
+  (fullframe ibuffer ibuffer-quit))
+
+(after-load 'dired
+  (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
@@ -147,6 +175,7 @@
 ;; Enable upcase and downcase region (disabled by default).
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (use-package anchored-transpose
   :ensure t)
@@ -225,13 +254,9 @@
   :ensure t)
 
 (defun ar/projectile-helm-ag ()
+  "Search current repo/project using ag."
   (interactive)
   (helm-do-ag (projectile-project-root)))
-
-;; Use ag for grepping git project.
-(bind-key "C-c s r" 'ar/projectile-helm-ag)
-;; Use ag for grepping from current location.
-(bind-key "C-c s d" 'helm-do-ag)
 
 (use-package helm-dash
   :ensure t
@@ -288,7 +313,8 @@
 (helm-mode 1)
 
 (defun ar/helm-do-grep-recursive (&optional non-recursive)
-  "Like `helm-do-grep', but greps recursively by default."
+  "Like `helm-do-grep', but greps recursively by default.
+Optional argument NON-RECURSIVE to shallow-search."
   (interactive "P")
   (let* ((current-prefix-arg (not non-recursive))
          (helm-current-prefix-arg non-recursive))
@@ -317,28 +343,30 @@
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile
-  :ensure t)
-(require 'helm-projectile)
-(global-set-key (kbd "C-x f") 'helm-projectile)
+  :ensure t
+  :bind (("C-x f" . helm-projectile)))
+
+;; Prevent split-window-sensibly to split horizontally.
+(setq split-width-threshold nil)
 
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-horizontally)
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
-(defvar ar/ediff-bwin-config nil "Window configuration before ediff.")
-(defcustom ar/ediff-bwin-reg ?b
-  "*Register to be set up to hold `ar/ediff-bwin-config'
-    configuration.")
+(defvar ar/ediff-bwin-config nil
+  "Window configuration before ediff.")
+
+(defvar ar/ediff-bwin-reg ?b
+  "Register to be set up to hold ar/ediff-bwin-config configuration.")
 
 (defun ar/ediff-bsh ()
-  "Function to be called before any buffers or window setup for
-    ediff."
+  "Function to be called before any buffers or window setup for ediff."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
   (window-configuration-to-register ar/ediff-bwin-reg))
 
 (defun ar/ediff-aswh ()
-  "setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
+  "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
   (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
 
 (defun ar/ediff-qh ()
@@ -428,39 +456,48 @@
 
 ;;  From http://doc.rix.si/org/fsem.html
 (defun ar/gnulinuxp ()
-  "Returns t if the system is a GNU/Linux machine, otherwise nil"
+  "Return t if the system is a GNU/Linux machine, otherwise nil."
   (string-equal system-type "gnu/linux"))
 
 (defun ar/osxp ()
-  "Returns t if the system is a Mac OS X machine, otherwise nil"
+  "Return t if the system is a Mac OS X machine, otherwise nil."
   (string-equal system-type "darwin"))
 
 (defun ar/cygwinp ()
-  "Returns t if Emacs is running inside of Cygwin on Windows, otherwise nil"
+  "Return t if Emacs is running inside of Cygwin on Windows, otherwise nil."
   (string-equal system-type "cygwin"))
 
 (defun ar/windowsp ()
-  "Returns t if the system is a native Emacs for Windows, otherwise nil"
+  "Return t if the system is a native Emacs for Windows, otherwise nil."
   (string-equal system-type "windows"))
 
-;; New browser tab.
-(cond
- ((ar/osxp) ; Mac OS X
-  (defun ar/new-browser-tab ()
-    "Open a new browser tab in the default browser."
-    (interactive)
-    (shell-command "open http://google.com"))
-  ;; Ensures PATH is loaded from shell.
-  (use-package exec-path-from-shell
-    :ensure t)
-  (exec-path-from-shell-initialize))
- ((ar/gnulinuxp) ; Linux
-  (defun ar/new-browser-tab ()
-    "Open a new browser tab in the default browser."
-    (interactive)
-    (shell-command "google-chrome http://google.com")
-    )))
+(defun ar/new-browser-tab-shell-command ()
+  "Return new browser tab shell command."
+  (cond
+   ((ar/osxp)
+    "open http://google.com")
+   ((ar/gnulinuxp)
+    "google-chrome http://google.com")
+   (nil)))
+
+(defun ar/new-browser-tab ()
+  "Open a new browser tab in the default browser."
+  (interactive)
+  (let ((command (ar/new-browser-tab-shell-command)))
+    (message command)
+    (if command
+        (shell-command command)
+      (message "Unrecognized platform."))))
 (global-set-key (kbd "C-x t") 'ar/new-browser-tab)
+
+(defun ar/init-for-osx ()
+  "Perform initializations for Mac OS X."
+  (when (ar/osxp)
+    ;; Sets the command (Apple) key as Meta.
+    (setq mac-command-modifier 'meta)
+    ;; Sets the option (Apple) key also as Meta.
+    (setq mac-option-modifier 'meta)))
+(ar/init-for-osx)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -479,7 +516,7 @@
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 (defun ar/move-buffer-file (dir)
-  "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
+  "Move both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
          (dir (if (string-match dir "\\(?:/\\|\\\\)$")
@@ -518,7 +555,8 @@
 ;;  Now, define my version in terms of `orig-yes-or-no-p'.
 (defun yes-or-no-p (prompt)
   "Ask user a yes-or-no question.  Return t if answer is yes, nil if no.
-This is a wrapper around `orig-yes-or-no'."
+This is a wrapper around `orig-yes-or-no'.
+Argument PROMPT to check for additional prompt."
   (if (string-match
 ;;  This message is created in lisp/files.el, and there are four
 ;;  variations.  I'm intentionally matching two of them.
@@ -547,6 +585,7 @@ This is a wrapper around `orig-yes-or-no'."
 (setq magit-status-buffer-switch-function 'switch-to-buffer)
 
 (defun ar/sort-lines-ignore-case ()
+  "Sort region (case-insensitive)."
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively 'sort-lines)))
@@ -555,29 +594,38 @@ This is a wrapper around `orig-yes-or-no'."
 
 (setq css-indent-offset 2)
 
-;; Thank you Xah Lee.
-;; from http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun xah-open-in-external-app (&optional file)
-  "Open the current file or dired marked files in external app. The app is chosen from your OS's preference."
+(defun ar/open-in-external-app-lambda ()
+  "Return a function to open FPATH externally."
+  (cond
+   ((ar/windowsp)
+    (lambda (fPath)
+      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))))
+   ((ar/osxp)
+    (lambda (fPath)
+      (shell-command (format "open \"%s\"" fPath))))
+   ((ar/gnulinuxp)
+    (lambda (fPath)
+      (let ((process-connection-type nil))
+        (start-process "" nil "xdg-open" fPath))))))
+
+;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+(defun ar/-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
+
+Version 2015-01-26
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
-  (let ( doIt
-         (myFileList
-          (cond
-           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
-           ((not file) (list (buffer-file-name)))
-           (file (list file)))))
-    (setq doIt (if (<= (length myFileList) 5)
-                   t
-                 (y-or-n-p "Open more than 5 files? ") ) )
-    (when doIt
-      (cond
-       ((ar/windowsp)
-        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList))
-       ((ar/osxp)
-        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
-       ((ar/gnulinuxp)
-        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
-(global-set-key (kbd "C-M-o") 'xah-open-in-external-app)
+  (let* ((ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+    (when ξdo-it-p
+      (mapc (ar/open-in-external-app-lambda) ξfile-list))))
+(global-set-key (kbd "C-M-o") 'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -595,7 +643,7 @@ This is a wrapper around `orig-yes-or-no'."
 
 ;; From http://wenshanren.org/?p=298#more-298
 (defun wenshan-edit-current-file-as-root ()
-  "Edit the file that is associated with the current buffer as root"
+  "Edit the file that is associated with the current buffer as root."
   (interactive)
   (if (buffer-file-name)
       (progn
@@ -654,22 +702,20 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'sacha/smarter-move-beginning-of-line)
 
-;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
+(use-package whole-line-or-region
+  :ensure t)
+(whole-line-or-region-mode)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun vsplit-last-buffer ()
+  "Vertically splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-vertically)
   (other-window 1 nil)
   (switch-to-next-buffer)
   )
 (defun hsplit-last-buffer ()
+  "Horizontally splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-horizontally)
   (other-window 1 nil)
@@ -734,7 +780,6 @@ With a prefix ARG open line above the current line."
 
 (use-package ace-jump-mode
   :ensure t)
-(require 'ace-jump-mode)
 
 (use-package ace-jump-zap
   :ensure t
@@ -742,8 +787,16 @@ With a prefix ARG open line above the current line."
   (("M-z" . ace-jump-zap-up-to-char-dwim)
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
-(use-package golden-ratio
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . ace-window)))
+
+
+;; Interactively resize current window.
+(use-package windsize
   :ensure t)
+(windsize-default-keybindings)
+
 (golden-ratio-mode)
 (setq golden-ratio-exclude-modes '("ediff-mode"
                                    "term-mode"
@@ -757,7 +810,6 @@ With a prefix ARG open line above the current line."
 
 (use-package key-chord
   :ensure t)
-(require 'key-chord)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
@@ -780,9 +832,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company
   :ensure t)
+(use-package company-quickhelp
+  :ensure t)
 (use-package company-c-headers
   :ensure t)
-(require 'company)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
@@ -805,7 +858,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-c-yasnippet
   :ensure t)
-(require 'helm-c-yasnippet)
 
 (use-package helm-make
   :ensure t)
@@ -853,6 +905,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; From http://sakito.jp/emacs/emacsobjectivec.html#xcode
 (defun ar/xc:build ()
+  "Tell Xcode to build."
   (interactive)
   (do-applescript
    (format
@@ -866,6 +919,7 @@ Repeated invocations toggle between the two most recently open buffers."
      ))))
 
 (defun ar/xc:run ()
+  "Tell Xcode to run."
   (interactive)
   (do-applescript
    (format
@@ -921,7 +975,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
-              (remove-if-not 'buffer-file-name (buffer-list)))))
+              ;; Disables "required at runtime" warning for cl package.
+              (with-no-warnings
+                (remove-if-not 'buffer-file-name (buffer-list))))))
 
 ;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
 (defun ar/rename-current-file-and-buffer ()
@@ -962,7 +1018,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (use-package company-go
   :ensure t)
-(require 'company-go)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
                           (set (make-local-variable 'company-backends) '(company-go))
@@ -973,19 +1028,19 @@ Repeated invocations toggle between the two most recently open buffers."
 (server-start)
 
 ;; Customize vertical window divider:
-;; Reverse colors for the border to have nicer line.
-(set-face-inverse-video-p 'vertical-border nil)
-(set-face-background 'vertical-border (face-background 'default))
 ;; Set symbol for the border.
 (set-display-table-slot standard-display-table
                         'vertical-border
                         (make-glyph-code ?|))
 
 (defun ar/split-camel-region ()
-  "Splits camelCaseWord to camel case word"
+  "Splits camelCaseWord to camel case word."
   (interactive)
-  (progn (replace-regexp "\\([A-Z]\\)" " \\1" nil (region-beginning)(region-end))
-         (downcase-region (region-beginning)(region-end))))
+  (let ((case-fold-search nil))
+    (while (re-search-forward "[A-Z]" (region-end) t)
+      (replace-match (format " %s"
+                             (downcase (match-string 0)))
+                     t nil))))
 (global-set-key (kbd "C-c l") 'ar/split-camel-region)
 
 ;; M-. elisp navigation.
@@ -993,13 +1048,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t)
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
-  "Adds HOOK-FUNCTIONS to mode HOOKS."
+  "Add HOOK-FUNCTIONS to mode HOOKS."
   (dolist (hook hooks)
     (dolist (hook-function hook-functions)
       (add-hook hook hook-function))))
 
 (defun ar/emacs-lisp-mode-hook-function ()
-  "Called when entering emacs-lisp-mode."
+  "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
   (turn-on-elisp-slime-nav-mode))
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
@@ -1007,7 +1062,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                   ielm-mode-hook))
 
 (defun ar/save-point ()
-  "Saves point to register 9999."
+  "Save point to register 9999."
   (interactive)
   (point-to-register 9999)
   )
@@ -1019,12 +1074,15 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c `") 'ar/jump-to-saved-point)
 
 (defun ar/after-prog-mode-text-change (beg end len)
-  "Executes for all text changes in prog-mode."
+  "Execute for all text modifications in `prog-mode'.
+Argument BEG beginning.
+Argument END end.
+Argument LEN Length."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
 (defun ar/objc-mode-hook-function ()
-  "Called when entering objc-mode"
+  "Called when entering `objc-mode'."
   (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
@@ -1046,17 +1104,17 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
   (set (make-local-variable 'compile-command)
-        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (define-key objc-mode-map [f7] 'ar/xc:build)
-  (define-key objc-mode-map [f8] 'ar/xc:run))
-(add-hook 'objc-mode-hook 'ar/objc-mode-hook-function)
+       "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+  (local-set-key (kbd "<f7>") 'ar/xc:build)
+  (local-set-key (kbd "<f8>") 'ar/xc:run))
+(add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
-  "Called when entering java-mode"
+  "Called when entering `java-mode'."
   ;; 100-column limit for java.
   (set-fill-column 100)
   ;; 2-char indent for java.
-  (setq c-basic-offset 2))
+  (set (make-local-variable 'c-basic-offset) 2))
 (add-hook 'java-mode-hook 'ar/java-mode-hook-function)
 
 (defun ar/prog-mode-hook-function ()
@@ -1076,9 +1134,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode))
 
 (defun ar/markdown-mode-hook-function ()
-  "Called when entering markdown-mode."
-  (setq markdown-indent-on-enter nil)
-  (define-key markdown-mode-map (kbd "RET") 'electric-newline-and-maybe-indent))
+  "Called when entering `markdown-mode'."
+  (set (make-local-variable 'markdown-indent-on-enter) nil)
+  (local-set-key (kbd "RET") 'electric-newline-and-maybe-indent))
 
 (ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
                                 '(prog-mode-hook))
@@ -1096,7 +1154,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/create-non-existent-directory ()
   (let ((parent-directory (file-name-directory buffer-file-name)))
     (when (and (not (file-exists-p parent-directory))
-               (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+               (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
       (make-directory parent-directory t))))
 
 (add-to-list 'find-file-not-found-functions
@@ -1106,9 +1164,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (eval-after-load "projectile"
   '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
                                           (substring dir 0 -1))
-                                        (remove-if-not (lambda (project)
-                                                         (file-directory-p (concat project "/.git/")))
-                                                       (projectile-relevant-known-projects)))
+                                        ;; Disables "required at runtime" warning for cl package.
+                                        (with-no-warnings
+                                          (remove-if-not (lambda (project)
+                                                           (file-directory-p (concat project "/.git/")))
+                                                         (projectile-relevant-known-projects))))
                 magit-repo-dirs-depth 1)))
 
 ;; Select help window by default.
@@ -1124,9 +1184,11 @@ Repeated invocations toggle between the two most recently open buffers."
                              (lambda
                                nil (ansi-term shell-pop-term-shell))))
 (setq shell-pop-window-position "bottom")
+;; Do not auto cd to working directory.
+(setq shell-pop-autocd-to-working-dir nil)
 
 (defun ar/disable-non-prog-minor-modes ()
-  "Disables non-programming minor modes, likely slowing things down."
+  "Disable non-programming minor modes, likely slowing things down."
   (centered-cursor-mode -1)
   (linum-mode -1))
 
@@ -1138,8 +1200,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package shell-pop
   :ensure t)
 
-;; Comment current line or region.
 (defun ar/comment-dwim ()
+  "Comment current line or region."
   (interactive)
   (let ((start (line-beginning-position))
         (end (line-end-position)))
@@ -1156,7 +1218,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "M-;") 'ar/comment-dwim)
 
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
-  "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P"
+  "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
   (find-file (format "%s%s" name extension))
   (funcall mode)
   (insert snippet-name)
@@ -1165,7 +1227,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (yas-exit-all-snippets)))
 
 (defun ar/new-objc-file ()
-  "Create and yas-expand Objective-C interface header/implementation files."
+  "Create and `yas-expand' Objective-C interface header/implementation files."
   (interactive)
   (let ((interface-name (read-from-minibuffer "Interface name: ")))
     (ar/new-file-with-snippet interface-name
@@ -1178,7 +1240,7 @@ Repeated invocations toggle between the two most recently open buffers."
                               "impl")))
 
 (defun ar/new-blog-post-file ()
-  "Create and yas-expand Objective-C interface header/implementation files."
+  "Create and `yas-expand' Objective-C interface header/implementation files."
   (interactive)
   (let* ((post-title (read-from-minibuffer "Post title: "))
          (post-date (format-time-string "%Y-%m-%d"))
@@ -1195,20 +1257,19 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Use RET instead of "a" in dired.
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
 
-;; Use ^ in dired to cd to parent.
 (defun ar/dired-cd-to-parent ()
+  "Use ^ in dired to cd to parent."
   (interactive)
   (find-alternate-file ".."))
 (define-key dired-mode-map (kbd "^") 'ar/dired-cd-to-parent)
 
 (defun ar/find-all-dired-current-dir ()
-  "Invokes find-dired for current dir."
+  "Invokes `find-dired' for current dir."
   (interactive)
   (let ((dir (if buffer-file-name
                  (file-name-directory buffer-file-name)
                ".")))
     (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
-(bind-key "C-c s f" 'ar/find-all-dired-current-dir)
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner
@@ -1235,9 +1296,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/char-upcasep (letter)
   (eq letter (upcase letter)))
 
-;;  Capitalize word toggle.
 ;;  http://oremacs.com/2014/12/25/ode-to-toggle
 (defun ar/capitalize-word-toggle ()
+  "Capitalize word toggle."
   (interactive)
   (let ((start
          (car
@@ -1254,6 +1315,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c c") 'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
+  "Toggle word case at point."
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol))
         beg end
@@ -1313,6 +1375,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-dowload ()
+  "Download youtube video from url in clipboard."
   (interactive)
   (let* ((str (current-kill 0))
          (default-directory "~/Downloads")
@@ -1327,13 +1390,13 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq desktop-restore-eager 10)
 
 (defun ar/desktop-save ()
-  "Write the desktop save file to ~/.emacs.d"
+  "Write the desktop save file to ~/.emacs.d."
   (desktop-save (expand-file-name "~/.emacs.d/")))
 
 (run-with-idle-timer 300 t 'ar/desktop-save)
 
 (defun ar/load-all-files (pattern)
-  "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')"
+  "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')."
   (dolist (file (file-expand-wildcards pattern))
     (load file)))
 
@@ -1347,7 +1410,8 @@ Repeated invocations toggle between the two most recently open buffers."
   "Copy the current buffer's file path or dired path to `kill-ring'.
 If `universal-argument' is called, copy only the dir path.
 Version 2015-01-14
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
   (interactive "P")
   (let ((fPath
          (if (equal major-mode 'dired-mode)
@@ -1358,6 +1422,95 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
          fPath
        (file-name-directory fPath)))
     (message "File path copied: %s" fPath)))
+
+(defun ar/open-file-at-cursor ()
+  "Open the file path under cursor.
+If there is text selection, uses the text selection for path.
+If the path starts with “http://”, open the URL in browser.
+Input path can be {relative, full path, URL}.
+Path may have a trailing “:‹n›” that indicates line number.
+If so, jump to that line number.
+If path does not have a file extention, automatically try with “.el” for elisp
+files.
+This command is similar to `find-file-at-point' but without prompting for
+confirmation.
+
+URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
+  (interactive)
+  (let ((ξpath (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (let (p0 p1 p2)
+                   (setq p0 (point))
+                   ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
+                   (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+                   (setq p1 (point))
+                   (goto-char p0)
+                   (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+                   (setq p2 (point))
+                   (goto-char p0)
+                   (buffer-substring-no-properties p1 p2)))))
+    (if (string-match-p "\\`https?://" ξpath)
+        (browse-url ξpath)
+      (progn ; not starting “http://”
+        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" ξpath)
+            (progn
+              (let (
+                    (ξfpath (match-string 1 ξpath))
+                    (ξline-num (string-to-number (match-string 2 ξpath))))
+                (if (file-exists-p ξfpath)
+                    (progn
+                      (find-file ξfpath)
+                      (goto-char 1)
+                      (forward-line (1- ξline-num)))
+                  (progn
+                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfpath))
+                      (find-file ξfpath))))))
+          (progn
+            (if (file-exists-p ξpath)
+                (find-file ξpath)
+              (if (file-exists-p (concat ξpath ".el"))
+                  (find-file (concat ξpath ".el"))
+                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξpath))
+                  (find-file ξpath ))))))))))
+
+(use-package flycheck
+  :ensure t)
+
+(use-package flycheck-pos-tip
+  :ensure t)
+
+(use-package hydra
+  :ensure t)
+(setq hydra-is-helpful t)
+
+(global-set-key
+ (kbd "C-c s")
+ (defhydra hydra-search (:color blue)
+   "search"
+   ;; Use ag for grepping from current location.
+   ("d" helm-do-ag "directory")
+   ;; Use ag for grepping git project.
+   ("r" ar/projectile-helm-ag "repository")
+   ;; Find all files from current location.
+   ("f" ar/find-all-dired-current-dir "find all")
+   ("q" nil "cancel")))
+
+;; (global-set-key
+;;  (kbd "C-c y")
+;;  (defhydra hydra-root (:color blue)
+;;    "cheatsheet"
+;;    ("C-c s" hydra-search/body "search")
+;;    ("q" nil "cancel")))
+
+;; Override default flycheck triggers
+(setq flycheck-check-syntax-automatically
+      '(save idle-change mode-enabled)
+      flycheck-idle-change-delay 0.8)
+
+(setq flycheck-display-errors-function
+      #'flycheck-pos-tip-error-messages)
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits t)
@@ -1373,3 +1526,6 @@ URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'"
 
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
+
+(provide 'init)
+;;; init.el ends here
