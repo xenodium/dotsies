@@ -1497,7 +1497,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (global-set-key
  (kbd "C-c o")
- (defhydra hydra-search (:color blue)
+ (defhydra hydra-open (:color blue)
    "open"
    ("o" ar/open-in-external-app "externally")
    ("p" ar/open-file-at-point "path at point")
