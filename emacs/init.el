@@ -1344,6 +1344,13 @@ Argument LEN Length."
 (global-set-key (kbd "C-c u") 'upcase-word-toggle)
 (global-set-key (kbd "C-c r") 'cua-rectangle-mark-mode)
 
+;; Collaborate with clipboard.
+(setq x-select-enable-clipboard t)
+;; Type on selection deletes selection.
+(delete-selection-mode t)
+;; More expected region behaviour.
+(transient-mark-mode t)
+
 ;;  Make a shell script executable automatically on save.
 ;;  From https://github.com/bbatsov/prelude
 (add-hook 'after-save-hook
