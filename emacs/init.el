@@ -293,7 +293,7 @@
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
- helm-buffer-max-length 30
+ helm-buffer-max-length nil
  helm-candidate-number-limit 100 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
@@ -492,8 +492,15 @@ Optional argument NON-RECURSIVE to shallow-search."
     ;; Sets the command (Apple) key as Meta.
     (setq mac-command-modifier 'meta)
     ;; Sets the option (Apple) key also as Meta.
-    (setq mac-option-modifier 'meta)))
+    (setq mac-option-modifier 'meta)
+    (setq exec-path (append exec-path '("~/homebrew/bin")))))
 (ar/init-for-osx)
+
+(defun ar/init-for-linux ()
+  "Perform initializations for Linux."
+  (when (ar/gnulinuxp)
+    (setq exec-path (append exec-path '("~/local/bin")))))
+(ar/init-for-linux)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
