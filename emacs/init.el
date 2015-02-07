@@ -35,7 +35,6 @@
 ;; Display line numbers.
 (use-package linum
   :ensure t)
-(global-linum-mode)
 
 ;; Right-justify linum
 ;; From https://github.com/echosa/emacs.d#line-numbers
@@ -225,9 +224,6 @@
       recentf-max-menu-items 15)
 (recentf-mode)
 
-;; Language-aware editing commands. Useful for imenu-menu.
-(semantic-mode 1)
-
 (use-package yasnippet
   :ensure t)
 (setq yas-snippet-dirs
@@ -298,7 +294,7 @@
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
  helm-buffer-max-length 30
- helm-candidate-number-limit 200 ; limit the number of displayed canidates
+ helm-candidate-number-limit 100 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
  '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
@@ -1131,6 +1127,10 @@ Argument LEN Length."
   (flyspell-prog-mode)
   (whitespace-mode)
   (rainbow-delimiters-mode)
+  (linum-mode)
+  (centered-cursor-mode)
+  ;; Language-aware editing commands. Useful for imenu-menu.
+  (semantic-mode 1)
   (yas-minor-mode))
 
 (defun ar/markdown-mode-hook-function ()
@@ -1149,7 +1149,6 @@ Argument LEN Length."
 (defvar mouse-wheel-mode nil)
 (use-package centered-cursor-mode
   :ensure t)
-(global-centered-cursor-mode +1)
 
 (defun ar/create-non-existent-directory ()
   (let ((parent-directory (file-name-directory buffer-file-name)))
@@ -1186,15 +1185,6 @@ Argument LEN Length."
 (setq shell-pop-window-position "bottom")
 ;; Do not auto cd to working directory.
 (setq shell-pop-autocd-to-working-dir nil)
-
-(defun ar/disable-non-prog-minor-modes ()
-  "Disable non-programming minor modes, likely slowing things down."
-  (centered-cursor-mode -1)
-  (linum-mode -1))
-
-;;  No need for linum under ansi-term, also avoids flickering.
-(add-hook 'term-mode-hook #'ar/disable-non-prog-minor-modes)
-(add-hook 'magit-mode-hook #'ar/disable-non-prog-minor-modes)
 
 (global-set-key [f5] 'shell-pop)
 (use-package shell-pop
@@ -1400,7 +1390,8 @@ Argument LEN Length."
   "Write the desktop save file to ~/.emacs.d."
   (desktop-save (expand-file-name "~/.emacs.d/")))
 
-(run-with-idle-timer 300 t 'ar/desktop-save)
+;; Is this what's locking things up?
+;; (run-with-idle-timer 300 t 'ar/desktop-save)
 
 (defun ar/load-all-files (pattern)
   "Load all files found by PATTERN, ie. (ar/load-all-files '~/*.el')."
