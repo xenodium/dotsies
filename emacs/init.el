@@ -24,6 +24,9 @@
     `(eval-after-load ,feature
        '(progn ,@body))))
 
+;; Increase memory threshold for garbage collection.
+(setq gc-cons-threshold 20000000)
+
 ;; Enhanced list-packages replacement.
 (use-package paradox
   :ensure t)
@@ -55,7 +58,7 @@
   :ensure t)
 (set-face-attribute 'linum nil :background "#1B1D1E")
 (set-face-attribute 'fringe nil :background "#1B1D1E")
-(set-cursor-color "#0087ff")
+(set-cursor-color "#FA009A")
 
 ;; Hide UI.
 (menu-bar-mode -1)
@@ -254,6 +257,18 @@
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
+;; http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
+(defun ar/backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument ARG, do this that many times."
+  (interactive "p")
+  (delete-region (point)
+                 (progn
+                   (backward-word arg)
+                   (point))))
+(global-set-key (kbd "M-DEL") 'ar/backward-delete-word)
+(global-set-key (kbd "<C-backspace>") 'ar/backward-delete-word)
+
 (use-package helm-dash
   :ensure t
   :demand)
@@ -401,10 +416,15 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Automatically closes brackets.
 (electric-pair-mode)
+;; Additional electric pairs.
+(setq electric-pair-pairs '((?\{ . ?\})
+                            (?\< . ?\>)))
 (electric-indent-mode)
 
 ;; Highlight matching parenthesis.
 (show-paren-mode)
+;; Highlight entire bracket expression.
+(setq show-paren-style 'mixed)
 
 ;; Partially use path in buffer name.
 (require 'uniquify)
@@ -879,6 +899,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; displays hex strings representing colors
 (use-package rainbow-mode
   :ensure t)
+(rainbow-mode 1)
 
 ;; Activate smerge on conflicts.
 (defun sm-try-smerge ()
@@ -1028,7 +1049,8 @@ Repeated invocations toggle between the two most recently open buffers."
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook 'gofmt-before-save)))
 
-(server-start)
+(unless (server-running-p)
+  (server-start))
 
 ;; Customize vertical window divider:
 ;; Set symbol for the border.
@@ -1499,6 +1521,20 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
    ("q" nil "cancel")))
+
+;; Hotspots WIP.
+;; (setq ar/helm-source-hotspots '((name . "Hotspots")
+;;                                   (candidates . (("yadda" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")
+;;                                                  ("second" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")))
+;;                                   (action . (("Open" . (lambda (x) (find-file x)))))))
+
+;; (defun ar/helm-hotspots ()
+;;   "Show my hotspots."
+;;   (interactive)
+;;   (helm :sources '(ar/helm-source-hotspots
+;;                    helm-source-buffers-list
+;;                    helm-source-ido-virtual-buffers
+;;                    helm-source-recentf)))
 
 (global-set-key
  (kbd "C-c o")
