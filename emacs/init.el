@@ -38,21 +38,7 @@
 ;; Display line numbers.
 (use-package linum
   :ensure t)
-
-;; Right-justify linum
-;; From https://github.com/echosa/emacs.d#line-numbers
-(setq linum-format (lambda (line)
-                     (propertize
-                      (format (concat "%"
-                                      (number-to-string
-                                       (length
-                                        (number-to-string
-                                         (line-number-at-pos
-                                          (point-max)))))
-                                      "d ")
-                              line)
-                      'face
-                      'linum)))
+(setq linum-format "%4d ")
 
 (use-package molokai-theme
   :ensure t)
@@ -1411,9 +1397,10 @@ Argument LEN Length."
      (concat "cd ~/Downloads && youtube-dl " str "\n"))))
 
 ;;  Save Emacs state from one session to another.
-(desktop-save-mode 1)
+;;  Disabling. Trial without it.
+;; (desktop-save-mode 1)
 ;;  Number of buffers to restore immediately.
-(setq desktop-restore-eager 10)
+;; (setq desktop-restore-eager 10)
 
 (defun ar/desktop-save ()
   "Write the desktop save file to ~/.emacs.d."
@@ -1542,6 +1529,21 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "open"
    ("o" ar/open-in-external-app "externally")
    ("p" ar/open-file-at-point "path at point")
+   ("q" nil "cancel")))
+
+(require 'profiler)
+(defun ar/profiler-start-cpu ()
+  "Start cpu profiler."
+  (interactive)
+  (profiler-start 'cpu))
+
+(global-set-key
+ (kbd "C-c 1")
+ (defhydra hydra-profile (:color blue)
+   "open"
+   ("b" ar/profiler-start-cpu "begin")
+   ("r" profiler-report "report")
+   ("e" profiler-stop "end")
    ("q" nil "cancel")))
 
 ;; (global-set-key
