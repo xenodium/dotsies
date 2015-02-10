@@ -436,6 +436,15 @@ Optional argument NON-RECURSIVE to shallow-search."
 (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk)
 
+(add-hook 'window-configuration-change-hook (lambda ()
+                                              (git-gutter:clear)))
+
+(add-hook 'change-major-mode-hook (lambda ()
+                                    (git-gutter:clear)))
+
+(add-hook 'after-save-hook (lambda ()
+                             (git-gutter:clear)))
+
 ;; Handy pop-up messages with git info.
 (use-package git-messenger
   :ensure t)
