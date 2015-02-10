@@ -35,11 +35,6 @@
   :ensure t)
 (require 'async-bytecomp)
 
-;; Display line numbers.
-(use-package linum
-  :ensure t)
-(setq linum-format "%4d ")
-
 (use-package molokai-theme
   :ensure t)
 (set-face-attribute 'linum nil :background "#1B1D1E")
@@ -428,22 +423,47 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package git-timemachine
   :ensure t)
 
-;; Highlight git hunks.
-(use-package git-gutter
-  :ensure t)
-(global-git-gutter-mode +1)
-(git-gutter:linum-setup)
-(global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
-(global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk)
+(defun ar/setup-tty ()
+  "Setup tty frame."
+  (unless (window-system)
+    ;; Display line numbers.
+    (use-package linum :ensure t)
+    (setq linum-format "%4d ")
+    (use-package git-gutter :ensure t)
+    (global-git-gutter-mode +1)
+    (git-gutter:linum-setup)
+    (global-set-key (kbd "C-c <up>") 'git-gutter+-previous-hunk)
+    (global-set-key (kbd "C-c <down>") 'git-gutter+-next-hunk)))
+(ar/setup-tty)
 
-(add-hook 'window-configuration-change-hook (lambda ()
-                                              (git-gutter:clear)))
+(defun ar/setup-git-fringe ()
+  "Setup git fringe (works in display mode only)."
+  (use-package linum :ensure t)
+  (global-linum-mode t)
+  (use-package git-gutter+ :ensure t)
+  (use-package fringe-helper :ensure t)
+  (use-package git-gutter-fringe+)
+  (global-git-gutter+-mode t)
+  (set-face-foreground 'git-gutter-fr+-modified "yellow")
+  (set-face-foreground 'git-gutter-fr+-added "green")
+  (set-face-foreground 'git-gutter-fr+-deleted "red")
+  (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
+  (global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk))
 
-(add-hook 'change-major-mode-hook (lambda ()
-                                    (git-gutter:clear)))
+;; TODO: Revisit this.
+(defun ar/setup-graphic-display ()
+  "Setup graphic display."
+  (when (window-system)
+    (use-package linum :ensure t)
+    (global-linum-mode t)
+    (ar/setup-git-fringe)
+    (add-hook 'before-make-frame-hook
+              #'(lambda ()
+                  (use-package hlinum :ensure t)
+                  (hlinum-activate)
+                  (ar/setup-git-fringe)))))
 
-(add-hook 'after-save-hook (lambda ()
-                             (git-gutter:clear)))
+(ar/setup-graphic-display)
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger
