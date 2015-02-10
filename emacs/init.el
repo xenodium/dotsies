@@ -37,8 +37,7 @@
 
 (use-package molokai-theme
   :ensure t)
-(set-face-attribute 'linum nil :background "#1B1D1E")
-(set-face-attribute 'fringe nil :background "#1B1D1E")
+
 (set-cursor-color "#FA009A")
 
 ;; Hide UI.
@@ -428,6 +427,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (unless (window-system)
     ;; Display line numbers.
     (use-package linum :ensure t)
+    (set-face-attribute 'linum nil :background "#1B1D1E")
     (setq linum-format "%4d ")
     (use-package git-gutter :ensure t)
     (global-git-gutter-mode +1)
@@ -435,6 +435,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (global-set-key (kbd "C-c <up>") 'git-gutter+-previous-hunk)
     (global-set-key (kbd "C-c <down>") 'git-gutter+-next-hunk)))
 (ar/setup-tty)
+
+(set-face-attribute 'fringe nil :background "#1B1D1E")
 
 (defun ar/setup-git-fringe ()
   "Setup git fringe (works in display mode only)."
