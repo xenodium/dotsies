@@ -28,15 +28,12 @@
 (setq gc-cons-threshold 20000000)
 
 ;; Enhanced list-packages replacement.
-(use-package paradox
-  :ensure t)
+(use-package paradox :ensure t)
 
-(use-package async
-  :ensure t)
+(use-package async :ensure t)
 (require 'async-bytecomp)
 
-(use-package molokai-theme
-  :ensure t)
+(use-package molokai-theme :ensure t)
 
 (set-cursor-color "#FA009A")
 
@@ -47,8 +44,7 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
-(use-package fullframe
-  :ensure t)
+(use-package fullframe :ensure t)
 
 (after-load 'magit
             (fullframe magit-status magit-mode-quit-window))
@@ -137,12 +133,10 @@
 (set-face-attribute 'default nil :height 180)
 
 ;; Ensure window is maximized.
-(use-package maxframe
-  :ensure t)
+(use-package maxframe :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
-(use-package elfeed
-  :ensure t)
+(use-package elfeed :ensure t)
 (setq elfeed-feeds
       '(("http://planet.emacsen.org/atom.xml" blog emacs)
         ("http://planet.gnome.org/rss20.xml" blog gnome)
@@ -151,16 +145,14 @@
         ("http://reddit.com/r/emacs/.rss" blog reddit)))
 ;; Start off with elfeed.
 
-(use-package bind-key
-  :ensure t)
+(use-package bind-key :ensure t)
 
 ;; Enable upcase and downcase region (disabled by default).
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(use-package anchored-transpose
-  :ensure t)
+(use-package anchored-transpose :ensure t)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -174,22 +166,17 @@
 (bind-key "C-+" 'text-scale-increase)
 (bind-key "C--" 'text-scale-decrease)
 
-(use-package hackernews
-  :ensure t)
+(use-package hackernews :ensure t)
 
 ;; Stack Exchange viewer.
-(use-package sx
-  :ensure t)
+(use-package sx :ensure t)
 
 ;; Twitter.
-(use-package twittering-mode
-  :ensure t)
+(use-package twittering-mode :ensure t)
 
-(use-package rainbow-delimiters
-  :ensure t)
+(use-package rainbow-delimiters :ensure t)
 
-(use-package hungry-delete
-  :ensure t)
+(use-package hungry-delete :ensure t)
 (global-hungry-delete-mode)
 (global-font-lock-mode)
 
@@ -198,8 +185,7 @@
 ;; Need it for mode-line-format to stay up to date.
 (setq auto-revert-check-vc-info t)
 
-(use-package expand-region
-  :ensure t)
+(use-package expand-region :ensure t)
 (global-set-key (kbd "C-c w") 'er/expand-region)
 
 (require 'recentf)
@@ -207,8 +193,7 @@
       recentf-max-menu-items 15)
 (recentf-mode)
 
-(use-package yasnippet
-  :ensure t)
+(use-package yasnippet :ensure t)
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
@@ -222,15 +207,12 @@
 (use-package helm
   :init
   (progn
-    (use-package helm-ag
-      :ensure t)
+    (use-package helm-ag :ensure t)
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
-    (use-package helm-swoop
-      :ensure t)
-    (use-package helm-config))
-  :ensure t)
+    (use-package helm-swoop :ensure t)
+    (use-package helm-config)) :ensure t)
 
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
@@ -249,8 +231,7 @@ With argument ARG, do this that many times."
 (global-set-key (kbd "M-DEL") 'ar/backward-delete-word)
 (global-set-key (kbd "<C-backspace>") 'ar/backward-delete-word)
 
-(use-package helm-dash
-  :ensure t
+(use-package helm-dash :ensure t
   :demand)
 (bind-key "C-h y" 'helm-dash-at-point)
 (setq helm-dash-browser-func 'eww)
@@ -320,21 +301,17 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Mac OS
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
-(use-package ggtags
-  :ensure t)
-(use-package helm-gtags
-  :ensure t)
+(use-package ggtags :ensure t)
+(use-package helm-gtags :ensure t)
 (helm-gtags-mode 1)
 (global-set-key (kbd "M-.") 'helm-gtags-dwim)
 
-(use-package projectile
-  :ensure t)
+(use-package projectile :ensure t)
 (projectile-global-mode)
 (setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
-(use-package helm-projectile
-  :ensure t
+(use-package helm-projectile :ensure t
   :bind (("C-x f" . helm-projectile)))
 
 ;; Prevent split-window-sensibly to split horizontally.
@@ -419,8 +396,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; From http://www.emacswiki.org/emacs/CamelCase
 (global-subword-mode t)
 
-(use-package git-timemachine
-  :ensure t)
+(use-package git-timemachine :ensure t)
 
 (defun ar/setup-tty ()
   "Setup tty frame."
@@ -468,8 +444,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (ar/setup-graphic-display)
 
 ;; Handy pop-up messages with git info.
-(use-package git-messenger
-  :ensure t)
+(use-package git-messenger :ensure t)
 
 ;; Display column numbers.
 (setq-default column-number-mode t)
@@ -613,11 +588,9 @@ Argument PROMPT to check for additional prompt."
     (orig-yes-or-no-p prompt)
     ))
 
-(use-package git-link
-  :ensure t)
+(use-package git-link :ensure t)
 
-(use-package magit
-  :ensure t)
+(use-package magit :ensure t)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" 'vc-ediff))
@@ -669,8 +642,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 
 (setq ring-bell-function 'ignore)
 
-(use-package markdown-mode+
-  :ensure t)
+(use-package markdown-mode+ :ensure t)
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -742,8 +714,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'sacha/smarter-move-beginning-of-line)
 
-(use-package whole-line-or-region
-  :ensure t)
+(use-package whole-line-or-region :ensure t)
 (whole-line-or-region-mode)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
@@ -799,8 +770,7 @@ Position the cursor at it's beginning, according to the current mode."
 (add-hook 'sgml-mode-hook
           (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
 
-(use-package multiple-cursors
-  :ensure t)
+(use-package multiple-cursors :ensure t)
 (multiple-cursors-mode)
 (global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
@@ -818,23 +788,19 @@ With a prefix ARG open line above the current line."
 
 (global-set-key (kbd "C-o") 'prelude-smart-open-line)
 
-(use-package ace-jump-mode
-  :ensure t)
+(use-package ace-jump-mode :ensure t)
 
-(use-package ace-jump-zap
-  :ensure t
+(use-package ace-jump-zap :ensure t
   :bind
   (("M-z" . ace-jump-zap-up-to-char-dwim)
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
-(use-package ace-window
-  :ensure t
+(use-package ace-window :ensure t
   :bind (("C-x o" . ace-window)))
 
 
 ;; Interactively resize current window.
-(use-package windsize
-  :ensure t)
+(use-package windsize :ensure t)
 (windsize-default-keybindings)
 
 (golden-ratio-mode)
@@ -842,14 +808,12 @@ With a prefix ARG open line above the current line."
                                    "term-mode"
                                    "dired-mode"))
 
-(use-package auto-dim-other-buffers
-  :ensure t)
+(use-package auto-dim-other-buffers :ensure t)
 (add-hook 'after-init-hook (lambda ()
                              (when (fboundp 'auto-dim-other-buffers-mode)
                                (auto-dim-other-buffers-mode t))))
 
-(use-package key-chord
-  :ensure t)
+(use-package key-chord :ensure t)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
@@ -867,15 +831,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Needs clang-format installed.
 ;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
 ;; See http://clang.llvm.org/docs/ClangFormat.html
-(use-package clang-format
-  :ensure t)
+(use-package clang-format :ensure t)
 
-(use-package company
-  :ensure t)
-(use-package company-quickhelp
-  :ensure t)
-(use-package company-c-headers
-  :ensure t)
+(use-package company :ensure t)
+(use-package company-quickhelp :ensure t)
+(use-package company-c-headers :ensure t)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
@@ -896,17 +856,13 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (add-to-list 'company-backends 'company-rtags)
 ;; (rtags-diagnostics)
 
-(use-package helm-c-yasnippet
-  :ensure t)
+(use-package helm-c-yasnippet :ensure t)
 
-(use-package helm-make
-  :ensure t)
+(use-package helm-make :ensure t)
 
-(use-package discover
-  :ensure t)
+(use-package discover :ensure t)
 
-(use-package drag-stuff
-  :ensure t)
+(use-package drag-stuff :ensure t)
 (global-set-key (kbd "M-<up>") 'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
 
@@ -914,8 +870,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq create-lockfiles nil)
 
 ;; displays hex strings representing colors
-(use-package rainbow-mode
-  :ensure t)
+(use-package rainbow-mode :ensure t)
 (rainbow-mode 1)
 
 ;; Activate smerge on conflicts.
@@ -940,7 +895,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Relies on manual installation (ie. make emaXcode).
 ;; Enable auto-complete to use emaXcode while generating snippets.
 ;;(use-package auto-complete
-;;  :ensure t)
+; :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
@@ -982,17 +937,16 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;    (See http://blog.patspam.com/2014/vim-objc-code-completion)
 ;;  * Add objc-mode to company-ycmd--extended-features-modes in company-ycmd.el
 ;; (use-package ycmd
-;;   :ensure t)
+;; :ensure t)
 ;;
 ;; (use-package company-ycmd
-;;   :ensure t)
+;; :ensure t)
 ;;
 ;; (setq ycmd-server-command (list "python"
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
-(use-package objc-font-lock
-  :ensure t)
+(use-package objc-font-lock :ensure t)
 (objc-font-lock-global-mode)
 (setq objc-font-lock-background-face nil)
 
@@ -1007,8 +961,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (add-hook 'c-mode-common-hook (lambda()
                                 (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
-(use-package dummy-h-mode
-  :ensure t)
+(use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
 (defun ar/kill-other-buffers ()
@@ -1047,8 +1000,7 @@ Repeated invocations toggle between the two most recently open buffers."
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(use-package go-mode
-  :ensure t)
+(use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
 ;; go get -u code.google.com/p/rog-go/exp/cmd/godef
@@ -1057,8 +1009,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
 ;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
-(use-package company-go
-  :ensure t)
+(use-package company-go :ensure t)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
                           (set (make-local-variable 'company-backends) '(company-go))
@@ -1086,8 +1037,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c l") 'ar/split-camel-region)
 
 ;; M-. elisp navigation.
-(use-package elisp-slime-nav
-  :ensure t)
+(use-package elisp-slime-nav :ensure t)
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
   "Add HOOK-FUNCTIONS to mode HOOKS."
@@ -1193,8 +1143,7 @@ Argument LEN Length."
 
 ;; Workaround to use centered-cursor-mode in --nw.
 (defvar mouse-wheel-mode nil)
-(use-package centered-cursor-mode
-  :ensure t)
+(use-package centered-cursor-mode :ensure t)
 
 (defun ar/create-non-existent-directory ()
   (let ((parent-directory (file-name-directory buffer-file-name)))
@@ -1233,8 +1182,7 @@ Argument LEN Length."
 (setq shell-pop-autocd-to-working-dir nil)
 
 (global-set-key [f5] 'shell-pop)
-(use-package shell-pop
-  :ensure t)
+(use-package shell-pop :ensure t)
 
 (defun ar/comment-dwim ()
   "Comment current line or region."
@@ -1308,23 +1256,20 @@ Argument LEN Length."
     (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
 
 ;; Quickly undo pop-ups or other window configurations.
-(use-package winner
-  :ensure t
+(use-package winner :ensure t
   :init (winner-mode 1))
 (setq winner-boring-buffers
       (append winner-boring-buffers '("*helm M-x*"
                                       "helm mini*"
                                       "*helm projectile*")))
 
-(use-package helm-descbinds
-  :ensure
+(use-package helm-descbinds :ensure
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
 
 ;;  Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
-(use-package auto-compile
-  :ensure t
+(use-package auto-compile :ensure t
   :demand)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
@@ -1447,8 +1392,7 @@ Argument LEN Length."
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
 
-(use-package google-translate
-  :ensure t)
+(use-package google-translate :ensure t)
 
 ;; From http://ergoemacs.org/emacs/emacs_copy_file_path.html
 (defun ar/copy-file-path (&optional φdir-path-only-p)
@@ -1518,14 +1462,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                 (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξpath))
                   (find-file ξpath ))))))))))
 
-(use-package flycheck
-  :ensure t)
+(use-package flycheck :ensure t)
 
-(use-package flycheck-pos-tip
-  :ensure t)
+(use-package flycheck-pos-tip :ensure t)
 
-(use-package hydra
-  :ensure t)
+(use-package hydra :ensure t)
 (setq hydra-is-helpful t)
 
 (global-set-key
