@@ -432,8 +432,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (use-package git-gutter :ensure t)
     (global-git-gutter-mode +1)
     (git-gutter:linum-setup)
-    (global-set-key (kbd "C-c <up>") 'git-gutter+-previous-hunk)
-    (global-set-key (kbd "C-c <down>") 'git-gutter+-next-hunk)))
+    (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
+    (global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk)))
 (ar/setup-tty)
 
 (set-face-attribute 'fringe nil :background "#1B1D1E")
@@ -444,13 +444,13 @@ Optional argument NON-RECURSIVE to shallow-search."
   (global-linum-mode t)
   (use-package git-gutter+ :ensure t)
   (use-package fringe-helper :ensure t)
-  (use-package git-gutter-fringe+)
+  (use-package git-gutter-fringe+ :ensure t)
   (global-git-gutter+-mode t)
   (set-face-foreground 'git-gutter-fr+-modified "yellow")
   (set-face-foreground 'git-gutter-fr+-added "green")
   (set-face-foreground 'git-gutter-fr+-deleted "red")
-  (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
-  (global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk))
+  (global-set-key (kbd "C-c <up>") 'git-gutter+-previous-hunk)
+  (global-set-key (kbd "C-c <down>") 'git-gutter+-next-hunk))
 
 ;; TODO: Revisit this.
 (defun ar/setup-graphic-display ()
