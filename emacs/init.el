@@ -1548,5 +1548,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
 
+;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
+(defun ar/comint-clear-buffer ()
+  "Clear the content of shell/REPL."
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
 (provide 'init)
 ;;; init.el ends here
