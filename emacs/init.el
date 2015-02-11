@@ -231,8 +231,7 @@ With argument ARG, do this that many times."
 (global-set-key (kbd "M-DEL") 'ar/backward-delete-word)
 (global-set-key (kbd "<C-backspace>") 'ar/backward-delete-word)
 
-(use-package helm-dash :ensure t
-  :demand)
+(use-package helm-dash :ensure t :demand)
 (bind-key "C-h y" 'helm-dash-at-point)
 (setq helm-dash-browser-func 'eww)
 
@@ -1269,8 +1268,7 @@ Argument LEN Length."
 
 ;;  Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
-(use-package auto-compile :ensure t
-  :demand)
+(use-package auto-compile :ensure t :demand)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
 
