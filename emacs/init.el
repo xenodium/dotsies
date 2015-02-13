@@ -1363,12 +1363,23 @@ Argument LEN Length."
 (defun ar/youtube-dowload ()
   "Download youtube video from url in clipboard."
   (interactive)
-  (let* ((str (current-kill 0))
+  (let* ((url (current-kill 0))
          (default-directory "~/Downloads")
          (proc (get-buffer-process (ansi-term "/bin/bash"))))
     (term-send-string
      proc
-     (concat "cd ~/Downloads && youtube-dl " str "\n"))))
+     (concat "cd ~/Downloads && youtube-dl " url "\n"))))
+
+(defun ar/view-clipboard-buffer ()
+  "View clipboard buffer."
+  (interactive)
+  (let* ((clipboard-content (current-kill 0))
+         (clipboard-buffer (get-buffer-create "*Clipboard*")))
+    (switch-to-buffer clipboard-buffer)
+    (erase-buffer)
+    (insert clipboard-content)
+    (prog-mode)))
+(global-set-key (kbd "C-c y") #'ar/view-clipboard-buffer)
 
 ;;  Save Emacs state from one session to another.
 ;;  Disabling. Trial without it.
