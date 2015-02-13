@@ -1479,6 +1479,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("f" ar/find-all-dired-current-dir "find all")
    ("q" nil "cancel")))
 
+(global-set-key
+ (kbd "C-c g")
+ (defhydra hydra-git (:color blue)
+   "git"
+   ("r" git-gutter+-revert-hunk "revert hunk")
+   ("p" git-gutter+-popup-hunk "pop hunk")
+   ("q" nil "cancel")))
+
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
 ;;                                   (candidates . (("yadda" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")
