@@ -1574,5 +1574,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
 
+;; Wonderful weather forecast.
+(use-package sunshine :ensure t)
+(when (window-system)
+  (setq sunshine-show-icons t))
+(setq sunshine-location "London, GB")
+
 (provide 'init)
 ;;; init.el ends here
