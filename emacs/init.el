@@ -1578,6 +1578,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package sunshine :ensure t)
 (when (window-system)
   (setq sunshine-show-icons t))
+(setq sunshine-units 'metric)
 (setq sunshine-location "London, GB")
 
 (provide 'init)
