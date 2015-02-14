@@ -1597,5 +1597,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
           (isearch-repeat-forward)))
     ad-do-it))
 
+;; Open gyp files in prog-mode.
+(add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
+
 (provide 'init)
 ;;; init.el ends here
