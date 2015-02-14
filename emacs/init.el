@@ -1584,6 +1584,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (setq sunshine-units 'metric)
 (setq sunshine-location "London, GB")
 
+;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
 (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
   "Enable isearch to start with current selection."
   (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
