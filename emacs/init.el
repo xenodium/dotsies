@@ -243,7 +243,6 @@ With argument ARG, do this that many times."
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-c f") 'helm-recentf)
 (global-set-key (kbd "C-h a") 'helm-apropos)
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
