@@ -357,6 +357,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Automatically hide successful builds window.
 (setq compilation-finish-functions 'ar/compile-autoclose)
 (defun ar/compile-autoclose (buffer string)
+  "Hide successful builds window with BUFFER and STRING."
   (cond ((string-match "finished" string)
          (message "Build finished")
          (run-with-timer 2 nil
@@ -872,8 +873,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package rainbow-mode :ensure t)
 (rainbow-mode 1)
 
-;; Activate smerge on conflicts.
 (defun sm-try-smerge ()
+  "Activate smerge on conflicts."
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
@@ -1145,6 +1146,7 @@ Argument LEN Length."
 (use-package centered-cursor-mode :ensure t)
 
 (defun ar/create-non-existent-directory ()
+  "Create a non-existent directory."
   (let ((parent-directory (file-name-directory buffer-file-name)))
     (when (and (not (file-exists-p parent-directory))
                (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
@@ -1273,6 +1275,7 @@ Argument LEN Length."
 (auto-compile-on-save-mode 1)
 
 (defun ar/char-upcasep (letter)
+  "Check if LETTER is uppercase."
   (eq letter (upcase letter)))
 
 ;;  http://oremacs.com/2014/12/25/ode-to-toggle
@@ -1461,14 +1464,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                       (goto-char 1)
                       (forward-line (1- ξline-num)))
                   (progn
-                    (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξfpath))
+                    (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξfpath))
                       (find-file ξfpath))))))
           (progn
             (if (file-exists-p ξpath)
                 (find-file ξpath)
               (if (file-exists-p (concat ξpath ".el"))
                   (find-file (concat ξpath ".el"))
-                (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξpath))
+                (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
 
 (use-package flycheck :ensure t)
