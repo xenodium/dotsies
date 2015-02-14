@@ -1531,7 +1531,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (global-set-key
  (kbd "C-c 1")
  (defhydra hydra-profile (:color blue)
-   "open"
+   "profiling"
    ("b" ar/profiler-start-cpu "begin")
    ("r" profiler-report "report")
    ("e" profiler-stop "end")
