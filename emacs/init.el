@@ -17,8 +17,8 @@
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
 (if (fboundp 'with-eval-after-load)
-    (defalias 'after-load 'with-eval-after-load)
-  (defmacro after-load (feature &rest body)
+    (defalias 'ar/after-load #'with-eval-after-load)
+  (defmacro ar/after-load (feature &rest body)
     "After FEATURE is loaded, evaluate BODY."
     (declare (indent defun))
     `(eval-after-load ,feature
@@ -49,16 +49,16 @@
 
 (use-package fullframe :ensure t)
 
-(after-load 'magit
-            (fullframe magit-status magit-mode-quit-window))
+(ar/after-load 'magit
+  (fullframe magit-status magit-mode-quit-window))
 
-(after-load 'paradox
+(ar/after-load 'paradox
   (fullframe paradox-list-packages paradox-quit-and-close))
 
-(after-load 'ibuffer
+(ar/after-load 'ibuffer
   (fullframe ibuffer ibuffer-quit))
 
-(after-load 'dired
+(ar/after-load 'dired
   (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
@@ -160,14 +160,14 @@
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
 (bind-key "M-t" nil) ;; which used to be transpose-words
-(bind-key "M-t r" 'anchored-transpose)
-(bind-key "M-t l" 'transpose-lines)
-(bind-key "M-t w" 'transpose-words)
-(bind-key "M-t t" 'transpose-words)
-(bind-key "M-t M-t" 'transpose-words)
-(bind-key "M-t s" 'transpose-sexps)
-(bind-key "C-+" 'text-scale-increase)
-(bind-key "C--" 'text-scale-decrease)
+(bind-key "M-t r" #'anchored-transpose)
+(bind-key "M-t l" #'transpose-lines)
+(bind-key "M-t w" #'transpose-words)
+(bind-key "M-t t" #'transpose-words)
+(bind-key "M-t M-t" #'transpose-words)
+(bind-key "M-t s" #'transpose-sexps)
+(bind-key "C-+" #'text-scale-increase)
+(bind-key "C--" #'text-scale-decrease)
 
 (use-package hackernews :ensure t)
 
@@ -189,7 +189,7 @@
 (setq auto-revert-check-vc-info t)
 
 (use-package expand-region :ensure t)
-(global-set-key (kbd "C-c w") 'er/expand-region)
+(global-set-key (kbd "C-c w") #'er/expand-region)
 
 (require 'recentf)
 (setq recentf-max-saved-items 200
@@ -200,12 +200,6 @@
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
-
-;; From http://tuhdo.github.io/helm-intro.html
-;; must set before helm-config,  otherwise helm use default
-;; prefix "C-x c", which is inconvenient because you can
-;; accidentially pressed "C-x C-c"
-(setq helm-command-prefix-key "C-c h")
 
 (use-package helm
   :init
@@ -231,33 +225,32 @@ With argument ARG, do this that many times."
                  (progn
                    (backward-word arg)
                    (point))))
-(global-set-key (kbd "M-DEL") 'ar/backward-delete-word)
-(global-set-key (kbd "<C-backspace>") 'ar/backward-delete-word)
+(global-set-key (kbd "M-DEL") #'ar/backward-delete-word)
+(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-word)
 
 (use-package helm-dash :ensure t :demand)
-(bind-key "C-h y" 'helm-dash-at-point)
-(setq helm-dash-browser-func 'eww)
+(bind-key "C-h y" #'helm-dash-at-point)
+(setq helm-dash-browser-func #'eww)
 
-(global-set-key (kbd "M-C-s") 'helm-multi-swoop-all)
-(global-set-key (kbd "C-c i") 'helm-imenu)
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-c f") 'helm-recentf)
-(global-set-key (kbd "C-h a") 'helm-apropos)
+(global-set-key (kbd "M-C-s") #'helm-multi-swoop-all)
+(global-set-key (kbd "C-c i") #'helm-imenu)
+(define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action) ; rebind tab to do persistent action
+(define-key helm-map (kbd "C-i") #'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  #'helm-select-action) ; list actions using C-z
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "M-y") #'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") #'helm-buffers-list)
+(global-set-key (kbd "C-h a") #'helm-apropos)
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 ;; On Mac, this is effectively fn-M-backspace.
-(global-set-key (kbd "M-(") 'kill-word)
-(global-set-key (kbd "C-q") 'previous-buffer)
-(global-set-key (kbd "C-z") 'next-buffer)
+(global-set-key (kbd "M-(") #'kill-word)
+(global-set-key (kbd "C-q") #'previous-buffer)
+(global-set-key (kbd "C-z") #'next-buffer)
 
-(define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
-(define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-(define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+(define-key helm-grep-mode-map (kbd "<return>")  #'helm-grep-mode-jump-other-window)
+(define-key helm-grep-mode-map (kbd "n")  #'helm-grep-mode-jump-other-window-forward)
+(define-key helm-grep-mode-map (kbd "p")  #'helm-grep-mode-jump-other-window-backward)
 
 (setq
  helm-google-suggest-use-curl-p t
@@ -276,6 +269,7 @@ With argument ARG, do this that many times."
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
  '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
+
  helm-ff-file-name-history-use-recentf t
  helm-move-to-line-cycle-in-source t ; move to end or beginning of source
  ido-use-virtual-buffers t
@@ -292,7 +286,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (interactive "P")
   (let* ((current-prefix-arg (not non-recursive))
          (helm-current-prefix-arg non-recursive))
-    (call-interactively 'helm-do-grep)))
+    (call-interactively #'helm-do-grep)))
 
 ;; ggtags code indexing.
 ;; https://github.com/leoliu/ggtags
@@ -303,10 +297,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Mac OS
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
+;; http://writequit.org/org/settings.html#sec-1-26
 (use-package ggtags :ensure t)
 (use-package helm-gtags :ensure t)
 (helm-gtags-mode 1)
-(global-set-key (kbd "M-.") 'helm-gtags-dwim)
+(global-set-key (kbd "M-.") #'helm-gtags-dwim)
 
 (use-package projectile :ensure t)
 (projectile-global-mode)
@@ -332,22 +327,22 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (defun ar/ediff-bsh ()
   "Function to be called before any buffers or window setup for ediff."
-  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
+  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
   (window-configuration-to-register ar/ediff-bwin-reg))
 
 (defun ar/ediff-aswh ()
   "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
-  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
+  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess))
 
 (defun ar/ediff-qh ()
   "Function to be called when ediff quits."
-  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
+  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
   (ediff-cleanup-mess)
   (jump-to-register ar/ediff-bwin-reg))
 
-(add-hook 'ediff-before-setup-hook 'ar/ediff-bsh)
-(add-hook 'ediff-after-setup-windows-hook 'ar/ediff-aswh);
-(add-hook 'ediff-quit-hook 'ar/ediff-qh)
+(add-hook 'ediff-before-setup-hook #'ar/ediff-bsh)
+(add-hook 'ediff-after-setup-windows-hook #'ar/ediff-aswh);
+(add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
 ;; Highlight lines longer than 100 columns.
 (require 'whitespace)
@@ -355,19 +350,22 @@ Optional argument NON-RECURSIVE to shallow-search."
       whitespace-style '(face lines tabs))
 (setq-default whitespace-mode 1)
 
-;; Automatically scroll build output.
-(setq compilation-scroll-output t)
-;; Automatically hide successful builds window.
-(setq compilation-finish-functions 'ar/compile-autoclose)
 (defun ar/compile-autoclose (buffer string)
+  "Hide successful builds window with BUFFER and STRING."
   (cond ((string-match "finished" string)
          (message "Build finished")
          (run-with-timer 2 nil
-                         'delete-window
+                         #'delete-window
                          (get-buffer-window buffer t)))
         (t
          (next-error)
          (message "Compilation exited abnormally: %s" string))))
+
+;; Automatically hide successful builds window.
+(setq compilation-finish-functions #'ar/compile-autoclose)
+
+;; Automatically scroll build output.
+(setq compilation-scroll-output t)
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -410,8 +408,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (use-package git-gutter :ensure t)
     (global-git-gutter-mode +1)
     (git-gutter:linum-setup)
-    (global-set-key (kbd "C-c <up>") 'git-gutter:previous-hunk)
-    (global-set-key (kbd "C-c <down>") 'git-gutter:next-hunk)))
+    (global-set-key (kbd "C-c <up>") #'git-gutter:previous-hunk)
+    (global-set-key (kbd "C-c <down>") #'git-gutter:next-hunk)))
 (ar/setup-tty)
 
 (set-face-attribute 'fringe nil :background "#1B1D1E")
@@ -427,8 +425,8 @@ Optional argument NON-RECURSIVE to shallow-search."
   (set-face-foreground 'git-gutter-fr+-modified "yellow")
   (set-face-foreground 'git-gutter-fr+-added "green")
   (set-face-foreground 'git-gutter-fr+-deleted "red")
-  (global-set-key (kbd "C-c <up>") 'git-gutter+-previous-hunk)
-  (global-set-key (kbd "C-c <down>") 'git-gutter+-next-hunk))
+  (global-set-key (kbd "C-c <up>") #'git-gutter+-previous-hunk)
+  (global-set-key (kbd "C-c <down>") #'git-gutter+-next-hunk))
 
 ;; TODO: Revisit this.
 (defun ar/setup-graphic-display ()
@@ -438,10 +436,10 @@ Optional argument NON-RECURSIVE to shallow-search."
     (global-linum-mode t)
     (ar/setup-git-fringe)
     (add-hook 'before-make-frame-hook
-              #'(lambda ()
-                  (use-package hlinum :ensure t)
-                  (hlinum-activate)
-                  (ar/setup-git-fringe)))))
+              (lambda ()
+                (use-package hlinum :ensure t)
+                (hlinum-activate)
+                (ar/setup-git-fringe)))))
 
 (ar/setup-graphic-display)
 
@@ -498,7 +496,7 @@ Optional argument NON-RECURSIVE to shallow-search."
     (if command
         (shell-command command)
       (message "Unrecognized platform."))))
-(global-set-key (kbd "C-x t") 'ar/new-browser-tab)
+(global-set-key (kbd "C-x t") #'ar/new-browser-tab)
 
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
@@ -575,37 +573,36 @@ Optional argument NON-RECURSIVE to shallow-search."
 This is a wrapper around `orig-yes-or-no'.
 Argument PROMPT to check for additional prompt."
   (if (string-match
-;;  This message is created in lisp/files.el, and there are four
-;;  variations.  I'm intentionally matching two of them.
+       ;;  This message is created in lisp/files.el, and there are four
+       ;;  variations.  I'm intentionally matching two of them.
        "File .* changed on disk.  Reread from disk"
        prompt)
 
-;;  it's that question; the answer is no, but I *do* want to know
-;;  that it has changed
+      ;;  it's that question; the answer is no, but I *do* want to know
+      ;;  that it has changed
       (progn (message "Note: File has changed on disk.") nil)
 
-;;  it's a different question; for now, just ask me; I'll probably
-;;  add more patterns to the above as I think of other questions that
-;;  I don't want asked
-    (orig-yes-or-no-p prompt)
-    ))
+    ;;  it's a different question; for now, just ask me; I'll probably
+    ;;  add more patterns to the above as I think of other questions that
+    ;;  I don't want asked
+    (orig-yes-or-no-p prompt)))
 
 (use-package git-link :ensure t)
 
 (use-package magit :ensure t)
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
-  '(define-key vc-prefix-map "=" 'vc-ediff))
-(global-set-key (kbd "C-x g") 'magit-status)
-(setq magit-status-buffer-switch-function 'switch-to-buffer)
+  '(define-key vc-prefix-map "=" #'vc-ediff))
+(global-set-key (kbd "C-x g") #'magit-status)
+(setq magit-status-buffer-switch-function #'switch-to-buffer)
 
 (defun ar/sort-lines-ignore-case ()
   "Sort region (case-insensitive)."
   (interactive)
   (let ((sort-fold-case t))
-    (call-interactively 'sort-lines)))
+    (call-interactively #'sort-lines)))
 ;; Sort lines (ie. package imports or headers).
-(global-set-key (kbd "M-s l") 'ar/sort-lines-ignore-case)
+(global-set-key (kbd "M-s l") #'ar/sort-lines-ignore-case)
 
 (setq css-indent-offset 2)
 
@@ -640,7 +637,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                      (y-or-n-p "Open more than 5 files? "))))
     (when ξdo-it-p
       (mapc (ar/open-in-external-app-lambda) ξfile-list))))
-(global-set-key (kbd "C-M-o") 'ar/open-in-external-app)
+(global-set-key (kbd "C-M-o") #'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -656,12 +653,11 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                                 ("America/Los_Angeles" "Los Angeles")))
 
 ;; From http://wenshanren.org/?p=298#more-298
-(defun wenshan-edit-current-file-as-root ()
+(defun ar/edit-current-file-as-root ()
   "Edit the file that is associated with the current buffer as root."
   (interactive)
   (if (buffer-file-name)
-      (progn
-        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+      (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
@@ -720,27 +716,26 @@ point reaches the beginning or end of the buffer, stop there."
 (whole-line-or-region-mode)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
-(defun vsplit-last-buffer ()
+(defun ar/vsplit-last-buffer ()
   "Vertically splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-vertically)
   (other-window 1 nil)
-  (switch-to-next-buffer)
-  )
-(defun hsplit-last-buffer ()
+  (switch-to-next-buffer))
+
+(defun ar/hsplit-last-buffer ()
   "Horizontally splitting the screen and open the previous buffer instead of identical buffers."
   (interactive)
   (split-window-horizontally)
   (other-window 1 nil)
-  (switch-to-next-buffer)
-  )
+  (switch-to-next-buffer))
 
-(global-set-key (kbd "C-x 2") 'vsplit-last-buffer)
-(global-set-key (kbd "C-x 3") 'hsplit-last-buffer)
+(global-set-key (kbd "C-x 2") #'ar/vsplit-last-buffer)
+(global-set-key (kbd "C-x 3") #'ar/hsplit-last-buffer)
 
 ;; Thank you Bozhidar.
 ;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L340
-(defun prelude-swap-windows ()
+(defun ar/swap-windows ()
   "If you have 2 windows, it swaps them."
   (interactive)
   (if (/= (count-windows) 2)
@@ -756,10 +751,10 @@ point reaches the beginning or end of the buffer, stop there."
       (set-window-start w1 s2)
       (set-window-start w2 s1)))
   (other-window 1))
-(bind-key "C-\\" 'prelude-swap-windows)
+(bind-key "C-\\" #'ar/swap-windows)
 
 ;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L111
-(defun prelude-smart-open-line-above ()
+(defun ar/smart-open-line-above ()
   "Insert an empty line above the current line.
 Position the cursor at it's beginning, according to the current mode."
   (interactive)
@@ -770,25 +765,25 @@ Position the cursor at it's beginning, according to the current mode."
 
 ;; Do not auto indent current line when pressing <RET>.
 (add-hook 'sgml-mode-hook
-          (lambda() (local-set-key (kbd "<RET>") 'electric-indent-just-newline)))
+          (lambda() (local-set-key (kbd "<RET>") #'electric-indent-just-newline)))
 
 (use-package multiple-cursors :ensure t)
 (multiple-cursors-mode)
-(global-set-key (kbd "C-c n") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
 
-(defun prelude-smart-open-line (arg)
+(defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
 Position the cursor at its beginning, according to the current mode.
 With a prefix ARG open line above the current line."
   (interactive "P")
   (if arg
-      (prelude-smart-open-line-above)
+      (ar/smart-open-line-above)
     (progn
       (move-end-of-line nil)
       (newline-and-indent))))
 
-(global-set-key (kbd "C-o") 'prelude-smart-open-line)
+(global-set-key (kbd "C-o") #'ar/smart-open-line)
 
 (use-package ace-jump-mode :ensure t)
 
@@ -816,18 +811,20 @@ With a prefix ARG open line above the current line."
                                (auto-dim-other-buffers-mode t))))
 
 (use-package key-chord :ensure t)
-(key-chord-define-global "jj" 'ace-jump-char-mode)
-(key-chord-define-global "jl" 'ace-jump-line-mode)
-(key-chord-define-global "xx" 'execute-extended-command)
-(key-chord-define-global "kk" 'kill-whole-line)
+(key-chord-define-global "jj" #'ace-jump-char-mode)
+(key-chord-define-global "jk" #'ace-jump-char-mode)
+(key-chord-define-global "jl" #'ace-jump-line-mode)
+(key-chord-define-global "xx" #'execute-extended-command)
+(key-chord-define-global "kk" #'kill-whole-line)
+
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
 (defun ar/switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-(key-chord-define-global "JJ" 'ar/switch-to-previous-buffer)
-(key-chord-define-global "BB" 'other-window)
+(key-chord-define-global "JJ" #'ar/switch-to-previous-buffer)
+(key-chord-define-global "BB" #'other-window)
 (key-chord-mode +1)
 
 ;; Needs clang-format installed.
@@ -844,7 +841,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq company-show-numbers t)
 (global-company-mode)
 (add-to-list 'company-backends 'company-c-headers)
-(global-set-key (kbd "<backtab>") 'company-complete)
+(global-set-key (kbd "<backtab>") #'company-complete)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -865,8 +862,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package discover :ensure t)
 
 (use-package drag-stuff :ensure t)
-(global-set-key (kbd "M-<up>") 'drag-stuff-up)
-(global-set-key (kbd "M-<down>") 'drag-stuff-down)
+(global-set-key (kbd "M-<up>") #'drag-stuff-up)
+(global-set-key (kbd "M-<down>") #'drag-stuff-down)
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
@@ -874,14 +871,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; displays hex strings representing colors
 (use-package rainbow-mode :ensure t)
 (rainbow-mode 1)
-
-;; Activate smerge on conflicts.
-(defun sm-try-smerge ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
-(add-hook 'find-file-hook 'sm-try-smerge t)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
@@ -958,10 +947,9 @@ Repeated invocations toggle between the two most recently open buffers."
         ("\\.h$" (".c" ".cpp" ".m" ".mm"))
         ("\\.hpp$" (".cpp" ".c"))
         ("\\.m$" (".h"))
-        ("\\.mm$" (".h"))
-        ))
+        ("\\.mm$" (".h"))))
 (add-hook 'c-mode-common-hook (lambda()
-                                (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+                                (local-set-key (kbd "C-c o") #'ff-find-other-file)))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -1017,7 +1005,7 @@ Repeated invocations toggle between the two most recently open buffers."
                           (set (make-local-variable 'company-backends) '(company-go))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
-                          (add-hook 'before-save-hook 'gofmt-before-save)))
+                          (add-hook 'before-save-hook #'gofmt-before-save)))
 
 (unless (server-running-p)
   (server-start))
@@ -1036,7 +1024,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-(global-set-key (kbd "C-c l") 'ar/split-camel-region)
+(global-set-key (kbd "C-c l") #'ar/split-camel-region)
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
@@ -1065,7 +1053,7 @@ Repeated invocations toggle between the two most recently open buffers."
   "Jumps cursor to register 9999's value."
   (interactive)
   (jump-to-register 9999))
-(global-set-key (kbd "C-c `") 'ar/jump-to-saved-point)
+(global-set-key (kbd "C-c `") #'ar/jump-to-saved-point)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Execute for all text modifications in `prog-mode'.
@@ -1099,25 +1087,28 @@ Argument LEN Length."
   ;; ProductVersion: 7.1
   (set (make-local-variable 'compile-command)
        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (local-set-key (kbd "<f7>") 'ar/xc:build)
-  (local-set-key (kbd "<f8>") 'ar/xc:run))
+  (local-set-key (kbd "<f7>") #'ar/xc:build)
+  (local-set-key (kbd "<f8>") #'ar/xc:run)
+  (key-chord-define (current-local-map) ";;" "\C-e;"))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
-  ;; 100-column limit for java.
-  (set-fill-column 100)
   ;; 2-char indent for java.
-  (set (make-local-variable 'c-basic-offset) 2))
-(add-hook 'java-mode-hook 'ar/java-mode-hook-function)
+  (defvar c-basic-offset)
+  (setq c-basic-offset 2)
+  ;; 100-column limit for java.
+  (set-fill-column 100))
+
+(add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
-            'ar/after-prog-mode-text-change
+            #'ar/after-prog-mode-text-change
             t t)
   (let ((m prog-mode-map))
-    (define-key m [f6] 'recompile))
+    (define-key m [f6] #'recompile))
   ;; Show trailing whitespace.
   (set (make-local-variable 'show-trailing-whitespace) t)
   ;; Spellcheck comments and documentation
@@ -1134,7 +1125,7 @@ Argument LEN Length."
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
   (set (make-local-variable 'markdown-indent-on-enter) nil)
-  (local-set-key (kbd "RET") 'electric-newline-and-maybe-indent))
+  (local-set-key (kbd "RET") #'electric-newline-and-maybe-indent))
 
 (ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
                                 '(prog-mode-hook))
@@ -1148,6 +1139,7 @@ Argument LEN Length."
 (use-package centered-cursor-mode :ensure t)
 
 (defun ar/create-non-existent-directory ()
+  "Create a non-existent directory."
   (let ((parent-directory (file-name-directory buffer-file-name)))
     (when (and (not (file-exists-p parent-directory))
                (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
@@ -1156,22 +1148,11 @@ Argument LEN Length."
 (add-to-list 'find-file-not-found-functions
              #'ar/create-non-existent-directory)
 
-;; C-u magit-status presents list of repositories.
-(eval-after-load "projectile"
-  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
-                                          (substring dir 0 -1))
-                                        ;; Disables "required at runtime" warning for cl package.
-                                        (with-no-warnings
-                                          (remove-if-not (lambda (project)
-                                                           (file-directory-p (concat project "/.git/")))
-                                                         (projectile-relevant-known-projects))))
-                magit-repo-dirs-depth 1)))
-
 ;; Select help window by default.
 (setq help-window-select t)
 
 ;; No need to confirm killing buffers.
-(global-set-key [(control x) (k)] 'kill-this-buffer)
+(global-set-key [(control x) (k)] #'kill-this-buffer)
 
 ;; Customize shell-pop.
 (setq shell-pop-term-shell "/bin/bash")
@@ -1183,7 +1164,7 @@ Argument LEN Length."
 ;; Do not auto cd to working directory.
 (setq shell-pop-autocd-to-working-dir nil)
 
-(global-set-key [f5] 'shell-pop)
+(global-set-key [f5] #'shell-pop)
 (use-package shell-pop :ensure t)
 
 (defun ar/comment-dwim ()
@@ -1201,7 +1182,7 @@ Argument LEN Length."
                   (end-of-line)
                   (point))))
     (comment-or-uncomment-region start end)))
-(global-set-key (kbd "M-;") 'ar/comment-dwim)
+(global-set-key (kbd "M-;") #'ar/comment-dwim)
 
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
   "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
@@ -1241,13 +1222,13 @@ Argument LEN Length."
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 ;; Use RET instead of "a" in dired.
-(define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+(define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file)
 
 (defun ar/dired-cd-to-parent ()
   "Use ^ in dired to cd to parent."
   (interactive)
   (find-alternate-file ".."))
-(define-key dired-mode-map (kbd "^") 'ar/dired-cd-to-parent)
+(define-key dired-mode-map (kbd "^") #'ar/dired-cd-to-parent)
 
 (defun ar/find-all-dired-current-dir ()
   "Invokes `find-dired' for current dir."
@@ -1276,6 +1257,7 @@ Argument LEN Length."
 (auto-compile-on-save-mode 1)
 
 (defun ar/char-upcasep (letter)
+  "Check if LETTER is uppercase."
   (eq letter (upcase letter)))
 
 ;;  http://oremacs.com/2014/12/25/ode-to-toggle
@@ -1294,7 +1276,7 @@ Argument LEN Length."
              'upcase-region)
            start (1+ start)))
       (capitalize-word -1))))
-(global-set-key (kbd "C-c c") 'ar/capitalize-word-toggle)
+(global-set-key (kbd "C-c c") #'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
   "Toggle word case at point."
@@ -1323,8 +1305,8 @@ Argument LEN Length."
                         'downcase-region
                       'upcase-region)
                     beg end)))))
-(global-set-key (kbd "C-c u") 'upcase-word-toggle)
-(global-set-key (kbd "C-c r") 'cua-rectangle-mark-mode)
+(global-set-key (kbd "C-c u") #'ar/upcase-word-toggle)
+(global-set-key (kbd "C-c r") #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
@@ -1360,7 +1342,7 @@ Argument LEN Length."
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
-(global-set-key (kbd "C-x C-r") 'eval-region)
+(global-set-key (kbd "C-x C-r") #'eval-region)
 
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-dowload ()
@@ -1464,14 +1446,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                       (goto-char 1)
                       (forward-line (1- ξline-num)))
                   (progn
-                    (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξfpath))
+                    (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξfpath))
                       (find-file ξfpath))))))
           (progn
             (if (file-exists-p ξpath)
                 (find-file ξpath)
               (if (file-exists-p (concat ξpath ".el"))
                   (find-file (concat ξpath ".el"))
-                (when (y-or-n-p (format "file doesn't exist: %s. Create?" ξpath))
+                (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
 
 (use-package flycheck :ensure t)
@@ -1494,12 +1476,47 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("q" nil "cancel")))
 
 (global-set-key
+ (kbd "C-c h")
+ (defhydra hydra-hunks (:color red)
+   "git hunks"
+   ("n" git-gutter+-next-hunk "next")
+   ("p" git-gutter+-previous-hunk "previous")
+   ("r" git-gutter+-revert-hunk "revert")
+   ("d" git-gutter+-popup-hunk "diff")
+   ("q" nil "cancel")))
+
+(global-set-key
  (kbd "C-c g")
  (defhydra hydra-git (:color blue)
    "git"
    ("r" git-gutter+-revert-hunk "revert hunk")
    ("p" git-gutter+-popup-hunk "pop hunk")
    ("q" nil "cancel")))
+
+(require 'smerge-mode)
+(defhydra hydra-smerge (:color red)
+  "git smerge"
+  ("n" smerge-next "next")
+  ("p" smerge-prev "previous")
+  ("m" smerge-keep-mine "keep mine")
+  ("o" smerge-keep-other "keep other")
+  ("b" smerge-keep-base "keep base")
+  ("a" smerge-keep-all "keep all")
+  ("q" nil "cancel"))
+
+(defun ar/smerge-mode-hook-function ()
+  "Called when entering smerge mode."
+  (local-set-key (kbd "C-c h") #'hydra-smerge/body)
+  (hydra-smerge/body))
+(add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
+
+(defun sm-try-smerge ()
+  "Activate smerge on conflicts."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+(add-hook 'find-file-hook #'sm-try-smerge t)
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
@@ -1532,7 +1549,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (global-set-key
  (kbd "C-c 1")
  (defhydra hydra-profile (:color blue)
-   "open"
+   "profiling"
    ("b" ar/profiler-start-cpu "begin")
    ("r" profiler-report "report")
    ("e" profiler-stop "end")
@@ -1581,7 +1598,37 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package sunshine :ensure t)
 (when (window-system)
   (setq sunshine-show-icons t))
+(setq sunshine-units 'metric)
 (setq sunshine-location "London, GB")
+
+;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
+(defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+  "Enable isearch to start with current selection."
+  (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+      (progn
+        (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+        (deactivate-mark)
+        ad-do-it
+        (if (not forward)
+            (isearch-repeat-backward)
+          (goto-char (mark))
+          (isearch-repeat-forward)))
+    ad-do-it))
+
+;; Open gyp files in prog-mode.
+(add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
+
+;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
+;; C-u magit-status presents list of repositories.
+(eval-after-load "projectile"
+  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
+                                          (substring dir 0 -1))
+                                        ;; Disables "required at runtime" warning for cl package.
+                                        (with-no-warnings
+                                          (remove-if-not (lambda (project)
+                                                           (file-directory-p (concat project "/.git/")))
+                                                         (projectile-relevant-known-projects))))
+                magit-repo-dirs-depth 1)))
 
 (provide 'init)
 ;;; init.el ends here
