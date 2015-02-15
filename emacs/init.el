@@ -1090,10 +1090,12 @@ Argument LEN Length."
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
-  ;; 100-column limit for java.
-  (set-fill-column 100)
   ;; 2-char indent for java.
-  (set (make-local-variable 'c-basic-offset) 2))
+  (defvar c-basic-offset)
+  (setq c-basic-offset 2)
+  ;; 100-column limit for java.
+  (set-fill-column 100))
+
 (add-hook 'java-mode-hook 'ar/java-mode-hook-function)
 
 (defun ar/prog-mode-hook-function ()
