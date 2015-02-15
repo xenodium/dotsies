@@ -1144,17 +1144,6 @@ Argument LEN Length."
 (add-to-list 'find-file-not-found-functions
              #'ar/create-non-existent-directory)
 
-;; C-u magit-status presents list of repositories.
-(eval-after-load "projectile"
-  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
-                                          (substring dir 0 -1))
-                                        ;; Disables "required at runtime" warning for cl package.
-                                        (with-no-warnings
-                                          (remove-if-not (lambda (project)
-                                                           (file-directory-p (concat project "/.git/")))
-                                                         (projectile-relevant-known-projects))))
-                magit-repo-dirs-depth 1)))
-
 ;; Select help window by default.
 (setq help-window-select t)
 
@@ -1623,6 +1612,18 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
+
+;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
+;; C-u magit-status presents list of repositories.
+(eval-after-load "projectile"
+  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
+                                          (substring dir 0 -1))
+                                        ;; Disables "required at runtime" warning for cl package.
+                                        (with-no-warnings
+                                          (remove-if-not (lambda (project)
+                                                           (file-directory-p (concat project "/.git/")))
+                                                         (projectile-relevant-known-projects))))
+                magit-repo-dirs-depth 1)))
 
 (provide 'init)
 ;;; init.el ends here
