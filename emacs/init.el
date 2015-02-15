@@ -813,9 +813,11 @@ With a prefix ARG open line above the current line."
 
 (use-package key-chord :ensure t)
 (key-chord-define-global "jj" 'ace-jump-char-mode)
+(key-chord-define-global "jk" 'ace-jump-char-mode)
 (key-chord-define-global "jl" 'ace-jump-line-mode)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "kk" 'kill-whole-line)
+
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
 (defun ar/switch-to-previous-buffer ()
   "Switch to previously open buffer.
