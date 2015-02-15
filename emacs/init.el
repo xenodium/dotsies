@@ -653,12 +653,11 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                                 ("America/Los_Angeles" "Los Angeles")))
 
 ;; From http://wenshanren.org/?p=298#more-298
-(defun wenshan-edit-current-file-as-root ()
+(defun ar/edit-current-file-as-root ()
   "Edit the file that is associated with the current buffer as root."
   (interactive)
   (if (buffer-file-name)
-      (progn
-        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+      (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
