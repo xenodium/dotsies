@@ -1292,7 +1292,7 @@ Argument LEN Length."
              'upcase-region)
            start (1+ start)))
       (capitalize-word -1))))
-(global-set-key (kbd "C-c c") 'ar/capitalize-word-toggle)
+(global-set-key (kbd "C-c c") #'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
   "Toggle word case at point."
@@ -1321,8 +1321,8 @@ Argument LEN Length."
                         'downcase-region
                       'upcase-region)
                     beg end)))))
-(global-set-key (kbd "C-c u") 'upcase-word-toggle)
-(global-set-key (kbd "C-c r") 'cua-rectangle-mark-mode)
+(global-set-key (kbd "C-c u") #'ar/upcase-word-toggle)
+(global-set-key (kbd "C-c r") #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
