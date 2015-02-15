@@ -1098,7 +1098,8 @@ Argument LEN Length."
   (set (make-local-variable 'compile-command)
        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (local-set-key (kbd "<f7>") 'ar/xc:build)
-  (local-set-key (kbd "<f8>") 'ar/xc:run))
+  (local-set-key (kbd "<f8>") 'ar/xc:run)
+  (key-chord-define (current-local-map) ";;" "\C-e;"))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
