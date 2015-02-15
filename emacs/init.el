@@ -17,8 +17,8 @@
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
 (if (fboundp 'with-eval-after-load)
-    (defalias 'after-load 'with-eval-after-load)
-  (defmacro after-load (feature &rest body)
+    (defalias 'ar/after-load 'with-eval-after-load)
+  (defmacro ar/after-load (feature &rest body)
     "After FEATURE is loaded, evaluate BODY."
     (declare (indent defun))
     `(eval-after-load ,feature
@@ -46,17 +46,17 @@
 
 (use-package fullframe :ensure t)
 
-(after-load 'magit
-            (fullframe magit-status magit-mode-quit-window))
+(ar/after-load 'magit
+               (fullframe magit-status magit-mode-quit-window))
 
-(after-load 'paradox
-  (fullframe paradox-list-packages paradox-quit-and-close))
+(ar/after-load 'paradox
+               (fullframe paradox-list-packages paradox-quit-and-close))
 
-(after-load 'ibuffer
-  (fullframe ibuffer ibuffer-quit))
+(ar/after-load 'ibuffer
+               (fullframe ibuffer ibuffer-quit))
 
-(after-load 'dired
-  (fullframe dired quit-window))
+(ar/after-load 'dired
+               (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
