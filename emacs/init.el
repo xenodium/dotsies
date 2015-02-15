@@ -293,6 +293,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Mac OS
 ;; brew install --HEAD ctags
 ;; brew install global --with-exuberant-ctags
+;; http://writequit.org/org/settings.html#sec-1-26
 (use-package ggtags :ensure t)
 (use-package helm-gtags :ensure t)
 (helm-gtags-mode 1)
