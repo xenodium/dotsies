@@ -198,12 +198,6 @@
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
 
-;; From http://tuhdo.github.io/helm-intro.html
-;; must set before helm-config,  otherwise helm use default
-;; prefix "C-x c", which is inconvenient because you can
-;; accidentially pressed "C-x C-c"
-(setq helm-command-prefix-key "C-c h")
-
 (use-package helm
   :init
   (progn
