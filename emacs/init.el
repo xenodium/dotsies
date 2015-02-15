@@ -867,14 +867,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package rainbow-mode :ensure t)
 (rainbow-mode 1)
 
-(defun sm-try-smerge ()
-  "Activate smerge on conflicts."
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
-(add-hook 'find-file-hook 'sm-try-smerge t)
-
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
@@ -1489,12 +1481,46 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("q" nil "cancel")))
 
 (global-set-key
+ (kbd "C-c h")
+ (defhydra hydra-hunks (:color red)
+   "git hunks"
+   ("n" git-gutter+-next-hunk "next")
+   ("p" git-gutter+-previous-hunk "previous")
+   ("r" git-gutter+-revert-hunk "revert")
+   ("d" git-gutter+-popup-hunk "diff")
+   ("q" nil "cancel")))
+
+(global-set-key
  (kbd "C-c g")
  (defhydra hydra-git (:color blue)
    "git"
    ("r" git-gutter+-revert-hunk "revert hunk")
    ("p" git-gutter+-popup-hunk "pop hunk")
    ("q" nil "cancel")))
+
+(defhydra hydra-smerge (:color red)
+  "git smerge"
+  ("n" smerge-next "next")
+  ("p" smerge-prev "previous")
+  ("m" smerge-keep-mine "keep mine")
+  ("o" smerge-keep-other "keep other")
+  ("b" smerge-keep-base "keep base")
+  ("a" smerge-keep-all "keep all")
+  ("q" nil "cancel"))
+
+(defun ar/smerge-mode-hook-function ()
+  "Called when entering smerge mode."
+  (local-set-key (kbd "C-c h") 'hydra-smerge/body)
+  (hydra-smerge/body))
+(add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
+
+(defun sm-try-smerge ()
+  "Activate smerge on conflicts."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+(add-hook 'find-file-hook #'sm-try-smerge t)
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
