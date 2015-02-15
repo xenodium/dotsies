@@ -43,6 +43,9 @@
   (toggle-scroll-bar -1))
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
+;; Avoid native dialogs when running graphical.
+(when (boundp 'use-dialog-box)
+  (setq use-dialog-box nil))
 
 (use-package fullframe :ensure t)
 
