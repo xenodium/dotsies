@@ -47,16 +47,16 @@
 (use-package fullframe :ensure t)
 
 (ar/after-load 'magit
-               (fullframe magit-status magit-mode-quit-window))
+  (fullframe magit-status magit-mode-quit-window))
 
 (ar/after-load 'paradox
-               (fullframe paradox-list-packages paradox-quit-and-close))
+  (fullframe paradox-list-packages paradox-quit-and-close))
 
 (ar/after-load 'ibuffer
-               (fullframe ibuffer ibuffer-quit))
+  (fullframe ibuffer ibuffer-quit))
 
 (ar/after-load 'dired
-               (fullframe dired quit-window))
+  (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
@@ -570,20 +570,19 @@ Optional argument NON-RECURSIVE to shallow-search."
 This is a wrapper around `orig-yes-or-no'.
 Argument PROMPT to check for additional prompt."
   (if (string-match
-;;  This message is created in lisp/files.el, and there are four
-;;  variations.  I'm intentionally matching two of them.
+       ;;  This message is created in lisp/files.el, and there are four
+       ;;  variations.  I'm intentionally matching two of them.
        "File .* changed on disk.  Reread from disk"
        prompt)
 
-;;  it's that question; the answer is no, but I *do* want to know
-;;  that it has changed
+      ;;  it's that question; the answer is no, but I *do* want to know
+      ;;  that it has changed
       (progn (message "Note: File has changed on disk.") nil)
 
-;;  it's a different question; for now, just ask me; I'll probably
-;;  add more patterns to the above as I think of other questions that
-;;  I don't want asked
-    (orig-yes-or-no-p prompt)
-    ))
+    ;;  it's a different question; for now, just ask me; I'll probably
+    ;;  add more patterns to the above as I think of other questions that
+    ;;  I don't want asked
+    (orig-yes-or-no-p prompt)))
 
 (use-package git-link :ensure t)
 
