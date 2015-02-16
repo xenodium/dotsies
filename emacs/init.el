@@ -1467,30 +1467,19 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
  (kbd "C-c s")
  (defhydra hydra-search (:color blue)
    "search"
-   ;; Use ag for grepping from current location.
    ("d" helm-do-ag "directory")
-   ;; Use ag for grepping git project.
    ("r" ar/projectile-helm-ag "repository")
-   ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
    ("q" nil "quit")))
 
 (global-set-key
  (kbd "C-c h")
- (defhydra hydra-hunks (:color red)
+ (defhydra hydra-hunks (:color amaranth)
    "git hunks"
    ("n" git-gutter+-next-hunk "next")
    ("p" git-gutter+-previous-hunk "previous")
    ("r" git-gutter+-revert-hunk "revert")
    ("d" git-gutter+-popup-hunk "diff")
-   ("q" nil "quit")))
-
-(global-set-key
- (kbd "C-c g")
- (defhydra hydra-git (:color blue)
-   "git"
-   ("r" git-gutter+-revert-hunk "revert hunk")
-   ("p" git-gutter+-popup-hunk "pop hunk")
    ("q" nil "quit")))
 
 (require 'smerge-mode)
