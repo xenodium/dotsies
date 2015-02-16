@@ -1607,6 +1607,30 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
+(defun ar/select-current-block ()
+  "Select the current block of text between blank lines.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07."
+  (interactive)
+  (let (p1 p2)
+    (if (re-search-backward "\n[ \t]*\n" nil "move")
+        (progn (re-search-forward "\n[ \t]*\n")
+               (setq p1 (point)))
+      (setq p1 (point)))
+    (if (re-search-forward "\n[ \t]*\n" nil "move")
+        (progn (re-search-backward "\n[ \t]*\n")
+               (setq p2 (point)))
+      (setq p2 (point)))
+    (set-mark p1)))
+
+(defun ar/sort-current-block ()
+  "Select and sort current block."
+  (interactive)
+  (ar/select-current-block)
+  (ar/sort-lines-ignore-case))
+
+(global-set-key (kbd "M-s b") #'ar/sort-current-block)
+
 ;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
 ;; C-u magit-status presents list of repositories.
 (eval-after-load "projectile"
