@@ -685,7 +685,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         regexp-search-ring))
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
-(defun sacha/smarter-move-beginning-of-line (arg)
+(defun ar/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
 Move point to the first non-whitespace character on this line.
@@ -710,7 +710,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
-                'sacha/smarter-move-beginning-of-line)
+                'ar/smarter-move-beginning-of-line)
 
 (use-package whole-line-or-region :ensure t)
 (whole-line-or-region-mode)
@@ -1499,13 +1499,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (hydra-smerge/body))
 (add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
 
-(defun sm-try-smerge ()
+(defun ar/try-smerge ()
   "Activate smerge on conflicts."
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
-(add-hook 'find-file-hook #'sm-try-smerge t)
+(add-hook 'find-file-hook #'ar/try-smerge t)
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
