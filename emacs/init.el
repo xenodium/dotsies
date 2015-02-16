@@ -1473,7 +1473,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("r" ar/projectile-helm-ag "repository")
    ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 (global-set-key
  (kbd "C-c h")
@@ -1483,7 +1483,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("p" git-gutter+-previous-hunk "previous")
    ("r" git-gutter+-revert-hunk "revert")
    ("d" git-gutter+-popup-hunk "diff")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 (global-set-key
  (kbd "C-c g")
@@ -1491,7 +1491,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "git"
    ("r" git-gutter+-revert-hunk "revert hunk")
    ("p" git-gutter+-popup-hunk "pop hunk")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 (require 'smerge-mode)
 (defhydra hydra-smerge (:color red)
@@ -1502,7 +1502,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ("o" smerge-keep-other "keep other")
   ("b" smerge-keep-base "keep base")
   ("a" smerge-keep-all "keep all")
-  ("q" nil "cancel"))
+  ("q" nil "quit"))
 
 (defun ar/smerge-mode-hook-function ()
   "Called when entering smerge mode."
@@ -1538,7 +1538,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "open"
    ("o" ar/open-in-external-app "externally")
    ("p" ar/open-file-at-point "path at point")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 (require 'profiler)
 (defun ar/profiler-start-cpu ()
@@ -1553,14 +1553,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("b" ar/profiler-start-cpu "begin")
    ("r" profiler-report "report")
    ("e" profiler-stop "end")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 ;; (global-set-key
 ;;  (kbd "C-c y")
 ;;  (defhydra hydra-root (:color blue)
 ;;    "cheatsheet"
 ;;    ("C-c s" hydra-search/body "search")
-;;    ("q" nil "cancel")))
+;;    ("q" nil "quit")))
 
 ;; Override default flycheck triggers
 (setq flycheck-check-syntax-automatically
