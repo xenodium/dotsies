@@ -685,7 +685,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         regexp-search-ring))
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
-(defun sacha/smarter-move-beginning-of-line (arg)
+(defun ar/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
 Move point to the first non-whitespace character on this line.
@@ -710,7 +710,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
-                'sacha/smarter-move-beginning-of-line)
+                'ar/smarter-move-beginning-of-line)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun ar/vsplit-last-buffer ()
@@ -1475,6 +1475,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("p" git-gutter+-previous-hunk "previous")
    ("r" git-gutter+-revert-hunk "revert")
    ("d" git-gutter+-popup-hunk "diff")
+   ("m" git-messenger:popup-message "message")
    ("q" nil "quit")))
 
 (require 'smerge-mode)
@@ -1494,13 +1495,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (hydra-smerge/body))
 (add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
 
-(defun sm-try-smerge ()
+(defun ar/try-smerge ()
   "Activate smerge on conflicts."
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
-(add-hook 'find-file-hook #'sm-try-smerge t)
+(add-hook 'find-file-hook #'ar/try-smerge t)
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
@@ -1601,6 +1602,30 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
+
+(defun ar/select-current-block ()
+  "Select the current block of text between blank lines.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07."
+  (interactive)
+  (let (p1 p2)
+    (if (re-search-backward "\n[ \t]*\n" nil "move")
+        (progn (re-search-forward "\n[ \t]*\n")
+               (setq p1 (point)))
+      (setq p1 (point)))
+    (if (re-search-forward "\n[ \t]*\n" nil "move")
+        (progn (re-search-backward "\n[ \t]*\n")
+               (setq p2 (point)))
+      (setq p2 (point)))
+    (set-mark p1)))
+
+(defun ar/sort-current-block ()
+  "Select and sort current block."
+  (interactive)
+  (ar/select-current-block)
+  (ar/sort-lines-ignore-case))
+
+(global-set-key (kbd "M-s b") #'ar/sort-current-block)
 
 ;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
 ;; C-u magit-status presents list of repositories.
