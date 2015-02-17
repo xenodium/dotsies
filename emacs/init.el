@@ -712,9 +712,6 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'sacha/smarter-move-beginning-of-line)
 
-(use-package whole-line-or-region :ensure t)
-(whole-line-or-region-mode)
-
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun ar/vsplit-last-buffer ()
   "Vertically splitting the screen and open the previous buffer instead of identical buffers."
@@ -1310,8 +1307,6 @@ Argument LEN Length."
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
-;; Type on selection deletes selection.
-(delete-selection-mode t)
 ;; More expected region behaviour.
 (transient-mark-mode t)
 
@@ -1483,7 +1478,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("q" nil "quit")))
 
 (require 'smerge-mode)
-(defhydra hydra-smerge (:color red)
+(defhydra hydra-smerge (:color amaranth)
   "git smerge"
   ("n" smerge-next "next")
   ("p" smerge-prev "previous")
