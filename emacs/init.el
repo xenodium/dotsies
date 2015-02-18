@@ -800,11 +800,6 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(golden-ratio-mode)
-(setq golden-ratio-exclude-modes '("ediff-mode"
-                                   "term-mode"
-                                   "dired-mode"))
-
 (use-package auto-dim-other-buffers :ensure t)
 (add-hook 'after-init-hook (lambda ()
                              (when (fboundp 'auto-dim-other-buffers-mode)
@@ -940,16 +935,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package objc-font-lock :ensure t)
 (objc-font-lock-global-mode)
 (setq objc-font-lock-background-face nil)
-
-;; No Objective-C 'other file' support out of the box. Fix that.
-(setq cc-other-file-alist
-      `(("\\.cpp$" (".hpp" ".h"))
-        ("\\.h$" (".c" ".cpp" ".m" ".mm"))
-        ("\\.hpp$" (".cpp" ".c"))
-        ("\\.m$" (".h"))
-        ("\\.mm$" (".h"))))
-(add-hook 'c-mode-common-hook (lambda()
-                                (local-set-key (kbd "C-c o") #'ff-find-other-file)))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -1460,18 +1445,41 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package flycheck-pos-tip :ensure t)
 
+;; No Objective-C 'other file' support out of the box. Fix that.
+(setq cc-other-file-alist
+      `(("\\.cpp$" (".hpp" ".h"))
+        ("\\.h$" (".c" ".cpp" ".m" ".mm"))
+        ("\\.hpp$" (".cpp" ".c"))
+        ("\\.m$" (".h"))
+        ("\\.mm$" (".h"))))
+
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
+
+(defhydra hydra-open-c-mode (:color blue)
+  "open"
+  ("o" ff-find-other-file "other")
+  ("e" ar/open-in-external-app "externally")
+  ("u" ar/open-file-at-point "url at point")
+  ("q" nil "cancel"))
+
+(add-hook 'c-mode-common-hook (lambda()
+                                (local-set-key (kbd "C-c o") #'hydra-open-c-mode/body)))
+
+(global-set-key
+ (kbd "C-c o")
+ (defhydra hydra-open (:color blue)
+   "open"
+   ("e" ar/open-in-external-app "externally")
+   ("u" ar/open-file-at-point "url at point")
+   ("q" nil "cancel")))
 
 (global-set-key
  (kbd "C-c s")
  (defhydra hydra-search (:color blue)
    "search"
-   ;; Use ag for grepping from current location.
    ("d" helm-do-ag "directory")
-   ;; Use ag for grepping git project.
    ("r" ar/projectile-helm-ag "repository")
-   ;; Find all files from current location.
    ("f" ar/find-all-dired-current-dir "find all")
    ("q" nil "cancel")))
 
@@ -1531,14 +1539,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 ;;                    helm-source-buffers-list
 ;;                    helm-source-ido-virtual-buffers
 ;;                    helm-source-recentf)))
-
-(global-set-key
- (kbd "C-c o")
- (defhydra hydra-open (:color blue)
-   "open"
-   ("o" ar/open-in-external-app "externally")
-   ("p" ar/open-file-at-point "path at point")
-   ("q" nil "cancel")))
 
 (require 'profiler)
 (defun ar/profiler-start-cpu ()
