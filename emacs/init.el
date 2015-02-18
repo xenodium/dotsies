@@ -797,11 +797,6 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(golden-ratio-mode)
-(setq golden-ratio-exclude-modes '("ediff-mode"
-                                   "term-mode"
-                                   "dired-mode"))
-
 (use-package auto-dim-other-buffers :ensure t)
 (add-hook 'after-init-hook (lambda ()
                              (when (fboundp 'auto-dim-other-buffers-mode)
@@ -1477,6 +1472,16 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("d" git-gutter+-popup-hunk "diff")
    ("m" git-messenger:popup-message "message")
    ("q" nil "quit")))
+
+(defhydra hydra-magit-commit (:color blue)
+  "magit commit"
+  ("u" (lambda ()
+         (insert "Update.")
+         (git-commit-commit)) "update")
+  ("r" (lambda ()
+         (insert "Addressing review comments.")
+         (git-commit-commit)) "review comments")
+  ("q" nil "quit"))
 
 (require 'smerge-mode)
 (defhydra hydra-smerge (:color amaranth)
