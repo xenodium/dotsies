@@ -1476,9 +1476,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (defhydra hydra-magit-commit (:color blue)
   "magit commit"
   ("u" (lambda ()
+         (interactive)
          (insert "Update.")
          (git-commit-commit)) "update")
   ("r" (lambda ()
+         (interactive)
          (insert "Addressing review comments.")
          (git-commit-commit)) "review comments")
   ("q" nil "quit"))
