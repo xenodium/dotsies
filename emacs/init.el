@@ -685,7 +685,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         regexp-search-ring))
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
-(defun sacha/smarter-move-beginning-of-line (arg)
+(defun ar/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
 Move point to the first non-whitespace character on this line.
@@ -710,10 +710,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
-                'sacha/smarter-move-beginning-of-line)
-
-(use-package whole-line-or-region :ensure t)
-(whole-line-or-region-mode)
+                'ar/smarter-move-beginning-of-line)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun ar/vsplit-last-buffer ()
@@ -1295,8 +1292,6 @@ Argument LEN Length."
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
-;; Type on selection deletes selection.
-(delete-selection-mode t)
 ;; More expected region behaviour.
 (transient-mark-mode t)
 
@@ -1481,28 +1476,33 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("d" helm-do-ag "directory")
    ("r" ar/projectile-helm-ag "repository")
    ("f" ar/find-all-dired-current-dir "find all")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 (global-set-key
  (kbd "C-c h")
- (defhydra hydra-hunks (:color red)
+ (defhydra hydra-hunks (:color amaranth)
    "git hunks"
    ("n" git-gutter+-next-hunk "next")
    ("p" git-gutter+-previous-hunk "previous")
    ("r" git-gutter+-revert-hunk "revert")
    ("d" git-gutter+-popup-hunk "diff")
-   ("q" nil "cancel")))
+   ("m" git-messenger:popup-message "message")
+   ("q" nil "quit")))
 
-(global-set-key
- (kbd "C-c g")
- (defhydra hydra-git (:color blue)
-   "git"
-   ("r" git-gutter+-revert-hunk "revert hunk")
-   ("p" git-gutter+-popup-hunk "pop hunk")
-   ("q" nil "cancel")))
+(defhydra hydra-magit-commit (:color blue)
+  "magit commit"
+  ("u" (lambda ()
+         (interactive)
+         (insert "Update.")
+         (git-commit-commit)) "update")
+  ("r" (lambda ()
+         (interactive)
+         (insert "Addressing review comments.")
+         (git-commit-commit)) "review comments")
+  ("q" nil "quit"))
 
 (require 'smerge-mode)
-(defhydra hydra-smerge (:color red)
+(defhydra hydra-smerge (:color amaranth)
   "git smerge"
   ("n" smerge-next "next")
   ("p" smerge-prev "previous")
@@ -1510,7 +1510,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ("o" smerge-keep-other "keep other")
   ("b" smerge-keep-base "keep base")
   ("a" smerge-keep-all "keep all")
-  ("q" nil "cancel"))
+  ("q" nil "quit"))
 
 (defun ar/smerge-mode-hook-function ()
   "Called when entering smerge mode."
@@ -1518,13 +1518,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (hydra-smerge/body))
 (add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
 
-(defun sm-try-smerge ()
+(defun ar/try-smerge ()
   "Activate smerge on conflicts."
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
-(add-hook 'find-file-hook #'sm-try-smerge t)
+(add-hook 'find-file-hook #'ar/try-smerge t)
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
@@ -1553,14 +1553,14 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("b" ar/profiler-start-cpu "begin")
    ("r" profiler-report "report")
    ("e" profiler-stop "end")
-   ("q" nil "cancel")))
+   ("q" nil "quit")))
 
 ;; (global-set-key
 ;;  (kbd "C-c y")
 ;;  (defhydra hydra-root (:color blue)
 ;;    "cheatsheet"
 ;;    ("C-c s" hydra-search/body "search")
-;;    ("q" nil "cancel")))
+;;    ("q" nil "quit")))
 
 ;; Override default flycheck triggers
 (setq flycheck-check-syntax-automatically
@@ -1617,6 +1617,30 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
+
+(defun ar/select-current-block ()
+  "Select the current block of text between blank lines.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07."
+  (interactive)
+  (let (p1 p2)
+    (if (re-search-backward "\n[ \t]*\n" nil "move")
+        (progn (re-search-forward "\n[ \t]*\n")
+               (setq p1 (point)))
+      (setq p1 (point)))
+    (if (re-search-forward "\n[ \t]*\n" nil "move")
+        (progn (re-search-backward "\n[ \t]*\n")
+               (setq p2 (point)))
+      (setq p2 (point)))
+    (set-mark p1)))
+
+(defun ar/sort-current-block ()
+  "Select and sort current block."
+  (interactive)
+  (ar/select-current-block)
+  (ar/sort-lines-ignore-case))
+
+(global-set-key (kbd "M-s b") #'ar/sort-current-block)
 
 ;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
 ;; C-u magit-status presents list of repositories.
