@@ -1498,7 +1498,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (defun ar/smerge-mode-hook-function ()
   "Called when entering smerge mode."
-  (local-set-key (kbd "C-c h") #'hydra-smerge/body)
   (hydra-smerge/body))
 (add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
 
