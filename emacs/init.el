@@ -1458,8 +1458,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ("u" ar/open-file-at-point "url at point")
   ("q" nil "cancel"))
 
-(add-hook 'c-mode-common-hook (lambda()
-                                (local-set-key (kbd "C-c o") #'hydra-open-c-mode/body)))
+(add-hook 'c-mode-common-hook
+          (lambda()
+            (local-set-key (kbd "C-c o") #'hydra-open-c-mode/body)))
 
 (global-set-key
  (kbd "C-c o")
