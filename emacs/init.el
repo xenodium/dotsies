@@ -1045,8 +1045,18 @@ Argument LEN Length."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
+(defun ar/clang-format-buffer ()
+  "Clang format current buffer."
+  (interactive)
+  (clang-format (point-min)
+                (point-max)))
+
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
+  (add-hook 'before-save-hook
+            #'ar/clang-format-buffer
+            nil
+            'make-it-local)
   (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
