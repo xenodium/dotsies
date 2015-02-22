@@ -1495,6 +1495,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
         ("\\.m$" (".h"))
         ("\\.mm$" (".h"))))
 
+(defun ar/find-dired-current-dir ()
+  "Find files from current location."
+  (interactive)
+  (helm-find t))
+
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
 
@@ -1523,7 +1528,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "search"
    ("d" helm-do-ag "directory")
    ("r" ar/projectile-helm-ag "repository")
-   ("f" ar/find-all-dired-current-dir "find all")
+   ("f" ar/find-dired-current-dir "find")
+   ("a" ar/find-all-dired-current-dir "find all")
    ("q" nil "quit")))
 
 (global-set-key
