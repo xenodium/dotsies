@@ -1650,6 +1650,15 @@ Version 2015-02-07."
   (ar/select-current-block)
   (ar/sort-lines-ignore-case))
 
+(defun ar/sort-objc-headers ()
+  "Alphabetically sort Objective-C headers."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^#\\(include\\|import\\).*\n\n" nil t)
+      (goto-char (match-beginning 0))
+      (ar/sort-current-block))))
+
 (global-set-key (kbd "M-s b") #'ar/sort-current-block)
 
 ;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
