@@ -1526,10 +1526,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
  (kbd "C-c s")
  (defhydra hydra-search (:color blue)
    "search"
-   ("d" helm-do-ag "directory")
-   ("r" ar/projectile-helm-ag "repository")
-   ("f" ar/find-dired-current-dir "find")
-   ("a" ar/find-all-dired-current-dir "find all")
+   ("d" helm-do-ag "search directory")
+   ("r" ar/projectile-helm-ag "search repository")
+   ("f" ar/find-dired-current-dir "find file")
+   ("a" ar/find-all-dired-current-dir "find all files")
    ("q" nil "quit")))
 
 (global-set-key
