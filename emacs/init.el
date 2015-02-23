@@ -505,7 +505,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (setq mac-command-modifier 'meta)
     ;; Sets the option (Apple) key also as Meta.
     (setq mac-option-modifier 'meta)
-    (setq exec-path (append exec-path '("~/homebrew/bin")))))
+    (setq exec-path (append exec-path '("~/homebrew/bin"
+                                        "~/homebrew/Cellar/llvm/HEAD/bin")))))
 (ar/init-for-osx)
 
 (defun ar/init-for-linux ()
