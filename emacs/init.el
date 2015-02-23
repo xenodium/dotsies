@@ -764,11 +764,6 @@ Position the cursor at it's beginning, according to the current mode."
 (add-hook 'sgml-mode-hook
           (lambda() (local-set-key (kbd "<RET>") #'electric-indent-just-newline)))
 
-(use-package multiple-cursors :ensure t)
-(multiple-cursors-mode)
-(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
-(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
-
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
 Position the cursor at its beginning, according to the current mode.
@@ -1503,8 +1498,31 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (interactive)
   (helm-find t))
 
+(use-package multiple-cursors :ensure t)
+(multiple-cursors-mode)
+(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
+
+(defun ar/org-add-cl (cl-number)
+  "Add a CL url."
+  (interactive "sEnter CL number: ")
+  (let ((rendered-cl (format "[[http://cl/%s][cl/%s]]" cl-number cl-number)))
+    (insert rendered-cl)))
+
+(defun ar/org-add-bug (bug-number)
+  "Add a bug url."
+  (interactive "sEnter bug number: ")
+  (let ((rendered-cl (format "[[http://b/%s][b/%s]]" bug-number bug-number)))
+    (insert rendered-cl)))
+
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
+
+(defhydra hydra-org-add-object (:color blue)
+  "add"
+  ("c" ar/org-add-cl "cl")
+  ("b" ar/org-add-bug "bug")
+  ("q" nil "quit"))
 
 (defhydra hydra-open-c-mode (:color blue)
   "open"
