@@ -1559,7 +1559,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "git hunks"
    ("n" git-gutter+-next-hunk "next")
    ("p" git-gutter+-previous-hunk "previous")
-   ("r" git-gutter+-revert-hunk "revert")
+   ("k" git-gutter+-revert-hunk "kill")
    ("d" git-gutter+-popup-hunk "diff")
    ("m" git-messenger:popup-message "message")
    ("q" nil "quit")))
