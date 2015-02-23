@@ -217,16 +217,16 @@
   (helm-do-ag (projectile-project-root)))
 
 ;; http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
-(defun ar/backward-delete-word (arg)
+(defun ar/backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
 With argument ARG, do this that many times."
   (interactive "p")
   (delete-region (point)
                  (progn
-                   (backward-word arg)
+                   (subword-backward arg)
                    (point))))
-(global-set-key (kbd "M-DEL") #'ar/backward-delete-word)
-(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-word)
+(global-set-key (kbd "M-DEL") #'ar/backward-delete-subword)
+(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-subword)
 
 (use-package helm-dash :ensure t :demand)
 (bind-key "C-h y" #'helm-dash-at-point)
