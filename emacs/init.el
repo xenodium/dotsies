@@ -1561,7 +1561,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("p" git-gutter+-previous-hunk "previous")
    ("k" git-gutter+-revert-hunk "kill")
    ("d" git-gutter+-popup-hunk "diff")
-   ("m" git-messenger:popup-message "message")
+   ("l" git-messenger:popup-show-verbose "log")
    ("q" nil "quit")))
 
 (defhydra hydra-magit-commit (:color blue)
