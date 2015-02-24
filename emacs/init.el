@@ -217,16 +217,16 @@
   (helm-do-ag (projectile-project-root)))
 
 ;; http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
-(defun ar/backward-delete-word (arg)
+(defun ar/backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
 With argument ARG, do this that many times."
   (interactive "p")
   (delete-region (point)
                  (progn
-                   (backward-word arg)
+                   (subword-backward arg)
                    (point))))
-(global-set-key (kbd "M-DEL") #'ar/backward-delete-word)
-(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-word)
+(global-set-key (kbd "M-DEL") #'ar/backward-delete-subword)
+(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-subword)
 
 (use-package helm-dash :ensure t :demand)
 (bind-key "C-h y" #'helm-dash-at-point)
@@ -505,7 +505,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (setq mac-command-modifier 'meta)
     ;; Sets the option (Apple) key also as Meta.
     (setq mac-option-modifier 'meta)
-    (setq exec-path (append exec-path '("~/homebrew/bin")))))
+    (setq exec-path (append exec-path '("~/homebrew/bin"
+                                        "~/homebrew/Cellar/llvm/HEAD/bin")))))
 (ar/init-for-osx)
 
 (defun ar/init-for-linux ()
@@ -764,11 +765,6 @@ Position the cursor at it's beginning, according to the current mode."
 (add-hook 'sgml-mode-hook
           (lambda() (local-set-key (kbd "<RET>") #'electric-indent-just-newline)))
 
-(use-package multiple-cursors :ensure t)
-(multiple-cursors-mode)
-(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
-(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
-
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
 Position the cursor at its beginning, according to the current mode.
@@ -851,7 +847,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-make :ensure t)
 
+;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
+;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
 (use-package discover :ensure t)
+(global-discover-mode 1)
 
 (use-package drag-stuff :ensure t)
 (global-set-key (kbd "M-<up>") #'drag-stuff-up)
@@ -1045,6 +1044,39 @@ Argument LEN Length."
   ;; Saving point to register enables jumping back to last change at any time.
   (ar/save-point))
 
+(defun ar/select-current-block ()
+  "Select the current block of text between blank lines.
+URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+Version 2015-02-07."
+  (interactive)
+  (let (p1 p2)
+    (if (re-search-backward "\n[ \t]*\n" nil "move")
+        (progn (re-search-forward "\n[ \t]*\n")
+               (setq p1 (point)))
+      (setq p1 (point)))
+    (if (re-search-forward "\n[ \t]*\n" nil "move")
+        (progn (re-search-backward "\n[ \t]*\n")
+               (setq p2 (point)))
+      (setq p2 (point)))
+    (set-mark p1)))
+
+(defun ar/sort-current-block ()
+  "Select and sort current block."
+  (interactive)
+  (ar/select-current-block)
+  (ar/sort-lines-ignore-case))
+
+(global-set-key (kbd "M-s b") #'ar/sort-current-block)
+
+(defun ar/sort-objc-headers ()
+  "Alphabetically sort Objective-C headers."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^#\\(include\\|import\\).*\n\n" nil t)
+      (goto-char (match-beginning 0))
+      (ar/sort-current-block))))
+
 (defun ar/clang-format-buffer ()
   "Clang format current buffer."
   (interactive)
@@ -1055,6 +1087,10 @@ Argument LEN Length."
   "Called when entering `objc-mode'."
   (add-hook 'before-save-hook
             #'ar/clang-format-buffer
+            nil
+            'make-it-local)
+  (add-hook 'before-save-hook
+            #'ar/sort-objc-headers
             nil
             'make-it-local)
   (helm-dash-activate-docset "iOS")
@@ -1458,8 +1494,36 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
         ("\\.m$" (".h"))
         ("\\.mm$" (".h"))))
 
+(defun ar/find-dired-current-dir ()
+  "Find files from current location."
+  (interactive)
+  (helm-find t))
+
+(use-package multiple-cursors :ensure t)
+(multiple-cursors-mode)
+(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
+
+(defun ar/org-add-cl (cl-number)
+  "Add a CL url."
+  (interactive "sEnter CL number: ")
+  (let ((rendered-cl (format "[[http://cl/%s][cl/%s]]" cl-number cl-number)))
+    (insert rendered-cl)))
+
+(defun ar/org-add-bug (bug-number)
+  "Add a bug url."
+  (interactive "sEnter bug number: ")
+  (let ((rendered-cl (format "[[http://b/%s][b/%s]]" bug-number bug-number)))
+    (insert rendered-cl)))
+
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
+
+(defhydra hydra-org-add-object (:color blue)
+  "add"
+  ("c" ar/org-add-cl "cl")
+  ("b" ar/org-add-bug "bug")
+  ("q" nil "quit"))
 
 (defhydra hydra-open-c-mode (:color blue)
   "open"
@@ -1484,9 +1548,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
  (kbd "C-c s")
  (defhydra hydra-search (:color blue)
    "search"
-   ("d" helm-do-ag "directory")
-   ("r" ar/projectile-helm-ag "repository")
-   ("f" ar/find-all-dired-current-dir "find all")
+   ("d" helm-do-ag "search directory")
+   ("r" ar/projectile-helm-ag "search repository")
+   ("f" ar/find-dired-current-dir "find file")
+   ("a" ar/find-all-dired-current-dir "find all files")
    ("q" nil "quit")))
 
 (global-set-key
@@ -1495,9 +1560,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    "git hunks"
    ("n" git-gutter+-next-hunk "next")
    ("p" git-gutter+-previous-hunk "previous")
-   ("r" git-gutter+-revert-hunk "revert")
+   ("k" git-gutter+-revert-hunk "kill")
    ("d" git-gutter+-popup-hunk "diff")
-   ("m" git-messenger:popup-message "message")
+   ("l" git-messenger:popup-show-verbose "log")
    ("q" nil "quit")))
 
 (defhydra hydra-magit-commit (:color blue)
@@ -1627,30 +1692,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
-
-(defun ar/select-current-block ()
-  "Select the current block of text between blank lines.
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07."
-  (interactive)
-  (let (p1 p2)
-    (if (re-search-backward "\n[ \t]*\n" nil "move")
-        (progn (re-search-forward "\n[ \t]*\n")
-               (setq p1 (point)))
-      (setq p1 (point)))
-    (if (re-search-forward "\n[ \t]*\n" nil "move")
-        (progn (re-search-backward "\n[ \t]*\n")
-               (setq p2 (point)))
-      (setq p2 (point)))
-    (set-mark p1)))
-
-(defun ar/sort-current-block ()
-  "Select and sort current block."
-  (interactive)
-  (ar/select-current-block)
-  (ar/sort-lines-ignore-case))
-
-(global-set-key (kbd "M-s b") #'ar/sort-current-block)
 
 ;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
 ;; C-u magit-status presents list of repositories.
