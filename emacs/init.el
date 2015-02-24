@@ -1505,13 +1505,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
 
 (defun ar/org-add-cl (cl-number)
-  "Add a CL url."
+  "Add a CL-NUMBER."
   (interactive "sEnter CL number: ")
   (let ((rendered-cl (format "[[http://cl/%s][cl/%s]]" cl-number cl-number)))
     (insert rendered-cl)))
 
 (defun ar/org-add-bug (bug-number)
-  "Add a bug url."
+  "Add a BUG-NUMBER."
   (interactive "sEnter bug number: ")
   (let ((rendered-cl (format "[[http://b/%s][b/%s]]" bug-number bug-number)))
     (insert rendered-cl)))
