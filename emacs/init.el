@@ -230,7 +230,7 @@ With argument ARG, do this that many times."
 
 (use-package helm-dash :ensure t :demand)
 (bind-key "C-h y" #'helm-dash-at-point)
-(setq helm-dash-browser-func #'eww)
+(setq helm-dash-browser-func #'browse-url)
 
 (global-set-key (kbd "M-C-s") #'helm-multi-swoop-all)
 (global-set-key (kbd "C-c i") #'helm-imenu)
