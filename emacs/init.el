@@ -264,7 +264,7 @@ With argument ARG, do this that many times."
  helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
  helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                      '(picture-mode artist-mode))
- helm-buffer-max-length nil
+ helm-buffer-max-length 40
  helm-candidate-number-limit 100 ; limit the number of displayed canidates
  helm-M-x-requires-pattern 0     ; show all candidates when set to 0
  helm-boring-file-regexp-list
