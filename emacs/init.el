@@ -1188,7 +1188,7 @@ Version 2015-02-07."
                              "*ansi-term*"
                              (lambda
                                nil (ansi-term shell-pop-term-shell))))
-(setq shell-pop-window-position "bottom")
+(setq shell-pop-window-position "full")
 ;; Do not auto cd to working directory.
 (setq shell-pop-autocd-to-working-dir nil)
 
