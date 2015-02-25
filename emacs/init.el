@@ -1089,10 +1089,6 @@ Version 2015-02-07."
             #'ar/clang-format-buffer
             nil
             'make-it-local)
-  (add-hook 'before-save-hook
-            #'ar/sort-objc-headers
-            nil
-            'make-it-local)
   (helm-dash-activate-docset "iOS")
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
@@ -1333,7 +1329,6 @@ Version 2015-02-07."
                         'downcase-region
                       'upcase-region)
                     beg end)))))
-(global-set-key (kbd "C-c u") #'ar/upcase-word-toggle)
 (global-set-key (kbd "C-c r") #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
