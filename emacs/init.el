@@ -398,48 +398,31 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package git-timemachine :ensure t)
 
+(use-package linum
+  :ensure t
+  :config (progn
+            (set-face-attribute 'linum nil
+                                :background "#1B1D1E")
+            (setq linum-format "%4d ")))
+
+(use-package git-gutter
+  :ensure t)
+(global-git-gutter-mode +1)
+(global-set-key (kbd "C-c <up>") #'git-gutter:previous-hunk)
+(global-set-key (kbd "C-c <down>") #'git-gutter:next-hunk)
+
 (defun ar/setup-tty ()
   "Setup tty frame."
   (unless (window-system)
-    ;; Display line numbers.
-    (use-package linum :ensure t)
-    (set-face-attribute 'linum nil :background "#1B1D1E")
-    (setq linum-format "%4d ")
-    (use-package git-gutter :ensure t)
-    (global-git-gutter-mode +1)
-    (git-gutter:linum-setup)
-    (global-set-key (kbd "C-c <up>") #'git-gutter:previous-hunk)
-    (global-set-key (kbd "C-c <down>") #'git-gutter:next-hunk)))
+    nil)) ;; TODO
+
 (ar/setup-tty)
-
-(set-face-attribute 'fringe nil :background "#1B1D1E")
-
-(defun ar/setup-git-fringe ()
-  "Setup git fringe (works in display mode only)."
-  (use-package linum :ensure t)
-  (global-linum-mode t)
-  (use-package git-gutter+ :ensure t)
-  (use-package fringe-helper :ensure t)
-  (use-package git-gutter-fringe+ :ensure t)
-  (global-git-gutter+-mode t)
-  (set-face-foreground 'git-gutter-fr+-modified "yellow")
-  (set-face-foreground 'git-gutter-fr+-added "green")
-  (set-face-foreground 'git-gutter-fr+-deleted "red")
-  (global-set-key (kbd "C-c <up>") #'git-gutter+-previous-hunk)
-  (global-set-key (kbd "C-c <down>") #'git-gutter+-next-hunk))
 
 ;; TODO: Revisit this.
 (defun ar/setup-graphic-display ()
   "Setup graphic display."
   (when (window-system)
-    (use-package linum :ensure t)
-    (global-linum-mode t)
-    (ar/setup-git-fringe)
-    (add-hook 'before-make-frame-hook
-              (lambda ()
-                (use-package hlinum :ensure t)
-                (hlinum-activate)
-                (ar/setup-git-fringe)))))
+    nil)) ;; TODO
 
 (ar/setup-graphic-display)
 
@@ -1145,7 +1128,6 @@ Version 2015-02-07."
   (flyspell-prog-mode)
   (whitespace-mode)
   (rainbow-delimiters-mode)
-  (linum-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
@@ -1519,6 +1501,19 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
 
+(defhydra hydra-goto-line (:pre (progn
+                                  (global-git-gutter-mode -1)
+                                  (linum-mode 1))
+                           :post (progn
+                                   (linum-mode -1)
+                                   (global-git-gutter-mode +1))
+                           :color blue)
+  "goto"
+  ("g" goto-line "line")
+  ("c" goto-char "char")
+  ("q" nil "quit"))
+(global-set-key (kbd "M-g") #'hydra-goto-line/body)
+
 (defhydra hydra-org-add-object (:color blue)
   "add"
   ("c" ar/org-add-cl "cl")
@@ -1554,16 +1549,18 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
    ("a" ar/find-all-dired-current-dir "find all files")
    ("q" nil "quit")))
 
-(global-set-key
- (kbd "C-c h")
- (defhydra hydra-hunks (:color amaranth)
-   "git hunks"
-   ("n" git-gutter+-next-hunk "next")
-   ("p" git-gutter+-previous-hunk "previous")
-   ("k" git-gutter+-revert-hunk "kill")
-   ("d" git-gutter+-popup-hunk "diff")
-   ("l" git-messenger:popup-show-verbose "log")
-   ("q" nil "quit")))
+(defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
+  "
+Git: _n_ext     _s_tage  _d_iff
+     _p_revious _r_evert _q_uit
+"
+  ("n" git-gutter:next-hunk nil)
+  ("p" git-gutter:previous-hunk nil)
+  ("s" git-gutter:stage-hunk nil)
+  ("r" git-gutter:revert-hunk nil)
+  ("d" git-gutter:popup-hunk nil)
+  ("q" nil nil :color blue))
+(global-set-key (kbd "C-c g") #'hydra-git-gutter/body)
 
 (defhydra hydra-magit-commit (:color blue)
   "magit commit"
