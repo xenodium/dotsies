@@ -1704,6 +1704,9 @@ Git: _n_ext     _s_tage  _d_iff
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
 
+(ignore-errors (use-package org-beautify-theme
+                 :ensure org-beautify-theme))
+
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
 (defun ar/comint-clear-buffer ()
   "Clear the content of shell/REPL."
