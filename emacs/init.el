@@ -189,7 +189,8 @@
 (setq auto-revert-check-vc-info t)
 
 (use-package expand-region :ensure t)
-(global-set-key (kbd "C-c w") #'er/expand-region)
+(global-set-key (kbd "C-c w")
+                #'er/expand-region)
 
 (require 'recentf)
 (setq recentf-max-saved-items 200
@@ -225,28 +226,39 @@ With argument ARG, do this that many times."
                  (progn
                    (subword-backward arg)
                    (point))))
-(global-set-key (kbd "M-DEL") #'ar/backward-delete-subword)
-(global-set-key (kbd "<C-backspace>") #'ar/backward-delete-subword)
+(global-set-key (kbd "M-DEL")
+                #'ar/backward-delete-subword)
+(global-set-key (kbd "<C-backspace>")
+                #'ar/backward-delete-subword)
 
 (use-package helm-dash :ensure t :demand)
 (bind-key "C-h y" #'helm-dash-at-point)
 (setq helm-dash-browser-func #'browse-url)
 
-(global-set-key (kbd "M-C-s") #'helm-multi-swoop-all)
-(global-set-key (kbd "C-c i") #'helm-imenu)
+(global-set-key (kbd "M-C-s")
+                #'helm-multi-swoop-all)
+(global-set-key (kbd "C-c i")
+                #'helm-imenu)
 (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action) ; rebind tab to do persistent action
 (define-key helm-map (kbd "C-i") #'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  #'helm-select-action) ; list actions using C-z
-(global-set-key (kbd "M-x") #'helm-M-x)
-(global-set-key (kbd "M-y") #'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") #'helm-buffers-list)
-(global-set-key (kbd "C-h a") #'helm-apropos)
+(global-set-key (kbd "M-x")
+                #'helm-M-x)
+(global-set-key (kbd "M-y")
+                #'helm-show-kill-ring)
+(global-set-key (kbd "C-x b")
+                #'helm-buffers-list)
+(global-set-key (kbd "C-h a")
+                #'helm-apropos)
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 ;; On Mac, this is effectively fn-M-backspace.
-(global-set-key (kbd "M-(") #'kill-word)
-(global-set-key (kbd "C-q") #'previous-buffer)
-(global-set-key (kbd "C-z") #'next-buffer)
+(global-set-key (kbd "M-(")
+                #'kill-word)
+(global-set-key (kbd "C-q")
+                #'previous-buffer)
+(global-set-key (kbd "C-z")
+                #'next-buffer)
 
 (define-key helm-grep-mode-map (kbd "<return>")  #'helm-grep-mode-jump-other-window)
 (define-key helm-grep-mode-map (kbd "n")  #'helm-grep-mode-jump-other-window-forward)
@@ -301,7 +313,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package ggtags :ensure t)
 (use-package helm-gtags :ensure t)
 (helm-gtags-mode 1)
-(global-set-key (kbd "M-.") #'helm-gtags-dwim)
+(global-set-key (kbd "M-.")
+                #'helm-gtags-dwim)
 
 (use-package projectile :ensure t)
 (projectile-global-mode)
@@ -408,8 +421,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package git-gutter
   :ensure t)
 (global-git-gutter-mode +1)
-(global-set-key (kbd "C-c <up>") #'git-gutter:previous-hunk)
-(global-set-key (kbd "C-c <down>") #'git-gutter:next-hunk)
+(global-set-key (kbd "C-c <up>")
+                #'git-gutter:previous-hunk)
+(global-set-key (kbd "C-c <down>")
+                #'git-gutter:next-hunk)
 
 (defun ar/setup-tty ()
   "Setup tty frame."
@@ -479,7 +494,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     (if command
         (shell-command command)
       (message "Unrecognized platform."))))
-(global-set-key (kbd "C-x t") #'ar/new-browser-tab)
+(global-set-key (kbd "C-x t")
+                #'ar/new-browser-tab)
 
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
@@ -577,7 +593,8 @@ Argument PROMPT to check for additional prompt."
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" #'vc-ediff))
-(global-set-key (kbd "C-x g") #'magit-status)
+(global-set-key (kbd "C-x g")
+                #'magit-status)
 (setq magit-status-buffer-switch-function #'switch-to-buffer)
 
 (defun ar/sort-lines-ignore-case ()
@@ -586,7 +603,8 @@ Argument PROMPT to check for additional prompt."
   (let ((sort-fold-case t))
     (call-interactively #'sort-lines)))
 ;; Sort lines (ie. package imports or headers).
-(global-set-key (kbd "M-s l") #'ar/sort-lines-ignore-case)
+(global-set-key (kbd "M-s l")
+                #'ar/sort-lines-ignore-case)
 
 (setq css-indent-offset 2)
 
@@ -621,7 +639,8 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                      (y-or-n-p "Open more than 5 files? "))))
     (when ξdo-it-p
       (mapc (ar/open-in-external-app-lambda) ξfile-list))))
-(global-set-key (kbd "C-M-o") #'ar/open-in-external-app)
+(global-set-key (kbd "C-M-o")
+                #'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -711,8 +730,10 @@ point reaches the beginning or end of the buffer, stop there."
   (other-window 1 nil)
   (switch-to-next-buffer))
 
-(global-set-key (kbd "C-x 2") #'ar/vsplit-last-buffer)
-(global-set-key (kbd "C-x 3") #'ar/hsplit-last-buffer)
+(global-set-key (kbd "C-x 2")
+                #'ar/vsplit-last-buffer)
+(global-set-key (kbd "C-x 3")
+                #'ar/hsplit-last-buffer)
 
 ;; Thank you Bozhidar.
 ;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L340
@@ -746,7 +767,8 @@ Position the cursor at it's beginning, according to the current mode."
 
 ;; Do not auto indent current line when pressing <RET>.
 (add-hook 'sgml-mode-hook
-          (lambda() (local-set-key (kbd "<RET>") #'electric-indent-just-newline)))
+          (lambda() (local-set-key (kbd "<RET>")
+                                   #'electric-indent-just-newline)))
 
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
@@ -759,7 +781,8 @@ With a prefix ARG open line above the current line."
       (move-end-of-line nil)
       (newline-and-indent))))
 
-(global-set-key (kbd "C-o") #'ar/smart-open-line)
+(global-set-key (kbd "C-o")
+                #'ar/smart-open-line)
 
 (use-package ace-jump-mode :ensure t)
 
@@ -817,7 +840,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq company-show-numbers t)
 (global-company-mode)
 (add-to-list 'company-backends 'company-c-headers)
-(global-set-key (kbd "<backtab>") #'company-complete)
+(global-set-key (kbd "<backtab>")
+                #'company-complete)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -841,8 +865,10 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-discover-mode 1)
 
 (use-package drag-stuff :ensure t)
-(global-set-key (kbd "M-<up>") #'drag-stuff-up)
-(global-set-key (kbd "M-<down>") #'drag-stuff-down)
+(global-set-key (kbd "M-<up>")
+                #'drag-stuff-up)
+(global-set-key (kbd "M-<down>")
+                #'drag-stuff-down)
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
@@ -993,7 +1019,8 @@ Repeated invocations toggle between the two most recently open buffers."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-(global-set-key (kbd "C-c l") #'ar/split-camel-region)
+(global-set-key (kbd "C-c l")
+                #'ar/split-camel-region)
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
@@ -1022,7 +1049,8 @@ Repeated invocations toggle between the two most recently open buffers."
   "Jumps cursor to register 9999's value."
   (interactive)
   (jump-to-register 9999))
-(global-set-key (kbd "C-c `") #'ar/jump-to-saved-point)
+(global-set-key (kbd "C-c `")
+                #'ar/jump-to-saved-point)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Execute for all text modifications in `prog-mode'.
@@ -1054,7 +1082,8 @@ Version 2015-02-07."
   (ar/select-current-block)
   (ar/sort-lines-ignore-case))
 
-(global-set-key (kbd "M-s b") #'ar/sort-current-block)
+(global-set-key (kbd "M-s b")
+                #'ar/sort-current-block)
 
 (defun ar/sort-objc-headers ()
   "Alphabetically sort Objective-C headers."
@@ -1099,8 +1128,10 @@ Version 2015-02-07."
   ;; ProductVersion: 7.1
   (set (make-local-variable 'compile-command)
        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (local-set-key (kbd "<f7>") #'ar/xc:build)
-  (local-set-key (kbd "<f8>") #'ar/xc:run)
+  (local-set-key (kbd "<f7>")
+                 #'ar/xc:build)
+  (local-set-key (kbd "<f8>")
+                 #'ar/xc:run)
   (key-chord-define (current-local-map) ";;" "\C-e;"))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
@@ -1136,7 +1167,8 @@ Version 2015-02-07."
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
   (set (make-local-variable 'markdown-indent-on-enter) nil)
-  (local-set-key (kbd "RET") #'electric-newline-and-maybe-indent))
+  (local-set-key (kbd "RET")
+                 #'electric-newline-and-maybe-indent))
 
 (ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
                                 '(prog-mode-hook))
@@ -1163,7 +1195,8 @@ Version 2015-02-07."
 (setq help-window-select t)
 
 ;; No need to confirm killing buffers.
-(global-set-key [(control x) (k)] #'kill-this-buffer)
+(global-set-key [(control x) (k)]
+                #'kill-this-buffer)
 
 ;; Customize shell-pop.
 (setq shell-pop-term-shell "/bin/bash")
@@ -1175,7 +1208,8 @@ Version 2015-02-07."
 ;; Do not auto cd to working directory.
 (setq shell-pop-autocd-to-working-dir nil)
 
-(global-set-key [f5] #'shell-pop)
+(global-set-key [f5]
+                #'shell-pop)
 (use-package shell-pop :ensure t)
 
 (defun ar/comment-dwim ()
@@ -1193,7 +1227,8 @@ Version 2015-02-07."
                   (end-of-line)
                   (point))))
     (comment-or-uncomment-region start end)))
-(global-set-key (kbd "M-;") #'ar/comment-dwim)
+(global-set-key (kbd "M-;")
+                #'ar/comment-dwim)
 
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
   "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
@@ -1287,7 +1322,8 @@ Version 2015-02-07."
              'upcase-region)
            start (1+ start)))
       (capitalize-word -1))))
-(global-set-key (kbd "C-c c") #'ar/capitalize-word-toggle)
+(global-set-key (kbd "C-c c")
+                #'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
   "Toggle word case at point."
@@ -1316,7 +1352,8 @@ Version 2015-02-07."
                         'downcase-region
                       'upcase-region)
                     beg end)))))
-(global-set-key (kbd "C-c r") #'set-rectangular-region-anchor)
+(global-set-key (kbd "C-c r")
+                #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
@@ -1350,7 +1387,8 @@ Version 2015-02-07."
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
-(global-set-key (kbd "C-x C-r") #'eval-region)
+(global-set-key (kbd "C-x C-r")
+                #'eval-region)
 
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-dowload ()
@@ -1372,7 +1410,8 @@ Version 2015-02-07."
     (erase-buffer)
     (insert clipboard-content)
     (prog-mode)))
-(global-set-key (kbd "C-c y") #'ar/view-clipboard-buffer)
+(global-set-key (kbd "C-c y")
+                #'ar/view-clipboard-buffer)
 
 ;;  Save Emacs state from one session to another.
 ;;  Disabling. Trial without it.
@@ -1483,8 +1522,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package multiple-cursors :ensure t)
 (multiple-cursors-mode)
-(global-set-key (kbd "C-c n") #'mc/mark-next-like-this)
-(global-set-key (kbd "C-c a") #'mc/mark-all-like-this)
+(global-set-key (kbd "C-c n")
+                #'mc/mark-next-like-this)
+(global-set-key (kbd "C-c a")
+                #'mc/mark-all-like-this)
 
 (defun ar/org-add-cl (cl-number)
   "Add a CL-NUMBER."
@@ -1512,7 +1553,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ("g" goto-line "line")
   ("c" goto-char "char")
   ("q" nil "quit"))
-(global-set-key (kbd "M-g") #'hydra-goto-line/body)
+(global-set-key (kbd "M-g")
+                #'hydra-goto-line/body)
 
 (defhydra hydra-org-add-object (:color blue)
   "add"
@@ -1529,25 +1571,27 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (add-hook 'c-mode-common-hook
           (lambda()
-            (local-set-key (kbd "C-c o") #'hydra-open-c-mode/body)))
+            (local-set-key (kbd "C-c o")
+                           #'hydra-open-c-mode/body)))
 
-(global-set-key
- (kbd "C-c o")
- (defhydra hydra-open (:color blue)
-   "open"
-   ("e" ar/open-in-external-app "externally")
-   ("u" ar/open-file-at-point "url at point")
-   ("q" nil "cancel")))
+(defhydra hydra-open (:color blue)
+  "open"
+  ("e" ar/open-in-external-app "externally")
+  ("u" ar/open-file-at-point "url at point")
+  ("q" nil "cancel"))
 
-(global-set-key
- (kbd "C-c s")
- (defhydra hydra-search (:color blue)
-   "search"
-   ("d" helm-do-ag "search directory")
-   ("r" ar/projectile-helm-ag "search repository")
-   ("f" ar/find-dired-current-dir "find file")
-   ("a" ar/find-all-dired-current-dir "find all files")
-   ("q" nil "quit")))
+(global-set-key (kbd "C-c o")
+                #'hydra-open/body)
+
+(defhydra hydra-search (:color blue)
+  "search"
+  ("d" helm-do-ag "search directory")
+  ("r" ar/projectile-helm-ag "search repository")
+  ("f" ar/find-dired-current-dir "find file")
+  ("a" ar/find-all-dired-current-dir "find all files")
+  ("q" nil "quit"))
+(global-set-key (kbd "C-c s")
+                #'hydra-search/body)
 
 (defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
   "
@@ -1560,7 +1604,8 @@ Git: _n_ext     _s_tage  _d_iff
   ("r" git-gutter:revert-hunk nil)
   ("d" git-gutter:popup-hunk nil)
   ("q" nil nil :color blue))
-(global-set-key (kbd "C-c g") #'hydra-git-gutter/body)
+(global-set-key (kbd "C-c g")
+                #'hydra-git-gutter/body)
 
 (defhydra hydra-magit-commit (:color blue)
   "magit commit"
@@ -1618,14 +1663,14 @@ Git: _n_ext     _s_tage  _d_iff
   (interactive)
   (profiler-start 'cpu))
 
-(global-set-key
- (kbd "C-c 1")
- (defhydra hydra-profile (:color blue)
-   "profiling"
-   ("b" ar/profiler-start-cpu "begin")
-   ("r" profiler-report "report")
-   ("e" profiler-stop "end")
-   ("q" nil "quit")))
+(defhydra hydra-profile (:color blue)
+  "profiling"
+  ("b" ar/profiler-start-cpu "begin")
+  ("r" profiler-report "report")
+  ("e" profiler-stop "end")
+  ("q" nil "quit"))
+(global-set-key (kbd "C-c 1")
+                #'hydra-profile/body)
 
 ;; (global-set-key
 ;;  (kbd "C-c y")
