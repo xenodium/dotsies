@@ -786,8 +786,13 @@ With a prefix ARG open line above the current line."
    ("C-M-z" . ace-jump-zap-to-char-dwim)))
 
 (use-package ace-window :ensure t
+  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window)))
-
+;; Use larger characters for ace window shortcuts.
+;; From http://oremacs.com/2015/02/27/ace-window-leading-char
+(custom-set-faces
+ '(aw-leading-char-face
+   ((t (:inherit ace-jump-face-foreground :height 3.0)))))
 
 ;; Interactively resize current window.
 (use-package windsize :ensure t)
