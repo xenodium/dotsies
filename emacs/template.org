@@ -10,7 +10,7 @@
 #+HTML_HEAD_EXTRA:   width: 300px;
 #+HTML_HEAD_EXTRA: 
 #+HTML_HEAD_EXTRA: }
-#+HTML_HEAD_EXTRA: p, .org-ol {
+#+HTML_HEAD_EXTRA: p, .org-ol, .org-ul {
 #+HTML_HEAD_EXTRA:   color: rgb(77, 77, 77);
 #+HTML_HEAD_EXTRA:   font-size: 18px;
 #+HTML_HEAD_EXTRA:   font-style: normal;
