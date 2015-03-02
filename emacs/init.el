@@ -1707,6 +1707,10 @@ Git: _n_ext     _s_tage  _d_iff
 (ignore-errors (use-package org-beautify-theme
                  :ensure org-beautify-theme))
 
+;; Tweaking org HTML export.
+(setq org-html-preamble nil)
+(setq org-html-postamble nil)
+
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
 (defun ar/comint-clear-buffer ()
   "Clear the content of shell/REPL."
