@@ -2,17 +2,24 @@
 #+AUTHOR: Alvaro Ramirez
 #+OPTIONS: toc:nil num:nil ^:nil
 #+HTML_HEAD_EXTRA: <style type="text/css">
+#+HTML_HEAD_EXTRA: body {
+#+HTML_HEAD_EXTRA:   padding: 25px;
+#+HTML_HEAD_EXTRA:   margin: 0px;
+#+HTML_HEAD_EXTRA:   font-size: 100%;
+#+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: .title {
-#+HTML_HEAD_EXTRA:   font-size: 18px;
-#+HTML_HEAD_EXTRA:   text-align: left;
+#+HTML_HEAD_EXTRA:   font-size: 1em;
+#+HTML_HEAD_EXTRA:   text-align: center;
+#+HTML_HEAD_EXTRA:   color: rgb(51, 51, 51);
 #+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: #content {
-#+HTML_HEAD_EXTRA:   width: 300px;
+#+HTML_HEAD_EXTRA:   width: 50%;
+#+HTML_HEAD_EXTRA:   margin: 0 auto;
 #+HTML_HEAD_EXTRA: 
 #+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: p, .org-ol, .org-ul {
 #+HTML_HEAD_EXTRA:   color: rgb(77, 77, 77);
-#+HTML_HEAD_EXTRA:   font-size: 18px;
+#+HTML_HEAD_EXTRA:   font-size: 1em;
 #+HTML_HEAD_EXTRA:   font-style: normal;
 #+HTML_HEAD_EXTRA:   font-family: jaf-bernino-sans, 'Lucida Grande',
 #+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
@@ -27,17 +34,35 @@
 #+HTML_HEAD_EXTRA:   text-rendering: optimizelegibility;
 #+HTML_HEAD_EXTRA:   color: rgb(51, 51, 51);
 #+HTML_HEAD_EXTRA: }
-#+HTML_HEAD_EXTRA: .timestamp-wrapper {
-#+HTML_HEAD_EXTRA:  color: rgb(179, 179, 179);
+#+HTML_HEAD_EXTRA: h1 {
+#+HTML_HEAD_EXTRA:   font-size: 2em;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: h2 {
+#+HTML_HEAD_EXTRA:   font-size: 1.5em;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: h3 {
+#+HTML_HEAD_EXTRA:   font-size: 1.2em;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: .timestamp {
+#+HTML_HEAD_EXTRA:  color: #FF3E96;
 #+HTML_HEAD_EXTRA:  font-family: jaf-bernino-sans, 'Lucida Grande',
 #+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
 #+HTML_HEAD_EXTRA:       Verdana, sans-serif;
-#+HTML_HEAD_EXTRA:  font-size: 15px;
+#+HTML_HEAD_EXTRA:  font-size: 0.6em;
 #+HTML_HEAD_EXTRA:  font-style: normal;
 #+HTML_HEAD_EXTRA:  font-weight: 300;
+#+HTML_HEAD_EXTRA:  display: block;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+#+HTML_HEAD_EXTRA:   body {
+#+HTML_HEAD_EXTRA:     font-size: 230%;
+#+HTML_HEAD_EXTRA:   }
+#+HTML_HEAD_EXTRA:   #content {
+#+HTML_HEAD_EXTRA:     width: 90%;
+#+HTML_HEAD_EXTRA:   }
 #+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: </style>
-* [2015-03-01 Sun] New post
+* [2015-03-01 Sun] [[#new-post][#]] New post
   :PROPERTIES:
   :CUSTOM_ID: new-post
   :END:      
@@ -47,7 +72,7 @@
 ******* Subheading 3
 ********* Subheading 4
 *********** Subheading 5
-* [2015-03-01 Sun] Old postwith longer title
+* [2015-03-01 Sun] [[#old-post-with-longer-title][#]]  Old postwith longer title
   :PROPERTIES: 
   :CUSTOM_ID: old-post-with-longer-title
   :END:      
