@@ -1,0 +1,58 @@
+#+TITLE: me@xenodium
+#+AUTHOR: Alvaro Ramirez
+#+OPTIONS: toc:nil num:nil ^:nil
+#+HTML_HEAD_EXTRA: <style type="text/css">
+#+HTML_HEAD_EXTRA: .title {
+#+HTML_HEAD_EXTRA:   font-size: 18px;
+#+HTML_HEAD_EXTRA:   text-align: left;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: #content {
+#+HTML_HEAD_EXTRA:   width: 300px;
+#+HTML_HEAD_EXTRA: 
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: p, .org-ol {
+#+HTML_HEAD_EXTRA:   color: rgb(77, 77, 77);
+#+HTML_HEAD_EXTRA:   font-size: 18px;
+#+HTML_HEAD_EXTRA:   font-style: normal;
+#+HTML_HEAD_EXTRA:   font-family: jaf-bernino-sans, 'Lucida Grande',
+#+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+#+HTML_HEAD_EXTRA:       Verdana, sans-serif;
+#+HTML_HEAD_EXTRA:   font-weight: 300;
+#+HTML_HEAD_EXTRA:   text-rendering: optimizelegibility;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: h1, h2, h3, h4, h5 {
+#+HTML_HEAD_EXTRA:   font-family: jaf-bernino-sans, 'Lucida Grande',
+#+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+#+HTML_HEAD_EXTRA:       Verdana, sans-serif;
+#+HTML_HEAD_EXTRA:   text-rendering: optimizelegibility;
+#+HTML_HEAD_EXTRA:   color: rgb(51, 51, 51);
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: .timestamp-wrapper {
+#+HTML_HEAD_EXTRA:  color: rgb(179, 179, 179);
+#+HTML_HEAD_EXTRA:  font-family: jaf-bernino-sans, 'Lucida Grande',
+#+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+#+HTML_HEAD_EXTRA:       Verdana, sans-serif;
+#+HTML_HEAD_EXTRA:  font-size: 15px;
+#+HTML_HEAD_EXTRA:  font-style: normal;
+#+HTML_HEAD_EXTRA:  font-weight: 300;
+#+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: </style>
+* [2015-03-01 Sun] New post
+  :PROPERTIES:
+  :CUSTOM_ID: new-post
+  :END:      
+*** Subheading 1
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+***** Subheading 2
+******* Subheading 3
+********* Subheading 4
+*********** Subheading 5
+* [2015-03-01 Sun] Old postwith longer title
+  :PROPERTIES: 
+  :CUSTOM_ID: old-post-with-longer-title
+  :END:      
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+  1. One
+  2. Two
+  3. Three
+  4. Four
