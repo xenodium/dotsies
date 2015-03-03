@@ -42,6 +42,7 @@
 #+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: h2 {
 #+HTML_HEAD_EXTRA:   font-size: 1.6em;
+#+HTML_HEAD_EXTRA:   margin-bottom: 0px;
 #+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: h3 {
 #+HTML_HEAD_EXTRA:   font-size: 1.2em;
@@ -51,7 +52,7 @@
 #+HTML_HEAD_EXTRA:  font-family: jaf-bernino-sans, 'Lucida Grande',
 #+HTML_HEAD_EXTRA:       'Lucida Sans Unicode', 'Lucida Sans', Geneva,
 #+HTML_HEAD_EXTRA:       Verdana, sans-serif;
-#+HTML_HEAD_EXTRA:  font-size: 0.6em;
+#+HTML_HEAD_EXTRA:  font-size: 0.5em;
 #+HTML_HEAD_EXTRA:  font-style: normal;
 #+HTML_HEAD_EXTRA:  font-weight: 300;
 #+HTML_HEAD_EXTRA:  display: block;
@@ -75,13 +76,15 @@
   :PROPERTIES:
   :CUSTOM_ID: new-post
   :END:      
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
 *** Subheading 1
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
 ***** Subheading 2
 ******* Subheading 3
 ********* Subheading 4
 *********** Subheading 5
-* [2015-03-01 Sun] [[#old-post-with-longer-title][#]]  Old postwith longer title
+*** Subheading 1
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+* [2015-03-01 Sun] [[#old-post-with-longer-title][#]]  Old post with longer title
   :PROPERTIES: 
   :CUSTOM_ID: old-post-with-longer-title
   :END:      
