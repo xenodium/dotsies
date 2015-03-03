@@ -17,6 +17,9 @@
 #+HTML_HEAD_EXTRA:   margin: 0 auto;
 #+HTML_HEAD_EXTRA: 
 #+HTML_HEAD_EXTRA: }
+#+HTML_HEAD_EXTRA: pre {
+#+HTML_HEAD_EXTRA:   box-shadow: none;
+#+HTML_HEAD_EXTRA: }
 #+HTML_HEAD_EXTRA: p, .org-ol, .org-ul {
 #+HTML_HEAD_EXTRA:   color: rgb(77, 77, 77);
 #+HTML_HEAD_EXTRA:   font-size: 1em;
@@ -81,3 +84,10 @@
   2. Two
   3. Three
   4. Four
+  5. Some great examples [[http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html][here]].
+#+BEGIN_SRC emacs-lisp
+  (defun say-hello ()
+    "Say hello."
+    (interactive)
+    (message "hello elisp world"))
+#+END_SRC
