@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+#name : blog
+#key : bl
+# --
+* `(format-time-string "[%Y-%m-%d %a]")` [[#${1:$(ar/org-blog-custom-id-from-title yas-text)}][#]] $1
+  :PROPERTIES:
+    :Custom_ID: ${1:$(ar/org-blog-custom-id-from-title yas-text)}
+  :END:
+  $0
