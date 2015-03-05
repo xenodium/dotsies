@@ -150,10 +150,11 @@
 
 (use-package bind-key :ensure t)
 
-;; Enable upcase and downcase region (disabled by default).
+;; Enable disabled commands.
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
 
 (use-package anchored-transpose :ensure t)
 
@@ -1526,6 +1527,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                 #'mc/mark-next-like-this)
 (global-set-key (kbd "C-c a")
                 #'mc/mark-all-like-this)
+
+(defun ar/org-blog-custom-id-from-title (title)
+  "Create an org CUSTOM_ID from a TITLE."
+  (replace-regexp-in-string " " "-" (downcase title)))
 
 (defun ar/org-add-cl (cl-number)
   "Add a CL-NUMBER."
