@@ -1547,6 +1547,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
 
+(use-package elmacro :ensure t)
+
 (defhydra hydra-goto-line (:pre (progn
                                   (global-git-gutter-mode -1)
                                   (linum-mode 1))
