@@ -1178,6 +1178,9 @@ Version 2015-02-07."
                                   ar/markdown-mode-hook-function)
                                 '(markdown-mode-hook))
 
+(ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
+                                '(org-mode-hook))
+
 ;; Workaround to use centered-cursor-mode in --nw.
 (defvar mouse-wheel-mode nil)
 (use-package centered-cursor-mode :ensure t)
