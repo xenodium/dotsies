@@ -1629,6 +1629,43 @@ Git: _n_ext     _s_tage  _d_iff
          (git-commit-commit)) "review comments")
   ("q" nil "quit"))
 
+;; From http://oremacs.com/2015/03/07/hydra-org-templates
+(defun ar/hot-expand (str)
+  "Expand org template STR."
+  (insert str)
+  (org-try-structure-completion))
+
+(defhydra hydra-org-template (:color blue :hint nil)
+  "
+_c_enter  _q_uote    _L_aTeX:
+_l_atex   _e_xample  _i_ndex:
+_a_scii   _v_erse    _I_NCLUDE:
+_s_rc     ^ ^        _H_TML:
+_h_tml    ^ ^        _A_SCII:
+"
+  ("s" (ar/hot-expand "<s"))
+  ("e" (ar/hot-expand "<e"))
+  ("q" (ar/hot-expand "<q"))
+  ("v" (ar/hot-expand "<v"))
+  ("c" (ar/hot-expand "<c"))
+  ("l" (ar/hot-expand "<l"))
+  ("h" (ar/hot-expand "<h"))
+  ("a" (ar/hot-expand "<a"))
+  ("L" (ar/hot-expand "<L"))
+  ("i" (ar/hot-expand "<i"))
+  ("I" (ar/hot-expand "<I"))
+  ("H" (ar/hot-expand "<H"))
+  ("A" (ar/hot-expand "<A"))
+  ("<" self-insert-command "ins")
+  ("o" nil "quit"))
+
+;; Display hydra-org-template if < inserted at BOL.
+(define-key org-mode-map "<"
+  (lambda () (interactive)
+    (if (looking-back "^")
+        (hydra-org-template/body)
+      (self-insert-command 1))))
+
 (require 'smerge-mode)
 (defhydra hydra-smerge (:color amaranth)
   "git smerge"
