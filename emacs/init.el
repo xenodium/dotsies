@@ -603,9 +603,6 @@ Argument PROMPT to check for additional prompt."
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively #'sort-lines)))
-;; Sort lines (ie. package imports or headers).
-(global-set-key (kbd "M-s l")
-                #'ar/sort-lines-ignore-case)
 
 (setq css-indent-offset 2)
 
@@ -1077,9 +1074,6 @@ Version 2015-02-07."
   (interactive)
   (ar/select-current-block)
   (ar/sort-lines-ignore-case))
-
-(global-set-key (kbd "M-s b")
-                #'ar/sort-current-block)
 
 (defun ar/sort-objc-headers ()
   "Alphabetically sort Objective-C headers."
@@ -1616,6 +1610,17 @@ Git: _n_ext     _s_tage  _d_iff
   ("q" nil nil :color blue))
 (global-set-key (kbd "C-c g")
                 #'hydra-git-gutter/body)
+
+(defhydra hydra-sort (:color blue)
+  "
+Sort: _l_ines _o_rg list
+      _b_lock"
+  ("l" ar/sort-lines-ignore-case nil)
+  ("o" org-sort-list nil)
+  ("b" ar/sort-current-block nil)
+  ("q" nil nil :color blue))
+(global-set-key (kbd "M-s")
+                #'hydra-sort/body)
 
 (defhydra hydra-magit-commit (:color blue)
   "magit commit"
