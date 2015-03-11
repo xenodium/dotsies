@@ -1697,17 +1697,45 @@ _h_tml    ^ ^        _A_SCII:
 
 ;; Hotspots WIP.
 ;; (setq ar/helm-source-hotspots '((name . "Hotspots")
-;;                                   (candidates . (("yadda" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")
-;;                                                  ("second" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")))
-;;                                   (action . (("Open" . (lambda (x) (find-file x)))))))
+;;                                 (candidates . (("yadda" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")
+;;                                                ("second" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")))
+;;                                 (action . (("Open" . (lambda (x) (find-file x)))))))
 
-;; (defun ar/helm-hotspots ()
-;;   "Show my hotspots."
-;;   (interactive)
-;;   (helm :sources '(ar/helm-source-hotspots
-;;                    helm-source-buffers-list
-;;                    helm-source-ido-virtual-buffers
-;;                    helm-source-recentf)))
+(defun ar/get-helm-org-candidates (org-filename)
+  "Get org top level headings as helm candidates for ORG-FILENAME."
+  (interactive)
+  (let ((helm-candidates '()))
+    (with-current-buffer (find-file-noselect (expand-file-name org-filename))
+;;      (save-excursion
+        (org-map-entries
+         (lambda ()
+           (let* ((heading-components (org-heading-components))
+                  (level (nth 1 heading-components))
+                  (heading-text (nth 4 heading-components))
+                  (custom-id (org-entry-get (point) "CUSTOM_ID"))
+                  ;;(heading-url (format "file:%s::*%s" org-filename heading-text))
+                  (heading-url (format "file:%s::#%s" org-filename custom-id))
+                  ;; Remove [[#some-link][#]]
+                  (helm-text (replace-regexp-in-string "\\[\\[.*\\]\\] " "" heading-text)))
+             (when (= level 1)
+               (push (list helm-text heading-url) helm-candidates))))));;)
+    helm-candidates))
+
+(setq ar/helm-source-blog '((name . "Blog")
+                            (candidates . (lambda ()
+                                            (ar/get-helm-org-candidates "~/stuff/active/blog/index.org")))
+                            (action . (lambda (candidate)
+                                        (org-open-link-from-string (car candidate))
+                                        (delete-other-windows)))))
+
+(defun ar/helm-my-hotspots ()
+  "Show my hotspots."
+  (interactive)
+  (helm :sources '(;; ar/helm-source-hotspots
+                   ;; helm-source-buffers-list
+                   ;; helm-source-ido-virtual-buffers
+                   ;; helm-source-recentf
+                   ar/helm-source-blog)))
 
 (require 'profiler)
 (defun ar/profiler-start-cpu ()
