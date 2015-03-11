@@ -1806,5 +1806,82 @@ _h_tml    ^ ^        _A_SCII:
                                                          (projectile-relevant-known-projects))))
                 magit-repo-dirs-depth 1)))
 
+(setq org-html-head-extra
+      "<style type='text/css'>
+         body {
+           padding: 25px;
+           margin: 0px;
+           font-size: 100%;
+         }
+         .title {
+           font-size: 1em;
+           text-align: right;
+           color: rgb(51, 51, 51);
+         }
+         #content {
+           width: 50%;
+           margin: 0 auto;
+         #+HTML_HEAD_EXTRA:
+         }
+         pre {
+           box-shadow: none;
+         }
+         p, .org-ol, .org-ul {
+           color: rgb(77, 77, 77);
+           font-size: 1em;
+           font-style: normal;
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           font-weight: 300;
+           text-rendering: optimizelegibility;
+         }
+         h1, h2, h3, h4, h5 {
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           text-rendering: optimizelegibility;
+           color: rgb(51, 51, 51);
+         }
+         h1 {
+           font-size: 2em;
+         }
+         h2 {
+           font-size: 1.6em;
+           margin-bottom: 0px;
+         }
+         h3 {
+           font-size: 1.2em;
+         }
+         .timestamp {
+          color: #FF3E96;
+          font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+          font-size: 0.5em;
+          font-style: normal;
+          font-weight: 300;
+          display: block;
+         }
+         a {
+          text-decoration: none;
+          color: #4183C4;
+         }
+         a:visited {
+          background-color: #4183C4;
+         }
+         .outline-2 {
+           margin-bottom: 50px;
+         }
+         @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+           body {
+             font-size: 230%;
+           }
+           #content {
+             width: 90%;
+           }
+         }
+       </style>")
+
 (provide 'init)
 ;;; init.el ends here
