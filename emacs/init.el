@@ -860,11 +860,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-make :ensure t)
 
-;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
-;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
-(use-package discover :ensure t)
-(global-discover-mode 1)
-
 (use-package drag-stuff :ensure t)
 (global-set-key (kbd "M-<up>")
                 #'drag-stuff-up)
@@ -1268,6 +1263,11 @@ Version 2015-02-07."
                               "post"
                               ;; interactive-snippet-p
                               t)))
+
+;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
+;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
+(use-package discover :ensure t)
+(add-hook 'dired-mode-hook 'discover-mode)
 
 ;; Hide dired details by default.
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
