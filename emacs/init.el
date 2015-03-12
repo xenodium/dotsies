@@ -1758,7 +1758,6 @@ _h_tml    ^ ^        _A_SCII:
                                                   (helm-org-goto-marker candidate)
                                                   (org-show-subtree)))))
 
-
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
   (format "[[%s][%s]]"
