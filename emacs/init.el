@@ -1715,32 +1715,28 @@ _h_tml    ^ ^        _A_SCII:
 ;;                                                ("second" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")))
 ;;                                 (action . (("Open" . (lambda (x) (find-file x)))))))
 
-(defun ar/get-helm-org-candidates (org-filename)
-  "Get org top level headings as helm candidates for ORG-FILENAME."
-  (interactive)
-  (let ((helm-candidates '()))
-    (with-current-buffer (find-file-noselect (expand-file-name org-filename))
-;;      (save-excursion
-        (org-map-entries
-         (lambda ()
-           (let* ((heading-components (org-heading-components))
-                  (level (nth 1 heading-components))
-                  (heading-text (nth 4 heading-components))
-                  (custom-id (org-entry-get (point) "CUSTOM_ID"))
-                  ;;(heading-url (format "file:%s::*%s" org-filename heading-text))
-                  (heading-url (format "file:%s::#%s" org-filename custom-id))
-                  ;; Remove [[#some-link][#]]
-                  (helm-text (replace-regexp-in-string "\\[\\[.*\\]\\] " "" heading-text)))
-             (when (= level 1)
-               (push (list helm-text heading-url) helm-candidates))))));;)
-    helm-candidates))
+(defun ar/format-helm-candidates (helm-candidates)
+  "Format HELM-CANDIDATES.  For each candidate:
+
+* [2015-03-11 Wed] [[#emacs-meetup][#]] Emacs London meetup bookmarks
+<>                 <----- remove ------>"
+  (mapcar (lambda (helm-candidate)
+            (setcar helm-candidate (replace-regexp-in-string "\\(^* \\)\\|\\(\\[\\[.*\\]\\] \\)" ""
+                                                             (car helm-candidate)))
+            helm-candidate)
+          helm-candidates))
+
+(defun ar/get-helm-blog-candidates ()
+  "Gets helm candidates for my blog."
+  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
+         (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
+    (ar/format-helm-candidates helm-candidates)))
 
 (setq ar/helm-source-blog '((name . "Blog")
-                            (candidates . (lambda ()
-                                            (ar/get-helm-org-candidates "~/stuff/active/blog/index.org")))
+                            (candidates . ar/get-helm-blog-candidates)
                             (action . (lambda (candidate)
-                                        (org-open-link-from-string (car candidate))
-                                        (delete-other-windows)))))
+                                        (helm-org-goto-marker candidate)
+                                        (org-show-subtree)))))
 
 (defun ar/helm-my-hotspots ()
   "Show my hotspots."
