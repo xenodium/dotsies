@@ -1135,6 +1135,20 @@ Version 2015-02-07."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
+(defun ar/org-mode-hook-function ()
+  "Called when entering org mode."
+  (add-hook 'after-change-functions
+            #'ar/after-prog-mode-text-change
+            t t)
+  (let ((m org-mode-map))
+    (define-key m [f6] #'org-html-export-to-html))
+  (set (make-local-variable 'show-trailing-whitespace) t)
+  (flyspell-mode-on)
+  (whitespace-mode)
+  (rainbow-delimiters-mode)
+  (semantic-mode 1)
+  (yas-minor-mode))
+
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -1167,7 +1181,7 @@ Version 2015-02-07."
                                   ar/markdown-mode-hook-function)
                                 '(markdown-mode-hook))
 
-(ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function)
+(ar/add-functions-to-mode-hooks '(ar/org-mode-hook-function)
                                 '(org-mode-hook))
 
 ;; Workaround to use centered-cursor-mode in --nw.
