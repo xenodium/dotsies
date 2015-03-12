@@ -1762,8 +1762,10 @@ _h_tml    ^ ^        _A_SCII:
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
   (format "[[%s][%s]]"
-          (read-string "URL: ")
-          (read-string "Description:")))
+          (if (string-match-p "^http" (current-kill 0))
+              (current-kill 0)
+            (read-string "URL: "))
+          (read-string "Description: ")))
 
 (defvar ar/bookmark-link-in-process nil)
 
