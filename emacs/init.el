@@ -1726,6 +1726,20 @@ _h_tml    ^ ^        _A_SCII:
             helm-candidate)
           helm-candidates))
 
+(defun ar/filter-helm-candidates (helm-candidates match)
+  "Remove candidates in HELM-CANDIDATES not containing MATCH."
+  (cl-remove-if-not (lambda (helm-candidate)
+                      (string-match-p match
+                                      (car helm-candidate)))
+                    helm-candidates))
+
+;; TODO: Merge with ar/get-helm-blog-candidates.
+(defun ar/get-helm-blog-bookmark-candidates ()
+  "Gets helm candidates for my blog bookmarks."
+  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
+         (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
+    (ar/format-helm-candidates (ar/filter-helm-candidates helm-candidates "bookmarks"))))
+
 (defun ar/get-helm-blog-candidates ()
   "Gets helm candidates for my blog."
   (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
@@ -1737,6 +1751,46 @@ _h_tml    ^ ^        _A_SCII:
                             (action . (lambda (candidate)
                                         (helm-org-goto-marker candidate)
                                         (org-show-subtree)))))
+
+(setq ar/helm-source-blog-bookmarks '((name . "Bookmarks")
+                                      (candidates . ar/get-helm-blog-bookmark-candidates)
+                                      (action . (lambda (candidate)
+                                                  (helm-org-goto-marker candidate)
+                                                  (org-show-subtree)))))
+
+
+(defun ar/build-org-link ()
+  "Build an org link, prompting for url and description."
+  (format "[[%s][%s]]"
+          (read-string "URL: ")
+          (read-string "Description:")))
+
+(defvar ar/bookmark-link-in-process nil)
+
+(defun ar/save-bookmark-link-in-process ()
+  "Prompt and save a bookmark link in process."
+  (setq ar/bookmark-link-in-process (ar/build-org-link)))
+
+(defun ar/retrieve-bookmark-link-in-process ()
+  "Get bookmark link in process."
+  (let ((bookmark-link-in-process ar/bookmark-link-in-process))
+    (setq ar/bookmark-link-in-process nil)
+    bookmark-link-in-process))
+
+(defun ar/helm-add-bookmark ()
+  "Add a bookmark to blog."
+  (interactive)
+  (ar/save-bookmark-link-in-process)
+  (helm :sources '(((name . "Blog bookmarks")
+                    (candidates . ar/get-helm-blog-bookmark-candidates)
+                    (action . (lambda (candidate)
+                                (helm-org-goto-marker candidate)
+                                (org-show-subtree)
+                                (org-forward-sentence)
+                                (org-insert-heading)
+                                (insert (format "%s."
+                                                (ar/retrieve-bookmark-link-in-process)))
+                                (org-sort-list nil ?a)))))))
 
 (defun ar/helm-my-hotspots ()
   "Show my hotspots."
