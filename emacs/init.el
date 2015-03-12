@@ -38,7 +38,9 @@
 (set-cursor-color "#FA009A")
 
 ;; Hide UI.
-(menu-bar-mode -1)
+;; Keep menu bar under graphical OS X for fullscreen.
+(unless (window-system)
+  (menu-bar-mode -1))
 (when (fboundp 'toggle-scroll-bar)
   (toggle-scroll-bar -1))
 (when (fboundp 'tool-bar-mode)
