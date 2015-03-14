@@ -1644,12 +1644,15 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
   "
 Git: _n_ext     _s_tage  _d_iff
-     _p_revious _r_evert _q_uit
+     _p_revious _k_ill _q_uit
 "
   ("n" git-gutter:next-hunk nil)
   ("p" git-gutter:previous-hunk nil)
   ("s" git-gutter:stage-hunk nil)
-  ("r" git-gutter:revert-hunk nil)
+  ("k" (lambda ()
+         (interactive)
+         (git-gutter:revert-hunk)
+         (call-interactively #'git-gutter:next-hunk)) nil)
   ("d" git-gutter:popup-hunk nil)
   ("q" nil nil :color blue))
 (global-set-key (kbd "C-c g")
@@ -1821,7 +1824,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                 (org-insert-heading)
                                 (insert (format "%s."
                                                 (ar/retrieve-bookmark-link-in-process)))
-                                (org-sort-list nil ?a)))))))
+                                (org-sort-list nil ?a)
+                                (save-buffer)))))))
 
 (defun ar/helm-my-hotspots ()
   "Show my hotspots."
