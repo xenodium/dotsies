@@ -205,6 +205,20 @@
       '("~/.emacs.d/yasnippets/personal"))
 (yas-reload-all)
 
+(use-package swiper :ensure t)
+(setq swiper-completion-method 'ivy)
+
+(defun ar/prefilled-swiper ()
+  "Pre-populate swiper with region."
+  (interactive)
+  (if (region-active-p)
+      (let ((region-text (buffer-substring (region-beginning)
+                                           (region-end))))
+        (swiper region-text))
+    (swiper)))
+(global-set-key (kbd "C-s")
+                #'ar/prefilled-swiper)
+
 (use-package helm
   :init
   (progn
