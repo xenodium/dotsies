@@ -1146,13 +1146,22 @@ Version 2015-02-07."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
+(defun ar/export-blog-to-html ()
+  "Export blog to HTML."
+  (interactive)
+  (with-current-buffer (find-file-noselect (expand-file-name
+                                            "~/stuff/active/blog/index.org"))
+    (org-html-export-to-html)
+    (browse-url (format "file:%s" (expand-file-name
+                                   "~/stuff/active/blog/index.html")))))
+
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (add-hook 'after-change-functions
             #'ar/after-prog-mode-text-change
             t t)
   (let ((m org-mode-map))
-    (define-key m [f6] #'org-html-export-to-html))
+    (define-key m [f6] #'ar/export-blog-to-html))
   (set (make-local-variable 'show-trailing-whitespace) t)
   (flyspell-mode-on)
   (whitespace-mode)
