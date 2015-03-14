@@ -687,6 +687,10 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         search-ring
         regexp-search-ring))
 
+;; Don't let the cursor go into minibuffer prompt.
+;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
+(setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
 (defun ar/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
