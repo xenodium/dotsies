@@ -1554,17 +1554,36 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Create an org CUSTOM_ID from a TITLE."
   (replace-regexp-in-string " " "-" (downcase title)))
 
-(defun ar/org-add-cl (cl-number)
-  "Add a CL-NUMBER."
-  (interactive "sEnter CL number: ")
-  (let ((rendered-cl (format "[[http://cl/%s][cl/%s]]" cl-number cl-number)))
+(defun ar/string-digits-p (string)
+  "Return t if STRING is an unsigned integer. nil otherwise."
+  (if (string-match "\\`[[:digit:]]+\\'" string)
+      t
+    nil))
+
+(defun ar/org-insert-prefixed-link (prefix prompt)
+  "Insert a link with PREFIX and PROMPT if not found in clipboard."
+  (interactive)
+  (let* ((clipboard (current-kill 0))
+         (cl-number (if (ar/string-digits-p clipboard)
+                        clipboard
+                      (read-string (format "%s: "
+                                           prompt))))
+         (rendered-cl (format "[[http://%s%s][%s%s]]"
+                              prefix
+                              cl-number
+                              prefix
+                              cl-number)))
     (insert rendered-cl)))
 
-(defun ar/org-add-bug (bug-number)
-  "Add a BUG-NUMBER."
-  (interactive "sEnter bug number: ")
-  (let ((rendered-cl (format "[[http://b/%s][b/%s]]" bug-number bug-number)))
-    (insert rendered-cl)))
+(defun ar/org-insert-cl-link ()
+  "Insert a CL link."
+  (interactive)
+  (ar/org-insert-prefixed-link "cl/" "CL number"))
+
+(defun ar/org-insert-bug-link ()
+  "Insert a bug link."
+  (interactive)
+  (ar/org-insert-prefixed-link "b/" "Bug number"))
 
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
