@@ -209,7 +209,7 @@
 (setq swiper-completion-method 'ivy)
 
 (defun ar/prefilled-swiper ()
-  "Pre-populate swiper with region."
+  "Pre-fill swiper input with region."
   (interactive)
   (if (region-active-p)
       (let ((region-text (buffer-substring (region-beginning)
