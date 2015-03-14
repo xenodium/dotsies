@@ -1660,11 +1660,12 @@ Git: _n_ext     _s_tage  _d_iff
 
 (defhydra hydra-quick-insert ()
   "
-Quick insert: _c_l
+Quick insert: _c_l  _w_eb bookmark
               _b_ug
 "
   ("c" ar/org-insert-cl-link nil)
   ("b" ar/org-insert-bug-link nil)
+  ("w" ar/helm-add-bookmark nil)
   ("q" nil nil :color blue))
 (global-set-key (kbd "C-c x")
                 #'hydra-quick-insert/body)
