@@ -1970,6 +1970,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
            margin: 0px;
            font-size: 100%;
          }
+         .figure {
+           padding: 0;
+         }
          .title {
            font-size: 1em;
            text-align: right;
