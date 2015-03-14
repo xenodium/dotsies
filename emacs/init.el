@@ -216,6 +216,7 @@
                                            (region-end))))
         (swiper region-text))
     (swiper)))
+
 (global-set-key (kbd "C-s")
                 #'ar/prefilled-swiper)
 
