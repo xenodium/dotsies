@@ -1658,6 +1658,17 @@ Git: _n_ext     _s_tage  _d_iff
 (global-set-key (kbd "C-c g")
                 #'hydra-git-gutter/body)
 
+(defhydra hydra-quick-insert ()
+  "
+Quick insert: _c_l
+              _b_ug
+"
+  ("c" ar/org-insert-cl-link nil)
+  ("b" ar/org-insert-bug-link nil)
+  ("q" nil nil :color blue))
+(global-set-key (kbd "C-c x")
+                #'hydra-quick-insert/body)
+
 (defhydra hydra-sort (:color blue)
   "
 Sort: _l_ines _o_rg list
