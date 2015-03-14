@@ -1754,11 +1754,17 @@ _h_tml    ^ ^        _A_SCII:
       (smerge-mode 1))))
 (add-hook 'find-file-hook #'ar/try-smerge t)
 
-;; Hotspots WIP.
-;; (setq ar/helm-source-hotspots '((name . "Hotspots")
-;;                                 (candidates . (("yadda" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")
-;;                                                ("second" . "/Users/tuco/stuff/active/xenodium.github.dotfiles/emacs/init.el")))
-;;                                 (action . (("Open" . (lambda (x) (find-file x)))))))
+(defvar ar/helm-source-local-hotspots '((name . "Local")
+                                        (candidates . (("Blog" . "~/stuff/active/blog/index.org")))
+                                        (action . (("Open" . (lambda (filepath)
+                                                               (find-file filepath)))))))
+
+(defvar ar/helm-source-web-hotspots '((name . "Web")
+                                      (candidates . (("Github" . "https://github.com/xenodium")
+                                                     ("Pinboard" . "https://www.pinterest.com/alvaro1192/wheretogo")
+                                                     ("Twitter" . "http://twitter.com/xenodium")))
+                                      (action . (("Open" . (lambda (url)
+                                                             (browse-url url)))))))
 
 (defun ar/format-helm-candidates (helm-candidates)
   "Format HELM-CANDIDATES.  For each candidate:
@@ -1845,8 +1851,11 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (helm :sources '(;; ar/helm-source-hotspots
                    ;; helm-source-buffers-list
                    ;; helm-source-ido-virtual-buffers
-                   ;; helm-source-recentf
+                   ar/helm-source-local-hotspots
+                   ar/helm-source-web-hotspots
                    ar/helm-source-blog)))
+(global-set-key (kbd "C-c h")
+                #'ar/helm-my-hotspots)
 
 (require 'profiler)
 (defun ar/profiler-start-cpu ()
