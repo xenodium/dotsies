@@ -1033,6 +1033,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
+  (eldoc-mode)
   (turn-on-elisp-slime-nav-mode))
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
                                 '(emacs-lisp-mode-hook
