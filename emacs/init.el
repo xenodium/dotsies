@@ -1021,6 +1021,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-c l")
                 #'ar/split-camel-region)
 
+;; Simplify lisp navigation/editing (ie. slurp/barf).
+(use-package lispy :ensure t)
+
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
@@ -1033,6 +1036,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
+  (lispy-mode 1)
   (eldoc-mode)
   (turn-on-elisp-slime-nav-mode))
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
