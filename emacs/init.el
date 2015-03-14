@@ -1720,10 +1720,10 @@ _h_tml    ^ ^        _A_SCII:
 (defun ar/format-helm-candidates (helm-candidates)
   "Format HELM-CANDIDATES.  For each candidate:
 
-* [2015-03-11 Wed] [[#emacs-meetup][#]] Emacs London meetup bookmarks
-<>                 <----- remove ------>"
+index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
+<---------- remove ---------->"
   (mapcar (lambda (helm-candidate)
-            (setcar helm-candidate (replace-regexp-in-string "\\(^* \\)\\|\\(\\[\\[.*\\]\\] \\)" ""
+            (setcar helm-candidate (replace-regexp-in-string ".*#\\]\\] " ""
                                                              (car helm-candidate)))
             helm-candidate)
           helm-candidates))
