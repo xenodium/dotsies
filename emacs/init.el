@@ -1932,11 +1932,11 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                  :ensure org-beautify-theme))
 
 ;; Tweaking org HTML export.
-(setq ar/preamble-format-string
-"
+(setq ar/preamble-format-string "
 <table id='contact-header'>
   <tr>
-    <td id='contact-left'>@xenodium</td>
+    <td id='contact-left'>
+   </td>
     <td id='contact-right'>
       <a href='https://twitter.com/xenodium'>twitter</a>
       <a href='http://github.com/xenodium'>github</a>
