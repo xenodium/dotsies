@@ -1932,7 +1932,21 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                  :ensure org-beautify-theme))
 
 ;; Tweaking org HTML export.
-(setq org-html-preamble nil)
+(setq ar/preamble-format-string
+"
+<table id='contact-header'>
+  <tr>
+    <td id='contact-left'>@xenodium</td>
+    <td id='contact-right'>
+      <a href='https://twitter.com/xenodium'>twitter</a>
+      <a href='http://github.com/xenodium'>github</a>
+      <a href='http://uk.linkedin.com/in/xenodium'>linkedin</a>
+      <a href='mailto:me@xenodium.com'>email</a>
+    </td>
+  </tr>
+</table>")
+(setq org-html-preamble t)
+(setq org-html-preamble-format `(("en" ,ar/preamble-format-string)))
 (setq org-html-postamble nil)
 
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
@@ -1982,8 +1996,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
       "<style type='text/css'>
          body {
            padding: 25px;
-           margin: 0px;
+           margin: 0 auto;
            font-size: 100%;
+           width: 50%;
          }
          .figure {
            padding: 0;
@@ -1993,10 +2008,16 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
            text-align: right;
            color: rgb(51, 51, 51);
          }
+         #contact-header {
+           width: 100%;
+         }
+         #contact-right {
+           text-align: right;
+         }
+         #contact-left {
+           text-align: left;
+         }
          #content {
-           width: 50%;
-           margin: 0 auto;
-         #+HTML_HEAD_EXTRA:
          }
          pre {
            box-shadow: none;
@@ -2011,7 +2032,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
            font-weight: 300;
            text-rendering: optimizelegibility;
          }
-         h1, h2, h3, h4, h5 {
+         h1, h2, h3, h4, h5, #preamble {
            font-family: jaf-bernino-sans, 'Lucida Grande',
                'Lucida Sans Unicode', 'Lucida Sans', Geneva,
                Verdana, sans-serif;
@@ -2027,6 +2048,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
          }
          h3 {
            font-size: 1.2em;
+         }
+         #preamble {
+           text-align: right;
          }
          .timestamp {
           color: #FF3E96;
@@ -2054,7 +2078,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
            }
            #content {
              width: 90%;
-           }
+          }
          }
        </style>")
 
