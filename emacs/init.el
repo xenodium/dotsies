@@ -73,66 +73,77 @@
   "Mode line format for VC Mode.")
 (put 'ac/vc-mode-line 'risky-local-variable t)
 
-;; Customizing mode line.
-;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
-(setq-default mode-line-format
-              (list
-               ;;"★ "
-               "✪ "
-               ;; the buffer name; the file name as a tool tip
-               '(:eval (propertize "%b"
-                                   'face 'font-lock-keyword-face
-                                   'help-echo (buffer-file-name)))
+(defun setup-tty-mode-line ()
+  "Set up tty modeline."
+  ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
+  (setq-default mode-line-format
+                (list
+                 ;;"★ "
+                 "✪ "
+                 ;; the buffer name; the file name as a tool tip
+                 '(:eval (propertize "%b"
+                                     'face 'font-lock-keyword-face
+                                     'help-echo (buffer-file-name)))
 
-               '(vc-mode ac/vc-mode-line)
+                 '(vc-mode ac/vc-mode-line)
 
-               " | "
-               ;; line and column, '%02' to set to 2 chars at least
-               ;; prevents flickering
-               (propertize "%02l" 'face 'font-lock-type-face)
-               ","
-               (propertize "%02c" 'face 'font-lock-type-face)
-               " | "
+                 " | "
+                 ;; line and column, '%02' to set to 2 chars at least
+                 ;; prevents flickering
+                 (propertize "%02l" 'face 'font-lock-type-face)
+                 ","
+                 (propertize "%02c" 'face 'font-lock-type-face)
+                 " | "
 
-               ;; relative position, size of file
-               (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-               "/"
-               (propertize "%I" 'face 'font-lock-constant-face) ;; size
-               " | "
+                 ;; relative position, size of file
+                 (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
+                 "/"
+                 (propertize "%I" 'face 'font-lock-constant-face) ;; size
+                 " | "
 
-               ;; the current major mode for the buffer.
-               '(:eval (propertize "%m"
-                                   'face
-                                   'font-lock-string-face
-                                   'help-echo buffer-file-coding-system))
-               " | "
+                 ;; the current major mode for the buffer.
+                 '(:eval (propertize "%m"
+                                     'face
+                                     'font-lock-string-face
+                                     'help-echo buffer-file-coding-system))
+                 " | "
 
 
-               ;; insert vs overwrite mode, input-method in a tooltip
-               '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                                   'face 'font-lock-preprocessor-face
-                                   'help-echo (concat "Buffer is in "
-                                                      (if overwrite-mode "overwrite" "insert") " mode")))
+                 ;; insert vs overwrite mode, input-method in a tooltip
+                 '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
+                                     'face 'font-lock-preprocessor-face
+                                     'help-echo (concat "Buffer is in "
+                                                        (if overwrite-mode "overwrite" "insert") " mode")))
 
-               ;; was this buffer modified since the last save?
-               '(:eval (when (buffer-modified-p)
-                         (concat ","  (propertize "Mod"
-                                                  'face 'font-lock-warning-face
-                                                  'help-echo "Buffer has been modified"))))
+                 ;; was this buffer modified since the last save?
+                 '(:eval (when (buffer-modified-p)
+                           (concat ","  (propertize "Mod"
+                                                    'face 'font-lock-warning-face
+                                                    'help-echo "Buffer has been modified"))))
 
-               ;; is this buffer read-only?
-               '(:eval (when buffer-read-only
-                         (concat ","  (propertize "RO"
-                                                  'face 'font-lock-type-face
-                                                  'help-echo "Buffer is read-only"))))
-               " | "
+                 ;; is this buffer read-only?
+                 '(:eval (when buffer-read-only
+                           (concat ","  (propertize "RO"
+                                                    'face 'font-lock-type-face
+                                                    'help-echo "Buffer is read-only"))))
+                 " | "
 
-               ;; add the time, with the date and the emacs uptime in the tooltip
-               '(:eval (propertize (format-time-string "%H:%M")
-                                   'help-echo
-                                   (concat (format-time-string "%c; ")
-                                           (emacs-uptime "Uptime:%hh"))))
-               ))
+                 ;; add the time, with the date and the emacs uptime in the tooltip
+                 '(:eval (propertize (format-time-string "%H:%M")
+                                     'help-echo
+                                     (concat (format-time-string "%c; ")
+                                             (emacs-uptime "Uptime:%hh"))))
+                 )))
+
+
+(defun setup-graphical-mode-line ()
+  "Set up graphical mode line."
+  (use-package rich-minority :ensure t)
+  ;; Hide all minor modes from mode line.
+  (add-to-list 'rm-whitelist nil t)
+  (use-package smart-mode-line :ensure t)
+  (use-package smart-mode-line-powerline-theme :ensure t)
+  (sml/setup))
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
@@ -447,7 +458,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-tty ()
   "Setup tty frame."
   (unless (window-system)
-    nil)) ;; TODO
+    (setup-tty-mode-line)))
 
 (ar/setup-tty)
 
@@ -455,7 +466,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphic-display ()
   "Setup graphic display."
   (when (window-system)
-    nil)) ;; TODO
+    (setup-graphical-mode-line)))
 
 (ar/setup-graphic-display)
 
