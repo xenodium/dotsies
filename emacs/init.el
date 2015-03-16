@@ -73,7 +73,7 @@
   "Mode line format for VC Mode.")
 (put 'ac/vc-mode-line 'risky-local-variable t)
 
-(defun setup-tty-mode-line ()
+(defun ar/setup-tty-mode-line ()
   "Set up tty modeline."
   ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
   (setq-default mode-line-format
@@ -136,7 +136,7 @@
                  )))
 
 
-(defun setup-graphical-mode-line ()
+(defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
   (use-package rich-minority :ensure t)
   ;; Hide all minor modes from mode line.
@@ -459,7 +459,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-tty ()
   "Setup tty frame."
   (unless (window-system)
-    (setup-tty-mode-line)))
+    (ar/setup-tty-mode-line)))
 
 (ar/setup-tty)
 
@@ -467,7 +467,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphic-display ()
   "Setup graphic display."
   (when (window-system)
-    (setup-graphical-mode-line)))
+    (ar/setup-graphical-mode-line)))
 
 (ar/setup-graphic-display)
 
