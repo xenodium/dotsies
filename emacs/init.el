@@ -284,6 +284,9 @@ With argument ARG, do this that many times."
                 #'helm-show-kill-ring)
 (global-set-key (kbd "C-x b")
                 #'helm-buffers-list)
+;; Often intended C-x b. Mapping to same command.
+(global-set-key (kbd "C-x C-b")
+                #'helm-buffers-list)
 (global-set-key (kbd "C-h a")
                 #'helm-apropos)
 ;; Duplicate line.
