@@ -143,7 +143,12 @@
   (add-to-list 'rm-whitelist nil t)
   (use-package smart-mode-line :ensure t)
   (use-package smart-mode-line-powerline-theme :ensure t)
-  (setq sml/mule-info nil)
+  (setq sml/theme nil
+        sml/mule-info nil
+        sml/shorten-directory t
+        sml/name-width 32
+        sml/projectile-replacement-format "%s/"
+        sml/shorten-modes)
   (sml/setup))
 
 ;; Set font face height. Value is 1/10pt.
