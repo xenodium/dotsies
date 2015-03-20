@@ -396,10 +396,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (add-hook 'ediff-after-setup-windows-hook #'ar/ediff-aswh);
 (add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
-;; Highlight lines longer than 100 columns.
 (require 'whitespace)
-(setq whitespace-line-column 100
-      whitespace-style '(face lines tabs))
+(setq whitespace-style '(face lines tabs))
 (setq-default whitespace-mode 1)
 
 (defun ar/compile-autoclose (buffer string)
@@ -490,9 +488,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 (require 'hl-line)
 (global-hl-line-mode +1)
 ;; Set color as current line's background face.
-(set-face-background 'hl-line "black")
+;; (set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
-(set-face-foreground 'highlight nil)
+;; (set-face-foreground 'highlight nil)
 
 
 (require 'whitespace)
@@ -1144,9 +1142,11 @@ Version 2015-02-07."
             nil
             'make-it-local)
   (helm-dash-activate-docset "iOS")
+  ;; Highlight lines longer than 100 columns.
+  (setq whitespace-line-column 100)
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
-       '((;;company-ycmd
+       '(( ;;company-ycmd
           company-yasnippet
           company-gtags
           company-dabbrev-code
@@ -1203,7 +1203,77 @@ Version 2015-02-07."
   (whitespace-mode)
   (rainbow-delimiters-mode)
   (semantic-mode 1)
+  (org-bullets-mode 1)
   (yas-minor-mode))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/org-src-color-blocks-light ()
+  "Color the block headers and footers to make them stand out more for lighter themes."
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(org-block-background
+     ((t (:background "#FFFFEA"))))
+   '(org-block-end-line
+     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
+   '(which-func ((t (:foreground "#008000"))))))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/org-src-color-blocks-dark ()
+  "Color the block headers and footers to make them stand out more for dark themes."
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+   '(org-block-background
+     ((t (:background "#111111"))))
+   '(org-block-end-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+
+   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
+   '(which-func ((t (:foreground "green"))))))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(deftheme ar/org-theme "Sub-theme to beautify org mode")
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                        ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                        ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                        ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                        (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+       (base-font-color  (face-foreground 'default nil 'default))
+       (background-color (face-background 'default nil 'default))
+       (primary-color    (face-foreground 'mode-line nil))
+       (secondary-color  (face-background 'secondary-selection nil 'region))
+       (headline        `(:inherit default :foreground ,base-font-color))
+       (padding         `(:line-width 5 :color ,background-color)))
+  (custom-theme-set-faces 'ar/org-theme
+                          `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
+                          `(org-level-8 ((t (,@headline ,@sans-font))))
+                          `(org-level-7 ((t (,@headline ,@sans-font))))
+                          `(org-level-6 ((t (,@headline ,@sans-font))))
+                          `(org-level-5 ((t (,@headline ,@sans-font))))
+                          `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
+                          `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
+                          `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
+                          `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
+                          `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil))))))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/change-theme (theme org-block-style)
+  "Change the THEME and ORG-BLOCK-STYLE."
+  (funcall theme)
+  (funcall org-block-style))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(use-package color-theme-sanityinc-tomorrow :ensure t)
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(ar/change-theme 'color-theme-sanityinc-tomorrow-night
+                 'ar/org-src-color-blocks-dark)
 
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
@@ -1949,8 +2019,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 ;; Enable RET to follow Org links.
 (setq org-return-follows-link t)
 
-(ignore-errors (use-package org-beautify-theme
-                 :ensure org-beautify-theme))
+(ignore-errors (use-package org-beautify-theme :ensure t))
+
+(use-package org-bullets :ensure t)
 
 ;; Tweaking org HTML export.
 (setq ar/preamble-format-string "
