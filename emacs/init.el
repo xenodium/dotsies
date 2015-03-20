@@ -157,10 +157,10 @@
   (use-package smart-mode-line-powerline-theme :ensure t)
   (setq sml/theme nil
         sml/mule-info nil
-        sml/shorten-directory t
-        sml/name-width 32
-        sml/projectile-replacement-format "%s/"
-        sml/shorten-modes)
+        sml/show-remote nil
+        sml/name-width '(20 . 40)
+        sml/shorten-modes t
+        sml/mode-width 30)
   (sml/setup))
 
 ;; Set font face height. Value is 1/10pt.
@@ -500,16 +500,14 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq-default column-number-mode t)
 
 ;; Highlights current line.
-(require 'hl-line)
-(global-hl-line-mode +1)
+(use-package hl-line :ensure t)
+
 ;; Set color as current line's background face.
 ;; (set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
 ;; (set-face-foreground 'highlight nil)
 
-
-(require 'whitespace)
-(setq whitespace-line-column 100)
+(use-package whitespace :ensure t)
 (setq whitespace-style '(face lines-tail))
 
 ;;  From http://doc.rix.si/org/fsem.html
@@ -1158,7 +1156,7 @@ Version 2015-02-07."
             'make-it-local)
   (helm-dash-activate-docset "iOS")
   ;; Highlight lines longer than 100 columns.
-  (setq whitespace-line-column 100)
+  (set (make-local-variable 'whitespace-line-column) 100)
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
        '(( ;;company-ycmd
@@ -1304,6 +1302,7 @@ Version 2015-02-07."
   (flyspell-prog-mode)
   (whitespace-mode)
   (rainbow-delimiters-mode)
+  (hl-line-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
