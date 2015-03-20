@@ -250,6 +250,7 @@
 ;; (global-set-key (kbd "C-s")
 ;;                 #'ar/prefilled-swiper)
 
+(require 'helm-swoop)
 (use-package helm
   :init
   (progn
@@ -257,7 +258,9 @@
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
-    (use-package helm-swoop :ensure t)
+    ;; Symbol's value as variable is void workaround defines both vars.
+    (use-package helm-swoop :ensure t :init (progn (defvar helm-swoop-pattern "")
+                                                   (defvar helm-match-plugin-mode "")))
     (use-package helm-config)) :ensure t)
 
 (defun ar/projectile-helm-ag ()
@@ -1284,8 +1287,8 @@ Version 2015-02-07."
 (use-package color-theme-sanityinc-tomorrow :ensure t)
 
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(ar/change-theme 'color-theme-sanityinc-tomorrow-night
-                 'ar/org-src-color-blocks-dark)
+;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
+;;                  'ar/org-src-color-blocks-dark)
 
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
