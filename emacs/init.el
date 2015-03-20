@@ -988,9 +988,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
-(use-package objc-font-lock :ensure t)
-(objc-font-lock-global-mode)
-(setq objc-font-lock-background-face nil)
+(use-package objc-font-lock
+  :ensure t
+  :init (setq objc-font-lock-background-face nil))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -1154,6 +1154,7 @@ Version 2015-02-07."
             #'ar/clang-format-buffer
             nil
             'make-it-local)
+  (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   ;; Highlight lines longer than 100 columns.
   (set (make-local-variable 'whitespace-line-column) 100)
