@@ -2028,7 +2028,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (setq org-src-tab-acts-natively t)
 
 ;; Prevent inadvertently editing invisible areas in Org.
-(setq org-catch-invisible-edits t)
+(setq org-catch-invisible-edits 'error)
 
 ;; All Org leading stars become invisible.
 (setq org-hide-leading-stars t)
