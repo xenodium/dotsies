@@ -924,7 +924,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; displays hex strings representing colors
 (use-package rainbow-mode :ensure t)
-(rainbow-mode 1)
 
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
