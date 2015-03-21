@@ -858,11 +858,6 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(use-package auto-dim-other-buffers :ensure t)
-(add-hook 'after-init-hook (lambda ()
-                             (when (fboundp 'auto-dim-other-buffers-mode)
-                               (auto-dim-other-buffers-mode t))))
-
 (use-package key-chord :ensure t)
 (key-chord-define-global "jj" #'ace-jump-char-mode)
 (key-chord-define-global "jk" #'ace-jump-char-mode)
