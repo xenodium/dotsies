@@ -725,6 +725,9 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; Ensure files end with newline.
+(setq require-final-newline t)
+
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode +1)
@@ -1090,26 +1093,25 @@ Repeated invocations toggle between the two most recently open buffers."
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
 
-(defun ar/save-point ()
-  "Save point to register 9999."
+(defun ar/save-point-to-bookmark ()
+  "Save point to bookmark."
   (interactive)
-  (point-to-register 9999)
-  )
+  (bookmark-set "LAST EDIT"))
 
-(defun ar/jump-to-saved-point ()
+(defun ar/jump-to-saved-point-bookmark ()
   "Jumps cursor to register 9999's value."
   (interactive)
-  (jump-to-register 9999))
+  (bookmark-jump "LAST EDIT"))
 (global-set-key (kbd "C-c `")
-                #'ar/jump-to-saved-point)
+                #'ar/jump-to-saved-point-bookmark)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Execute for all text modifications in `prog-mode'.
 Argument BEG beginning.
 Argument END end.
 Argument LEN Length."
-  ;; Saving point to register enables jumping back to last change at any time.
-  (ar/save-point))
+  ;; Saving point enables jumping back to last change at any time.
+  (ar/save-point-to-bookmark))
 
 (defun ar/select-current-block ()
   "Select the current block of text between blank lines.
@@ -1976,6 +1978,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                 (insert (format "%s."
                                                 (ar/retrieve-bookmark-link-in-process)))
                                 (org-sort-list nil ?a)
+                                (hide-other)
                                 (save-buffer)))))))
 
 (defun ar/helm-my-hotspots ()
