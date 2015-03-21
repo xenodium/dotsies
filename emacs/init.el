@@ -1213,6 +1213,8 @@ Version 2015-02-07."
   (let ((m org-mode-map))
     (define-key m [f6] #'ar/export-blog-to-html))
   (set (make-local-variable 'show-trailing-whitespace) t)
+  (set (make-local-variable 'whitespace-line-column) 1000)
+  (ar/org-src-color-blocks-dark)
   (flyspell-mode-on)
   (whitespace-mode)
   (rainbow-delimiters-mode)
@@ -1234,18 +1236,17 @@ Version 2015-02-07."
    '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
    '(which-func ((t (:foreground "#008000"))))))
 
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+;; Based on https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/org-src-color-blocks-dark ()
   "Color the block headers and footers to make them stand out more for dark themes."
   (interactive)
   (custom-set-faces
    '(org-block-begin-line
-     ((t (:foreground "#008ED1" :background "#002E41"))))
+     ((t (:foreground "#008ED1" :background nil))))
    '(org-block-background
      ((t (:background "#111111"))))
    '(org-block-end-line
-     ((t (:foreground "#008ED1" :background "#002E41"))))
-
+     ((t (:foreground "#008ED1" :background nil))))
    '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
    '(which-func ((t (:foreground "green"))))))
 
@@ -1304,6 +1305,7 @@ Version 2015-02-07."
   (whitespace-mode)
   (rainbow-delimiters-mode)
   (hl-line-mode)
+  (rainbow-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
@@ -1685,7 +1687,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (replace-regexp-in-string " " "-" (downcase title)))
 
 (defun ar/string-digits-p (string)
-  "Return t if STRING is an unsigned integer. nil otherwise."
+  "Return t if STRING is an unsigned integer.  nil otherwise."
   (if (string-match "\\`[[:digit:]]+\\'" string)
       t
     nil))
@@ -2018,6 +2020,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
       #'flycheck-pos-tip-error-messages)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+(setq org-src-tab-acts-natively t)
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits t)
