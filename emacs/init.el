@@ -1243,6 +1243,7 @@ Version 2015-02-07."
   (custom-set-faces
    '(org-block-begin-line
      ((t (:foreground "#008ED1" :background nil))))
+   '(org-block ((t (:background "SlateBlue4" :foreground nil :box nil))))
    '(org-block-background
      ((t (:background "#111111"))))
    '(org-block-end-line
