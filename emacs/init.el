@@ -1093,17 +1093,17 @@ Repeated invocations toggle between the two most recently open buffers."
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
 
-(defun ar/save-point-to-bookmark ()
-  "Save point to bookmark."
+(defun ar/save-point-to-register ()
+  "Save point to register."
   (interactive)
-  (bookmark-set "LAST EDIT"))
+  (point-to-register 9999))
 
-(defun ar/jump-to-saved-point-bookmark ()
+(defun ar/jump-to-saved-point-register ()
   "Jumps cursor to register 9999's value."
   (interactive)
-  (bookmark-jump "LAST EDIT"))
+  (jump-to-register 9999))
 (global-set-key (kbd "C-c `")
-                #'ar/jump-to-saved-point-bookmark)
+                #'ar/jump-to-saved-point-register)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Execute for all text modifications in `prog-mode'.
@@ -1111,7 +1111,7 @@ Argument BEG beginning.
 Argument END end.
 Argument LEN Length."
   ;; Saving point enables jumping back to last change at any time.
-  (ar/save-point-to-bookmark))
+  (ar/save-point-to-register))
 
 (defun ar/select-current-block ()
   "Select the current block of text between blank lines.
