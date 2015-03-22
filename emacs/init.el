@@ -2101,6 +2101,72 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                                          (projectile-relevant-known-projects))))
                 magit-repo-dirs-depth 1)))
 
+(setq org-drawers(append '("MODIFIED") org-drawers))
+
+(defun ar/org-html-export-format-drawer (name content)
+  "Format drawer NAME and CONTENT for HTML export."
+  (concat "<br>"
+          "<span class=\"modified-timestamp\">"
+          "  <em>"
+          (ar/org-filter-timestamp-in-drawer-content content)
+          "  updated"
+          "  </em>"
+          "</span>"))
+
+(defun ar/org-filter-timestamp-in-drawer-content (content)
+  "Remove unnecessary HTML from exported modified CONTENT drawer."
+  (string-match "\\(\\[.*\\]\\)" content)
+  (match-string 0 content))
+
+(defun ar/org-point-to-heading-1 ()
+  "Move point to heading level 1."
+  (interactive)
+  (while (org-up-heading-safe)))
+
+(defun ar/org-move-current-tree-to-top ()
+  "Move entire current tree to top."
+  (interactive)
+  (ar/org-point-to-heading-1)
+  (while (not (org-first-sibling-p))
+    (outline-move-subtree-up 1)))
+
+(defun ar/org-update-drawer (drawer content)
+  "Update DRAWER with CONTENT."
+  (save-restriction
+    (save-excursion
+      ;; e.g match drawer like:
+      ;; :MODIFIED:
+      ;; [2015-03-22 Sun]
+      ;; :END:
+      (let ((drawer-re (concat "^[ \t]*:"
+                               drawer
+                               ":[[:ascii:]]*?:END:[ \t]*\n")))
+        (ar/org-point-to-heading-1)
+        (narrow-to-region (point)
+                          (save-excursion
+                            (outline-next-heading)
+                            (point)))
+        (if (re-search-forward drawer-re
+                               nil t)
+            ;; Remove existing drawer.
+            (progn
+              (goto-char (match-beginning 0))
+              (replace-regexp drawer-re ""))
+          (org-end-of-meta-data-and-drawers))
+        ;; Insert new drawer + format.
+        (org-insert-drawer nil drawer)
+        (beginning-of-line 0)
+        (org-indent-line)
+        (next-line)
+        (insert content)
+        (beginning-of-line 1)
+        (org-indent-line)
+        (beginning-of-line 2)
+        (org-indent-line)
+        (delete-trailing-whitespace)))))
+
+(setq org-html-format-drawer-function #'ar/org-html-export-format-drawer)
+
 (setq org-html-head-extra
       "<style type='text/css'>
          body {
@@ -2127,6 +2193,14 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
            text-align: left;
          }
          #content {
+         }
+         .modified-timestamp {
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           text-rendering: optimizelegibility;
+           font-size: 0.8em;
+           color: #a9a9a9;
          }
          pre {
            box-shadow: none;
