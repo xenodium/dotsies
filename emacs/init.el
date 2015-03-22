@@ -27,6 +27,9 @@
 ;; Increase memory threshold for garbage collection.
 (setq gc-cons-threshold 20000000)
 
+;; Pretty print output to *Pp Eval Output*.
+(global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
+
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t)
 
