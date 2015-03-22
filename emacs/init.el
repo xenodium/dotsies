@@ -1972,6 +1972,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                 (insert (format "%s."
                                                 (ar/retrieve-bookmark-link-in-process)))
                                 (org-sort-list nil ?a)
+                                (ar/update-blog-timestamp-at-point)
                                 (hide-other)
                                 (save-buffer)))))))
 
@@ -2151,21 +2152,29 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
             ;; Remove existing drawer.
             (progn
               (goto-char (match-beginning 0))
-              (replace-regexp drawer-re ""))
+              (replace-match ""))
           (org-end-of-meta-data-and-drawers))
         ;; Insert new drawer + format.
         (org-insert-drawer nil drawer)
         (beginning-of-line 0)
         (org-indent-line)
-        (next-line)
+        (forward-line)
         (insert content)
         (beginning-of-line 1)
         (org-indent-line)
         (beginning-of-line 2)
         (org-indent-line)
+        ;; TODO: Avoid adding trailing caused by org-indent-line.
         (delete-trailing-whitespace)))))
 
 (setq org-html-format-drawer-function #'ar/org-html-export-format-drawer)
+
+(defun ar/update-blog-timestamp-at-point ()
+  "Update blog entry timestamp at point."
+  (interactive)
+  (ar/org-update-drawer "MODIFIED"
+                        (format-time-string "[%Y-%m-%d %a]"))
+  (ar/org-move-current-tree-to-top))
 
 (setq org-html-head-extra
       "<style type='text/css'>
