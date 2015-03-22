@@ -1899,7 +1899,7 @@ _h_tml    ^ ^        _A_SCII:
   "Format HELM-CANDIDATES.  For each candidate:
 
 index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
-<---------- remove ---------->"
+<-------------------- remove ------------------->"
   (mapcar (lambda (helm-candidate)
             (setcar helm-candidate (replace-regexp-in-string ".*#\\]\\] " ""
                                                              (car helm-candidate)))
