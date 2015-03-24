@@ -493,14 +493,19 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (ar/setup-tty)
 
+(defun ar/setup-graphical-fringe ()
+  "Setup up the fringe (graphical display only)."
+  (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
+
 ;; TODO: Revisit this.
-(defun ar/setup-graphic-display ()
-  "Setup graphic display."
+(defun ar/setup-graphical-display ()
+  "Setup graphical display."
   (when (window-system)
-    (ar/setup-fonts)
+    (ar/setup-graphical-fringe)
+    (ar/setup-graphical-fonts)
     (ar/setup-graphical-mode-line)))
 
-(ar/setup-graphic-display)
+(ar/setup-graphical-display)
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger :ensure t)
@@ -1260,8 +1265,8 @@ Version 2015-02-07."
 (deftheme ar/org-theme "Sub-theme to beautify org mode")
 
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/setup-fonts ()
-  "Setup fonts (on graphics display only."
+(defun ar/setup-graphical-fonts ()
+  "Setup fonts (on graphical display only."
   (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
                           ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
                           ((x-list-fonts "Verdana")         '(:font "Verdana"))
