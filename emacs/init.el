@@ -219,6 +219,11 @@
 (global-font-lock-mode)
 
 (global-auto-revert-mode)
+
+;; Auto refresh dired.
+;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
+(setq global-auto-revert-non-file-buffers t)
+
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
 (setq auto-revert-check-vc-info t)
