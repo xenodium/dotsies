@@ -41,9 +41,7 @@
 (set-cursor-color "#FA009A")
 
 ;; Hide UI.
-;; Keep menu bar under graphical OS X for fullscreen.
-(unless (window-system)
-  (menu-bar-mode -1))
+(menu-bar-mode -1)
 (when (fboundp 'toggle-scroll-bar)
   (toggle-scroll-bar -1))
 (when (fboundp 'tool-bar-mode)
@@ -542,6 +540,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphical-display ()
   "Setup graphical display."
   (when (window-system)
+    (toggle-frame-fullscreen)
     (ar/setup-graphical-fringe)
     (ar/setup-graphical-fonts)
     (ar/setup-graphical-mode-line)))
@@ -605,6 +604,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
   (when (ar/osxp)
+    ;; Keep menu bar under graphical OS X for fullscreen.
+    (when (window-system)
+      (menu-bar-mode 1))
     ;; Sets the command (Apple) key as Meta.
     (setq mac-command-modifier 'meta)
     ;; Sets the option (Apple) key also as Meta.
