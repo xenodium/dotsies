@@ -163,8 +163,20 @@
         sml/show-remote nil
         sml/name-width '(20 . 40)
         sml/shorten-modes t
-        sml/mode-width 30)
+        sml/mode-width 'right)
+  (add-hook 'after-init-hook #'ar/enable-graphical-time)
   (sml/setup))
+
+(defun ar/enable-graphical-time ()
+  "Enable graphical time in modeline."
+  (interactive)
+  (setq display-time-24hr-format t)
+  (setq display-time-day-and-date t)
+  (display-time) ; Align the time to right
+  (setq global-mode-string (remove 'display-time-string global-mode-string))
+  (setq mode-line-end-spaces
+        (list (propertize " " 'display '(space :align-to (- right 17)))
+              'display-time-string)))
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
@@ -496,6 +508,35 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
   (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(deftheme ar/org-theme "Sub-theme to beautify org mode")
+
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/setup-graphical-fonts ()
+  "Setup fonts (on graphical display only."
+  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color  (face-foreground 'default nil 'default))
+         (background-color (face-background 'default nil 'default))
+         (primary-color    (face-foreground 'mode-line nil))
+         (secondary-color  (face-background 'secondary-selection nil 'region))
+         (headline        `(:inherit default :foreground ,base-font-color))
+         (padding         `(:line-width 5 :color ,background-color)))
+    (custom-theme-set-faces 'ar/org-theme
+                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
+                            `(org-level-8 ((t (,@headline ,@sans-font))))
+                            `(org-level-7 ((t (,@headline ,@sans-font))))
+                            `(org-level-6 ((t (,@headline ,@sans-font))))
+                            `(org-level-5 ((t (,@headline ,@sans-font))))
+                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
+                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
+                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
+                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
+                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
 
 ;; TODO: Revisit this.
 (defun ar/setup-graphical-display ()
@@ -1260,35 +1301,6 @@ Version 2015-02-07."
      ((t (:foreground "#008ED1" :background nil))))
    '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
    '(which-func ((t (:foreground "green"))))))
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(deftheme ar/org-theme "Sub-theme to beautify org mode")
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/setup-graphical-fonts ()
-  "Setup fonts (on graphical display only."
-  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color  (face-foreground 'default nil 'default))
-         (background-color (face-background 'default nil 'default))
-         (primary-color    (face-foreground 'mode-line nil))
-         (secondary-color  (face-background 'secondary-selection nil 'region))
-         (headline        `(:inherit default :foreground ,base-font-color))
-         (padding         `(:line-width 5 :color ,background-color)))
-    (custom-theme-set-faces 'ar/org-theme
-                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
-                            `(org-level-8 ((t (,@headline ,@sans-font))))
-                            `(org-level-7 ((t (,@headline ,@sans-font))))
-                            `(org-level-6 ((t (,@headline ,@sans-font))))
-                            `(org-level-5 ((t (,@headline ,@sans-font))))
-                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
-                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
-                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
-                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
 
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/change-theme (theme org-block-style)
