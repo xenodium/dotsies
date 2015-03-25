@@ -1571,7 +1571,7 @@ Version 2015-02-07."
                 #'eval-region)
 
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
-(defun ar/youtube-dowload ()
+(defun ar/youtube-download ()
   "Download youtube video from url in clipboard."
   (interactive)
   (let* ((url (current-kill 0))
