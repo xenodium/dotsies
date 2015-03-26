@@ -1773,6 +1773,22 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package elmacro :ensure t)
 
+(defhydra hydra-apropos (:color blue
+                                :hint nil)
+  "
+_a_propos        _c_ommand
+_d_ocumentation  _l_ibrary
+_v_ariable       _u_ser-option
+^ ^          valu_e_"
+  ("a" apropos)
+  ("d" apropos-documentation)
+  ("v" apropos-variable)
+  ("c" apropos-command)
+  ("l" apropos-library)
+  ("u" apropos-user-option)
+  ("e" apropos-value))
+(global-set-key (kbd "C-h h") 'hydra-apropos/body)
+
 (defhydra hydra-goto-line (:pre (progn
                                   (global-git-gutter-mode -1)
                                   (linum-mode 1))
