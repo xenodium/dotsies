@@ -1570,6 +1570,30 @@ Version 2015-02-07."
 (global-set-key (kbd "C-x C-r")
                 #'eval-region)
 
+(defun ar/helm-buffer-url-candidates ()
+  "Generate helm candidates for all URLs in buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((helm-candidates '())
+          (url))
+      (while (re-search-forward goto-address-url-regexp
+                                nil t)
+        (setq url
+              (buffer-substring-no-properties (match-beginning 0)
+                                              (match-end 0)))
+        (add-to-list 'helm-candidates
+                     (cons url
+                           url)))
+      helm-candidates)))
+
+(defun ar/helm-buffer-urls ()
+  "Narrow down and open a URL in buffer."
+  (interactive)
+  (helm :sources `(((name . "Buffer URLs")
+                    (candidates . ,(ar/helm-buffer-url-candidates))
+                    (action . (lambda (url)
+                                (browse-url url)))))))
+
 ;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-download ()
   "Download youtube video from url in clipboard."
@@ -1780,9 +1804,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                            #'hydra-open-c-mode/body)))
 
 (defhydra hydra-open (:color blue)
-  "open"
-  ("e" ar/open-in-external-app "externally")
-  ("u" ar/open-file-at-point "url at point")
+  "
+Open: _p_oint _e_externally
+      _u_rls
+"
+  ("e" ar/open-in-external-app nil)
+  ("p" ar/open-file-at-point nil)
+  ("u" ar/helm-buffer-urls nil)
   ("q" nil "cancel"))
 
 (global-set-key (kbd "C-c o")
