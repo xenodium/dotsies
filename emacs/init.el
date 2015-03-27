@@ -1726,6 +1726,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (interactive)
   (helm-find t))
 
+;; Ensure clipboard makes it into kill ring even if killing other text.
+(setq save-interprogram-paste-before-kill t)
+
 (use-package multiple-cursors :ensure t)
 (multiple-cursors-mode)
 (global-set-key (kbd "C-c n")
