@@ -1572,6 +1572,7 @@ Version 2015-02-07."
 (global-set-key (kbd "C-x C-r")
                 #'eval-region)
 
+(require 'goto-addr)
 (defun ar/helm-buffer-url-candidates ()
   "Generate helm candidates for all URLs in buffer."
   (save-excursion
