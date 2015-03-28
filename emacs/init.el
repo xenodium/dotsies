@@ -1572,6 +1572,7 @@ Version 2015-02-07."
 (global-set-key (kbd "C-x C-r")
                 #'eval-region)
 
+(require 'goto-addr)
 (defun ar/helm-buffer-url-candidates ()
   "Generate helm candidates for all URLs in buffer."
   (save-excursion
@@ -1725,6 +1726,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Find files from current location."
   (interactive)
   (helm-find t))
+
+;; Ensure clipboard makes it into kill ring even if killing other text.
+(setq save-interprogram-paste-before-kill t)
 
 (use-package multiple-cursors :ensure t)
 (multiple-cursors-mode)
