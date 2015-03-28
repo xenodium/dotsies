@@ -2193,6 +2193,29 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (string-match "\\(\\[.*\\]\\)" content)
   (match-string 0 content))
 
+(global-set-key (kbd "<escape>") #'delete-window)
+
+(defun ar/org-entry-child-headings (id)
+  "Get org child headings for entry with ID."
+  (save-excursion
+    (org-open-link-from-string (format "[[#%s]]" id))
+    (org-end-of-meta-data-and-drawers)
+    (let ((child-headings '())
+          (child-heading))
+      (when (org-at-heading-p)
+        ;; Extract first child.
+        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+        (add-to-list 'child-headings child-heading)
+        ;; Now handle remaining siblings.
+        (while (org-get-next-sibling)
+          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+          (add-to-list 'child-headings child-heading) ))
+      child-headings)))
+
+(defun ar/org-todos-headings ()
+  "Get this week's TODOS."
+  (ar/org-entry-child-headings "current-week"))
+
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
   (interactive)
