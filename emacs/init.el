@@ -2041,7 +2041,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                     (action . (lambda (candidate)
                                 (helm-org-goto-marker candidate)
                                 (org-show-subtree)
-                                (org-forward-sentence)
+                                (org-end-of-meta-data-and-drawers)
                                 (org-insert-heading)
                                 (insert (format "%s."
                                                 (ar/retrieve-bookmark-link-in-process)))
