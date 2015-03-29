@@ -42,7 +42,7 @@
                                      (shell-quote-argument (buffer-file-name)))
                              t t))
   (set-buffer-modified-p nil)
-  (sgml-mode)) ;; replace this if you have xml-mode installed
+  (nxml-mode))
 
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t)
