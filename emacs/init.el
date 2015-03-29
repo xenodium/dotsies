@@ -2216,9 +2216,49 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           (add-to-list 'child-headings child-heading) ))
       child-headings)))
 
-(defun ar/org-todos-headings ()
-  "Get this week's TODOS."
-  (ar/org-entry-child-headings "current-week"))
+(defun ar/org-todo-heading-plist (todo-heading)
+  "Create a TODO-HEADING plist."
+  (cond ((string-match "\\[\\[.*?\\]\\]" todo-heading)
+         `(:heading ,todo-heading :url ,(match-string 0 todo-heading)))
+        (`(:heading ,todo-heading :marker ,(copy-marker (point))))))
+
+(defun ar/org-helm-entry-child-candidates (id)
+  "Get org child headings for entry with ID."
+  (save-excursion
+    (org-open-link-from-string (format "[[#%s]]" id))
+    (org-end-of-meta-data-and-drawers)
+    (let ((child-headings '())
+          (child-heading))
+      (when (org-at-heading-p)
+        ;; Extract first child.
+        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+        (add-to-list 'child-headings
+                     (cons child-heading
+                           (ar/org-todo-heading-plist child-heading)))
+        (while (org-get-next-sibling)
+          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+          (add-to-list 'child-headings
+                       (cons child-heading
+                             (ar/org-todo-heading-plist child-heading)))))
+      child-headings)))
+
+(defun ar/todos-helm-candidates ()
+  "Get this week's TODOS helm candidates."
+  (with-current-buffer (find-file-noselect (expand-file-name
+                                            "~/stuff/active/non-public/daily.org"))
+    (ar/org-helm-entry-child-candidates "current-week")))
+
+(defun ar/helm-todos ()
+  "Current TODOS."
+  (interactive)
+  (helm :sources `(((name . "TODOS")
+                    (candidates . ,(ar/todos-helm-candidates))
+                    (action . (lambda (candidate)
+                                (cond ((plist-get candidate :marker)
+                                       (org-goto-marker-or-bmk (plist-get candidate :marker)))
+                                      ((plist-get candidate :url)
+                                       (org-open-link-from-string (plist-get candidate
+                                                                             :url))))))))))
 
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
