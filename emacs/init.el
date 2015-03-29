@@ -30,6 +30,20 @@
 ;; Pretty print output to *Pp Eval Output*.
 (global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
 
+;; Based on http://hints.macworld.com/article.php?story=20050526162847879
+;; Convert plists on Mac OS to xml equivalent and open.
+(push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
+(defun ar/convert-plist-to-xml ()
+  (when (string-match "`bplist"
+                      (buffer-string))
+    (shell-command-on-region (point-min) (point-max)
+                             ;; yes, the temp file is necessary :-(
+                             (format "plutil -convert xml1 -o /tmp/temp.plist %s; cat /tmp/temp.plist"
+                                     (shell-quote-argument (buffer-file-name)))
+                             t t))
+  (set-buffer-modified-p nil)
+  (sgml-mode)) ;; replace this if you have xml-mode installed
+
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t)
 
