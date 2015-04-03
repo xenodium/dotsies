@@ -774,7 +774,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
-(bind-key "\M-/" #'hippie-expand)
+(bind-key "M-/" #'hippie-expand)
 
 (setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                          try-expand-dabbrev-visible
