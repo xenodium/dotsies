@@ -259,9 +259,8 @@
 ;; Need it for mode-line-format to stay up to date.
 (setq auto-revert-check-vc-info t)
 
-(use-package expand-region :ensure t)
-(global-set-key (kbd "C-c w")
-                #'er/expand-region)
+(use-package expand-region :ensure t
+  :bind ("C-c w" . er/expand-region))
 
 (require 'recentf)
 (setq recentf-max-saved-items 200
@@ -701,13 +700,14 @@ Argument PROMPT to check for additional prompt."
 
 (use-package git-link :ensure t)
 
-(use-package magit :ensure t)
+(use-package magit :ensure t
+  :config
+  (setq magit-status-buffer-switch-function #'switch-to-buffer)
+  :bind ("C-x g" . magit-status))
+
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" #'vc-ediff))
-(global-set-key (kbd "C-x g")
-                #'magit-status)
-(setq magit-status-buffer-switch-function #'switch-to-buffer)
 
 (defun ar/sort-lines-ignore-case ()
   "Sort region (case-insensitive)."
@@ -1889,6 +1889,9 @@ Sort: _l_ines _o_rg list
   ("q" nil nil :color blue))
 (global-set-key (kbd "M-s")
                 #'hydra-sort/body)
+
+(use-package git-commit-mode
+  :commands (git-commit-commit))
 
 (defhydra hydra-magit-commit (:color blue)
   "magit commit"
