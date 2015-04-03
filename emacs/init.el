@@ -1107,9 +1107,6 @@ Repeated invocations toggle between the two most recently open buffers."
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
 
-(unless (server-running-p)
-  (server-start))
-
 ;; Customize vertical window divider:
 ;; Set symbol for the border.
 (set-display-table-slot standard-display-table
@@ -2419,6 +2416,12 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           }
          }
        </style>")
+
+(use-package server
+  :commands (server-running-p
+             server-start))
+(unless (server-running-p)
+  (server-start))
 
 (provide 'init)
 ;;; init.el ends here
