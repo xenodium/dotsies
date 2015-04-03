@@ -290,14 +290,54 @@
 ;;                 #'ar/prefilled-swiper)
 
 (use-package helm
-  :init
-  (progn
-    (use-package helm-ag :ensure t)
-    (use-package helm-buffers)
-    (use-package helm-files)
-    (use-package helm-grep)
-    (use-package helm-swoop :ensure t)
-    (use-package helm-config)) :ensure t)
+  :config
+  (use-package helm-ag :ensure t)
+  (use-package helm-buffers
+    :config
+    (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
+                                               '(picture-mode artist-mode)))
+    (setq helm-buffer-max-length 40))
+  (use-package helm-files)
+  (use-package helm-grep)
+  (use-package helm-swoop :ensure t
+    :bind ("M-C-s" . helm-multi-swoop-all))
+  (use-package helm-config)
+  (use-package helm-dash :ensure t
+    :bind ("C-h y" . helm-dash-at-point)
+    :commands (helm-dash-activate-docset)
+    :config (setq helm-dash-browser-func #'browse-url))
+  (setq helm-google-suggest-use-curl-p t)
+  (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (setq helm-quick-update t)  ; do not display invisible candidates
+  (setq helm-idle-delay 0.01) ; be idle for this many seconds, before updating in delayed sources.
+  (setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (setq helm-ff-search-library-in-sexp t)
+  (setq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (setq helm-split-window-in-side-p t)
+  (setq helm-candidate-number-limit 100)
+  (setq helm-boring-file-regexp-list
+        '("\\.git$" "\\.hg$"
+          "\\.svn$" "\\.CVS$"
+          "\\._darcs$" "\\.la$"
+          "\\.o$" "\\.i$"))
+  (setq helm-ff-file-name-history-use-recentf t)
+  (setq helm-move-to-line-cycle-in-source t) ; move to end or beginning of source
+  (setq ido-use-virtual-buffers t)
+  (setq helm-buffers-fuzzy-matching t)
+  (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
+  (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
+  (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
+  (bind-key "<tab>" #'helm-execute-persistent-action helm-map) ; rebind tab to do persistent action
+  (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
+  (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
+  :bind (("C-c i" . helm-imenu)
+         ("M-x" . helm-M-x)
+         ("M-y" . helm-show-kill-ring)
+         ("C-x b" . helm-buffers-list)
+         ;; Often intended C-x b. Mapping to same command.
+         ("C-x C-b" . helm-buffers-list)
+         ("C-h a" . helm-apropos))
+  :ensure t)
 
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
@@ -313,70 +353,16 @@ With argument ARG, do this that many times."
                  (progn
                    (subword-backward arg)
                    (point))))
-(global-set-key (kbd "M-DEL")
-                #'ar/backward-delete-subword)
-(global-set-key (kbd "<C-backspace>")
-                #'ar/backward-delete-subword)
+(bind-key "M-DEL" #'ar/backward-delete-subword)
+(bind-key "<C-backspace>" #'ar/backward-delete-subword)
 
-(use-package helm-dash :ensure t
-  :bind ("C-h y" . helm-dash-at-point)
-  :commands (helm-dash-activate-docset)
-  :config (setq helm-dash-browser-func #'browse-url))
-
-(global-set-key (kbd "M-C-s")
-                #'helm-multi-swoop-all)
-(global-set-key (kbd "C-c i")
-                #'helm-imenu)
-(define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action) ; rebind tab to do persistent action
-(define-key helm-map (kbd "C-i") #'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  #'helm-select-action) ; list actions using C-z
-(global-set-key (kbd "M-x")
-                #'helm-M-x)
-(global-set-key (kbd "M-y")
-                #'helm-show-kill-ring)
-(global-set-key (kbd "C-x b")
-                #'helm-buffers-list)
-;; Often intended C-x b. Mapping to same command.
-(global-set-key (kbd "C-x C-b")
-                #'helm-buffers-list)
-(global-set-key (kbd "C-h a")
-                #'helm-apropos)
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
-;; On Mac, this is effectively fn-M-backspace.
-(global-set-key (kbd "M-(")
-                #'kill-word)
+
 (global-set-key (kbd "C-q")
                 #'previous-buffer)
 (global-set-key (kbd "C-z")
                 #'next-buffer)
-
-(define-key helm-grep-mode-map (kbd "<return>")  #'helm-grep-mode-jump-other-window)
-(define-key helm-grep-mode-map (kbd "n")  #'helm-grep-mode-jump-other-window-forward)
-(define-key helm-grep-mode-map (kbd "p")  #'helm-grep-mode-jump-other-window-backward)
-
-(setq
- helm-google-suggest-use-curl-p t
- helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
- helm-quick-update t ; do not display invisible candidates
- helm-idle-delay 0.01 ; be idle for this many seconds, before updating in delayed sources.
- helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
- helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
-
- helm-split-window-default-side 'below ;; open helm buffer below.
- helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
- helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                     '(picture-mode artist-mode))
- helm-buffer-max-length 40
- helm-candidate-number-limit 100 ; limit the number of displayed canidates
- helm-M-x-requires-pattern 0     ; show all candidates when set to 0
- helm-boring-file-regexp-list
- '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
-
- helm-ff-file-name-history-use-recentf t
- helm-move-to-line-cycle-in-source t ; move to end or beginning of source
- ido-use-virtual-buffers t
- helm-buffers-fuzzy-matching t)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
