@@ -47,6 +47,9 @@
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t)
 
+;; Peak into macros by expanding them inline.
+(use-package macrostep :ensure t)
+
 (use-package async :ensure t)
 (require 'async-bytecomp)
 
@@ -314,9 +317,10 @@ With argument ARG, do this that many times."
 (global-set-key (kbd "<C-backspace>")
                 #'ar/backward-delete-subword)
 
-(use-package helm-dash :ensure t :demand)
-(bind-key "C-h y" #'helm-dash-at-point)
-(setq helm-dash-browser-func #'browse-url)
+(use-package helm-dash :ensure t
+  :bind ("C-h y" . helm-dash-at-point)
+  :commands (helm-dash-activate-docset)
+  :config (setq helm-dash-browser-func #'browse-url))
 
 (global-set-key (kbd "M-C-s")
                 #'helm-multi-swoop-all)
