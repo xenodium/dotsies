@@ -33,6 +33,8 @@
 ;; Pretty print output to *Pp Eval Output*.
 (global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
 
+(use-package bug-hunter :ensure t)
+
 ;; Based on http://hints.macworld.com/article.php?story=20050526162847879
 ;; Convert plists on Mac OS to xml equivalent and open.
 (push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
