@@ -293,7 +293,7 @@
   (use-package helm-buffers
     :config
     (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                               '(picture-mode artist-mode)))
+                                              '(picture-mode artist-mode)))
     (setq helm-buffer-max-length 40))
   (use-package helm-files)
   (use-package helm-grep)
@@ -328,13 +328,13 @@
   (bind-key "<tab>" #'helm-execute-persistent-action helm-map) ; rebind tab to do persistent action
   (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
   (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
+  (bind-key "M-p" #'helm-previous-source helm-map)
+  (bind-key "M-n" #'helm-next-source helm-map)
   :bind (("C-c i" . helm-imenu)
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
-         ("C-x b" . helm-buffers-list)
-         ;; Often intended C-x b. Mapping to same command.
-         ("C-x C-b" . helm-buffers-list)
          ("C-h a" . helm-apropos))
+  :commands (helm-buffers-list)
   :ensure t)
 
 (defun ar/projectile-helm-ag ()
@@ -353,9 +353,7 @@ With argument ARG, do this that many times."
                    (point))))
 (bind-key "M-DEL" #'ar/backward-delete-subword)
 (bind-key "<C-backspace>" #'ar/backward-delete-subword)
-
-;; Duplicate line.
-(global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+(bind-key "C-x C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 
 (bind-key "C-q" #'previous-buffer)
 (bind-key "C-z" #'next-buffer)
@@ -1244,6 +1242,26 @@ Version 2015-02-07."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
+(use-package ox-html
+  :commands (org-html-export-to-html)
+  :config
+  (setq org-html-preamble t)
+  (setq org-html-preamble-format '(("en" "
+<table id='contact-header'>
+  <tr>
+    <td id='contact-left'>
+   </td>
+    <td id='contact-right'>
+      <a href='https://twitter.com/xenodium'>twitter</a>
+      <a href='http://github.com/xenodium'>github</a>
+      <a href='http://uk.linkedin.com/in/xenodium'>linkedin</a>
+      <a href='mailto:me@xenodium.com'>email</a>
+    </td>
+  </tr>
+</table>")))
+  (setq org-html-postamble nil)
+  (setq org-html-format-drawer-function #'ar/org-html-export-format-drawer))
+
 (defun ar/export-blog-to-html ()
   "Export blog to HTML."
   (interactive)
@@ -1252,6 +1270,8 @@ Version 2015-02-07."
     (org-html-export-to-html)
     (browse-url (format "file:%s" (expand-file-name
                                    "~/stuff/active/blog/index.html")))))
+
+(use-package flyspell :commands (flyspell-mode-on))
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
@@ -2042,17 +2062,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                 (hide-other)
                                 (save-buffer)))))))
 
-(defun ar/helm-my-hotspots ()
-  "Show my hotspots."
-  (interactive)
-  (helm :sources '(;; ar/helm-source-hotspots
-                   ;; helm-source-buffers-list
-                   ;; helm-source-ido-virtual-buffers
-                   ar/helm-source-local-hotspots
-                   ar/helm-source-web-hotspots
-                   ar/helm-source-blog)))
-(bind-key "C-c h" #'ar/helm-my-hotspots)
-
 (use-package profiler)
 (defun ar/profiler-start-cpu ()
   "Start cpu profiler."
@@ -2104,24 +2113,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (ignore-errors (use-package org-beautify-theme :ensure t))
 
 (use-package org-bullets :ensure t)
-
-;; Tweaking org HTML export.
-(setq ar/preamble-format-string "
-<table id='contact-header'>
-  <tr>
-    <td id='contact-left'>
-   </td>
-    <td id='contact-right'>
-      <a href='https://twitter.com/xenodium'>twitter</a>
-      <a href='http://github.com/xenodium'>github</a>
-      <a href='http://uk.linkedin.com/in/xenodium'>linkedin</a>
-      <a href='mailto:me@xenodium.com'>email</a>
-    </td>
-  </tr>
-</table>")
-(setq org-html-preamble t)
-(setq org-html-preamble-format `(("en" ,ar/preamble-format-string)))
-(setq org-html-postamble nil)
 
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
 (defun ar/comint-clear-buffer ()
@@ -2232,18 +2223,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                             "~/stuff/active/non-public/daily.org"))
     (ar/org-helm-entry-child-candidates "current-week")))
 
-(defun ar/helm-todos ()
-  "Current TODOS."
-  (interactive)
-  (helm :sources `(((name . "TODOS")
-                    (candidates . ,(ar/todos-helm-candidates))
-                    (action . (lambda (candidate)
-                                (cond ((plist-get candidate :marker)
-                                       (org-goto-marker-or-bmk (plist-get candidate :marker)))
-                                      ((plist-get candidate :url)
-                                       (org-open-link-from-string (plist-get candidate
-                                                                             :url))))))))))
-
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
   (interactive)
@@ -2292,7 +2271,36 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
         ;; TODO: Avoid adding trailing caused by org-indent-line.
         (delete-trailing-whitespace)))))
 
-(setq org-html-format-drawer-function #'ar/org-html-export-format-drawer)
+(defvar ar/helm-source-my-todos `((name . "TODOS")
+                                  (candidates . ,(ar/todos-helm-candidates))
+                                  (action . (lambda (candidate)
+                                              (cond ((plist-get candidate :marker)
+                                                     (org-goto-marker-or-bmk (plist-get candidate :marker)))
+                                                    ((plist-get candidate :url)
+                                                     (org-open-link-from-string (plist-get candidate
+                                                                                           :url))))))))
+(defun ar/helm-todos ()
+  "Current TODOS."
+  (interactive)
+  (helm :sources '(ar/helm-source-my-todos)))
+
+(defun ar/helm-my-hotspots ()
+  "Show my hotspots."
+  (interactive)
+  (unless helm-source-buffers-list
+    (setq helm-source-buffers-list
+          (helm-make-source "Buffers" 'helm-source-buffers)))
+  (helm :sources '(helm-source-buffers-list
+                   helm-source-ido-virtual-buffers
+                   helm-source-buffer-not-found
+                   ar/helm-source-local-hotspots
+                   ar/helm-source-web-hotspots
+                   ar/helm-source-blog
+                   ar/helm-source-my-todos)
+        :buffer "*helm buffers*"
+        :keymap helm-buffer-map
+        :truncate-lines t))
+(bind-key "C-x b" #'ar/helm-my-hotspots)
 
 (defun ar/update-blog-timestamp-at-point ()
   "Update blog entry timestamp at point."
