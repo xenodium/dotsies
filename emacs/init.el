@@ -262,9 +262,10 @@
 (use-package expand-region :ensure t
   :bind ("C-c w" . er/expand-region))
 
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
+(use-package recentf
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15))
 (recentf-mode)
 
 (use-package yasnippet :ensure t)
@@ -358,10 +359,8 @@ With argument ARG, do this that many times."
 ;; Duplicate line.
 (global-set-key "\C-x\C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 
-(global-set-key (kbd "C-q")
-                #'previous-buffer)
-(global-set-key (kbd "C-z")
-                #'next-buffer)
+(bind-key "C-q" #'previous-buffer)
+(bind-key "C-z" #'next-buffer)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
@@ -387,10 +386,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; brew install global --with-exuberant-ctags
 ;; http://writequit.org/org/settings.html#sec-1-26
 (use-package ggtags :ensure t)
-(use-package helm-gtags :ensure t)
+(use-package helm-gtags
+  :ensure t
+  :bind ("M-." . helm-gtags-dwim))
 (helm-gtags-mode 1)
-(global-set-key (kbd "M-.")
-                #'helm-gtags-dwim)
 
 (use-package projectile :ensure t)
 (projectile-global-mode)
@@ -403,9 +402,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Prevent split-window-sensibly to split horizontally.
 (setq split-width-threshold nil)
 
-(require 'ediff)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-split-window-function 'split-window-horizontally)
+(use-package ediff
+  :config
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (setq ediff-split-window-function #'split-window-horizontally))
+
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
 (defvar ar/ediff-bwin-config nil
@@ -433,8 +434,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 (add-hook 'ediff-after-setup-windows-hook #'ar/ediff-aswh);
 (add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
-(require 'whitespace)
-(setq whitespace-style '(face lines tabs))
+(use-package whitespace
+  :config
+  (setq whitespace-style '(face lines tabs)))
 (setq-default whitespace-mode 1)
 
 (defun ar/compile-autoclose (buffer string)
@@ -471,8 +473,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq show-paren-style 'mixed)
 
 ;; Partially use path in buffer name.
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'forward))
 
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
@@ -493,12 +496,10 @@ Optional argument NON-RECURSIVE to shallow-search."
             (setq linum-format "%4d ")))
 
 (use-package git-gutter
-  :ensure t)
+  :ensure t
+  :bind (("C-c <up>" . git-gutter:previous-hunk)
+         ("C-c <down>" . git-gutter:next-hunk)))
 (global-git-gutter-mode +1)
-(global-set-key (kbd "C-c <up>")
-                #'git-gutter:previous-hunk)
-(global-set-key (kbd "C-c <down>")
-                #'git-gutter:next-hunk)
 
 (defun ar/setup-tty ()
   "Setup tty frame."
@@ -602,8 +603,7 @@ Optional argument NON-RECURSIVE to shallow-search."
     (if command
         (shell-command command)
       (message "Unrecognized platform."))))
-(global-set-key (kbd "C-x t")
-                #'ar/new-browser-tab)
+(bind-key "C-x t" #'ar/new-browser-tab)
 
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
@@ -750,8 +750,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                      (y-or-n-p "Open more than 5 files? "))))
     (when ξdo-it-p
       (mapc (ar/open-in-external-app-lambda) ξfile-list))))
-(global-set-key (kbd "C-M-o")
-                #'ar/open-in-external-app)
+(bind-key "C-M-o" #'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -775,7 +774,8 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
-(global-set-key "\M-/" 'hippie-expand)
+(bind-key "\M-/" #'hippie-expand)
+
 (setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                          try-expand-dabbrev-visible
                                          try-expand-dabbrev-all-buffers
@@ -848,10 +848,8 @@ point reaches the beginning or end of the buffer, stop there."
   (other-window 1 nil)
   (switch-to-next-buffer))
 
-(global-set-key (kbd "C-x 2")
-                #'ar/vsplit-last-buffer)
-(global-set-key (kbd "C-x 3")
-                #'ar/hsplit-last-buffer)
+(bind-key "C-x 2" #'ar/vsplit-last-buffer)
+(bind-key "C-x 3" #'ar/hsplit-last-buffer)
 
 ;; Thank you Bozhidar.
 ;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L340
@@ -899,8 +897,7 @@ With a prefix ARG open line above the current line."
       (move-end-of-line nil)
       (newline-and-indent))))
 
-(global-set-key (kbd "C-o")
-                #'ar/smart-open-line)
+(bind-key "C-o" #'ar/smart-open-line)
 
 (use-package ace-jump-mode :ensure t)
 
@@ -953,8 +950,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq company-show-numbers t)
 (global-company-mode)
 (add-to-list 'company-backends 'company-c-headers)
-(global-set-key (kbd "<backtab>")
-                #'company-complete)
+(bind-key "<backtab>" #'company-complete)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -972,11 +968,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-make :ensure t)
 
-(use-package drag-stuff :ensure t)
-(global-set-key (kbd "M-<up>")
-                #'drag-stuff-up)
-(global-set-key (kbd "M-<down>")
-                #'drag-stuff-down)
+(use-package drag-stuff :ensure t
+  :bind (("M-<up>" . drag-stuff-up)
+         ("M-<down>" . drag-stuff-down)))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
@@ -1123,8 +1117,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-(global-set-key (kbd "C-c l")
-                #'ar/split-camel-region)
+(bind-key "C-c l" #'ar/split-camel-region)
 
 ;; Simplify lisp navigation/editing (ie. slurp/barf).
 (use-package lispy :ensure t)
@@ -1157,8 +1150,7 @@ Repeated invocations toggle between the two most recently open buffers."
   "Jumps cursor to register 9999's value."
   (interactive)
   (jump-to-register 9999))
-(global-set-key (kbd "C-c `")
-                #'ar/jump-to-saved-point-register)
+(bind-key "C-c `" #'ar/jump-to-saved-point-register)
 
 (defun ar/after-prog-mode-text-change (beg end len)
   "Execute for all text modifications in `prog-mode'.
@@ -1408,8 +1400,7 @@ Version 2015-02-07."
                   (end-of-line)
                   (point))))
     (comment-or-uncomment-region start end)))
-(global-set-key (kbd "M-;")
-                #'ar/comment-dwim)
+(bind-key "M-;" #'ar/comment-dwim)
 
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
   "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
@@ -1508,8 +1499,7 @@ Version 2015-02-07."
              'upcase-region)
            start (1+ start)))
       (capitalize-word -1))))
-(global-set-key (kbd "C-c c")
-                #'ar/capitalize-word-toggle)
+(bind-key "C-c c" #'ar/capitalize-word-toggle)
 
 (defun ar/upcase-word-toggle ()
   "Toggle word case at point."
@@ -1538,8 +1528,7 @@ Version 2015-02-07."
                         'downcase-region
                       'upcase-region)
                     beg end)))))
-(global-set-key (kbd "C-c r")
-                #'set-rectangular-region-anchor)
+(bind-key "C-c r" #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
@@ -1573,10 +1562,9 @@ Version 2015-02-07."
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
-(global-set-key (kbd "C-x C-r")
-                #'eval-region)
+(bind-key "C-x C-r" #'eval-region)
 
-(require 'goto-addr)
+(use-package goto-addr)
 (defun ar/helm-buffer-url-candidates ()
   "Generate helm candidates for all URLs in buffer."
   (save-excursion
@@ -1621,8 +1609,7 @@ Version 2015-02-07."
     (erase-buffer)
     (insert clipboard-content)
     (prog-mode)))
-(global-set-key (kbd "C-c y")
-                #'ar/view-clipboard-buffer)
+(bind-key "C-c y" #'ar/view-clipboard-buffer)
 
 ;;  Save Emacs state from one session to another.
 ;;  Disabling. Trial without it.
@@ -1734,12 +1721,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 ;; Ensure clipboard makes it into kill ring even if killing other text.
 (setq save-interprogram-paste-before-kill t)
 
-(use-package multiple-cursors :ensure t)
+(use-package multiple-cursors :ensure t
+  :bind (("C-c n" . mc/mark-next-like-this)
+         ("C-c a" . mc/mark-all-like-this)))
 (multiple-cursors-mode)
-(global-set-key (kbd "C-c n")
-                #'mc/mark-next-like-this)
-(global-set-key (kbd "C-c a")
-                #'mc/mark-all-like-this)
 
 (defun ar/org-blog-custom-id-from-title (title)
   "Create an org CUSTOM_ID from a TITLE."
@@ -1795,7 +1780,7 @@ _v_ariable       _u_ser-option
   ("l" apropos-library)
   ("u" apropos-user-option)
   ("e" apropos-value))
-(global-set-key (kbd "C-h h") 'hydra-apropos/body)
+(bind-key "C-h h" #'hydra-apropos/body)
 
 (defhydra hydra-goto-line (:pre (progn
                                   (global-git-gutter-mode -1)
@@ -1808,8 +1793,7 @@ _v_ariable       _u_ser-option
   ("g" goto-line "line")
   ("c" goto-char "char")
   ("q" nil "quit"))
-(global-set-key (kbd "M-g")
-                #'hydra-goto-line/body)
+(bind-key "M-g" #'hydra-goto-line/body)
 
 (defhydra hydra-org-add-object (:color blue)
   "add"
@@ -1839,8 +1823,7 @@ Open: _p_oint _e_externally
   ("u" ar/helm-buffer-urls nil)
   ("q" nil "cancel"))
 
-(global-set-key (kbd "C-c o")
-                #'hydra-open/body)
+(bind-key "C-c o" #'hydra-open/body)
 
 (defhydra hydra-search (:color blue)
   "search"
@@ -1849,8 +1832,7 @@ Open: _p_oint _e_externally
   ("f" ar/find-dired-current-dir "find file")
   ("a" ar/find-all-dired-current-dir "find all files")
   ("q" nil "quit"))
-(global-set-key (kbd "C-c s")
-                #'hydra-search/body)
+(bind-key "C-c s" #'hydra-search/body)
 
 (defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
   "
@@ -1866,8 +1848,7 @@ Git: _n_ext     _s_tage  _d_iff
          (call-interactively #'git-gutter:next-hunk)) nil)
   ("d" git-gutter:popup-hunk nil)
   ("q" nil nil :color blue))
-(global-set-key (kbd "C-c g")
-                #'hydra-git-gutter/body)
+(bind-key "C-c g" #'hydra-git-gutter/body)
 
 (defhydra hydra-quick-insert ()
   "
@@ -1878,8 +1859,7 @@ Quick insert: _c_l  _w_eb bookmark
   ("b" ar/org-insert-bug-link nil)
   ("w" ar/helm-add-bookmark nil)
   ("q" nil nil :color blue))
-(global-set-key (kbd "C-c x")
-                #'hydra-quick-insert/body)
+(bind-key "C-c x" #'hydra-quick-insert/body)
 
 (defhydra hydra-sort (:color blue)
   "
@@ -1889,8 +1869,7 @@ Sort: _l_ines _o_rg list
   ("o" org-sort-list nil)
   ("b" ar/sort-current-block nil)
   ("q" nil nil :color blue))
-(global-set-key (kbd "M-s")
-                #'hydra-sort/body)
+(bind-key "M-s" #'hydra-sort/body)
 
 (use-package git-commit-mode
   :commands (git-commit-commit))
@@ -1944,7 +1923,7 @@ _h_tml    ^ ^        _A_SCII:
         (hydra-org-template/body)
       (self-insert-command 1))))
 
-(require 'smerge-mode)
+(use-package smerge-mode)
 (defhydra hydra-smerge (:color amaranth)
   "git smerge"
   ("n" smerge-next "next")
@@ -2070,10 +2049,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                    ar/helm-source-local-hotspots
                    ar/helm-source-web-hotspots
                    ar/helm-source-blog)))
-(global-set-key (kbd "C-c h")
-                #'ar/helm-my-hotspots)
+(bind-key "C-c h" #'ar/helm-my-hotspots)
 
-(require 'profiler)
+(use-package profiler)
 (defun ar/profiler-start-cpu ()
   "Start cpu profiler."
   (interactive)
@@ -2085,8 +2063,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   ("r" profiler-report "report")
   ("e" profiler-stop "end")
   ("q" nil "quit"))
-(global-set-key (kbd "C-c 1")
-                #'hydra-profile/body)
+(bind-key "C-c 1" #'hydra-profile/body)
 
 ;; (global-set-key
 ;;  (kbd "C-c y")
@@ -2204,7 +2181,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (string-match "\\(\\[.*\\]\\)" content)
   (match-string 0 content))
 
-(global-set-key (kbd "<escape>") #'delete-window)
+(bind-key "<escape>" #'delete-window)
 
 (defun ar/org-entry-child-headings (id)
   "Get org child headings for entry with ID."
