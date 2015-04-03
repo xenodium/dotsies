@@ -3,6 +3,9 @@
 ;; Just another init.el file.
 ;;; Code:
 
+;;  Guarantee that Emacs never loads outdated byte code files.
+(setq load-prefer-newer t)
+
 (require 'package)
 
 (add-to-list 'package-archives
@@ -50,8 +53,7 @@
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
-(use-package async :ensure t)
-(require 'async-bytecomp)
+(use-package async :ensure t :demand)
 
 (use-package molokai-theme :ensure t)
 
@@ -1496,11 +1498,11 @@ Version 2015-02-07."
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
 
-;;  Guarantee that Emacs never loads outdated byte code files.
-(setq load-prefer-newer t)
-(use-package auto-compile :ensure t :demand)
-(auto-compile-on-load-mode 1)
-(auto-compile-on-save-mode 1)
+(use-package auto-compile :ensure t
+  :demand
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1))
 
 (defun ar/char-upcasep (letter)
   "Check if LETTER is uppercase."
