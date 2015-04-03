@@ -287,7 +287,6 @@
 ;; (global-set-key (kbd "C-s")
 ;;                 #'ar/prefilled-swiper)
 
-(require 'helm-swoop)
 (use-package helm
   :init
   (progn
@@ -295,9 +294,7 @@
     (use-package helm-buffers)
     (use-package helm-files)
     (use-package helm-grep)
-    ;; Symbol's value as variable is void workaround defines both vars.
-    (use-package helm-swoop :ensure t :init (progn (defvar helm-swoop-pattern "")
-                                                   (defvar helm-match-plugin-mode "")))
+    (use-package helm-swoop :ensure t)
     (use-package helm-config)) :ensure t)
 
 (defun ar/projectile-helm-ag ()
