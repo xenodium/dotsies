@@ -50,7 +50,10 @@
   (nxml-mode))
 
 ;; Enhanced list-packages replacement.
-(use-package paradox :ensure t)
+(use-package paradox :ensure t
+  :config
+  (fullframe paradox-list-packages paradox-quit-and-close)
+  :commands (paradox-list-packages))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
@@ -71,13 +74,8 @@
 (when (boundp 'use-dialog-box)
   (setq use-dialog-box nil))
 
-(use-package fullframe :ensure t)
-
-(ar/after-load 'magit
-  (fullframe magit-status magit-mode-quit-window))
-
-(ar/after-load 'paradox
-  (fullframe paradox-list-packages paradox-quit-and-close))
+(use-package fullframe :ensure t
+  :commands (fullframe))
 
 (ar/after-load 'ibuffer
   (fullframe ibuffer ibuffer-quit))
@@ -705,6 +703,7 @@ Argument PROMPT to check for additional prompt."
 (use-package magit :ensure t
   :config
   (setq magit-status-buffer-switch-function #'switch-to-buffer)
+  (fullframe magit-status magit-mode-quit-window)
   :bind ("C-x g" . magit-status))
 
 ;; Use vc-ediff as default.
@@ -1463,7 +1462,10 @@ Version 2015-02-07."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
-  :init (winner-mode 1))
+  :init (winner-mode 1)
+  :bind (("<S-escape>" . winner-redo)
+         ("<escape>" . winner-undo)))
+
 (setq winner-boring-buffers
       (append winner-boring-buffers '("*helm M-x*"
                                       "helm mini*"
@@ -2180,8 +2182,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Remove unnecessary HTML from exported modified CONTENT drawer."
   (string-match "\\(\\[.*\\]\\)" content)
   (match-string 0 content))
-
-(bind-key "<escape>" #'delete-window)
 
 (defun ar/org-entry-child-headings (id)
   "Get org child headings for entry with ID."
