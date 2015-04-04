@@ -1875,7 +1875,7 @@ Git: _n_ext     _s_tage  _d_iff
   ("q" nil nil :color blue))
 (bind-key "C-c g" #'hydra-git-gutter/body)
 
-(defhydra hydra-quick-insert ()
+(defhydra hydra-quick-insert (:color blue)
   "
 Quick insert: _c_l  _w_eb bookmark
               _b_ug
