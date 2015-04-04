@@ -1290,6 +1290,9 @@ Version 2015-02-07."
   (org-bullets-mode 1)
   (yas-minor-mode))
 
+;; Set region color.
+(set-face-attribute 'region nil :background "#0000ff")
+
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/org-src-color-blocks-light ()
   "Color the block headers and footers to make them stand out more for lighter themes."
