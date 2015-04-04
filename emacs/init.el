@@ -1990,9 +1990,11 @@ _h_tml    ^ ^        _A_SCII:
 index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 <-------------------- remove ------------------->"
   (mapcar (lambda (helm-candidate)
-            (setcar helm-candidate (substring-no-properties (replace-regexp-in-string ".*#\\]\\] " ""
-                                                                                      (car helm-candidate))))
-            helm-candidate)
+            (let* ((text (replace-regexp-in-string ".*#\\]\\] " ""
+                                                   (car helm-candidate)))
+                   (text-no-properties (substring-no-properties text)))
+              (setcar helm-candidate text-no-properties)
+              helm-candidate))
           helm-candidates))
 
 (defun ar/filter-helm-candidates (helm-candidates match)
