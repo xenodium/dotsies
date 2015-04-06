@@ -1276,7 +1276,7 @@ Version 2015-02-07."
 (use-package flyspell :commands (flyspell-mode-on))
 
 (use-package fill-column-indicator :ensure t
-  :commands (turn-on-fci-mode)
+  :commands (turn-on-fci-mode))
 
 ;; I prefer sentences to end with one space instead.
 (setq sentence-end-double-space nil)
