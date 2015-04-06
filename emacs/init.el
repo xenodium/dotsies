@@ -289,6 +289,7 @@
 
 (use-package helm
   :config
+  (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t)
   (use-package helm-buffers
     :config
@@ -702,6 +703,7 @@ Argument PROMPT to check for additional prompt."
   :config
   (setq magit-status-buffer-switch-function #'switch-to-buffer)
   (fullframe magit-status magit-mode-quit-window)
+  (magit-auto-revert-mode)
   :bind ("C-x g" . magit-status))
 
 ;; Use vc-ediff as default.
@@ -1273,6 +1275,12 @@ Version 2015-02-07."
 
 (use-package flyspell :commands (flyspell-mode-on))
 
+(use-package fill-column-indicator :ensure t
+  :commands (turn-on-fci-mode)
+
+;; I prefer sentences to end with one space instead.
+(setq sentence-end-double-space nil)
+
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (add-hook 'after-change-functions
@@ -1354,6 +1362,7 @@ Version 2015-02-07."
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
+  (turn-on-fci-mode)
   (yas-minor-mode))
 
 (defun ar/markdown-mode-hook-function ()
@@ -1624,6 +1633,9 @@ Version 2015-02-07."
     (term-send-string
      proc
      (concat "cd ~/Downloads && youtube-dl " url "\n"))))
+
+;; Try to guess the target directory for operations.
+(setq dired-dwim-target t)
 
 (defun ar/view-clipboard-buffer ()
   "View clipboard buffer."
@@ -2098,10 +2110,24 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+(setq org-ellipsis "…")
+
+(setq org-fontify-emphasized-text +1)
+
+;; When exporting anything, do not insert in kill ring.
+(setq org-export-copy-to-kill-ring nil)
+
+;; Display images inline when running in GUI.
+(setq org-startup-with-inline-images (display-graphic-p))
+
 (setq org-src-tab-acts-natively t)
 
 ;; Prevent inadvertently editing invisible areas in Org.
 (setq org-catch-invisible-edits 'error)
+
+(setq org-image-actual-width t)
+
+(setq org-hide-emphasis-markers t)
 
 ;; All Org leading stars become invisible.
 (setq org-hide-leading-stars t)
