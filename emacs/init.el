@@ -542,6 +542,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphical-display ()
   "Setup graphical display."
   (when (window-system)
+    (setq frame-title-format '("𝔼𝕞𝕒𝕔𝕤"))
     (toggle-frame-fullscreen)
     (ar/setup-graphical-fringe)
     (ar/setup-graphical-fonts)
