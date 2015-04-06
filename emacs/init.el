@@ -1819,8 +1819,46 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package elmacro :ensure t)
 
-(defhydra hydra-apropos (:color blue
-                                :hint nil)
+(defhydra hydra-vc-log-edit (:color blue :hint nil)
+  "
+_u_pdate _r_eview comments
+_t_ypo
+"
+  ("u" (lambda ()
+         (interactive)
+         (insert "Updated.")
+         (log-edit-done)))
+  ("t" (lambda ()
+         (interactive)
+         (insert "Fixed typo.")
+         (log-edit-done)))
+  ("r" (lambda ()
+         (interactive)
+         (insert "Addressed review comments.")
+         (log-edit-done)))
+  ("q" nil "quit"))
+(add-hook 'vc-git-log-edit-mode-hook #'hydra-vc-log-edit/body)
+
+(defhydra hydra-git-commit (:color blue :hint nil)
+  "
+_u_pdate _r_eview comments
+_t_ypo
+"
+  ("u" (lambda ()
+         (interactive)
+         (insert "Updated.")
+         (git-commit-commit)))
+  ("t" (lambda ()
+         (interactive)
+         (insert "Fixed typo.")
+         (git-commit-commit)))
+  ("r" (lambda ()
+         (interactive)
+         (insert "Addressed review comments.")
+         (git-commit-commit)))
+  ("q" nil "quit"))
+
+(defhydra hydra-apropos (:color blue :hint nil)
   "
 _a_propos        _c_ommand
 _d_ocumentation  _l_ibrary
@@ -1925,19 +1963,9 @@ Sort: _l_ines _o_rg list
 (bind-key "M-s" #'hydra-sort/body)
 
 (use-package git-commit-mode
-  :commands (git-commit-commit))
-
-(defhydra hydra-magit-commit (:color blue)
-  "magit commit"
-  ("u" (lambda ()
-         (interactive)
-         (insert "Update.")
-         (git-commit-commit)) "update")
-  ("r" (lambda ()
-         (interactive)
-         (insert "Addressing review comments.")
-         (git-commit-commit)) "review comments")
-  ("q" nil "quit"))
+  :commands (git-commit-commit)
+  :config
+  (bind-key "C-c x" #'hydra-git-commit/body git-commit-mode-map))
 
 ;; From http://oremacs.com/2015/03/07/hydra-org-templates
 (defun ar/hot-expand (str)
