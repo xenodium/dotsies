@@ -464,6 +464,17 @@ Optional argument NON-RECURSIVE to shallow-search."
                             (?\< . ?\>)))
 (electric-indent-mode)
 
+;; This looks fun. Will play more with it.
+;; (use-package highlight-tail :ensure t)
+;; (setq highlight-tail-colors '(("black" . 0)
+;;                               ("#bc2525" . 25)
+;;                               ("black" . 66)))
+;; (setq highlight-tail-steps 5
+;;       highlight-tail-timer 0.1)
+
+;; (setq highlight-tail-posterior-type 'const)
+;; (highlight-tail-reload)
+
 ;; Highlight matching parenthesis.
 (show-paren-mode)
 ;; Highlight entire bracket expression.
