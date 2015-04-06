@@ -1136,6 +1136,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (bind-key "M-i" #'helm-swoop lispy-mode-map))
 
+
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
