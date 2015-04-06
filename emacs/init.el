@@ -299,7 +299,8 @@
   (use-package helm-files)
   (use-package helm-grep)
   (use-package helm-swoop :ensure t
-    :bind ("M-C-s" . helm-multi-swoop-all))
+    :bind (("M-C-s" . helm-multi-swoop-all)
+           ("M-i" . helm-swoop)))
   (use-package helm-config)
   (use-package helm-dash :ensure t
     :bind ("C-h y" . helm-dash-at-point)
@@ -1131,7 +1132,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (bind-key "C-c l" #'ar/split-camel-region)
 
 ;; Simplify lisp navigation/editing (ie. slurp/barf).
-(use-package lispy :ensure t)
+(use-package lispy :ensure t
+  :config
+  (bind-key "M-i" #'helm-swoop lispy-mode-map))
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
