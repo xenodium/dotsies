@@ -1777,7 +1777,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package multiple-cursors :ensure t
   :bind (("C-c n" . mc/mark-next-like-this)
          ("C-c a" . mc/mark-all-like-this)))
-(multiple-cursors-mode)
+(use-package phi-search :ensure t)
+(use-package phi-search-mc :ensure t
+  :config
+  (phi-search-mc/setup-keys))
 
 (defun ar/org-blog-custom-id-from-title (title)
   "Create an org CUSTOM_ID from a TITLE."
