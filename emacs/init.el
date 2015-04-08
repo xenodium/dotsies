@@ -433,7 +433,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 (add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
 (use-package whitespace
+  :commands (whitespace-mode)
   :config
+  ;; When nil, fill-column is used instead.
+  (setq whitespace-line-column nil)
   (setq whitespace-style '(face lines tabs)))
 (setq-default whitespace-mode 1)
 
@@ -1151,6 +1154,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (helm-dash-activate-docset "Emacs Lisp")
   (lispy-mode 1)
   (eldoc-mode)
+  (set-fill-column 70)
   (turn-on-elisp-slime-nav-mode))
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
                                 '(emacs-lisp-mode-hook
@@ -1220,8 +1224,7 @@ Version 2015-02-07."
             'make-it-local)
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
-  ;; Highlight lines longer than 100 columns.
-  (set (make-local-variable 'whitespace-line-column) 100)
+  (set-fill-column 100)
   (set (make-local-variable 'company-backends)
        ;; List with multiple back-ends for mutual inclusion.
        '(( ;;company-ycmd
@@ -1305,7 +1308,7 @@ Version 2015-02-07."
   (let ((m org-mode-map))
     (define-key m [f6] #'ar/export-blog-to-html))
   (set (make-local-variable 'show-trailing-whitespace) t)
-  (set (make-local-variable 'whitespace-line-column) 1000)
+  (set-fill-column 70)
   (ar/org-src-color-blocks-dark)
   (flyspell-mode-on)
   (whitespace-mode)
