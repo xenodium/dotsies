@@ -513,6 +513,14 @@ Optional argument NON-RECURSIVE to shallow-search."
          ("C-c <down>" . git-gutter:next-hunk)))
 (global-git-gutter-mode +1)
 
+(use-package git-commit-training-wheels-mode :ensure t
+  :commands (git-commit-training-wheels-mode))
+
+(use-package git-commit-mode :ensure t
+  :config
+  (add-hook 'git-commit-mode-hook 'git-commit-training-wheels-mode)
+  :commands (git-commit-mode))
+
 (defun ar/setup-tty ()
   "Setup tty frame."
   (unless (window-system)
