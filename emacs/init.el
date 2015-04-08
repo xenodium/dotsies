@@ -2032,7 +2032,9 @@ _h_tml    ^ ^        _A_SCII:
 (add-hook 'find-file-hook #'ar/try-smerge t)
 
 (defvar ar/helm-source-local-hotspots '((name . "Local")
-                                        (candidates . (("Blog" . "~/stuff/active/blog/index.org")))
+                                        (candidates . (("Daily" . "~/stuff/active/non-public/daily.org")
+                                                       ("Blog" . "~/stuff/active/blog/index.org")
+                                                       ("Init" . "~/stuff/active/dots/emacs/init.el")))
                                         (action . (("Open" . (lambda (filepath)
                                                                (find-file filepath)))))))
 
@@ -2369,12 +2371,12 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
     (setq helm-source-buffers-list
           (helm-make-source "Buffers" 'helm-source-buffers)))
   (helm :sources '(helm-source-buffers-list
-                   helm-source-ido-virtual-buffers
-                   helm-source-buffer-not-found
                    ar/helm-source-local-hotspots
                    ar/helm-source-web-hotspots
                    ar/helm-source-blog
-                   ar/helm-source-my-todos)
+                   ar/helm-source-my-todos
+                   helm-source-ido-virtual-buffers
+                   helm-source-buffer-not-found)
         :buffer "*helm buffers*"
         :keymap helm-buffer-map
         :truncate-lines t))
