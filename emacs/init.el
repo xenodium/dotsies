@@ -39,7 +39,8 @@
 ;; Convert plists on Mac OS to xml equivalent and open.
 (push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
 (defun ar/convert-plist-to-xml ()
-  (when (string-match "`bplist"
+  (interactive)
+  (when (string-match "plist"
                       (buffer-string))
     (shell-command-on-region (point-min) (point-max)
                              ;; yes, the temp file is necessary :-(
