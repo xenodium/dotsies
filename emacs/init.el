@@ -1119,7 +1119,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-go :ensure t)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
-                          (set (make-local-variable 'company-backends) '(company-go))
+                          (setq-local company-backends '(company-go))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
@@ -1231,7 +1231,7 @@ Version 2015-02-07."
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
-  (set (make-local-variable 'company-backends)
+  (setq-local company-backends
        ;; List with multiple back-ends for mutual inclusion.
        '(( ;;company-ycmd
           company-yasnippet
@@ -1250,7 +1250,7 @@ Version 2015-02-07."
   ;; ProductCopyright: 1983-2014 Apple Inc.
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
-  (set (make-local-variable 'compile-command)
+  (setq-local compile-command
        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (local-set-key (kbd "<f7>")
                  #'ar/xc:build)
@@ -1388,7 +1388,7 @@ Version 2015-02-07."
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
-  (set (make-local-variable 'markdown-indent-on-enter) nil)
+  (setq-local markdown-indent-on-enter)
   (local-set-key (kbd "RET")
                  #'electric-newline-and-maybe-indent))
 
