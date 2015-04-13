@@ -729,6 +729,10 @@ Argument PROMPT to check for additional prompt."
   (magit-auto-revert-mode)
   :bind ("C-x g" . magit-status))
 
+(use-package vc
+  :commands (vc-pull)
+  :bind ("C-x v f" . vc-pull))
+
 ;; Use vc-ediff as default.
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" #'vc-ediff))
