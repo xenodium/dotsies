@@ -300,7 +300,8 @@
   (use-package helm-grep)
   (use-package helm-swoop :ensure t
     :bind (("M-C-s" . helm-multi-swoop-all)
-           ("M-i" . helm-swoop)))
+           ("M-i" . helm-swoop))
+    :commands (helm-swoop))
   (use-package helm-config)
   (use-package helm-dash :ensure t
     :bind ("C-h y" . helm-dash-at-point)
