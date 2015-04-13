@@ -1064,6 +1064,21 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
+
+(use-package anaconda-mode :ensure t
+  :commands (anaconda-mode))
+
+(use-package company-anaconda :ensure t)
+
+(defun ar/python-mode-hook-function ()
+  "Called when entering `python-mode'."
+  (anaconda-mode)
+  (eldoc-mode)
+  (setq-local company-backends '(company-anaconda))
+  (company-mode))
+
+(add-hook 'python-mode-hook #'ar/python-mode-hook-function)
+
 (use-package objc-font-lock
   :ensure t
   :init (setq objc-font-lock-background-face nil))
@@ -1388,7 +1403,7 @@ Version 2015-02-07."
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
-  (setq-local markdown-indent-on-enter)
+  (setq-local markdown-indent-on-enter nil)
   (local-set-key (kbd "RET")
                  #'electric-newline-and-maybe-indent))
 
