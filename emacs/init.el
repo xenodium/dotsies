@@ -39,7 +39,8 @@
 ;; Convert plists on Mac OS to xml equivalent and open.
 (push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
 (defun ar/convert-plist-to-xml ()
-  (when (string-match "`bplist"
+  (interactive)
+  (when (string-match "plist"
                       (buffer-string))
     (shell-command-on-region (point-min) (point-max)
                              ;; yes, the temp file is necessary :-(
@@ -434,12 +435,12 @@ Optional argument NON-RECURSIVE to shallow-search."
 (add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
 (use-package whitespace
-  :commands (whitespace-mode)
+  :commands (whitespace-mode global-whitespace-mode)
   :config
   ;; When nil, fill-column is used instead.
   (setq whitespace-line-column nil)
-  (setq whitespace-style '(face lines tabs)))
-(setq-default whitespace-mode 1)
+  (setq whitespace-style '(face lines-tail)))
+(global-whitespace-mode)
 
 (defun ar/compile-autoclose (buffer string)
   "Hide successful builds window with BUFFER and STRING."
@@ -587,9 +588,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; (set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
 ;; (set-face-foreground 'highlight nil)
-
-(use-package whitespace :ensure t)
-(setq whitespace-style '(face lines-tail))
 
 ;;  From http://doc.rix.si/org/fsem.html
 (defun ar/gnulinuxp ()
@@ -1067,6 +1065,21 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
+
+(use-package anaconda-mode :ensure t
+  :commands (anaconda-mode))
+
+(use-package company-anaconda :ensure t)
+
+(defun ar/python-mode-hook-function ()
+  "Called when entering `python-mode'."
+  (anaconda-mode)
+  (eldoc-mode)
+  (setq-local company-backends '(company-anaconda))
+  (company-mode))
+
+(add-hook 'python-mode-hook #'ar/python-mode-hook-function)
+
 (use-package objc-font-lock
   :ensure t
   :init (setq objc-font-lock-background-face nil))
@@ -1122,7 +1135,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-go :ensure t)
 (add-hook 'go-mode-hook (lambda ()
                           (helm-dash-activate-docset "Go")
-                          (set (make-local-variable 'company-backends) '(company-go))
+                          (setq-local company-backends '(company-go))
                           (company-mode)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
@@ -1234,7 +1247,7 @@ Version 2015-02-07."
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
-  (set (make-local-variable 'company-backends)
+  (setq-local company-backends
        ;; List with multiple back-ends for mutual inclusion.
        '(( ;;company-ycmd
           company-yasnippet
@@ -1253,7 +1266,7 @@ Version 2015-02-07."
   ;; ProductCopyright: 1983-2014 Apple Inc.
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
-  (set (make-local-variable 'compile-command)
+  (setq-local compile-command
        "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (local-set-key (kbd "<f7>")
                  #'ar/xc:build)
@@ -1267,7 +1280,6 @@ Version 2015-02-07."
   ;; 2-char indent for java.
   (defvar c-basic-offset)
   (setq c-basic-offset 2)
-  ;; 100-column limit for java.
   (set-fill-column 100))
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
@@ -1320,7 +1332,6 @@ Version 2015-02-07."
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
   (flyspell-mode-on)
-  (whitespace-mode)
   (rainbow-delimiters-mode)
   (semantic-mode 1)
   (org-bullets-mode 1)
@@ -1378,12 +1389,10 @@ Version 2015-02-07."
             t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
-  ;; Show trailing whitespace.
-  (set (make-local-variable 'show-trailing-whitespace) t)
+  (setq show-trailing-whitespace t)
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
   (flyspell-prog-mode)
-  (whitespace-mode)
   (rainbow-delimiters-mode)
   (hl-line-mode)
   (rainbow-mode)
@@ -1395,7 +1404,7 @@ Version 2015-02-07."
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
-  (set (make-local-variable 'markdown-indent-on-enter) nil)
+  (setq-local markdown-indent-on-enter nil)
   (local-set-key (kbd "RET")
                  #'electric-newline-and-maybe-indent))
 
