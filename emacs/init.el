@@ -1536,8 +1536,8 @@ Version 2015-02-07."
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
   :init (winner-mode 1)
-  :bind (("<S-escape>" . winner-redo)
-         ("<escape>" . winner-undo)))
+  :bind (("C-c <right>" . winner-redo)
+         ("C-c <left>" . winner-undo)))
 
 (setq winner-boring-buffers
       (append winner-boring-buffers '("*helm M-x*"
