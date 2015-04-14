@@ -2328,6 +2328,21 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                             "~/stuff/active/non-public/daily.org"))
     (ar/org-helm-entry-child-candidates "current-week")))
 
+(defmacro ar/with-org-file-location (file-path item-id &rest body)
+  "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
+  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
+     (save-excursion
+       (org-open-link-from-string (format "[[#%s]]" ,item-id))
+       (org-end-of-meta-data-and-drawers)
+       (progn ,@body))))
+
+(defun ar/add-todo (todo)
+  "Adds a new TODO."
+  (interactive "sTODO: ")
+  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "current-week"
+                             (org-meta-return)
+                             (insert todo)))
+
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
   (interactive)
