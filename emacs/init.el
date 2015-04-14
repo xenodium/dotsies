@@ -1811,17 +1811,41 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Create an org CUSTOM_ID from a TITLE."
   (replace-regexp-in-string " " "-" (downcase title)))
 
-(defun ar/string-digits-p (string)
+(defun ar/string-match-p (regex string)
+  "Return t if REGEX matches STRING. nil otherwise."
+  (if (string-match regex string) t nil))
+
+(defun ar/string-numeric-p (string)
   "Return t if STRING is an unsigned integer.  nil otherwise."
-  (if (string-match "\\`[[:digit:]]+\\'" string)
-      t
-    nil))
+  (ar/string-match-p "\\`[[:digit:]]+\\'" string))
+
+(defun ar/string-alpha-numeric-p (string)
+  "Return t if STRING is alphanumeric.  nil otherwise."
+  (ar/string-match-p "\\`[[:alnum:]]+\\'" string))
+
+(defun ar/numeric-clipboard-or-prompt (prompt)
+  "Return an integer from clipboard or PROMPT."
+  (let* ((clipboard (current-kill 0))
+         (number (if (ar/string-numeric-p clipboard)
+                     clipboard
+                   (read-string (format "%s: "
+                                        prompt)))))
+    number))
+
+(defun ar/alpha-numeric-clipboard-or-prompt (prompt)
+  "Return an alphanumeric string from clipboard or PROMPT."
+  (let* ((clipboard (current-kill 0))
+         (alpha-num-string (if (ar/string-alpha-numeric-p clipboard)
+                     clipboard
+                   (read-string (format "%s: "
+                                        prompt)))))
+    alpha-num-string))
 
 (defun ar/org-insert-prefixed-link (prefix prompt)
   "Insert a link with PREFIX and PROMPT if not found in clipboard."
   (interactive)
   (let* ((clipboard (current-kill 0))
-         (cl-number (if (ar/string-digits-p clipboard)
+         (cl-number (if (ar/string-numeric-p clipboard)
                         clipboard
                       (read-string (format "%s: "
                                            prompt))))
@@ -1995,6 +2019,20 @@ Sort: _l_ines _o_rg list
   :config
   (bind-key "C-c x" #'hydra-git-commit/body git-commit-mode-map))
 
+(defun ar/org-insert-youtube-video ()
+  "Inserts a youtube video to current org file."
+  (interactive)
+  (insert (format
+"#+BEGIN_HTML
+  <iframe width='420'
+          height='315'
+          src='https://www.youtube.com/embed/%s'
+          frameborder='0'
+          allowfullscreen>
+  </iframe>
+#+END_HTML"
+(ar/alpha-numeric-clipboard-or-prompt "youtube video id"))))
+
 ;; From http://oremacs.com/2015/03/07/hydra-org-templates
 (defun ar/hot-expand (str)
   "Expand org template STR."
@@ -2008,6 +2046,7 @@ _l_atex   _e_xample  _i_ndex:
 _a_scii   _v_erse    _I_NCLUDE:
 _s_rc     ^ ^        _H_TML:
 _h_tml    ^ ^        _A_SCII:
+_y_outube
 "
   ("s" (ar/hot-expand "<s"))
   ("e" (ar/hot-expand "<e"))
@@ -2022,6 +2061,7 @@ _h_tml    ^ ^        _A_SCII:
   ("I" (ar/hot-expand "<I"))
   ("H" (ar/hot-expand "<H"))
   ("A" (ar/hot-expand "<A"))
+  ("y" (ar/org-insert-youtube-video))
   ("<" self-insert-command "ins")
   ("o" nil "quit"))
 
@@ -2376,14 +2416,18 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
         ;; TODO: Avoid adding trailing caused by org-indent-line.
         (delete-trailing-whitespace)))))
 
-(defvar ar/helm-source-my-todos `((name . "TODOS")
-                                  (candidates . ,(ar/todos-helm-candidates))
-                                  (action . (lambda (candidate)
-                                              (cond ((plist-get candidate :marker)
-                                                     (org-goto-marker-or-bmk (plist-get candidate :marker)))
-                                                    ((plist-get candidate :url)
-                                                     (org-open-link-from-string (plist-get candidate
-                                                                                           :url))))))))
+(defvar ar/helm-source-my-todos
+  '((name . "TODOS")
+    (candidates . ar/todos-helm-candidates)
+    (action . (lambda (candidate)
+                (cond ((plist-get candidate
+                                  :marker)
+                       (org-goto-marker-or-bmk (plist-get candidate
+                                                          :marker)))
+                      ((plist-get candidate :url)
+                       (org-open-link-from-string (plist-get candidate
+                                                             :url))))))))
+
 (defun ar/helm-todos ()
   "Current TODOS."
   (interactive)
