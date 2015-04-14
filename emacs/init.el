@@ -2341,7 +2341,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (interactive "sTODO: ")
   (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "current-week"
                              (org-meta-return)
-                             (insert todo)
+                             (insert (format "TODO %s" todo))
                              (save-buffer)))
 
 (defun ar/org-point-to-heading-1 ()
