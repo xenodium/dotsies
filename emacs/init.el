@@ -305,7 +305,6 @@
     :commands (helm-swoop))
   (use-package helm-config)
   (use-package helm-dash :ensure t
-    :bind ("C-h y" . helm-dash-at-point)
     :commands (helm-dash-activate-docset)
     :config (setq helm-dash-browser-func #'browse-url))
   (setq helm-google-suggest-use-curl-p t)
@@ -337,7 +336,8 @@
   :bind (("C-c i" . helm-imenu)
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
-         ("C-h a" . helm-apropos))
+         ("C-h a" . helm-apropos)
+         ("C-h y" . helm-dash-at-point))
   :commands (helm-buffers-list)
   :ensure t)
 
