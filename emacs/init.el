@@ -1996,11 +1996,12 @@ Git: _n_ext     _s_tage  _d_iff
 (defhydra hydra-quick-insert (:color blue)
   "
 Quick insert: _c_l  _w_eb bookmark
-              _b_ug
+              _b_ug _t_odo
 "
   ("c" ar/org-insert-cl-link nil)
   ("b" ar/org-insert-bug-link nil)
   ("w" ar/helm-add-bookmark nil)
+  ("t" ar/add-todo nil)
   ("q" nil nil :color blue))
 (bind-key "C-c x" #'hydra-quick-insert/body)
 
