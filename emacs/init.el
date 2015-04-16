@@ -341,6 +341,21 @@
   :commands (helm-buffers-list)
   :ensure t)
 
+;; (use-package git :ensure t)
+;; (require 'git)
+
+;; (defun ar/pull-repo-at-path (path)
+;;   "Pull repository at PATH."
+;;   (ar/with-current-file path
+;;                         (setq-local git-repo default-directory)
+;;                         (git-pull)))
+
+;; (defun ar/pull-frequent-repos ()
+;;   "Pull all frequent repositories."
+;;   (interactive)
+;;   (ar/pull-repo-at-path "~/stuff/active/dots/emacs/init.el")
+;;   (ar/pull-repo-at-path "~/stuff/active/dots/emacs/init.el"))
+
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
   (interactive)
@@ -2368,6 +2383,12 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/non-public/daily.org"))
     (ar/org-helm-entry-child-candidates "current-week")))
+
+(defmacro ar/with-current-file (file-path &rest body)
+  "Open file at FILE-PATH and execute BODY."
+  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
+     (save-excursion
+       (progn ,@body))))
 
 (defmacro ar/with-org-file-location (file-path item-id &rest body)
   "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
