@@ -239,6 +239,9 @@
 ;; Stack Exchange viewer.
 (use-package sx :ensure t)
 
+;; Search StackOverflow snippets.
+(use-package howdoi :ensure t)
+
 ;; Twitter.
 (use-package twittering-mode :ensure t)
 
