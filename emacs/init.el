@@ -350,7 +350,7 @@
 
 (defun ar/git-unpushed-changes-p ()
   "Check if unpushed changes are present in git master."
-  (string-empty-p (shell-command-to-string "git log --oneline origin/master..master")))
+  (not (string-empty-p (shell-command-to-string "git log --oneline origin/master..master"))))
 
 (defun ar/pending-repo-at-path-p (path)
   "Check if pending changes in repository at PATH."
