@@ -360,7 +360,8 @@
    ((ar/pending-repo-at-path-p "~/stuff/active/blog")
     (magit-status "~/stuff/active/blog"))
    ((ar/pending-repo-at-path-p "~/stuff/active/non-public")
-    (magit-status "~/stuff/active/non-public"))))
+    (magit-status "~/stuff/active/non-public"))
+   (t (message "Life is good!"))))
 
 (defun ar/pull-frequent-repos ()
   "Pull all frequent repositories."
