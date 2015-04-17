@@ -344,20 +344,30 @@
   :commands (helm-buffers-list)
   :ensure t)
 
-;; (use-package git :ensure t)
-;; (require 'git)
+(defun ar/pull-repo-at-path (path)
+  "Pull repository at PATH."
+  (ar/with-current-file path (magit-pull)))
 
-;; (defun ar/pull-repo-at-path (path)
-;;   "Pull repository at PATH."
-;;   (ar/with-current-file path
-;;                         (setq-local git-repo default-directory)
-;;                         (git-pull)))
+(defun ar/pending-repo-at-path-p (path)
+  "Check if pending changes in repository at PATH."
+  (ar/with-current-file path (magit-anything-modified-p)))
 
-;; (defun ar/pull-frequent-repos ()
-;;   "Pull all frequent repositories."
-;;   (interactive)
-;;   (ar/pull-repo-at-path "~/stuff/active/dots/emacs/init.el")
-;;   (ar/pull-repo-at-path "~/stuff/active/dots/emacs/init.el"))
+(defun ar/check-frequent-repos-pending ()
+  (interactive)
+  (cond
+   ((ar/pending-repo-at-path-p "~/stuff/active/dots")
+    (magit-status "~/stuff/active/dots"))
+   ((ar/pending-repo-at-path-p "~/stuff/active/blog")
+    (magit-status "~/stuff/active/blog"))
+   ((ar/pending-repo-at-path-p "~/stuff/active/non-public")
+    (magit-status "~/stuff/active/non-public"))))
+
+(defun ar/pull-frequent-repos ()
+  "Pull all frequent repositories."
+  (interactive)
+  (ar/pull-repo-at-path "~/stuff/active/dots")
+  (ar/pull-repo-at-path "~/stuff/active/blog")
+  (ar/pull-repo-at-path "~/stuff/active/non-public"))
 
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
@@ -745,7 +755,8 @@ Argument PROMPT to check for additional prompt."
   (setq magit-status-buffer-switch-function #'switch-to-buffer)
   (fullframe magit-status magit-mode-quit-window)
   (magit-auto-revert-mode)
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :commands (magit-pull magit-status magit-log))
 
 (use-package vc
   :commands (vc-pull)
@@ -2386,6 +2397,10 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/non-public/daily.org"))
     (ar/org-helm-entry-child-candidates "current-week")))
+
+(defun ar/switch-to-file (file-path)
+  "Switch to buffer with FILE-PATH."
+  (switch-to-buffer (find-file-noselect (expand-file-name file-path))))
 
 (defmacro ar/with-current-file (file-path &rest body)
   "Open file at FILE-PATH and execute BODY."
