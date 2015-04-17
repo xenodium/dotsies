@@ -2525,6 +2525,20 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                         (format-time-string "[%Y-%m-%d %a]"))
   (ar/org-move-current-tree-to-top))
 
+(defun ar/org-confirm-babel-evaluate (lang body)
+  "Do not confirm org babel evaluation for known languages."
+  (and
+   (not (string= lang "emacs-lisp"))
+   (not (string= lang "plantuml"))))
+
+(use-package ob-plantuml :commands (org-babel-execute:plantuml)
+  :config
+  ;; Use fundamental mode when editing plantuml blocks with C-c '
+  (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+  (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
+  ;; FIXME Set also for linux.
+  (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar"))
+
 (setq org-html-head-extra
       "<style type='text/css'>
          body {
