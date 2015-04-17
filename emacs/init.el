@@ -762,7 +762,10 @@ Argument PROMPT to check for additional prompt."
   (fullframe magit-status magit-mode-quit-window)
   (magit-auto-revert-mode)
   :bind ("C-x g" . magit-status)
-  :commands (magit-pull magit-status magit-log))
+  :commands (magit-pull
+             magit-status
+             magit-log
+             magit-anything-modified-p))
 
 (use-package vc
   :commands (vc-pull)
