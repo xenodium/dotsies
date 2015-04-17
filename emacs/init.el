@@ -1319,6 +1319,8 @@ Version 2015-02-07."
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
+  (let ((m java-mode-map))
+    (define-key m [f6] #'recompile))
   ;; 2-char indent for java.
   (defvar c-basic-offset)
   (setq c-basic-offset 2)
