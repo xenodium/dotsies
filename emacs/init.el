@@ -624,11 +624,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; (set-face-foreground 'highlight nil)
 
 ;;  From http://doc.rix.si/org/fsem.html
-(defun ar/gnulinuxp ()
+(defun ar/gnu-linux-p ()
   "Return t if the system is a GNU/Linux machine, otherwise nil."
   (string-equal system-type "gnu/linux"))
 
-(defun ar/osxp ()
+(defun ar/osx-p ()
   "Return t if the system is a Mac OS X machine, otherwise nil."
   (string-equal system-type "darwin"))
 
@@ -636,16 +636,16 @@ Optional argument NON-RECURSIVE to shallow-search."
   "Return t if Emacs is running inside of Cygwin on Windows, otherwise nil."
   (string-equal system-type "cygwin"))
 
-(defun ar/windowsp ()
+(defun ar/windows-p ()
   "Return t if the system is a native Emacs for Windows, otherwise nil."
   (string-equal system-type "windows"))
 
 (defun ar/new-browser-tab-shell-command ()
   "Return new browser tab shell command."
   (cond
-   ((ar/osxp)
+   ((ar/osx-p)
     "open http://google.com")
-   ((ar/gnulinuxp)
+   ((ar/gnu-linux-p)
     "google-chrome http://google.com")
    (nil)))
 
@@ -661,7 +661,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
-  (when (ar/osxp)
+  (when (ar/osx-p)
     ;; On Mac, this is effectively fn-M-backspace.
     (bind-key "M-(" #'kill-word)
     ;; Keep menu bar under graphical OS X for fullscreen.
@@ -677,7 +677,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (defun ar/init-for-linux ()
   "Perform initializations for Linux."
-  (when (ar/gnulinuxp)
+  (when (ar/gnu-linux-p)
     (setq exec-path (append exec-path '("~/local/bin")))))
 (ar/init-for-linux)
 
@@ -786,13 +786,13 @@ Argument PROMPT to check for additional prompt."
 (defun ar/open-in-external-app-lambda ()
   "Return a function to open FPATH externally."
   (cond
-   ((ar/windowsp)
+   ((ar/windows-p)
     (lambda (fPath)
       (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))))
-   ((ar/osxp)
+   ((ar/osx-p)
     (lambda (fPath)
       (shell-command (format "open \"%s\"" fPath))))
-   ((ar/gnulinuxp)
+   ((ar/gnu-linux-p)
     (lambda (fPath)
       (let ((process-connection-type nil))
         (start-process "" nil "xdg-open" fPath))))))
