@@ -1379,7 +1379,8 @@ Version 2015-02-07."
   (rainbow-delimiters-mode)
   (semantic-mode 1)
   (org-bullets-mode 1)
-  (yas-minor-mode))
+  (yas-minor-mode)
+  (org-display-inline-images))
 
 ;; Set region color.
 (set-face-attribute 'region nil :background "#0000ff")
@@ -2531,13 +2532,23 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
    (not (string= lang "emacs-lisp"))
    (not (string= lang "plantuml"))))
 
+(defun ar/plantum-jar-path ()
+  "Get plantuml path for different platforms."
+  (let* ((jar-path-osx "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
+         (jar-path-linux "FIXME"))
+    (cond ((file-exists-p jar-path-osx)
+           (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot"))
+           jar-path-osx)
+          ((file-exists-p jar-path-linux)
+           jar-path-linux)
+          ((error "Error: plantuml not installed on platform.")))))
+
 (use-package ob-plantuml :commands (org-babel-execute:plantuml)
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  ;; FIXME Set also for linux.
-  (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar"))
+  (setq org-plantuml-jar-path (ar/plantum-jar-path)))
 
 (setq org-html-head-extra
       "<style type='text/css'>
