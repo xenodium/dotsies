@@ -56,6 +56,15 @@
   (fullframe paradox-list-packages paradox-quit-and-close)
   :commands (paradox-list-packages))
 
+;; Formats python buffer with yapf
+;; Install with: pip install git+https://github.com/google/yapf.git
+(use-package py-yapf :ensure t
+  :commands (py-yapf-enable-on-save))
+
+(use-package synosaurus :ensure t
+  :commands (synosaurus-lookup
+             synosaurus-choose-and-replace))
+
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
@@ -1118,7 +1127,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (anaconda-mode)
   (eldoc-mode)
   (setq-local company-backends '(company-anaconda))
-  (company-mode))
+  (company-mode)
+  (py-yapf-enable-on-save))
 
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
 
