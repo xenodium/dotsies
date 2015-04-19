@@ -1129,7 +1129,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq-local company-backends '(company-anaconda))
   (company-mode)
   (py-yapf-enable-on-save))
-
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
 
 (use-package objc-font-lock
@@ -2150,6 +2149,7 @@ _y_outube
 
 (defvar ar/helm-source-local-hotspots '((name . "Local")
                                         (candidates . (("Daily" . "~/stuff/active/non-public/daily.org")
+                                                       ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Init" . "~/stuff/active/dots/emacs/init.el")))
                                         (action . (("Open" . (lambda (filepath)
