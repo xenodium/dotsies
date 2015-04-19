@@ -2533,8 +2533,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Update blog entry timestamp at point."
   (interactive)
   (ar/org-update-drawer "MODIFIED"
-                        (format-time-string "[%Y-%m-%d %a]"))
-  (ar/org-move-current-tree-to-top))
+                        (format-time-string "[%Y-%m-%d %a]")))
 
 (defun ar/org-confirm-babel-evaluate (lang body)
   "Do not confirm org babel evaluation for known languages."
