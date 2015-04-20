@@ -67,6 +67,9 @@
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save))
 
+;; Needs:
+;;   brew install Caskroom/cask/xquartz
+;;   brew install wordnet
 (use-package synosaurus :ensure t
   :commands (synosaurus-lookup
              synosaurus-choose-and-replace))
