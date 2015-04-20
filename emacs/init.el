@@ -21,7 +21,13 @@
 ;; Increase memory threshold for garbage collection.
 (setq gc-cons-threshold 20000000)
 
-(use-package bug-hunter :ensure t)
+;; Requires get_iplayer script at:
+;; https://raw.githubusercontent.com/get-iplayer/get_iplayer/latest/get_iplayer
+;; Documentation: https://github.com/get-iplayer/get_iplayer
+(use-package iplayer :ensure t)
+
+(use-package bug-hunter :ensure t
+  :commands (bug-hunter-init-file))
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
 (if (fboundp 'with-eval-after-load)
