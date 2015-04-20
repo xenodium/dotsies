@@ -1021,13 +1021,16 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package clang-format :ensure t)
 
 (use-package company :ensure t)
-(use-package company-quickhelp :ensure t)
+(use-package company-quickhelp :ensure t
+  :commands (company-quickhelp-mode))
+
 (use-package company-c-headers :ensure t)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
 (setq company-show-numbers t)
 (global-company-mode)
+(company-quickhelp-mode +1)
 (add-to-list 'company-backends 'company-c-headers)
 (bind-key "<backtab>" #'company-complete)
 
