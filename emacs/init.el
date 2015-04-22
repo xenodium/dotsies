@@ -2288,6 +2288,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+(setq org-refile-targets '((nil :regexp . "Week of")))
+
 (setq org-ellipsis "…")
 
 (setq org-fontify-emphasized-text +1)
@@ -2430,7 +2432,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Get this week's TODOS helm candidates."
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/non-public/daily.org"))
-    (ar/org-helm-entry-child-candidates "current-week")))
+    (ar/org-helm-entry-child-candidates "backlog")))
 
 (defun ar/switch-to-file (file-path)
   "Switch to buffer with FILE-PATH."
@@ -2453,7 +2455,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (defun ar/add-todo (todo)
   "Adds a new TODO."
   (interactive "sTODO: ")
-  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "current-week"
+  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "backlog"
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
