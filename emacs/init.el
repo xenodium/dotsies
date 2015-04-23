@@ -1136,8 +1136,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
-  (anaconda-mode)
-  (eldoc-mode)
+  (anaconda-mode +1)
+  (eldoc-mode +1)
   (setq-local company-backends '(company-anaconda))
   (company-mode)
   (py-yapf-enable-on-save))
