@@ -67,6 +67,9 @@
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save))
 
+;; Needs:
+;;   brew install Caskroom/cask/xquartz
+;;   brew install wordnet
 (use-package synosaurus :ensure t
   :commands (synosaurus-lookup
              synosaurus-choose-and-replace))
@@ -1021,13 +1024,16 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package clang-format :ensure t)
 
 (use-package company :ensure t)
-(use-package company-quickhelp :ensure t)
+(use-package company-quickhelp :ensure t
+  :commands (company-quickhelp-mode))
+
 (use-package company-c-headers :ensure t)
 (setq company-backends (delete 'company-semantic company-backends))
 (setq company-minimum-prefix-length 2)
 (setq company-idle-delay 0.5)
 (setq company-show-numbers t)
 (global-company-mode)
+(company-quickhelp-mode +1)
 (add-to-list 'company-backends 'company-c-headers)
 (bind-key "<backtab>" #'company-complete)
 
@@ -2283,6 +2289,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+(setq org-refile-targets '((nil :regexp . "Week of")))
+
 (setq org-ellipsis "…")
 
 (setq org-fontify-emphasized-text +1)
@@ -2425,7 +2433,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Get this week's TODOS helm candidates."
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/non-public/daily.org"))
-    (ar/org-helm-entry-child-candidates "current-week")))
+    (ar/org-helm-entry-child-candidates "backlog")))
 
 (defun ar/switch-to-file (file-path)
   "Switch to buffer with FILE-PATH."
@@ -2448,7 +2456,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (defun ar/add-todo (todo)
   "Adds a new TODO."
   (interactive "sTODO: ")
-  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "current-week"
+  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "backlog"
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
