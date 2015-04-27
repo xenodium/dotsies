@@ -491,7 +491,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   ;; When nil, fill-column is used instead.
   (setq whitespace-line-column nil)
-  (setq whitespace-style '(face lines-tail)))
+  (setq whitespace-style '(face empty tabs lines-tail trailing)))
 (global-whitespace-mode)
 
 (defun ar/compile-autoclose (buffer string)
