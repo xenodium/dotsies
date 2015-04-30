@@ -1520,6 +1520,13 @@ Version 2015-02-07."
                 #'shell-pop)
 (use-package shell-pop :ensure t)
 
+(defun ar/term-mode-hook-function ()
+  "Called when entering term mode."
+  ;; Don't need trailing spaces highlighted in terminal.
+  (setq-local whitespace-style '(face empty tabs)))
+
+(add-hook 'term-mode-hook #'ar/term-mode-hook-function)
+
 (defun ar/comment-dwim ()
   "Comment current line or region."
   (interactive)
