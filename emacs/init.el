@@ -690,7 +690,8 @@ Optional argument NON-RECURSIVE to shallow-search."
     ;; Sets the option (Apple) key also as Meta.
     (setq mac-option-modifier 'meta)
     (setq exec-path (append exec-path '("~/homebrew/bin"
-                                        "~/homebrew/Cellar/llvm/HEAD/bin")))))
+                                        "~/homebrew/Cellar/llvm/HEAD/bin"
+                                        "/usr/local/bin")))))
 (ar/init-for-osx)
 
 (defun ar/init-for-linux ()
@@ -1881,6 +1882,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Create an org CUSTOM_ID from a TITLE."
   (replace-regexp-in-string " " "-" (downcase title)))
 
+(defun ar/current-buffer-match-p (re)
+  "Return t if RE matches current buffer. nil otherwise."
+  (re-search-forward re nil t))
+
 (defun ar/string-match-p (regex string)
   "Return t if REGEX matches STRING. nil otherwise."
   (if (string-match regex string) t nil))
@@ -2215,17 +2220,11 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
          (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
     (ar/format-helm-candidates helm-candidates)))
 
-(setq ar/helm-source-blog '((name . "Blog")
-                            (candidates . ar/get-helm-blog-candidates)
-                            (action . (lambda (candidate)
-                                        (helm-org-goto-marker candidate)
-                                        (org-show-subtree)))))
-
-(setq ar/helm-source-blog-bookmarks '((name . "Bookmarks")
-                                      (candidates . ar/get-helm-blog-bookmark-candidates)
-                                      (action . (lambda (candidate)
-                                                  (helm-org-goto-marker candidate)
-                                                  (org-show-subtree)))))
+(defvar ar/helm-source-blog '((name . "Blog")
+                              (candidates . ar/get-helm-blog-candidates)
+                              (action . (lambda (candidate)
+                                          (helm-org-goto-marker candidate)
+                                          (org-show-subtree)))))
 
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
@@ -2416,31 +2415,34 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
          `(:heading ,todo-heading :url ,(match-string 0 todo-heading)))
         (`(:heading ,todo-heading :marker ,(copy-marker (point))))))
 
-(defun ar/org-helm-entry-child-candidates (id)
-  "Get org child headings for entry with ID."
-  (save-excursion
-    (org-open-link-from-string (format "[[#%s]]" id))
-    (org-end-of-meta-data-and-drawers)
-    (let ((child-headings '())
-          (child-heading))
-      (when (org-at-heading-p)
-        ;; Extract first child.
-        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-        (add-to-list 'child-headings
-                     (cons child-heading
-                           (ar/org-todo-heading-plist child-heading)))
-        (while (org-get-next-sibling)
-          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-          (add-to-list 'child-headings
-                       (cons child-heading
-                             (ar/org-todo-heading-plist child-heading)))))
-      child-headings)))
+(defun ar/org-helm-entry-child-candidates (path id)
+  "Get org child headings for entry with PATH and ID."
+  (with-current-buffer (find-file-noselect (expand-file-name path))
+    (save-excursion
+      (if (ar/current-buffer-match-p (format ":CUSTOM_ID:[ ]*%s" id))
+          (progn
+            (org-open-link-from-string (format "[[#%s]]" id))
+            (org-end-of-meta-data-and-drawers)
+            (let ((child-headings '())
+                  (child-heading))
+              (when (org-at-heading-p)
+                ;; Extract first child.
+                (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+                (add-to-list 'child-headings
+                             (cons child-heading
+                                   (ar/org-todo-heading-plist child-heading)))
+                (while (org-get-next-sibling)
+                  (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+                  (add-to-list 'child-headings
+                               (cons child-heading
+                                     (ar/org-todo-heading-plist child-heading)))))
+              child-headings))
+        (message "Cannot find %s#%s" path id)
+        '()))))
 
 (defun ar/todos-helm-candidates ()
   "Get this week's TODOS helm candidates."
-  (with-current-buffer (find-file-noselect (expand-file-name
-                                            "~/stuff/active/non-public/daily.org"))
-    (ar/org-helm-entry-child-candidates "backlog")))
+  (ar/org-helm-entry-child-candidates "~/stuff/active/non-public/daily.org" "backlog"))
 
 (defun ar/switch-to-file (file-path)
   "Switch to buffer with FILE-PATH."
