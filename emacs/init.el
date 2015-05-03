@@ -309,6 +309,9 @@
 ;; (global-set-key (kbd "C-s")
 ;;                 #'ar/prefilled-swiper)
 
+(use-package exec-path-from-shell :ensure t
+  :commands (exec-path-from-shell-initialize))
+
 (use-package helm
   :config
   (use-package imenu-anywhere :ensure t)
@@ -680,6 +683,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/init-for-osx ()
   "Perform initializations for Mac OS X."
   (when (ar/osx-p)
+    ;; This sets $MANPATH, $PATH and exec-path from your shell.
+    (exec-path-from-shell-initialize)
     ;; On Mac, this is effectively fn-M-backspace.
     (bind-key "M-(" #'kill-word)
     ;; Keep menu bar under graphical OS X for fullscreen.
