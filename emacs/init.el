@@ -67,6 +67,9 @@
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save))
 
+(use-package helm-pydoc :ensure t
+  :commands (helm-pydoc))
+
 ;; Needs:
 ;;   brew install Caskroom/cask/xquartz
 ;;   brew install wordnet
