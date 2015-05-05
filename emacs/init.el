@@ -2098,6 +2098,17 @@ Sort: _l_ines _o_rg list
   ("q" nil nil :color blue))
 (bind-key "M-s" #'hydra-sort/body)
 
+(defhydra hydra-jingle (:color red)
+  "jingle"
+  ("SPC" jingle-play-stop-song "play/stop")
+  ("n" jingle-next-song "next")
+  ("p" jingle-previous-song "previous")
+  ("s" jingle-search-songs "search")
+  ("i" jingle-get-current-song-info "song info")
+  ("r" jingle-toggle-random-playback "random")
+  ("q" nil "quit" :color blue))
+(global-set-key (kbd "C-c m") #'hydra-jingle/body)
+
 (use-package git-commit-mode
   :commands (git-commit-commit)
   :config
