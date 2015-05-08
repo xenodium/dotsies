@@ -2107,7 +2107,7 @@ Sort: _l_ines _o_rg list
   ("n" jingle-next-song "next")
   ("p" jingle-previous-song "previous")
   ("s" jingle-search-songs "search")
-  ("i" jingle-get-current-song-info "song info")
+  ("i" jingle-display-current-song-info "song info")
   ("r" jingle-toggle-random-playback "random")
   ("q" nil "quit" :color blue))
 (global-set-key (kbd "C-c m") #'hydra-jingle/body)
