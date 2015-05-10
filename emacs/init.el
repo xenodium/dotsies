@@ -349,7 +349,6 @@
           "\\._darcs$" "\\.la$"
           "\\.o$" "\\.i$"))
   (setq helm-ff-file-name-history-use-recentf t)
-  (setq helm-move-to-line-cycle-in-source t) ; move to end or beginning of source
   (setq ido-use-virtual-buffers t)
   (setq helm-buffers-fuzzy-matching t)
   (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
@@ -367,6 +366,7 @@
          ("C-h y" . helm-dash-at-point))
   :commands (helm-buffers-list)
   :ensure t)
+(helm-mode 1)
 
 (defun ar/pull-repo-at-path (path)
   "Pull repository at PATH."
@@ -422,8 +422,6 @@ With argument ARG, do this that many times."
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
-
-(helm-mode 1)
 
 (defun ar/helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default.
