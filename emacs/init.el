@@ -77,6 +77,10 @@
   :commands (synosaurus-lookup
              synosaurus-choose-and-replace))
 
+;; Automatically highlight all instances of thing at point.
+(use-package highlight-thing :ensure t)
+(global-highlight-thing-mode)
+
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
