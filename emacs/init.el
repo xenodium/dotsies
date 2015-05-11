@@ -2439,6 +2439,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Get org child headings for entry with PATH and ID."
   (with-current-buffer (find-file-noselect (expand-file-name path))
     (save-excursion
+      (show-all)
       (if (ar/current-buffer-match-p (format ":CUSTOM_ID:[ ]*%s" id))
           (progn
             (org-open-link-from-string (format "[[#%s]]" id))
