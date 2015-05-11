@@ -354,7 +354,6 @@
   (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
   (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
   (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
-  (bind-key "<tab>" #'helm-execute-persistent-action helm-map) ; rebind tab to do persistent action
   (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
   (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
   (bind-key "M-p" #'helm-previous-source helm-map)
@@ -2245,6 +2244,16 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                               (action . (lambda (candidate)
                                           (helm-org-goto-marker candidate)
                                           (org-show-subtree)))))
+
+
+(use-package cl :commands (flet))
+
+;; Ignore running processes when closing Emacs
+;; From http://oremacs.com/2015/01/04/dired-nohup
+(defadvice save-buffers-kill-emacs
+    (around no-query-kill-emacs activate)
+  "Prevent \"Active processes exist\" query on exit."
+  (flet ((process-list ())) ad-do-it))
 
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
