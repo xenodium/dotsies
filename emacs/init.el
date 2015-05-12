@@ -544,6 +544,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Highlight entire bracket expression.
 (setq show-paren-style 'mixed)
 
+
+(use-package highlight-thing :ensure t)
+(global-highlight-thing-mode)
+
 ;; Partially use path in buffer name.
 (use-package uniquify
   :config
