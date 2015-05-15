@@ -81,6 +81,22 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
+(defmacro defc (name command title &rest candidates)
+  `(defun ,name ()
+     (interactive)
+     (helm :sources '((name . ,title)
+                      (candidates . ,candidates)
+                      (action . (lambda (selection)
+                                  ,command)))
+           :buffer "*helm-exec*"
+           :candidate-number-limit 10000)))
+
+(defc ar/helm-sample-command
+  (message selection)
+  "Choose option:"
+  "option 1"
+  "option 2")
+
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
