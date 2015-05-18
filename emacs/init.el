@@ -811,6 +811,7 @@ Argument PROMPT to check for additional prompt."
   :config
   (setq magit-status-buffer-switch-function #'switch-to-buffer)
   (fullframe magit-status magit-mode-quit-window)
+  (setq magit-last-seen-setup-instructions "1.4.0")
   :bind ("C-x g" . magit-status)
   :commands (magit-pull
              magit-status
