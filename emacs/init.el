@@ -2477,27 +2477,29 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Get org child headings for entry with PATH and ID."
   (with-current-buffer (find-file-noselect (expand-file-name path))
     (save-excursion
-      (show-all)
-      (if (ar/current-buffer-match-p (format ":CUSTOM_ID:[ ]*%s" id))
-          (progn
-            (org-open-link-from-string (format "[[#%s]]" id))
-            (org-end-of-meta-data-and-drawers)
-            (let ((child-headings '())
-                  (child-heading))
-              (when (org-at-heading-p)
-                ;; Extract first child.
-                (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-                (add-to-list 'child-headings
-                             (cons child-heading
-                                   (ar/org-todo-heading-plist child-heading)))
-                (while (org-get-next-sibling)
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (if (ar/current-buffer-match-p (format ":CUSTOM_ID:[ ]*%s" id))
+            (progn
+              (org-open-link-from-string (format "[[#%s]]" id))
+              (org-end-of-meta-data-and-drawers)
+              (let ((child-headings '())
+                    (child-heading))
+                (when (org-at-heading-p)
+                  ;; Extract first child.
                   (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
                   (add-to-list 'child-headings
                                (cons child-heading
-                                     (ar/org-todo-heading-plist child-heading)))))
-              child-headings))
-        (message "Cannot find %s#%s" path id)
-        '()))))
+                                     (ar/org-todo-heading-plist child-heading)))
+                  (while (org-get-next-sibling)
+                    (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+                    (add-to-list 'child-headings
+                                 (cons child-heading
+                                       (ar/org-todo-heading-plist child-heading)))))
+                child-headings))
+          (message "Cannot find %s#%s" path id)
+          '())))))
 
 (defun ar/todos-helm-candidates ()
   "Get this week's TODOS helm candidates."
@@ -2543,8 +2545,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 
 (defun ar/org-update-drawer (drawer content)
   "Update DRAWER with CONTENT."
-  (save-restriction
-    (save-excursion
+  (save-excursion
+    (save-restriction
       ;; e.g match drawer like:
       ;; :MODIFIED:
       ;; [2015-03-22 Sun]
