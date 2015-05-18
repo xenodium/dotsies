@@ -811,7 +811,6 @@ Argument PROMPT to check for additional prompt."
   :config
   (setq magit-status-buffer-switch-function #'switch-to-buffer)
   (fullframe magit-status magit-mode-quit-window)
-  (magit-auto-revert-mode)
   :bind ("C-x g" . magit-status)
   :commands (magit-pull
              magit-status
@@ -1167,11 +1166,16 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-anaconda :ensure t)
 
+(use-package python-docstring :ensure t
+  :commands (python-docstring-mode))
+
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (setq python-indent-offset 4)
-  (anaconda-mode +1)
+  (anaconda-mode)
   (eldoc-mode +1)
+  ;; FIXME python-docstring-mode currently broken
+  ;; (python-docstring-mode +1)
   (setq-local company-backends '(company-anaconda))
   (company-mode)
   (py-yapf-enable-on-save))
