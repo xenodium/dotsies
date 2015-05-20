@@ -81,21 +81,25 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
-(defmacro defc (name command title &rest candidates)
+(defmacro defc (name title candidates on-select-function)
   `(defun ,name ()
      (interactive)
      (helm :sources '((name . ,title)
-                      (candidates . ,candidates)
-                      (action . (lambda (selection)
-                                  ,command)))
+                      (candidates . ,(sort (delete-dups candidates)
+                                          'string<))
+                      (action . ,on-select-function))
            :buffer "*helm-exec*"
            :candidate-number-limit 10000)))
 
 (defc ar/helm-sample-command
-  (message selection)
   "Choose option:"
-  "option 1"
-  "option 2")
+  ("option 3"
+   "option 1"
+   "option 2 dup"
+   "option 2 dup")
+  (lambda (selection)
+    (message "selected: %s" selection)))
+
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
