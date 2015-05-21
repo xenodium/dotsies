@@ -81,6 +81,17 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
+(defun ar/find-instances (pattern file-pattern paths)
+  ""
+  (let* ((paths-string (mapconcat 'identity paths " "))
+         (command (format "grep -e %s --include %s %s --recursive --binary-file=without-match --no-filename"
+                          pattern
+                          file-pattern
+                          paths-string)))
+    (mapcar (lambda (item)
+              (format "%s" item))
+            (split-string (shell-command-to-string command) "\n"))))
+
 (defmacro defc (name title candidates on-select-function)
   "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
 For example:
@@ -110,17 +121,6 @@ For example:
    "option 2 dup")
   (lambda (selection)
     (message "selected: %s" selection)))
-
-(defun ar/find-instances (pattern file-pattern paths)
-  ""
-  (let* ((paths-string (mapconcat 'identity paths " "))
-         (command (format "grep -e %s --include %s %s --recursive --binary-file=without-match --no-filename"
-                          pattern
-                          file-pattern
-                          paths-string)))
-    (mapcar (lambda (item)
-              (format "%s" item))
-            (split-string (shell-command-to-string command) "\n"))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
