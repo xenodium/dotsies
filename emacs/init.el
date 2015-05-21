@@ -82,14 +82,25 @@
 (global-highlight-thing-mode)
 
 (defmacro defc (name title candidates on-select-function)
-  `(defun ,name ()
-     (interactive)
-     (helm :sources '((name . ,title)
-                      (candidates . ,(sort (delete-dups candidates)
-                                          'string<))
-                      (action . ,on-select-function))
-           :buffer "*helm-exec*"
-           :candidate-number-limit 10000)))
+  "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
+For example:
+(defc ar/insert-import
+  \"Pattern:\"
+  (sort (delete-dups (ar/find-instances \"^import\"
+                                        \"*.java\"
+                                        '(\"root/to/java/source\")))
+        'string<)
+  (lambda (selection)
+    (insert selection)))
+"
+  (let ((evaluated-candidates (eval candidates)))
+    `(defun ,name ()
+       (interactive)
+       (helm :sources '((name . ,title)
+                        (candidates . ,evaluated-candidates)
+                        (action . ,on-select-function))
+             :buffer "*helm-exec*"
+             :candidate-number-limit 10000))))
 
 (defc ar/helm-sample-command
   "Choose option:"
@@ -100,11 +111,16 @@
   (lambda (selection)
     (message "selected: %s" selection)))
 
-;; (defun ar/java-imports ()
-;;   (let ((command "grep defun . --recursive --binary-file=without-match --no-filename"))
-;;     (mapcar (lambda (item)
-;;               (format "%s" item))
-;;             (split-string (shell-command-to-string command) "\n"))))
+(defun ar/find-instances (pattern file-pattern paths)
+  ""
+  (let* ((paths-string (mapconcat 'identity paths " "))
+         (command (format "grep -e %s --include %s %s --recursive --binary-file=without-match --no-filename"
+                          pattern
+                          file-pattern
+                          paths-string)))
+    (mapcar (lambda (item)
+              (format "%s" item))
+            (split-string (shell-command-to-string command) "\n"))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
