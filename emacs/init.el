@@ -113,15 +113,6 @@ For example:
              :buffer "*helm-exec*"
              :candidate-number-limit 10000))))
 
-(defc ar/helm-sample-command
-  "Choose option:"
-  ("option 3"
-   "option 1"
-   "option 2 dup"
-   "option 2 dup")
-  (lambda (selection)
-    (message "selected: %s" selection)))
-
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
