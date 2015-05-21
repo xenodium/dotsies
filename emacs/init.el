@@ -81,28 +81,41 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
-(defun ar/find-instances (pattern file-pattern paths)
-  ""
-  (let* ((paths-string (mapconcat 'identity paths " "))
-         (command (format "grep -e %s --include %s %s --recursive --binary-file=without-match --no-filename"
+(defun ar/grep (pattern filename-pattern search-paths)
+  "Grep for PATTERN and narrow to FILENAME-PATTERN and SEARCH-PATHS."
+  (let* ((search-paths-string (mapconcat 'identity search-paths " "))
+         (command (format (concat "grep "
+                                  "--binary-file=without-match "
+                                  "--recursive "
+                                  "--no-filename "
+                                  "--regexp=%s "
+                                  "--include %s "
+                                  " %s")
                           pattern
-                          file-pattern
-                          paths-string)))
-    (mapcar (lambda (item)
-              (format "%s" item))
-            (split-string (shell-command-to-string command) "\n"))))
+                          filename-pattern
+                          search-paths-string)))
+    (split-string (shell-command-to-string command) "\n")))
+
+(defun ar/find (filename-pattern search-paths)
+  "Find file with FILENAME-PATTERN and SEARCH-PATHS."
+  (let* ((search-paths-string (mapconcat 'identity search-paths " "))
+         (find-command (format "find %s -iname %s"
+                               search-paths-string
+                               filename-pattern)))
+    (split-string (shell-command-to-string find-command) "\n")))
 
 (defmacro defc (name title candidates on-select-function)
   "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
 For example:
-(defc ar/insert-import
-  \"My Java imports\"
-  (sort (delete-dups (ar/find-instances \"^import\"
-                                        \"*.java\"
-                                        '(\"root/to/java/source\")))
-        'string<)
+
+(defc ar/helm-sample-command
+  \"Choose option:\"
+  '(\"option 3\"
+    \"option 1\"
+    \"option 2 dup\"
+    \"option 2 dup\")
   (lambda (selection)
-    (insert selection)))
+    (message \"selected: %s\" selection)))
 "
   (let ((evaluated-candidates (eval candidates)))
     `(defun ,name ()
@@ -113,14 +126,25 @@ For example:
              :buffer "*helm-exec*"
              :candidate-number-limit 10000))))
 
-(defc ar/helm-sample-command
-  "Choose option:"
-  ("option 3"
-   "option 1"
-   "option 2 dup"
-   "option 2 dup")
-  (lambda (selection)
-    (message "selected: %s" selection)))
+;; More examples
+;;
+;; (defc ar/insert-java-import
+;;   "My Java imports"
+;;   (sort (delete-dups (ar/grep "^import"
+;;                               "\\*.java"
+;;                               '("root/to/java/source")))
+;;         'string<)
+;;   (lambda (selection)
+;;     (insert selection)))
+
+;; (defc ar/insert-objc-import
+;;   "My ObjC imports"
+;;   (sort (delete-dups (ar/find-instances "^import"
+;;                                         "\\*.java"
+;;                                         '("root/to/objc/source")))
+;;         'string<)
+;;   (lambda (selection)
+;;     (insert selection)))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
