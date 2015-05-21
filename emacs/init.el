@@ -85,7 +85,7 @@
   "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
 For example:
 (defc ar/insert-import
-  \"Pattern:\"
+  \"My Java imports\"
   (sort (delete-dups (ar/find-instances \"^import\"
                                         \"*.java\"
                                         '(\"root/to/java/source\")))
