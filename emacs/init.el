@@ -100,6 +100,11 @@
   (lambda (selection)
     (message "selected: %s" selection)))
 
+;; (defun ar/java-imports ()
+;;   (let ((command "grep defun . --recursive --binary-file=without-match --no-filename"))
+;;     (mapcar (lambda (item)
+;;               (format "%s" item))
+;;             (split-string (shell-command-to-string command) "\n"))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
