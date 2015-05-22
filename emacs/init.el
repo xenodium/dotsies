@@ -81,22 +81,25 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
-(defun ar/grep (pattern filename-pattern search-paths)
-  "Grep for PATTERN and narrow to FILENAME-PATTERN and SEARCH-PATHS."
-  (let* ((search-paths-string (mapconcat 'identity search-paths " "))
-         (command (format (concat "grep "
-                                  "--binary-file=without-match "
-                                  "--recursive "
-                                  "--no-filename "
-                                  "--regexp=%s "
-                                  "--include %s "
-                                  " %s")
-                          pattern
-                          filename-pattern
-                          search-paths-string)))
-    (split-string (shell-command-to-string command) "\n")))
+(defun ar/spc-join (strings)
+  "Join strings in STRINGS with spaces."
+  (mapconcat 'identity strings " "))
 
-(defun ar/find (filename-pattern search-paths)
+(defun ar/grep (regexp filename-pattern &rest search-paths)
+  "Grep for PATTERN and narrow to FILENAME-PATTERN and SEARCH-PATHS."
+  (let* ((grep-command (format (ar/spc-join '("grep"
+                                              "--binary-file=without-match"
+                                              "--recursive"
+                                              "--no-filename"
+                                              "--regexp=%s"
+                                              "--include %s"
+                                              "%s"))
+                          regexp
+                          filename-pattern
+                          (ar/spc-join search-paths))))
+    (split-string (shell-command-to-string grep-command) "\n")))
+
+(defun ar/find (filename-pattern &rest search-paths)
   "Find file with FILENAME-PATTERN and SEARCH-PATHS."
   (let* ((search-paths-string (mapconcat 'identity search-paths " "))
          (find-command (format "find %s -iname %s"
@@ -104,31 +107,36 @@
                                filename-pattern)))
     (split-string (shell-command-to-string find-command) "\n")))
 
-(defmacro defc (name title candidates on-select-function)
-  "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
-For example:
+(defun ar/helm (title candidates on-select-function)
+  (helm :sources `((name . ,title)
+                   (candidates . ,candidates)
+                   (action . ,on-select-function))
+        :buffer "*helm-exec*"
+        :candidate-number-limit 10000))
 
-(defc ar/helm-sample-command
-  \"Choose option:\"
-  '(\"option 3\"
-    \"option 1\"
-    \"option 2 dup\"
-    \"option 2 dup\")
-  (lambda (selection)
-    (message \"selected: %s\" selection)))
-"
-  (let ((evaluated-candidates (eval candidates)))
-    `(defun ,name ()
-       (interactive)
-       (helm :sources '((name . ,title)
-                        (candidates . ,evaluated-candidates)
-                        (action . ,on-select-function))
-             :buffer "*helm-exec*"
-             :candidate-number-limit 10000))))
+(defun ar/helm-sample-command ()
+  "Dummy helm sample command."
+  (interactive)
+  (ar/helm "My Options"
+           '("option 1"
+             "option 2"
+             "option 3")
+           (lambda (selection)
+             (message "selected: %s" selection))))
 
-;; More examples
+(defmacro defhelm (name title candidates on-select-function)
+  "Create a helm command with NAME, source TITLE, CANDIDATES list and
+ON-SELECT-FUNCTION."
+  `(defun ,name ()
+     (interactive)
+     (ar/helm ,title
+              ,candidates
+              ,(lambda (selection)
+                 (message "selected: %s" selection)))))
+
+;; defhelm examples:
 ;;
-;; (defc ar/insert-java-import
+;; (defhelm ar/insert-java-import
 ;;   "My Java imports"
 ;;   (sort (delete-dups (ar/grep "^import"
 ;;                               "\\*.java"
@@ -136,12 +144,12 @@ For example:
 ;;         'string<)
 ;;   (lambda (selection)
 ;;     (insert selection)))
-
-;; (defc ar/insert-objc-import
+;;
+;; (defhelm ar/insert-objc-import
 ;;   "My ObjC imports"
-;;   (sort (delete-dups (ar/find-instances "^import"
-;;                                         "\\*.java"
-;;                                         '("root/to/objc/source")))
+;;   (sort (delete-dups (ar/find "^import"
+;;                               "\\*.java"
+;;                               '("root/to/objc/source")))
 ;;         'string<)
 ;;   (lambda (selection)
 ;;     (insert selection)))
