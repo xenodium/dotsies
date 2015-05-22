@@ -81,37 +81,78 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
-(defun ar/find-instances (pattern file-pattern paths)
-  ""
-  (let* ((paths-string (mapconcat 'identity paths " "))
-         (command (format "grep -e %s --include %s %s --recursive --binary-file=without-match --no-filename"
-                          pattern
-                          file-pattern
-                          paths-string)))
-    (mapcar (lambda (item)
-              (format "%s" item))
-            (split-string (shell-command-to-string command) "\n"))))
+(defun ar/spc-join (&rest strings)
+  "Join strings in STRINGS with spaces."
+  (mapconcat 'identity strings " "))
 
-(defmacro defc (name title candidates on-select-function)
-  "Create function with NAME, helm TITLE, CANDIDATES and ON-SELECT-FUNCTION.
-For example:
-(defc ar/insert-import
-  \"My Java imports\"
-  (sort (delete-dups (ar/find-instances \"^import\"
-                                        \"*.java\"
-                                        '(\"root/to/java/source\")))
-        'string<)
-  (lambda (selection)
-    (insert selection)))
-"
-  (let ((evaluated-candidates (eval candidates)))
-    `(defun ,name ()
-       (interactive)
-       (helm :sources '((name . ,title)
-                        (candidates . ,evaluated-candidates)
-                        (action . ,on-select-function))
-             :buffer "*helm-exec*"
-             :candidate-number-limit 10000))))
+(defun ar/grep (regexp filename-pattern &rest search-paths)
+  "Grep for PATTERN and narrow to FILENAME-PATTERN and SEARCH-PATHS."
+  (let* ((grep-command (format (ar/spc-join "grep"
+                                            "--binary-file=without-match"
+                                            "--recursive"
+                                            "--no-filename"
+                                            "--regexp=%s"
+                                            "--include %s"
+                                            "%s")
+                          regexp
+                          filename-pattern
+                          (apply #'ar/spc-join search-paths))))
+    (split-string (shell-command-to-string grep-command) "\n")))
+
+(defun ar/find (filename-pattern &rest search-paths)
+  "Find file with FILENAME-PATTERN and SEARCH-PATHS."
+  (let* ((search-paths-string (mapconcat 'identity search-paths " "))
+         (find-command (format "find %s -iname %s"
+                               search-paths-string
+                               filename-pattern)))
+    (split-string (shell-command-to-string find-command) "\n")))
+
+(defun ar/helm (title candidates on-select-function)
+  (helm :sources `((name . ,title)
+                   (candidates . ,candidates)
+                   (action . ,on-select-function))
+        :buffer "*helm-exec*"
+        :candidate-number-limit 10000))
+
+(defun ar/helm-sample-command ()
+  "Dummy helm sample command."
+  (interactive)
+  (ar/helm "My Options"
+           '("option 1"
+             "option 2"
+             "option 3")
+           (lambda (selection)
+             (message "selected: %s" selection))))
+
+(defmacro defhelm (name title candidates on-select-function)
+  "Create a helm command with NAME, source TITLE, CANDIDATES list and
+ON-SELECT-FUNCTION."
+  `(defun ,name ()
+     (interactive)
+     (ar/helm ,title
+              ,candidates
+              ,(lambda (selection)
+                 (message "selected: %s" selection)))))
+
+;; defhelm examples:
+;;
+;; (defhelm ar/insert-java-import
+;;   "My Java imports"
+;;   (sort (delete-dups (ar/grep "^import"
+;;                               "\\*.java"
+;;                               '("root/to/java/source")))
+;;         'string<)
+;;   (lambda (selection)
+;;     (insert selection)))
+;;
+;; (defhelm ar/insert-objc-import
+;;   "My ObjC imports"
+;;   (sort (delete-dups (ar/find "^import"
+;;                               "\\*.java"
+;;                               '("root/to/objc/source")))
+;;         'string<)
+;;   (lambda (selection)
+;;     (insert selection)))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
