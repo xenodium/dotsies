@@ -141,8 +141,7 @@ ON-SELECT-FUNCTION."
      (interactive)
      (ar/helm ,title
               ,candidates
-              ,(lambda (selection)
-                 (message "selected: %s" selection)))))
+              ,on-select-function)))
 
 ;; defhelm examples:
 ;;
@@ -150,19 +149,20 @@ ON-SELECT-FUNCTION."
 ;;   "My Java imports"
 ;;   (sort (delete-dups (ar/grep "^import"
 ;;                               "\\*.java"
-;;                               '("root/to/java/source")))
+;;                               "path/to/java/1"
+;;                               "path/to/java/2"))
 ;;         'string<)
 ;;   (lambda (selection)
 ;;     (insert selection)))
-;;
+
 ;; (defhelm ar/insert-objc-import
 ;;   "My ObjC imports"
-;;   (sort (delete-dups (ar/find "^import"
-;;                               "\\*.java"
-;;                               '("root/to/objc/source")))
+;;   (sort (delete-dups (ar/find "\\*.h"
+;;                               "path/to/objc/1"
+;;                               "path/to/objc/2"))
 ;;         'string<)
 ;;   (lambda (selection)
-;;     (insert selection)))
+;;     (insert (format "#import %s;" (file-name-nondirectory selection)))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
