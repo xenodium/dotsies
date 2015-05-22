@@ -157,12 +157,16 @@ ON-SELECT-FUNCTION."
 
 ;; (defhelm ar/insert-objc-import
 ;;   "My ObjC imports"
-;;   (sort (delete-dups (ar/find "\\*.h"
-;;                               "path/to/objc/1"
-;;                               "path/to/objc/2"))
-;;         'string<)
+;;   (sort
+;;    (delete-dups
+;;     (mapcar
+;;      #'file-name-nondirectory
+;;      (ar/find "\\*.h"
+;;               "path/to/objc/1"
+;;               "path/to/objc/2"))
+;;    'string<)
 ;;   (lambda (selection)
-;;     (insert (format "#import %s;" (file-name-nondirectory selection)))))
+;;     (insert (format "#import %s;" selection))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
