@@ -56,6 +56,16 @@
   (set-buffer-modified-p nil)
   (nxml-mode))
 
+;; Tip of the day.
+(use-package totd :ensure t
+  :commands (totd)
+  :config
+  (totd-start))
+
+;; Safely delete packages.
+(use-package package-safe-delete :ensure t
+  :commands (package-safe-delete))
+
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t
   :config
