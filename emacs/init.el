@@ -3,8 +3,11 @@
 ;; Just another init.el file.
 ;;; Code:
 
-;;  Guarantee that Emacs never loads outdated byte code files.
+;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
+
+;; Additional load paths.
+(add-to-list 'load-path "~/.emacs.d/ar")
 
 (require 'package)
 
@@ -897,12 +900,6 @@ Argument PROMPT to check for additional prompt."
 (eval-after-load "vc-hooks"
   '(define-key vc-prefix-map "=" #'vc-ediff))
 
-(defun ar/sort-lines-ignore-case ()
-  "Sort region (case-insensitive)."
-  (interactive)
-  (let ((sort-fold-case t))
-    (call-interactively #'sort-lines)))
-
 (setq css-indent-offset 2)
 
 (defun ar/open-in-external-app-lambda ()
@@ -1373,37 +1370,6 @@ Argument END end.
 Argument LEN Length."
   ;; Saving point enables jumping back to last change at any time.
   (ar/save-point-to-register))
-
-(defun ar/select-current-block ()
-  "Select the current block of text between blank lines.
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2015-02-07."
-  (interactive)
-  (let (p1 p2)
-    (if (re-search-backward "\n[ \t]*\n" nil "move")
-        (progn (re-search-forward "\n[ \t]*\n")
-               (setq p1 (point)))
-      (setq p1 (point)))
-    (if (re-search-forward "\n[ \t]*\n" nil "move")
-        (progn (re-search-backward "\n[ \t]*\n")
-               (setq p2 (point)))
-      (setq p2 (point)))
-    (set-mark p1)))
-
-(defun ar/sort-current-block ()
-  "Select and sort current block."
-  (interactive)
-  (ar/select-current-block)
-  (ar/sort-lines-ignore-case))
-
-(defun ar/sort-objc-headers ()
-  "Alphabetically sort Objective-C headers."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "^#\\(include\\|import\\).*\n\n" nil t)
-      (goto-char (match-beginning 0))
-      (ar/sort-current-block))))
 
 (defun ar/clang-format-buffer ()
   "Clang format current buffer."
@@ -2192,7 +2158,7 @@ Quick insert: _c_l  _w_eb bookmark
   "
 Sort: _l_ines _o_rg list
       _b_lock"
-  ("l" ar/sort-lines-ignore-case nil)
+  ("l" ar/buffer-sort-lines-ignore-case nil)
   ("o" org-sort-list nil)
   ("b" ar/sort-current-block nil)
   ("q" nil nil :color blue))
@@ -2812,6 +2778,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           }
          }
        </style>")
+
+(use-package ar-objc
+  :commands (ar/objc-insert-new-header))
 
 (use-package server
   :commands (server-running-p
