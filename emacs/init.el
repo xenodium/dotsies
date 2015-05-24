@@ -2780,7 +2780,8 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
        </style>")
 
 (use-package ar-objc
-  :commands (ar/objc-insert-new-header))
+  :commands (ar/objc-include-header
+             ar/objc-import-header))
 
 (use-package server
   :commands (server-running-p
