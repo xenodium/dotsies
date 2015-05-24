@@ -77,7 +77,7 @@ file.m -> file.h"
             (insert (format "\n#%s \"%s\";" directive header))
             (ar/buffer-sort-current-block)
             (ar/buffer-remove-region-dups (region-beginning)
-                                          ;; Include next line.
+                                          ;; Include next line (\n).
                                           (1+ (region-end))))
         (message "Don't know where to insert.")))))
 
@@ -90,7 +90,7 @@ file.m -> file.h"
 (defun ar/objc-include-header ()
   "Insert a new header use #include."
   (interactive)
-  (ar/objc-insert-new-import t))
+  (ar/objc-import-header t))
 
 (provide 'ar-objc)
 
