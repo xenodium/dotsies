@@ -39,8 +39,11 @@ Version 2015-02-07."
 (defun ar/buffer-sort-current-block ()
   "Select and sort current block."
   (interactive)
-  (ar/buffer-select-current-block)
-  (ar/buffer-sort-lines-ignore-case))
+  ;; Why is save-excursion not working?
+  (let ((saved-point (point)))
+    (ar/buffer-select-current-block)
+    (ar/buffer-sort-lines-ignore-case)
+    (goto-char saved-point)))
 
 (defun ar/buffer-first-match-begining (re)
   "Return the first match beginning position for RE."
