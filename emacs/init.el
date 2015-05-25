@@ -65,6 +65,9 @@
   :config
   (totd-start))
 
+(use-package restclient :ensure t
+  :commands (restclient-mode))
+
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
@@ -2352,12 +2355,14 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                 (org-show-subtree)
                                 (org-end-of-meta-data-and-drawers)
                                 (org-insert-heading)
-                                (insert (format "%s."
-                                                (ar/retrieve-bookmark-link-in-process)))
+                                (insert (ar/retrieve-bookmark-link-in-process))
                                 (org-sort-list nil ?a)
                                 (ar/update-blog-timestamp-at-point)
                                 (hide-other)
                                 (save-buffer)))))))
+
+(use-package define-word :ensure t
+  :commands (define-word-at-point define-word))
 
 (use-package profiler)
 (defun ar/profiler-start-cpu ()
