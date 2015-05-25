@@ -6,8 +6,7 @@ silver_searcher:
 init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
-	mkdir -p ~/.emacs.d/ar
-	cp -r * ar/*.el ~/.emacs.d/ar/
+	make -C ar
 
 global:
 	cp -i global/.globalrc ~/
