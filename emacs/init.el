@@ -547,9 +547,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 (projectile-global-mode)
 (setq projectile-enable-caching t)
 
-(use-package springboard :ensure t
-  :commands (springboard))
-
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
   :bind (("C-x f" . helm-projectile)))
