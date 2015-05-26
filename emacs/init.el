@@ -97,39 +97,6 @@
 (use-package highlight-thing :ensure t)
 (global-highlight-thing-mode)
 
-(defun ar/spc-join (&rest strings)
-  "Join strings in STRINGS with spaces."
-  (mapconcat 'identity strings " "))
-
-(defun ar/grep (regexp filename-pattern &rest search-paths)
-  "Grep for PATTERN and narrow to FILENAME-PATTERN and SEARCH-PATHS."
-  (let* ((grep-command (format (ar/spc-join "grep"
-                                            "--binary-file=without-match"
-                                            "--recursive"
-                                            "--no-filename"
-                                            "--regexp=%s"
-                                            "--include %s"
-                                            "%s")
-                          regexp
-                          filename-pattern
-                          (apply #'ar/spc-join search-paths))))
-    (split-string (shell-command-to-string grep-command) "\n")))
-
-(defun ar/find (filename-pattern &rest search-paths)
-  "Find file with FILENAME-PATTERN and SEARCH-PATHS."
-  (let* ((search-paths-string (mapconcat 'identity search-paths " "))
-         (find-command (format "find %s -iname %s"
-                               search-paths-string
-                               filename-pattern)))
-    (split-string (shell-command-to-string find-command) "\n")))
-
-(defun ar/helm (title candidates on-select-function)
-  (helm :sources `((name . ,title)
-                   (candidates . ,candidates)
-                   (action . ,on-select-function))
-        :buffer "*helm-exec*"
-        :candidate-number-limit 10000))
-
 (defun ar/helm-sample-command ()
   "Dummy helm sample command."
   (interactive)
@@ -139,40 +106,6 @@
              "option 3")
            (lambda (selection)
              (message "selected: %s" selection))))
-
-(defmacro defhelm (name title candidates on-select-function)
-  "Create a helm command with NAME, source TITLE, CANDIDATES list and
-ON-SELECT-FUNCTION."
-  `(defun ,name ()
-     (interactive)
-     (ar/helm ,title
-              ,candidates
-              ,on-select-function)))
-
-;; defhelm examples:
-;;
-;; (defhelm ar/insert-java-import
-;;   "My Java imports"
-;;   (sort (delete-dups (ar/grep "^import"
-;;                               "\\*.java"
-;;                               "path/to/java/1"
-;;                               "path/to/java/2"))
-;;         'string<)
-;;   (lambda (selection)
-;;     (insert selection)))
-
-;; (defhelm ar/insert-objc-import
-;;   "My ObjC imports"
-;;   (sort
-;;    (delete-dups
-;;     (mapcar
-;;      #'file-name-nondirectory
-;;      (ar/find "\\*.h"
-;;               "path/to/objc/1"
-;;               "path/to/objc/2"))
-;;    'string<)
-;;   (lambda (selection)
-;;     (insert (format "#import %s;" selection))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
@@ -2784,6 +2717,9 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (use-package ar-objc
   :commands (ar/objc-include-header
              ar/objc-import-header))
+
+(use-package ar-helm-objc
+  :commands (ar/helm-objc-import-update))
 
 (use-package server
   :commands (server-running-p
