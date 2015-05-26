@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'ar-buffer)
+(require 'ar-file)
 
 (defun ar/objc--own-header-p (header)
   "Check if HEADER is own header (ie. file.m including file.h."
@@ -81,16 +82,16 @@ file.m -> file.h"
                                           (1+ (region-end))))
         (message "Don't know where to insert.")))))
 
-(defun ar/objc-import-header (prefix)
-  "Insert a new header, with PREFIX, use #include else #import."
+(defun ar/objc-import-header (prefix filename)
+  "Insert a new header, with PREFIX, use #include else #import and FILENAME."
   (interactive "P")
   (ar/objc--insert-new (if prefix "include" "import")
-                       (read-string "name: ")))
+                       (or filename (read-string "name: "))))
 
 (defun ar/objc-include-header ()
   "Insert a new header use #include."
   (interactive)
-  (ar/objc-import-header t))
+  (ar/objc-import-header t nil))
 
 (provide 'ar-objc)
 
