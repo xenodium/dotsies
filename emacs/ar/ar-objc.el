@@ -75,7 +75,7 @@ file.m -> file.h"
       (if insert-pos
           (progn
             (goto-char insert-pos)
-            (insert (format "\n#%s \"%s\";" directive header))
+            (insert (format "\n#%s \"%s\"" directive header))
             (ar/buffer-sort-current-block)
             (ar/buffer-remove-region-dups (region-beginning)
                                           ;; Include next line (\n).
