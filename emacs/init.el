@@ -1171,6 +1171,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
 
+;; Enable searching info via info-lookup-symbol (ie. C-h S).
+(use-package pydoc-info :ensure t)
+
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (setq python-indent-offset 4)
