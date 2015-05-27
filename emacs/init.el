@@ -1361,6 +1361,15 @@ Argument LEN Length."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
+(use-package ar-org)
+
+(use-package ar-objc
+  :commands (ar/objc-include-header
+             ar/objc-import-header))
+
+(use-package ar-helm-objc
+  :commands (ar/helm-objc-import-update))
+
 (use-package ox-html
   :commands (org-html-export-to-html)
   :config
@@ -2506,11 +2515,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
 
-(defun ar/org-point-to-heading-1 ()
-  "Move point to heading level 1."
-  (interactive)
-  (while (org-up-heading-safe)))
-
 (defun ar/org-move-current-tree-to-top ()
   "Move entire current tree to top."
   (interactive)
@@ -2716,13 +2720,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           }
          }
        </style>")
-
-(use-package ar-objc
-  :commands (ar/objc-include-header
-             ar/objc-import-header))
-
-(use-package ar-helm-objc
-  :commands (ar/helm-objc-import-update))
 
 (use-package server
   :commands (server-running-p
