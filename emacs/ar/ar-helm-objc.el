@@ -21,7 +21,7 @@
                                         "~/stuff/active")))
      'string<)
     (lambda (selection)
-      (ar/objc-import-header nil selection))))
+      (ar/objc-import nil selection))))
 
 (provide 'ar-helm-objc)
 
