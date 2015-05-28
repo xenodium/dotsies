@@ -14,7 +14,7 @@
   "Update list of imports."
   (interactive)
   (ar/helm-defhelm ar/helm-objc-import
-    "My ObjC imports"
+    "My ObjC headers"
     (sort
      (delete-dups (mapcar #'file-name-nondirectory
                           (ar/file-find "\\*.h"
