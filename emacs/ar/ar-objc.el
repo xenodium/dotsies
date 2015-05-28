@@ -82,16 +82,16 @@ file.m -> file.h"
                                           (1+ (region-end))))
         (message "Don't know where to insert.")))))
 
-(defun ar/objc-import-header (prefix filename)
+(defun ar/objc-import (prefix filename)
   "Insert a new header, with PREFIX, use #include else #import and FILENAME."
   (interactive "P")
   (ar/objc--insert-new (if prefix "include" "import")
                        (or filename (read-string "name: "))))
 
-(defun ar/objc-include-header ()
+(defun ar/objc-include ()
   "Insert a new header use #include."
   (interactive)
-  (ar/objc-import-header t nil))
+  (ar/objc-import t nil))
 
 (provide 'ar-objc)
 
