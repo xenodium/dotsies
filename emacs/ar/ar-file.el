@@ -9,6 +9,13 @@
 (require 'ar-string)
 (require 'simple)
 
+(defun ar/file-read-image-name ()
+  "Read image file name."
+  (read-file-name "Choose image: " nil nil t nil
+                  (lambda (path)
+                    (or (string-match-p "\\(\\.JPG\\|\\.jpg\\|\\.PNG\\|\\.png\\)" path)
+                        (file-directory-p path)))))
+
 (defun ar/file-find (filename-pattern &rest search-paths)
   "Find file with FILENAME-PATTERN and SEARCH-PATHS."
   (let* ((search-paths-string (mapconcat 'expand-file-name
