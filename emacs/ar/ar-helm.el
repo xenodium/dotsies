@@ -19,7 +19,7 @@
         :buffer "*helm-exec*"
         :candidate-number-limit 10000))
 
-(defun ar/helm-search-files ()
+(defun ar/helm-find ()
   "Search files in ar/helm-search-files variable."
   (interactive)
   (unless (> (length ar/helm-search-paths) 0)
