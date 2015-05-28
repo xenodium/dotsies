@@ -1367,6 +1367,9 @@ Argument LEN Length."
   :commands (ar/objc-include-header
              ar/objc-import-header))
 
+(use-package ar-helm
+  :commands (ar/helm-find))
+
 (use-package ar-helm-objc
   :commands (ar/helm-objc-import-update))
 
