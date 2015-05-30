@@ -6,6 +6,9 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
+;; Increase memory threshold for garbage collection.
+(setq gc-cons-threshold 20000000)
+
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
@@ -21,25 +24,9 @@
 
 (require 'use-package)
 
-;; Increase memory threshold for garbage collection.
-(setq gc-cons-threshold 20000000)
-
-;; Requires get_iplayer script at:
-;; https://raw.githubusercontent.com/get-iplayer/get_iplayer/latest/get_iplayer
-;; Documentation: https://github.com/get-iplayer/get_iplayer
-(use-package iplayer :ensure t)
-
+;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
-
-;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
-(if (fboundp 'with-eval-after-load)
-    (defalias 'ar/after-load #'with-eval-after-load)
-  (defmacro ar/after-load (feature &rest body)
-    "After FEATURE is loaded, evaluate BODY."
-    (declare (indent defun))
-    `(eval-after-load ,feature
-       '(progn ,@body))))
 
 ;; Pretty print output to *Pp Eval Output*.
 (global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
@@ -129,11 +116,11 @@
 (use-package fullframe :ensure t
   :commands (fullframe))
 
-(ar/after-load 'ibuffer
-  (fullframe ibuffer ibuffer-quit))
+(use-package ibuffer
+  :config (fullframe ibuffer ibuffer-quit))
 
-(ar/after-load 'dired
-  (fullframe dired quit-window))
+(use-package dired
+  :config (fullframe dired quit-window))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
