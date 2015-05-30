@@ -58,17 +58,6 @@
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t)
-(global-highlight-thing-mode)
-
-(defun ar/helm-sample-command ()
-  "Dummy helm sample command."
-  (interactive)
-  (ar/helm "My Options"
-           '("option 1"
-             "option 2"
-             "option 3")
-           (lambda (selection)
-             (message "selected: %s" selection))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
@@ -76,18 +65,6 @@
 (use-package async :ensure t :demand)
 
 (use-package molokai-theme :ensure t)
-
-(set-cursor-color "#FA009A")
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-;; Avoid native dialogs when running graphical.
-(when (boundp 'use-dialog-box)
-  (setq use-dialog-box nil))
 
 (use-package fullframe :ensure t
   :commands (fullframe))
@@ -1363,6 +1340,7 @@ Argument LEN Length."
             t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
+  (highlight-thing-mode)
   (setq show-trailing-whitespace t)
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
@@ -2607,6 +2585,18 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           }
          }
        </style>")
+
+(set-cursor-color "#FA009A")
+
+;; Hide UI.
+(menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+;; Avoid native dialogs when running graphical.
+(when (boundp 'use-dialog-box)
+  (setq use-dialog-box nil))
 
 (use-package server
   :commands (server-running-p
