@@ -28,9 +28,6 @@
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
 
-;; Pretty print output to *Pp Eval Output*.
-(global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
-
 ;; Tip of the day.
 (use-package totd :ensure t
   :commands (totd)
@@ -43,12 +40,6 @@
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
-
-;; Enhanced list-packages replacement.
-(use-package paradox :ensure t
-  :config
-  (fullframe paradox-list-packages paradox-quit-and-close)
-  :commands (paradox-list-packages))
 
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
@@ -106,6 +97,12 @@
 
 (use-package dired
   :config (fullframe dired quit-window))
+
+;; Enhanced list-packages replacement.
+(use-package paradox :ensure t
+  :config
+  (fullframe paradox-list-packages paradox-quit-and-close)
+  :commands (paradox-list-packages))
 
 ;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
 (defvar ac/vc-mode-line
@@ -1158,6 +1155,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
+  ;; Pretty print output to *Pp Eval Output*.
+  (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   (lispy-mode 1)
   (eldoc-mode)
   (set-fill-column 70)
