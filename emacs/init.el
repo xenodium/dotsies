@@ -31,21 +31,6 @@
 ;; Pretty print output to *Pp Eval Output*.
 (global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
 
-;; Based on http://hints.macworld.com/article.php?story=20050526162847879
-;; Convert plists on Mac OS to xml equivalent and open.
-(push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
-(defun ar/convert-plist-to-xml ()
-  (interactive)
-  (when (string-match "plist"
-                      (buffer-string))
-    (shell-command-on-region (point-min) (point-max)
-                             ;; yes, the temp file is necessary :-(
-                             (format "plutil -convert xml1 -o /tmp/temp.plist %s; cat /tmp/temp.plist"
-                                     (shell-quote-argument (buffer-file-name)))
-                             t t))
-  (set-buffer-modified-p nil)
-  (nxml-mode))
-
 ;; Tip of the day.
 (use-package totd :ensure t
   :commands (totd)
@@ -665,67 +650,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Keep syntax highlighting in the current line.
 ;; (set-face-foreground 'highlight nil)
 
-;;  From http://doc.rix.si/org/fsem.html
-(defun ar/gnu-linux-p ()
-  "Return t if the system is a GNU/Linux machine, otherwise nil."
-  (string-equal system-type "gnu/linux"))
-
-(defun ar/osx-p ()
-  "Return t if the system is a Mac OS X machine, otherwise nil."
-  (string-equal system-type "darwin"))
-
-(defun ar/cygwinp ()
-  "Return t if Emacs is running inside of Cygwin on Windows, otherwise nil."
-  (string-equal system-type "cygwin"))
-
-(defun ar/windows-p ()
-  "Return t if the system is a native Emacs for Windows, otherwise nil."
-  (string-equal system-type "windows"))
-
-(defun ar/new-browser-tab-shell-command ()
-  "Return new browser tab shell command."
-  (cond
-   ((ar/osx-p)
-    "open http://google.com")
-   ((ar/gnu-linux-p)
-    "google-chrome http://google.com")
-   (nil)))
-
-(defun ar/new-browser-tab ()
-  "Open a new browser tab in the default browser."
-  (interactive)
-  (let ((command (ar/new-browser-tab-shell-command)))
-    (message command)
-    (if command
-        (shell-command command)
-      (message "Unrecognized platform."))))
-(bind-key "C-x t" #'ar/new-browser-tab)
-
-(defun ar/init-for-osx ()
-  "Perform initializations for Mac OS X."
-  (when (ar/osx-p)
-    ;; This sets $MANPATH, $PATH and exec-path from your shell.
-    (exec-path-from-shell-initialize)
-    ;; On Mac, this is effectively fn-M-backspace.
-    (bind-key "M-(" #'kill-word)
-    ;; Keep menu bar under graphical OS X for fullscreen.
-    (when (window-system)
-      (menu-bar-mode 1))
-    ;; Sets the command (Apple) key as Meta.
-    (setq mac-command-modifier 'meta)
-    ;; Sets the option (Apple) key also as Meta.
-    (setq mac-option-modifier 'meta)
-    (setq exec-path (append exec-path '("~/homebrew/bin"
-                                        "~/homebrew/Cellar/llvm/HEAD/bin"
-                                        "/usr/local/bin")))))
-(ar/init-for-osx)
-
-(defun ar/init-for-linux ()
-  "Perform initializations for Linux."
-  (when (ar/gnu-linux-p)
-    (setq exec-path (append exec-path '("~/local/bin")))))
-(ar/init-for-linux)
-
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq backup-inhibited t)
@@ -821,39 +745,6 @@ Argument PROMPT to check for additional prompt."
   '(define-key vc-prefix-map "=" #'vc-ediff))
 
 (setq css-indent-offset 2)
-
-(defun ar/open-in-external-app-lambda ()
-  "Return a function to open FPATH externally."
-  (cond
-   ((ar/windows-p)
-    (lambda (fPath)
-      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))))
-   ((ar/osx-p)
-    (lambda (fPath)
-      (shell-command (format "open \"%s\"" fPath))))
-   ((ar/gnu-linux-p)
-    (lambda (fPath)
-      (let ((process-connection-type nil))
-        (start-process "" nil "xdg-open" fPath))))))
-
-;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun ar/open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
-
-Version 2015-01-26
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
-  (interactive)
-  (let* ((ξfile-list
-          (if (string-equal major-mode "dired-mode")
-              (dired-get-marked-files)
-            (list (buffer-file-name))))
-         (ξdo-it-p (if (<= (length ξfile-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when ξdo-it-p
-      (mapc (ar/open-in-external-app-lambda) ξfile-list))))
-(bind-key "C-M-o" #'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -1356,6 +1247,16 @@ Argument LEN Length."
 
 (use-package ar-helm-objc
   :commands (ar/helm-objc-import-update))
+
+(use-package ar-osx
+  :demand
+  :commands (ar/osx-convert-plist-to-xml))
+
+(use-package ar-linux)
+
+(use-package ar-platform
+  :demand
+  :bind (("C-x t" . ar/platform-new-browser-tab)))
 
 (use-package ox-html
   :commands (org-html-export-to-html)
@@ -2028,7 +1929,7 @@ _v_ariable       _u_ser-option
 (defhydra hydra-open-c-mode (:color blue)
   "open"
   ("o" ff-find-other-file "other")
-  ("e" ar/open-in-external-app "externally")
+  ("e" ar/platform-open-in-external-app "externally")
   ("u" ar/open-file-at-point "url at point")
   ("q" nil "cancel"))
 
@@ -2042,7 +1943,7 @@ _v_ariable       _u_ser-option
 Open: _p_oint _e_externally
       _u_rls
 "
-  ("e" ar/open-in-external-app nil)
+  ("e" ar/platform-open-in-external-app nil)
   ("p" ar/open-file-at-point nil)
   ("u" ar/helm-buffer-urls nil)
   ("q" nil "cancel"))
