@@ -73,7 +73,10 @@
   :config (fullframe ibuffer ibuffer-quit))
 
 (use-package dired
-  :config (fullframe dired quit-window))
+  :config
+  (fullframe dired quit-window)
+  ;; Try to guess the target directory for operations.
+  (setq dired-dwim-target t))
 
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t
@@ -175,7 +178,6 @@
 (use-package hungry-delete :ensure t)
 (global-hungry-delete-mode)
 (global-font-lock-mode)
-
 (global-auto-revert-mode)
 
 ;; Auto refresh dired.
@@ -190,10 +192,11 @@
   :bind ("C-c w" . er/expand-region))
 
 (use-package recentf
+  :init
+  (recentf-mode)
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15))
-(recentf-mode)
 
 (use-package yasnippet :ensure t)
 (setq yas-snippet-dirs
@@ -1184,7 +1187,7 @@ Argument LEN Length."
             #'ar/after-prog-mode-text-change
             t t)
   (let ((m org-mode-map))
-    (define-key m [f6] #'ar/export-blog-to-html))
+    (define-key m [f6] #'ar/ox-html-export))
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
@@ -1431,9 +1434,6 @@ Argument LEN Length."
     (term-send-string
      proc
      (concat "cd ~/Downloads && youtube-dl " url "\n"))))
-
-;; Try to guess the target directory for operations.
-(setq dired-dwim-target t)
 
 (defun ar/view-clipboard-buffer ()
   "View clipboard buffer."
@@ -1772,7 +1772,7 @@ Sort: _l_ines _o_rg list
       _b_lock"
   ("l" ar/buffer-sort-lines-ignore-case nil)
   ("o" org-sort-list nil)
-  ("b" ar/sort-current-block nil)
+  ("b" ar/buffer-sort-current-block nil)
   ("q" nil nil :color blue))
 (bind-key "M-s" #'hydra-sort/body)
 
@@ -1924,14 +1924,14 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                           (org-show-subtree)))))
 
 
-(use-package cl :commands (flet))
-
+(use-package cl
+  :commands (cl-flet))
 ;; Ignore running processes when closing Emacs
 ;; From http://oremacs.com/2015/01/04/dired-nohup
 (defadvice save-buffers-kill-emacs
     (around no-query-kill-emacs activate)
   "Prevent \"Active processes exist\" query on exit."
-  (flet ((process-list ())) ad-do-it))
+  (cl-flet ((process-list ())) ad-do-it))
 
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
