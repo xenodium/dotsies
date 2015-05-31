@@ -53,6 +53,36 @@
     (insert (format "[[file:%s]]" destination-path))
     (org-display-inline-images)))
 
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/org-src-color-blocks-light ()
+  "Color the block headers and footers to make them stand out more for lighter themes."
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(org-block-background
+     ((t (:background "#FFFFEA"))))
+   '(org-block-end-line
+     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
+   '(which-func ((t (:foreground "#008000"))))))
+
+;; Based on https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/org-src-color-blocks-dark ()
+  "Color the block headers and footers to make them stand out more for dark themes."
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:foreground "#008ED1" :background nil))))
+   '(org-block ((t (:background "SlateBlue4" :foreground nil :box nil))))
+   '(org-block-background
+     ((t (:background "#111111"))))
+   '(org-block-end-line
+     ((t (:foreground "#008ED1" :background nil))))
+   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
+   '(which-func ((t (:foreground "green"))))))
+
+
 (provide 'ar-org)
 
 ;;; ar-org.el ends here
