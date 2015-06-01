@@ -12,6 +12,37 @@
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
+;; Graphical initializations.
+
+;; Get rid of splash screens.
+;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+
+;; Prevent split-window-sensibly to split horizontally.
+(setq split-width-threshold nil)
+
+;; Customize vertical window divider:
+;; Set symbol for the border.
+(set-display-table-slot standard-display-table
+                        'vertical-border
+                        (make-glyph-code ?|))
+
+;; Set region color.
+(set-face-attribute 'region nil :background "#0000ff")
+
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil :height 180)
+
+(set-cursor-color "#FA009A")
+
+;; Hide UI.
+(menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
 (require 'package)
 
 (add-to-list 'package-archives
@@ -23,6 +54,8 @@
   (package-install 'use-package))
 
 (require 'use-package)
+
+(use-package molokai-theme :ensure t)
 
 ;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
@@ -64,8 +97,6 @@
 
 (use-package async :ensure t :demand)
 
-(use-package molokai-theme :ensure t)
-
 (use-package fullframe :ensure t
   :commands (fullframe))
 
@@ -77,19 +108,6 @@
   :config
   (fullframe paradox-list-packages paradox-quit-and-close)
   :commands (paradox-list-packages))
-
-
-;; From http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
-(defun ar/pretty-print-xml-region (begin end)
-  "Format XML markup in region marked by BEGIN and END."
-  (interactive "r")
-  (save-excursion
-    (nxml-mode)
-    (goto-char begin)
-    (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-      (backward-char) (insert "\n") (setq end (1+ end)))
-    (indent-region begin end))
-  (message "Ah, much better!"))
 
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
@@ -117,9 +135,6 @@
   (setq mode-line-end-spaces
         (list (propertize " " 'display '(space :align-to (- right 17)))
               'display-time-string)))
-
-;; Set font face height. Value is 1/10pt.
-(set-face-attribute 'default nil :height 180)
 
 ;; Ensure window is maximized.
 (use-package maxframe :ensure t)
@@ -268,37 +283,6 @@
   :ensure t)
 (helm-mode 1)
 
-(defun ar/pull-repo-at-path (path)
-  "Pull repository at PATH."
-  (ar/with-current-file path (magit-pull)))
-
-(defun ar/git-unpushed-changes-p ()
-  "Check if unpushed changes are present in git master."
-  (not (string-empty-p (shell-command-to-string "git log --oneline origin/master..master"))))
-
-(defun ar/pending-repo-at-path-p (path)
-  "Check if pending changes in repository at PATH."
-  (or (ar/with-current-file path (magit-anything-modified-p))
-      (ar/git-unpushed-changes-p)))
-
-(defun ar/check-frequent-repos-pending ()
-  (interactive)
-  (cond
-   ((ar/pending-repo-at-path-p "~/stuff/active/dots")
-    (magit-status "~/stuff/active/dots"))
-   ((ar/pending-repo-at-path-p "~/stuff/active/blog")
-    (magit-status "~/stuff/active/blog"))
-   ((ar/pending-repo-at-path-p "~/stuff/active/non-public")
-    (magit-status "~/stuff/active/non-public"))
-   (t (message "Life is good!"))))
-
-(defun ar/pull-frequent-repos ()
-  "Pull all frequent repositories."
-  (interactive)
-  (ar/pull-repo-at-path "~/stuff/active/dots")
-  (ar/pull-repo-at-path "~/stuff/active/blog")
-  (ar/pull-repo-at-path "~/stuff/active/non-public"))
-
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
   (interactive)
@@ -347,16 +331,23 @@ Optional argument NON-RECURSIVE to shallow-search."
   :bind ("M-." . helm-gtags-dwim))
 (helm-gtags-mode 1)
 
-(use-package projectile :ensure t)
+(use-package projectile :ensure t
+  :config
+  (setq projectile-enable-caching t)
+  ;; C-u magit-status presents list of repositories.
+  (setq magit-repo-dirs (mapcar (lambda (dir)
+                                  (substring dir 0 -1))
+                                ;; Disables "required at runtime" warning for cl package.
+                                (with-no-warnings
+                                  (remove-if-not (lambda (project)
+                                                   (file-directory-p (concat project "/.git/")))
+                                                 (projectile-relevant-known-projects))))
+        magit-repo-dirs-depth 1))
 (projectile-global-mode)
-(setq projectile-enable-caching t)
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
   :bind (("C-x f" . helm-projectile)))
-
-;; Prevent split-window-sensibly to split horizontally.
-(setq split-width-threshold nil)
 
 (use-package ediff
   :config
@@ -426,17 +417,6 @@ Optional argument NON-RECURSIVE to shallow-search."
                             (?\< . ?\>)))
 (electric-indent-mode)
 
-;; This looks fun. Will play more with it.
-;; (use-package highlight-tail :ensure t)
-;; (setq highlight-tail-colors '(("black" . 0)
-;;                               ("#bc2525" . 25)
-;;                               ("black" . 66)))
-;; (setq highlight-tail-steps 5
-;;       highlight-tail-timer 0.1)
-
-;; (setq highlight-tail-posterior-type 'const)
-;; (highlight-tail-reload)
-
 ;; Highlight matching parenthesis.
 (show-paren-mode)
 ;; Highlight entire bracket expression.
@@ -451,11 +431,6 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (setq uniquify-buffer-name-style 'forward))
 
-;; Get rid of splash screens.
-;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
-
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
 (global-subword-mode t)
@@ -464,10 +439,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package linum
   :ensure t
-  :config (progn
-            (set-face-attribute 'linum nil
-                                :background "#1B1D1E")
-            (setq linum-format "%4d ")))
+  :config
+  (set-face-attribute 'linum nil
+                      :background "#1B1D1E")
+  (setq linum-format "%4d "))
 
 (use-package git-gutter
   :ensure t
@@ -531,16 +506,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Handy pop-up messages with git info.
 (use-package git-messenger :ensure t)
 
-;; Display column numbers.
-(setq-default column-number-mode t)
-
 ;; Highlights current line.
 (use-package hl-line :ensure t)
-
-;; Set color as current line's background face.
-;; (set-face-background 'hl-line "black")
-;; Keep syntax highlighting in the current line.
-;; (set-face-foreground 'highlight nil)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -553,26 +520,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq auto-save-default nil)
 
+;; Avoid creating lock files (ie. .#some-file.el)
+(setq create-lockfiles nil)
+
 ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
 (setq dabbrev-case-fold-search nil)
-
-;; Move buffer file.
-;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun ar/move-buffer-file (dir)
-  "Move both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (dir (if (string-match dir "\\(?:/\\|\\\\)$")
-                  (substring dir 0 -1)
-                dir))
-         (newname (concat dir "/" name)))
-
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (progn (copy-file filename newname 1)
-             (delete-file filename)
-             (set-visited-file-name newname)
-             (set-buffer-modified-p nil) t))))
 
 ;;  http://scottmcpeak.com/elisp/scott.emacs.el
 ;;  ------------------- yes-or-no-p ---------------------
@@ -794,12 +746,13 @@ With a prefix ARG open line above the current line."
 
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  :bind (("C-x o" . ace-window)))
-;; Use larger characters for ace window shortcuts.
-;; From http://oremacs.com/2015/02/27/ace-window-leading-char
-(custom-set-faces
- '(aw-leading-char-face
-   ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+  :bind (("C-x o" . ace-window))
+  :config
+  ;; Use larger characters for ace window shortcuts.
+  ;; From http://oremacs.com/2015/02/27/ace-window-leading-char
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 3.0))))))
 
 ;; Interactively resize current window.
 (use-package windsize :ensure t)
@@ -807,10 +760,6 @@ With a prefix ARG open line above the current line."
 
 (use-package key-chord :ensure t)
 (key-chord-define-global "jj" #'ace-jump-char-mode)
-(key-chord-define-global "jk" #'ace-jump-char-mode)
-(key-chord-define-global "jl" #'ace-jump-line-mode)
-(key-chord-define-global "xx" #'execute-extended-command)
-(key-chord-define-global "kk" #'kill-whole-line)
 
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
 (defun ar/switch-to-previous-buffer ()
@@ -818,6 +767,7 @@ With a prefix ARG open line above the current line."
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
+
 (key-chord-define-global "JJ" #'ar/switch-to-previous-buffer)
 (key-chord-define-global "BB" #'other-window)
 (key-chord-mode +1)
@@ -831,15 +781,17 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-quickhelp :ensure t
   :commands (company-quickhelp-mode))
 
-(use-package company-c-headers :ensure t)
-(setq company-backends (delete 'company-semantic company-backends))
-(setq company-minimum-prefix-length 2)
-(setq company-idle-delay 0.5)
-(setq company-show-numbers t)
+(use-package company-c-headers :ensure t
+  :config
+  (setq company-backends (delete 'company-semantic company-backends))
+  (setq company-minimum-prefix-length 2)
+  (setq company-idle-delay 0.5)
+  (setq company-show-numbers t)
+  (add-to-list 'company-backends 'company-c-headers)
+  (bind-key "<backtab>" #'company-complete))
+
 (global-company-mode)
 (company-quickhelp-mode +1)
-(add-to-list 'company-backends 'company-c-headers)
-(bind-key "<backtab>" #'company-complete)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -860,9 +812,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package drag-stuff :ensure t
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
-
-;; Avoid creating lock files (ie. .#some-file.el)
-(setq create-lockfiles nil)
 
 ;; displays hex strings representing colors
 (use-package rainbow-mode :ensure t)
@@ -963,42 +912,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
-(defun ar/kill-other-buffers ()
-  "Kill all other buffers."
-  (interactive)
-  (mapc 'kill-buffer
-        (delq (current-buffer)
-              ;; Disables "required at runtime" warning for cl package.
-              (with-no-warnings
-                (remove-if-not 'buffer-file-name (buffer-list))))))
-
-;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
-(defun ar/rename-current-file-and-buffer ()
-  "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
-
-;;  From http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
-(defun ar/delete-current-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (when filename
-      (if (vc-backend filename)
-          (vc-delete-file filename)
-        (progn
-          (delete-file filename)
-          (message "Deleted file %s" filename)
-          (kill-buffer))))))
-
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
@@ -1016,12 +929,6 @@ Repeated invocations toggle between the two most recently open buffers."
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
 
-;; Customize vertical window divider:
-;; Set symbol for the border.
-(set-display-table-slot standard-display-table
-                        'vertical-border
-                        (make-glyph-code ?|))
-
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
   (interactive)
@@ -1036,7 +943,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package lispy :ensure t
   :config
   (bind-key "M-i" #'helm-swoop lispy-mode-map))
-
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
@@ -1124,8 +1030,7 @@ Argument LEN Length."
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
-  (let ((m java-mode-map))
-    (define-key m [f6] #'recompile))
+  (bind-key [f6] java-mode-map)
   ;; 2-char indent for java.
   (defvar c-basic-offset)
   (setq c-basic-offset 2)
@@ -1194,9 +1099,6 @@ Argument LEN Length."
   (org-bullets-mode 1)
   (yas-minor-mode)
   (org-display-inline-images))
-
-;; Set region color.
-(set-face-attribute 'region nil :background "#0000ff")
 
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (use-package color-theme-sanityinc-tomorrow :ensure t)
@@ -2072,52 +1974,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
-;; TODO: Moving to bottom. Investigate what triggers tramp (and password prompt).
-;; C-u magit-status presents list of repositories.
-(eval-after-load "projectile"
-  '(progn (setq magit-repo-dirs (mapcar (lambda (dir)
-                                          (substring dir 0 -1))
-                                        ;; Disables "required at runtime" warning for cl package.
-                                        (with-no-warnings
-                                          (remove-if-not (lambda (project)
-                                                           (file-directory-p (concat project "/.git/")))
-                                                         (projectile-relevant-known-projects))))
-                magit-repo-dirs-depth 1)))
-
-(setq org-drawers(append '("MODIFIED") org-drawers))
-
-(defun ar/org-html-export-format-drawer (name content)
-  "Format drawer NAME and CONTENT for HTML export."
-  (concat "<br>"
-          "<span class=\"modified-timestamp\">"
-          "  <em>"
-          (ar/org-filter-timestamp-in-drawer-content content)
-          "  updated"
-          "  </em>"
-          "</span>"))
-
-(defun ar/org-filter-timestamp-in-drawer-content (content)
-  "Remove unnecessary HTML from exported modified CONTENT drawer."
-  (string-match "\\(\\[.*\\]\\)" content)
-  (match-string 0 content))
-
-(defun ar/org-entry-child-headings (id)
-  "Get org child headings for entry with ID."
-  (save-excursion
-    (org-open-link-from-string (format "[[#%s]]" id))
-    (org-end-of-meta-data-and-drawers)
-    (let ((child-headings '())
-          (child-heading))
-      (when (org-at-heading-p)
-        ;; Extract first child.
-        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-        (add-to-list 'child-headings child-heading)
-        ;; Now handle remaining siblings.
-        (while (org-get-next-sibling)
-          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-          (add-to-list 'child-headings child-heading) ))
-      child-headings)))
-
 (defun ar/org-todo-heading-plist (todo-heading)
   "Create a TODO-HEADING plist."
   (cond ((string-match "\\[\\[.*?\\]\\]" todo-heading)
@@ -2156,28 +2012,10 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Get this week's TODOS helm candidates."
   (ar/org-helm-entry-child-candidates "~/stuff/active/non-public/daily.org" "backlog"))
 
-(defun ar/switch-to-file (file-path)
-  "Switch to buffer with FILE-PATH."
-  (switch-to-buffer (find-file-noselect (expand-file-name file-path))))
-
-(defmacro ar/with-current-file (file-path &rest body)
-  "Open file at FILE-PATH and execute BODY."
-  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
-     (save-excursion
-       (progn ,@body))))
-
-(defmacro ar/with-org-file-location (file-path item-id &rest body)
-  "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
-  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
-     (save-excursion
-       (org-open-link-from-string (format "[[#%s]]" ,item-id))
-       (org-end-of-meta-data-and-drawers)
-       (progn ,@body))))
-
 (defun ar/add-todo (todo)
-  "Adds a new TODO."
+  "Add a new TODO."
   (interactive "sTODO: ")
-  (ar/with-org-file-location "~/stuff/active/non-public/daily.org" "backlog"
+  (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "backlog"
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
@@ -2290,112 +2128,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (setq org-plantuml-jar-path (ar/plantum-jar-path)))
 
-(setq org-html-head-extra
-      "<style type='text/css'>
-         body {
-           padding: 25px;
-           margin: 0 auto;
-           font-size: 100%;
-           width: 50%;
-         }
-         .figure {
-           padding: 0;
-         }
-         .title {
-           font-size: 1em;
-           text-align: right;
-           color: rgb(51, 51, 51);
-         }
-         #contact-header {
-           width: 100%;
-         }
-         #contact-right {
-           text-align: right;
-         }
-         #contact-left {
-           text-align: left;
-         }
-         #content {
-         }
-         .modified-timestamp {
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
-           text-rendering: optimizelegibility;
-           font-size: 0.8em;
-           color: #a9a9a9;
-         }
-         pre {
-           box-shadow: none;
-         }
-         p, .org-ol, .org-ul {
-           color: rgb(77, 77, 77);
-           font-size: 1em;
-           font-style: normal;
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
-           font-weight: 300;
-           text-rendering: optimizelegibility;
-         }
-         h1, h2, h3, h4, h5, #preamble {
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
-           text-rendering: optimizelegibility;
-           color: rgb(51, 51, 51);
-         }
-         h1 {
-           font-size: 2em;
-         }
-         h2 {
-           font-size: 1.6em;
-           margin-bottom: 0px;
-         }
-         h3 {
-           font-size: 1.2em;
-         }
-         #preamble {
-           text-align: right;
-         }
-         .timestamp {
-          color: #FF3E96;
-          font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
-          font-size: 0.5em;
-          font-style: normal;
-          font-weight: 300;
-          display: block;
-         }
-         a {
-          text-decoration: none;
-          color: #4183C4;
-         }
-         a:visited {
-          background-color: #4183C4;
-         }
-         .outline-2 {
-           margin-bottom: 50px;
-         }
-         @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
-           body {
-             font-size: 230%;
-           }
-           #content {
-             width: 90%;
-          }
-         }
-       </style>")
-
-(set-cursor-color "#FA009A")
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)
   (setq use-dialog-box nil))
