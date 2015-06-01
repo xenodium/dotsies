@@ -6,6 +6,9 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
+;; Increase memory threshold for garbage collection.
+(setq gc-cons-threshold 20000000)
+
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
@@ -21,43 +24,9 @@
 
 (require 'use-package)
 
-;; Increase memory threshold for garbage collection.
-(setq gc-cons-threshold 20000000)
-
-;; Requires get_iplayer script at:
-;; https://raw.githubusercontent.com/get-iplayer/get_iplayer/latest/get_iplayer
-;; Documentation: https://github.com/get-iplayer/get_iplayer
-(use-package iplayer :ensure t)
-
+;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
-
-;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-utils.el
-(if (fboundp 'with-eval-after-load)
-    (defalias 'ar/after-load #'with-eval-after-load)
-  (defmacro ar/after-load (feature &rest body)
-    "After FEATURE is loaded, evaluate BODY."
-    (declare (indent defun))
-    `(eval-after-load ,feature
-       '(progn ,@body))))
-
-;; Pretty print output to *Pp Eval Output*.
-(global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
-
-;; Based on http://hints.macworld.com/article.php?story=20050526162847879
-;; Convert plists on Mac OS to xml equivalent and open.
-(push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
-(defun ar/convert-plist-to-xml ()
-  (interactive)
-  (when (string-match "plist"
-                      (buffer-string))
-    (shell-command-on-region (point-min) (point-max)
-                             ;; yes, the temp file is necessary :-(
-                             (format "plutil -convert xml1 -o /tmp/temp.plist %s; cat /tmp/temp.plist"
-                                     (shell-quote-argument (buffer-file-name)))
-                             t t))
-  (set-buffer-modified-p nil)
-  (nxml-mode))
 
 ;; Tip of the day.
 (use-package totd :ensure t
@@ -71,12 +40,6 @@
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
-
-;; Enhanced list-packages replacement.
-(use-package paradox :ensure t
-  :config
-  (fullframe paradox-list-packages paradox-quit-and-close)
-  :commands (paradox-list-packages))
 
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
@@ -95,17 +58,6 @@
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t)
-(global-highlight-thing-mode)
-
-(defun ar/helm-sample-command ()
-  "Dummy helm sample command."
-  (interactive)
-  (ar/helm "My Options"
-           '("option 1"
-             "option 2"
-             "option 3")
-           (lambda (selection)
-             (message "selected: %s" selection))))
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
@@ -114,98 +66,23 @@
 
 (use-package molokai-theme :ensure t)
 
-(set-cursor-color "#FA009A")
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-;; Avoid native dialogs when running graphical.
-(when (boundp 'use-dialog-box)
-  (setq use-dialog-box nil))
-
 (use-package fullframe :ensure t
   :commands (fullframe))
 
-(ar/after-load 'ibuffer
-  (fullframe ibuffer ibuffer-quit))
+(use-package ibuffer
+  :config (fullframe ibuffer ibuffer-quit))
 
-(ar/after-load 'dired
-  (fullframe dired quit-window))
+(use-package dired
+  :config
+  (fullframe dired quit-window)
+  ;; Try to guess the target directory for operations.
+  (setq dired-dwim-target t))
 
-;; Based on http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html
-(defvar ac/vc-mode-line
-  '(" " (:propertize
-         ;; Strip the backend name from the VC status information
-         (:eval (let ((backend (symbol-name (vc-backend (buffer-file-name)))))
-                  (substring vc-mode (+ (length backend) 2))))
-         face font-lock-variable-name-face))
-  "Mode line format for VC Mode.")
-(put 'ac/vc-mode-line 'risky-local-variable t)
-
-(defun ar/setup-tty-mode-line ()
-  "Set up tty modeline."
-  ;; Based on http://emacs-fu.blogspot.co.uk/2011/08/customizing-mode-line.html
-  (setq-default mode-line-format
-                (list
-                 ;;"★ "
-                 "✪ "
-                 ;; the buffer name; the file name as a tool tip
-                 '(:eval (propertize "%b"
-                                     'face 'font-lock-keyword-face
-                                     'help-echo (buffer-file-name)))
-
-                 '(vc-mode ac/vc-mode-line)
-
-                 " | "
-                 ;; line and column, '%02' to set to 2 chars at least
-                 ;; prevents flickering
-                 (propertize "%02l" 'face 'font-lock-type-face)
-                 ","
-                 (propertize "%02c" 'face 'font-lock-type-face)
-                 " | "
-
-                 ;; relative position, size of file
-                 (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-                 "/"
-                 (propertize "%I" 'face 'font-lock-constant-face) ;; size
-                 " | "
-
-                 ;; the current major mode for the buffer.
-                 '(:eval (propertize "%m"
-                                     'face
-                                     'font-lock-string-face
-                                     'help-echo buffer-file-coding-system))
-                 " | "
-
-
-                 ;; insert vs overwrite mode, input-method in a tooltip
-                 '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                                     'face 'font-lock-preprocessor-face
-                                     'help-echo (concat "Buffer is in "
-                                                        (if overwrite-mode "overwrite" "insert") " mode")))
-
-                 ;; was this buffer modified since the last save?
-                 '(:eval (when (buffer-modified-p)
-                           (concat ","  (propertize "Mod"
-                                                    'face 'font-lock-warning-face
-                                                    'help-echo "Buffer has been modified"))))
-
-                 ;; is this buffer read-only?
-                 '(:eval (when buffer-read-only
-                           (concat ","  (propertize "RO"
-                                                    'face 'font-lock-type-face
-                                                    'help-echo "Buffer is read-only"))))
-                 " | "
-
-                 ;; add the time, with the date and the emacs uptime in the tooltip
-                 '(:eval (propertize (format-time-string "%H:%M")
-                                     'help-echo
-                                     (concat (format-time-string "%c; ")
-                                             (emacs-uptime "Uptime:%hh"))))
-                 )))
+;; Enhanced list-packages replacement.
+(use-package paradox :ensure t
+  :config
+  (fullframe paradox-list-packages paradox-quit-and-close)
+  :commands (paradox-list-packages))
 
 
 ;; From http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
@@ -301,7 +178,6 @@
 (use-package hungry-delete :ensure t)
 (global-hungry-delete-mode)
 (global-font-lock-mode)
-
 (global-auto-revert-mode)
 
 ;; Auto refresh dired.
@@ -316,10 +192,11 @@
   :bind ("C-c w" . er/expand-region))
 
 (use-package recentf
+  :init
+  (recentf-mode)
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15))
-(recentf-mode)
 
 (use-package yasnippet :ensure t)
 (setq yas-snippet-dirs
@@ -612,13 +489,6 @@ Optional argument NON-RECURSIVE to shallow-search."
   (add-hook 'git-commit-mode-hook 'git-commit-training-wheels-mode)
   :commands (git-commit-mode))
 
-(defun ar/setup-tty ()
-  "Setup tty frame."
-  (unless (window-system)
-    (ar/setup-tty-mode-line)))
-
-(ar/setup-tty)
-
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
   (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
@@ -677,67 +547,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; (set-face-background 'hl-line "black")
 ;; Keep syntax highlighting in the current line.
 ;; (set-face-foreground 'highlight nil)
-
-;;  From http://doc.rix.si/org/fsem.html
-(defun ar/gnu-linux-p ()
-  "Return t if the system is a GNU/Linux machine, otherwise nil."
-  (string-equal system-type "gnu/linux"))
-
-(defun ar/osx-p ()
-  "Return t if the system is a Mac OS X machine, otherwise nil."
-  (string-equal system-type "darwin"))
-
-(defun ar/cygwinp ()
-  "Return t if Emacs is running inside of Cygwin on Windows, otherwise nil."
-  (string-equal system-type "cygwin"))
-
-(defun ar/windows-p ()
-  "Return t if the system is a native Emacs for Windows, otherwise nil."
-  (string-equal system-type "windows"))
-
-(defun ar/new-browser-tab-shell-command ()
-  "Return new browser tab shell command."
-  (cond
-   ((ar/osx-p)
-    "open http://google.com")
-   ((ar/gnu-linux-p)
-    "google-chrome http://google.com")
-   (nil)))
-
-(defun ar/new-browser-tab ()
-  "Open a new browser tab in the default browser."
-  (interactive)
-  (let ((command (ar/new-browser-tab-shell-command)))
-    (message command)
-    (if command
-        (shell-command command)
-      (message "Unrecognized platform."))))
-(bind-key "C-x t" #'ar/new-browser-tab)
-
-(defun ar/init-for-osx ()
-  "Perform initializations for Mac OS X."
-  (when (ar/osx-p)
-    ;; This sets $MANPATH, $PATH and exec-path from your shell.
-    (exec-path-from-shell-initialize)
-    ;; On Mac, this is effectively fn-M-backspace.
-    (bind-key "M-(" #'kill-word)
-    ;; Keep menu bar under graphical OS X for fullscreen.
-    (when (window-system)
-      (menu-bar-mode 1))
-    ;; Sets the command (Apple) key as Meta.
-    (setq mac-command-modifier 'meta)
-    ;; Sets the option (Apple) key also as Meta.
-    (setq mac-option-modifier 'meta)
-    (setq exec-path (append exec-path '("~/homebrew/bin"
-                                        "~/homebrew/Cellar/llvm/HEAD/bin"
-                                        "/usr/local/bin")))))
-(ar/init-for-osx)
-
-(defun ar/init-for-linux ()
-  "Perform initializations for Linux."
-  (when (ar/gnu-linux-p)
-    (setq exec-path (append exec-path '("~/local/bin")))))
-(ar/init-for-linux)
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -834,39 +643,6 @@ Argument PROMPT to check for additional prompt."
   '(define-key vc-prefix-map "=" #'vc-ediff))
 
 (setq css-indent-offset 2)
-
-(defun ar/open-in-external-app-lambda ()
-  "Return a function to open FPATH externally."
-  (cond
-   ((ar/windows-p)
-    (lambda (fPath)
-      (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))))
-   ((ar/osx-p)
-    (lambda (fPath)
-      (shell-command (format "open \"%s\"" fPath))))
-   ((ar/gnu-linux-p)
-    (lambda (fPath)
-      (let ((process-connection-type nil))
-        (start-process "" nil "xdg-open" fPath))))))
-
-;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun ar/open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
-
-Version 2015-01-26
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
-  (interactive)
-  (let* ((ξfile-list
-          (if (string-equal major-mode "dired-mode")
-              (dired-get-marked-files)
-            (list (buffer-file-name))))
-         (ξdo-it-p (if (<= (length ξfile-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when ξdo-it-p
-      (mapc (ar/open-in-external-app-lambda) ξfile-list))))
-(bind-key "C-M-o" #'ar/open-in-external-app)
 
 (setq ring-bell-function 'ignore)
 
@@ -1280,6 +1056,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (helm-dash-activate-docset "Emacs Lisp")
+  ;; Pretty print output to *Pp Eval Output*.
+  (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   (lispy-mode 1)
   (eldoc-mode)
   (set-fill-column 70)
@@ -1373,42 +1151,38 @@ Argument LEN Length."
 (use-package ar-helm-objc
   :commands (ar/helm-objc-import-update))
 
-(use-package ox-html
-  :commands (org-html-export-to-html)
-  :config
-  (setq org-html-preamble t)
-  (setq org-html-preamble-format '(("en" "
-<table id='contact-header'>
-  <tr>
-    <td id='contact-left'>
-   </td>
-    <td id='contact-right'>
-      <a href='https://twitter.com/xenodium'>twitter</a>
-      <a href='http://github.com/xenodium'>github</a>
-      <a href='http://uk.linkedin.com/in/xenodium'>linkedin</a>
-      <a href='mailto:me@xenodium.com'>email</a>
-    </td>
-  </tr>
-</table>")))
-  (setq org-html-postamble nil)
-  (setq org-html-format-drawer-function #'ar/org-html-export-format-drawer))
+(use-package ar-osx
+  :demand
+  :commands (ar/osx-convert-plist-to-xml))
 
-(defun ar/export-blog-to-html ()
-  "Export blog to HTML."
-  (interactive)
-  (with-current-buffer (find-file-noselect (expand-file-name
-                                            "~/stuff/active/blog/index.org"))
-    (org-html-export-to-html)
-    (browse-url (format "file:%s" (expand-file-name
-                                   "~/stuff/active/blog/index.html")))))
+(use-package ar-linux)
 
-(use-package flyspell :commands (flyspell-mode-on))
+(use-package ar-platform
+  :demand
+  :bind (("C-x t" . ar/platform-new-browser-tab)))
 
-(use-package fill-column-indicator :ensure t
-  :commands (turn-on-fci-mode))
+(use-package ar-mode-line
+  :demand)
+
+(use-package ar-ox-html
+  :commands (ar/ox-html-export))
+
+(use-package ar-buffer
+  ;; No need to confirm killing buffers.
+  :bind ([(control x) (k)] . kill-this-buffer))
+
+(use-package ar-text
+  :bind (("C-c c" . ar/text-capitalize-word-toggle)
+         ("C-c r" . set-rectangular-region-anchor)))
 
 ;; I prefer sentences to end with one space instead.
 (setq sentence-end-double-space nil)
+
+(use-package flyspell
+  :commands (flyspell-mode-on))
+
+(use-package fill-column-indicator :ensure t
+  :commands (turn-on-fci-mode))
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
@@ -1416,7 +1190,7 @@ Argument LEN Length."
             #'ar/after-prog-mode-text-change
             t t)
   (let ((m org-mode-map))
-    (define-key m [f6] #'ar/export-blog-to-html))
+    (define-key m [f6] #'ar/ox-html-export))
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
@@ -1429,41 +1203,6 @@ Argument LEN Length."
 
 ;; Set region color.
 (set-face-attribute 'region nil :background "#0000ff")
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/org-src-color-blocks-light ()
-  "Color the block headers and footers to make them stand out more for lighter themes."
-  (interactive)
-  (custom-set-faces
-   '(org-block-begin-line
-     ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-   '(org-block-background
-     ((t (:background "#FFFFEA"))))
-   '(org-block-end-line
-     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
-   '(which-func ((t (:foreground "#008000"))))))
-
-;; Based on https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/org-src-color-blocks-dark ()
-  "Color the block headers and footers to make them stand out more for dark themes."
-  (interactive)
-  (custom-set-faces
-   '(org-block-begin-line
-     ((t (:foreground "#008ED1" :background nil))))
-   '(org-block ((t (:background "SlateBlue4" :foreground nil :box nil))))
-   '(org-block-background
-     ((t (:background "#111111"))))
-   '(org-block-end-line
-     ((t (:foreground "#008ED1" :background nil))))
-   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
-   '(which-func ((t (:foreground "green"))))))
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/change-theme (theme org-block-style)
-  "Change the THEME and ORG-BLOCK-STYLE."
-  (funcall theme)
-  (funcall org-block-style))
 
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (use-package color-theme-sanityinc-tomorrow :ensure t)
@@ -1479,6 +1218,7 @@ Argument LEN Length."
             t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
+  (highlight-thing-mode)
   (setq show-trailing-whitespace t)
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
@@ -1508,19 +1248,10 @@ Argument LEN Length."
 (ar/add-functions-to-mode-hooks '(ar/org-mode-hook-function)
                                 '(org-mode-hook))
 
-;; Workaround to use centered-cursor-mode in --nw.
-(defvar mouse-wheel-mode nil)
-(use-package centered-cursor-mode :ensure t)
-
-(defun ar/create-non-existent-directory ()
-  "Create a non-existent directory."
-  (let ((parent-directory (file-name-directory buffer-file-name)))
-    (when (and (not (file-exists-p parent-directory))
-               (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
-      (make-directory parent-directory t))))
-
-(add-to-list 'find-file-not-found-functions
-             #'ar/create-non-existent-directory)
+(use-package centered-cursor-mode :ensure t
+  :init
+  ;; Workaround to use centered-cursor-mode in --nw.
+  (defvar mouse-wheel-mode nil))
 
 ;; Select help window by default.
 (setq help-window-select t)
@@ -1529,19 +1260,18 @@ Argument LEN Length."
 (global-set-key [(control x) (k)]
                 #'kill-this-buffer)
 
-;; Customize shell-pop.
-(setq shell-pop-term-shell "/bin/bash")
-(setq shell-pop-shell-type '("ansi-term"
-                             "terminal"
-                             (lambda
-                               nil (ansi-term shell-pop-term-shell))))
-(setq shell-pop-window-position "full")
-;; Do not auto cd to working directory.
-(setq shell-pop-autocd-to-working-dir nil)
-
-(global-set-key [f5]
-                #'shell-pop)
-(use-package shell-pop :ensure t)
+(use-package shell-pop :ensure t
+  :config
+  ;; Customize shell-pop.
+  (setq shell-pop-term-shell "/bin/bash")
+  (setq shell-pop-shell-type '("ansi-term"
+                               "terminal"
+                               (lambda
+                                 nil (ansi-term shell-pop-term-shell))))
+  (setq shell-pop-window-position "full")
+  ;; Do not auto cd to working directory.
+  (setq shell-pop-autocd-to-working-dir nil)
+  :bind (([f5] . shell-pop)))
 
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
@@ -1589,28 +1319,19 @@ Argument LEN Length."
                               'objc-mode
                               "impl")))
 
-(defun ar/new-blog-post-file ()
-  "Create and `yas-expand' Objective-C interface header/implementation files."
-  (interactive)
-  (let* ((post-title (read-from-minibuffer "Post title: "))
-         (post-date (format-time-string "%Y-%m-%d"))
-         (post-file-name (format "%s-%s" post-date post-title)))
-    (ar/new-file-with-snippet post-file-name
-                              ".markdown"
-                              'markdown-mode
-                              "post"
-                              ;; interactive-snippet-p
-                              t)))
-
 ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
 ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
-(use-package discover :ensure t)
-(add-hook 'dired-mode-hook 'discover-mode)
+(use-package discover :ensure t
+  :commands (discover-mode))
 
-;; Hide dired details by default.
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
-;; Use RET instead of "a" in dired.
-(define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file)
+(use-package dired-mode
+  :config
+  (add-hook 'dired-mode-hook 'discover-mode)
+  ;; Hide dired details by default.
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  ;; Use RET instead of "a" in dired.
+  :bind-keymap
+  ("RET" . dired-find-alternate-file))
 
 (defun ar/dired-cd-to-parent ()
   "Use ^ in dired to cd to parent."
@@ -1629,13 +1350,13 @@ Argument LEN Length."
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
   :init (winner-mode 1)
+  :config
+  (setq winner-boring-buffers
+        (append winner-boring-buffers '("*helm M-x*"
+                                        "helm mini*"
+                                        "*helm projectile*")))
   :bind (("C-c <right>" . winner-redo)
          ("C-c <left>" . winner-undo)))
-
-(setq winner-boring-buffers
-      (append winner-boring-buffers '("*helm M-x*"
-                                      "helm mini*"
-                                      "*helm projectile*")))
 
 (use-package helm-descbinds :ensure
   :bind (("C-h b" . helm-descbinds)
@@ -1646,57 +1367,6 @@ Argument LEN Length."
   :config
   (auto-compile-on-load-mode 1)
   (auto-compile-on-save-mode 1))
-
-(defun ar/char-upcasep (letter)
-  "Check if LETTER is uppercase."
-  (eq letter (upcase letter)))
-
-;;  http://oremacs.com/2014/12/25/ode-to-toggle
-(defun ar/capitalize-word-toggle ()
-  "Capitalize word toggle."
-  (interactive)
-  (let ((start
-         (car
-          (bounds-of-thing-at-point 'symbol))))
-    (if start
-        (save-excursion
-          (goto-char start)
-          (funcall
-           (if (ar/char-upcasep (char-after))
-               'downcase-region
-             'upcase-region)
-           start (1+ start)))
-      (capitalize-word -1))))
-(bind-key "C-c c" #'ar/capitalize-word-toggle)
-
-(defun ar/upcase-word-toggle ()
-  "Toggle word case at point."
-  (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'symbol))
-        beg end
-        (regionp
-         (if (eq this-command last-command)
-             (get this-command 'regionp)
-           (put this-command 'regionp nil))))
-    (cond
-     ((or (region-active-p) regionp)
-      (setq beg (region-beginning)
-            end (region-end))
-      (put this-command 'regionp t))
-     (bounds
-      (setq beg (car bounds)
-            end (cdr bounds)))
-     (t
-      (setq beg (point)
-            end (1+ beg))))
-    (save-excursion
-      (goto-char (1- beg))
-      (and (re-search-forward "[A-Za-z]" end t)
-           (funcall (if (ar/char-upcasep (char-before))
-                        'downcase-region
-                      'upcase-region)
-                    beg end)))))
-(bind-key "C-c r" #'set-rectangular-region-anchor)
 
 ;; Collaborate with clipboard.
 (setq x-select-enable-clipboard t)
@@ -1767,9 +1437,6 @@ Argument LEN Length."
     (term-send-string
      proc
      (concat "cd ~/Downloads && youtube-dl " url "\n"))))
-
-;; Try to guess the target directory for operations.
-(setq dired-dwim-target t)
 
 (defun ar/view-clipboard-buffer ()
   "View clipboard buffer."
@@ -2044,7 +1711,7 @@ _v_ariable       _u_ser-option
 (defhydra hydra-open-c-mode (:color blue)
   "open"
   ("o" ff-find-other-file "other")
-  ("e" ar/open-in-external-app "externally")
+  ("e" ar/platform-open-in-external-app "externally")
   ("u" ar/open-file-at-point "url at point")
   ("q" nil "cancel"))
 
@@ -2058,7 +1725,7 @@ _v_ariable       _u_ser-option
 Open: _p_oint _e_externally
       _u_rls
 "
-  ("e" ar/open-in-external-app nil)
+  ("e" ar/platform-open-in-external-app nil)
   ("p" ar/open-file-at-point nil)
   ("u" ar/helm-buffer-urls nil)
   ("q" nil "cancel"))
@@ -2108,7 +1775,7 @@ Sort: _l_ines _o_rg list
       _b_lock"
   ("l" ar/buffer-sort-lines-ignore-case nil)
   ("o" org-sort-list nil)
-  ("b" ar/sort-current-block nil)
+  ("b" ar/buffer-sort-current-block nil)
   ("q" nil nil :color blue))
 (bind-key "M-s" #'hydra-sort/body)
 
@@ -2260,14 +1927,14 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                           (org-show-subtree)))))
 
 
-(use-package cl :commands (flet))
-
+(use-package cl
+  :commands (cl-flet))
 ;; Ignore running processes when closing Emacs
 ;; From http://oremacs.com/2015/01/04/dired-nohup
 (defadvice save-buffers-kill-emacs
     (around no-query-kill-emacs activate)
   "Prevent \"Active processes exist\" query on exit."
-  (flet ((process-list ())) ad-do-it))
+  (cl-flet ((process-list ())) ad-do-it))
 
 (defun ar/build-org-link ()
   "Build an org link, prompting for url and description."
@@ -2723,6 +2390,18 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
           }
          }
        </style>")
+
+(set-cursor-color "#FA009A")
+
+;; Hide UI.
+(menu-bar-mode -1)
+(when (fboundp 'toggle-scroll-bar)
+  (toggle-scroll-bar -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+;; Avoid native dialogs when running graphical.
+(when (boundp 'use-dialog-box)
+  (setq use-dialog-box nil))
 
 (use-package server
   :commands (server-running-p
