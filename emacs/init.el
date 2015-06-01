@@ -1324,7 +1324,7 @@ Argument LEN Length."
 (use-package discover :ensure t
   :commands (discover-mode))
 
-(use-package dired-mode
+(use-package dired
   :config
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
