@@ -72,12 +72,6 @@
 (use-package ibuffer
   :config (fullframe ibuffer ibuffer-quit))
 
-(use-package dired
-  :config
-  (fullframe dired quit-window)
-  ;; Try to guess the target directory for operations.
-  (setq dired-dwim-target t))
-
 ;; Enhanced list-packages replacement.
 (use-package paradox :ensure t
   :config
@@ -1325,13 +1319,16 @@ Argument LEN Length."
   :commands (discover-mode))
 
 (use-package dired
+  :commands dired-mode
   :config
+  ;; Use RET instead of "a" in dired.
+  (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
+  (fullframe dired quit-window)
+  ;; Try to guess the target directory for operations.
+  (setq dired-dwim-target t)
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  ;; Use RET instead of "a" in dired.
-  :bind-keymap
-  ("RET" . dired-find-alternate-file))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 
 (defun ar/dired-cd-to-parent ()
   "Use ^ in dired to cd to parent."
