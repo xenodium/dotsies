@@ -8,6 +8,21 @@
 
 (require 'ox-html)
 
+(defun ar/ox-html-filter-timestamp-in-drawer-content (content)
+  "Remove unnecessary HTML from exported modified CONTENT drawer."
+  (string-match "\\(\\[.*\\]\\)" content)
+  (match-string 0 content))
+
+(defun ar/ox-html-export-format-drawer (name content)
+  "Format drawer NAME and CONTENT for HTML export."
+  (concat "<br>"
+          "<span class=\"modified-timestamp\">"
+          "  <em>"
+          (ar/ox-html-filter-timestamp-in-drawer-content content)
+          "  updated"
+          "  </em>"
+          "</span>"))
+
 (defun ar/ox-html-setup ()
   "Setup org HTML export."
   (setq org-html-preamble t)
@@ -25,7 +40,7 @@
   </tr>
 </table>")))
   (setq org-html-postamble nil)
-  (setq org-html-format-drawer-function #'ar/org-html-export-format-drawer))
+  (setq org-html-format-drawer-function #'ar/ox-html-export-format-drawer))
 
 (defun ar/ox-html-export ()
   "Export blog to HTML."
@@ -35,6 +50,104 @@
     (org-html-export-to-html)
     (browse-url (format "file:%s" (expand-file-name
                                    "~/stuff/active/blog/index.html")))))
+
+(setq org-html-head-extra
+      "<style type='text/css'>
+         body {
+           padding: 25px;
+           margin: 0 auto;
+           font-size: 100%;
+           width: 50%;
+         }
+         .figure {
+           padding: 0;
+         }
+         .title {
+           font-size: 1em;
+           text-align: right;
+           color: rgb(51, 51, 51);
+         }
+         #contact-header {
+           width: 100%;
+         }
+         #contact-right {
+           text-align: right;
+         }
+         #contact-left {
+           text-align: left;
+         }
+         #content {
+         }
+         .modified-timestamp {
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           text-rendering: optimizelegibility;
+           font-size: 0.8em;
+           color: #a9a9a9;
+         }
+         pre {
+           box-shadow: none;
+         }
+         p, .org-ol, .org-ul {
+           color: rgb(77, 77, 77);
+           font-size: 1em;
+           font-style: normal;
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           font-weight: 300;
+           text-rendering: optimizelegibility;
+         }
+         h1, h2, h3, h4, h5, #preamble {
+           font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+           text-rendering: optimizelegibility;
+           color: rgb(51, 51, 51);
+         }
+         h1 {
+           font-size: 2em;
+         }
+         h2 {
+           font-size: 1.6em;
+           margin-bottom: 0px;
+         }
+         h3 {
+           font-size: 1.2em;
+         }
+         #preamble {
+           text-align: right;
+         }
+         .timestamp {
+          color: #FF3E96;
+          font-family: jaf-bernino-sans, 'Lucida Grande',
+               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
+               Verdana, sans-serif;
+          font-size: 0.5em;
+          font-style: normal;
+          font-weight: 300;
+          display: block;
+         }
+         a {
+          text-decoration: none;
+          color: #4183C4;
+         }
+         a:visited {
+          background-color: #4183C4;
+         }
+         .outline-2 {
+           margin-bottom: 50px;
+         }
+         @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+           body {
+             font-size: 230%;
+           }
+           #content {
+             width: 90%;
+          }
+         }
+       </style>")
 
 (provide 'ar-ox-html)
 
