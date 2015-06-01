@@ -5,6 +5,31 @@
 
 (require 'ar-file)
 
+(defun ar/org-entry-child-headings (id)
+  "Get org child headings for entry with ID."
+  (save-excursion
+    (org-open-link-from-string (format "[[#%s]]" id))
+    (org-end-of-meta-data-and-drawers)
+    (let ((child-headings '())
+          (child-heading))
+      (when (org-at-heading-p)
+        ;; Extract first child.
+        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+        (add-to-list 'child-headings child-heading)
+        ;; Now handle remaining siblings.
+        (while (org-get-next-sibling)
+          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
+          (add-to-list 'child-headings child-heading) ))
+      child-headings)))
+
+(defmacro ar/org-with-file-location (file-path item-id &rest body)
+  "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
+  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
+     (save-excursion
+       (org-open-link-from-string (format "[[#%s]]" ,item-id))
+       (org-end-of-meta-data-and-drawers)
+       (progn ,@body))))
+
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
   (while (org-up-heading-safe)))
@@ -82,6 +107,7 @@
    '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
    '(which-func ((t (:foreground "green"))))))
 
+(setq org-drawers(append '("MODIFIED") org-drawers))
 
 (provide 'ar-org)
 
