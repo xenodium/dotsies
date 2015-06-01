@@ -41,6 +41,16 @@
                         (apply #'ar/string-spc-join search-paths))))
     (split-string (shell-command-to-string grep-command) "\n")))
 
+(defun ar/file-create-non-existent-directory ()
+  "Create a non-existent directory."
+  (let ((parent-directory (file-name-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+               (y-or-n-p (format "Directory `%s' does not exist! Create it? " parent-directory)))
+      (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions
+             #'ar/file-create-non-existent-directory)
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
