@@ -5,6 +5,19 @@
 
 ;;; Code:
 
+(defun ar/buffer-kill-others ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer
+        (delq (current-buffer)
+              ;; Disables "required at runtime" warning for cl package.
+              (with-no-warnings
+                (remove-if-not 'buffer-file-name (buffer-list))))))
+
+(defun ar/buffer-switch-to-file (file-path)
+  "Switch to buffer with FILE-PATH."
+  (switch-to-buffer (find-file-noselect (expand-file-name file-path))))
+
 ;; Based on http://emacswiki.org/emacs/DuplicateLines
 (defun ar/buffer-remove-region-dups (beg end)
   "Remove dups in region's adjacent lines or pass BEG END."
