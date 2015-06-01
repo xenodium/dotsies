@@ -82,6 +82,9 @@
 (unless (window-system)
   (ar/mode-line-tty-setup))
 
+;; Display column numbers.
+(setq-default column-number-mode t)
+
 (provide 'ar-mode-line)
 
 ;;; ar-mode-line.el ends here
