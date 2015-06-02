@@ -146,13 +146,16 @@
   ;; Hide all minor modes from mode line.
   (add-to-list 'rm-whitelist nil t)
   (use-package smart-mode-line :ensure t)
-  (use-package smart-mode-line-powerline-theme :ensure t)
-  (setq sml/theme nil
+  ;; Disabling, to try out dark theme.
+  ;;  (use-package smart-mode-line-powerline-theme :ensure t)
+  (setq sml/theme 'dark
         sml/mule-info nil
         sml/show-remote nil
         sml/name-width '(20 . 40)
         sml/shorten-modes t
         sml/mode-width 'right)
+  (custom-set-faces
+   '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
   (add-hook 'after-init-hook #'ar/enable-graphical-time)
   (sml/setup))
 
