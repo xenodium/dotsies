@@ -98,16 +98,46 @@
 (use-package async :ensure t :demand)
 
 (use-package fullframe :ensure t
-  :commands (fullframe))
-
-(use-package ibuffer
-  :config (fullframe ibuffer ibuffer-quit))
-
-;; Enhanced list-packages replacement.
-(use-package paradox :ensure t
+  :commands (fullframe)
   :config
-  (fullframe paradox-list-packages paradox-quit-and-close)
-  :commands (paradox-list-packages))
+  (use-package ibuffer
+    :config (fullframe ibuffer ibuffer-quit))
+  (use-package paradox :ensure t
+    :commands (paradox-list-packages)
+    :config
+    (fullframe paradox-list-packages paradox-quit-and-close))
+  (use-package magit :ensure t
+    :bind ("C-x g" . magit-status)
+    :commands (magit-pull
+               magit-status
+               magit-log
+               magit-anything-modified-p)
+    :config
+    (setq magit-status-buffer-switch-function #'switch-to-buffer)
+    (fullframe magit-status magit-mode-quit-window)
+    (setq magit-last-seen-setup-instructions "1.4.0"))
+
+  ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
+  ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
+  (use-package discover :ensure t
+    :demand
+    :commands (discover-mode)
+    :config
+    (use-package dired
+      :commands dired-mode
+      :config
+      ;; Use RET instead of "a" in dired.
+      (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
+      ;; Use ^ for moving to parent dir.
+      (bind-key "^" (lambda ()
+                      (interactive)
+                      (find-alternate-file "..")) dired-mode-map)
+      (fullframe dired quit-window)
+      ;; Try to guess the target directory for operations.
+      (setq dired-dwim-target t)
+      (add-hook 'dired-mode-hook 'discover-mode)
+      ;; Hide dired details by default.
+      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
 
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
@@ -568,17 +598,6 @@ Argument PROMPT to check for additional prompt."
     (orig-yes-or-no-p prompt)))
 
 (use-package git-link :ensure t)
-
-(use-package magit :ensure t
-  :config
-  (setq magit-status-buffer-switch-function #'switch-to-buffer)
-  (fullframe magit-status magit-mode-quit-window)
-  (setq magit-last-seen-setup-instructions "1.4.0")
-  :bind ("C-x g" . magit-status)
-  :commands (magit-pull
-             magit-status
-             magit-log
-             magit-anything-modified-p))
 
 (use-package vc
   :commands (vc-pull)
@@ -1214,29 +1233,6 @@ Argument LEN Length."
                               ".m"
                               'objc-mode
                               "impl")))
-
-;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
-;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
-(use-package discover :ensure t
-  :commands (discover-mode))
-
-(use-package dired
-  :commands dired-mode
-  :config
-  ;; Use RET instead of "a" in dired.
-  (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
-  (fullframe dired quit-window)
-  ;; Try to guess the target directory for operations.
-  (setq dired-dwim-target t)
-  (add-hook 'dired-mode-hook 'discover-mode)
-  ;; Hide dired details by default.
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
-
-(defun ar/dired-cd-to-parent ()
-  "Use ^ in dired to cd to parent."
-  (interactive)
-  (find-alternate-file ".."))
-(define-key dired-mode-map (kbd "^") #'ar/dired-cd-to-parent)
 
 (defun ar/find-all-dired-current-dir ()
   "Invokes `find-dired' for current dir."
