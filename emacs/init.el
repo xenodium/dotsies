@@ -112,10 +112,11 @@
                magit-status
                magit-log
                magit-anything-modified-p)
+    :init
+    (setq magit-last-seen-setup-instructions "1.4.0")
     :config
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
-    (fullframe magit-status magit-mode-quit-window)
-    (setq magit-last-seen-setup-instructions "1.4.0"))
+    (fullframe magit-status magit-mode-quit-window))
 
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
   ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
