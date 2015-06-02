@@ -1176,7 +1176,7 @@ Argument LEN Length."
                 #'kill-this-buffer)
 
 (use-package shell-pop :ensure t
-  :config
+  :init
   ;; Customize shell-pop.
   (setq shell-pop-term-shell "/bin/bash")
   (setq shell-pop-shell-type '("ansi-term"
