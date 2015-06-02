@@ -4,6 +4,7 @@
 ;; Org mode helpers.
 
 (require 'ar-file)
+(require 'org)
 
 (defun ar/org-entry-child-headings (id)
   "Get org child headings for entry with ID."
