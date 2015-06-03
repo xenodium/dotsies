@@ -4,7 +4,33 @@
 ;; Org mode helpers.
 
 (require 'ar-file)
+(require 'ar-time)
+(require 'ar-buffer)
 (require 'org)
+
+(defun ar/org-add-week-headline-if-needed ()
+  (when (not (ar/org-now-in-week-headline-p))
+    (insert "")))
+
+(defun ar/org-add-current-week-headline ()
+  "Add current week to daily.org."
+  (when (not (ar/org-now-in-week-headline-p))
+    (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "snippets"
+                               (org-meta-return)
+                               (insert "Week of <TODO>--<TODO>")
+                               (save-buffer))))
+
+(defun ar/org-now-in-week-headline-p ()
+  "Check if current date corresponds to existing week headline."
+  (save-excursion
+    (let ((weeks (mapcar #'ar/org-week-headline-to-times
+                         (ar/buffer-re-string-match-list "^*** Week of .*"))))
+      ;; Check current time against all ranges and create a list. is t present?
+      (member t (mapcar (lambda (dates)
+                          (ar/time-between-p (nth 0 dates)
+                                             (current-time)
+                                             (nth 1 dates)))
+                        weeks)))))
 
 (defun ar/org-week-headline-to-time-range (headline)
   "Parse org HEADLINE formatted as *** Week of <2015-06-01 Mon>--<2015-06-05 Fri>.
