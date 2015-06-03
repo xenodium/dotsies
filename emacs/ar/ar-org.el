@@ -6,6 +6,100 @@
 (require 'ar-file)
 (require 'org)
 
+(defun ar/org-move-current-tree-to-top ()
+  "Move entire current tree to top."
+  (interactive)
+  (ar/org-point-to-heading-1)
+  (while (not (org-first-sibling-p))
+    (outline-move-subtree-up 1)))
+
+(defun ar/org-update-drawer (drawer content)
+  "Update DRAWER with CONTENT."
+  (save-excursion
+    (save-restriction
+      ;; e.g match drawer like:
+      ;; :MODIFIED:
+      ;; [2015-03-22 Sun]
+      ;; :END:
+      (let ((drawer-re (concat "^[ \t]*:"
+                               drawer
+                               ":[[:ascii:]]*?:END:[ \t]*\n")))
+        (ar/org-point-to-heading-1)
+        (narrow-to-region (point)
+                          (save-excursion
+                            (outline-next-heading)
+                            (point)))
+        (if (re-search-forward drawer-re
+                               nil t)
+            ;; Remove existing drawer.
+            (progn
+              (goto-char (match-beginning 0))
+              (replace-match ""))
+          (org-end-of-meta-data-and-drawers))
+        ;; Insert new drawer + format.
+        (org-insert-drawer nil drawer)
+        (beginning-of-line 0)
+        (org-indent-line)
+        (forward-line)
+        (insert content)
+        (beginning-of-line 1)
+        (org-indent-line)
+        (beginning-of-line 2)
+        (org-indent-line)
+        ;; TODO: Avoid adding trailing caused by org-indent-line.
+        (delete-trailing-whitespace)))))
+
+(defun ar/org-add-todo (todo)
+  "Add a new TODO."
+  (interactive "sTODO: ")
+  (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "backlog"
+                             (org-meta-return)
+                             (insert (format "TODO %s" todo))
+                             (save-buffer)))
+
+(defun ar/org-todo-heading-plist (todo-heading)
+  "Create a TODO-HEADING plist."
+  (cond ((string-match "\\[\\[.*?\\]\\]" todo-heading)
+         `(:heading ,todo-heading :url ,(match-string 0 todo-heading)))
+        (`(:heading ,todo-heading :marker ,(copy-marker (point))))))
+
+(defun ar/org-build-link ()
+  "Build an org link, prompting for url and description."
+  (format "[[%s][%s]]"
+          (if (string-match-p "^http" (current-kill 0))
+              (current-kill 0)
+            (read-string "URL: "))
+          (read-string "Description: ")))
+
+(defun ar/org-blog-custom-id-from-title (title)
+  "Create an org CUSTOM_ID from a TITLE."
+  (replace-regexp-in-string " " "-" (downcase title)))
+
+(defun ar/org-insert-prefixed-link (prefix prompt)
+  "Insert a link with PREFIX and PROMPT if not found in clipboard."
+  (interactive)
+  (let* ((clipboard (current-kill 0))
+         (cl-number (if (ar/string-numeric-p clipboard)
+                        clipboard
+                      (read-string (format "%s: "
+                                           prompt))))
+         (rendered-cl (format "[[http://%s%s][%s%s]]"
+                              prefix
+                              cl-number
+                              prefix
+                              cl-number)))
+    (insert rendered-cl)))
+
+(defun ar/org-insert-cl-link ()
+  "Insert a CL link."
+  (interactive)
+  (ar/org-insert-prefixed-link "cl/" "CL number"))
+
+(defun ar/org-insert-bug-link ()
+  "Insert a bug link."
+  (interactive)
+  (ar/org-insert-prefixed-link "b/" "Bug number"))
+
 (defun ar/org-entry-child-headings (id)
   "Get org child headings for entry with ID."
   (save-excursion
