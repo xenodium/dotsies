@@ -6,6 +6,21 @@
 (require 'ar-file)
 (require 'org)
 
+(defun ar/org-week-headline-to-time-range (headline)
+  "Parse org HEADLINE formatted as *** Week of <2015-06-01 Mon>--<2015-06-05 Fri>.
+For example: ((21867 41088) (21872 59008))."
+  (when (string-match "<\\([[:digit:]]+\\)-\\([[:digit:]]+\\)-\\([[:digit:]]+\\).+>--<\\([[:digit:]]+\\)-\\([[:digit:]]+\\)-\\([[:digit:]]+\\).+>" headline)
+    (list (encode-time 0 0 0
+                       (string-to-number (match-string 3 headline))
+                       (string-to-number (match-string 2 headline))
+                       (string-to-number (match-string 1 headline))
+                       0 0 0 )
+          (encode-time 0 0 0
+                       (string-to-number (match-string 6 headline))
+                       (string-to-number (match-string 5 headline))
+                       (string-to-number (match-string 4 headline))
+                       0 0 0 ))))
+
 (defun ar/org-move-current-tree-to-top ()
   "Move entire current tree to top."
   (interactive)
