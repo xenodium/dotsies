@@ -5,6 +5,15 @@
 
 ;;; Code:
 
+(defun ar/buffer-re-string-match-list (re)
+  (save-excursion
+    (goto-char 0)
+    (let ((results '()))
+      (while (search-forward-regexp re nil t)
+        (add-to-list 'results (match-string-no-properties 0)))
+      (when (> (length results) 0)
+        results))))
+
 (defun ar/buffer-string-match-p (re)
   "Return t if RE matches current buffer. nil otherwise."
   (re-search-forward re nil t))

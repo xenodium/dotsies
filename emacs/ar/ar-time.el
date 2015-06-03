@@ -8,7 +8,11 @@
 
 (defun ar/time-between-p (time floor ceiling)
   "Return non nil if TIME between FLOOR and CEILING."
-  (and (time-less-p time ceiling) (time-less-p floor time)))
+  (cond ((not time) nil)
+        ((not floor) nil)
+        ((not ceiling) nil)
+        (t (and (time-less-p time ceiling)
+                (time-less-p floor time)))))
 
 (defun ar/time-increment-by-days (time days)
   "Increment TIME by number of DAYS."
