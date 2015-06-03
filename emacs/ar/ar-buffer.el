@@ -5,6 +5,10 @@
 
 ;;; Code:
 
+(defun ar/buffer-string-match-p (re)
+  "Return t if RE matches current buffer. nil otherwise."
+  (re-search-forward re nil t))
+
 (defun ar/buffer-kill-others ()
   "Kill all other buffers."
   (interactive)
