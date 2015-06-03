@@ -1089,7 +1089,9 @@ Argument LEN Length."
   :demand)
 
 (use-package ar-ox-html
-  :commands (ar/ox-html-export))
+  :commands (ar/ox-html-export)
+  :config
+  (ar/ox-html-setup))
 
 (use-package ar-buffer
   ;; No need to confirm killing buffers.
