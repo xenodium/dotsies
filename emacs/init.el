@@ -1070,6 +1070,8 @@ Argument LEN Length."
 (use-package ar-helm
   :commands (ar/helm-find))
 
+(use-package ar-helm-org)
+
 (use-package ar-helm-objc
   :commands (ar/helm-objc-import-update))
 
@@ -1466,26 +1468,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   (phi-search-mc/setup-keys))
 
-(defun ar/org-blog-custom-id-from-title (title)
-  "Create an org CUSTOM_ID from a TITLE."
-  (replace-regexp-in-string " " "-" (downcase title)))
-
-(defun ar/current-buffer-match-p (re)
-  "Return t if RE matches current buffer. nil otherwise."
-  (re-search-forward re nil t))
-
-(defun ar/string-match-p (regex string)
-  "Return t if REGEX matches STRING. nil otherwise."
-  (if (string-match regex string) t nil))
-
-(defun ar/string-numeric-p (string)
-  "Return t if STRING is an unsigned integer.  nil otherwise."
-  (ar/string-match-p "\\`[[:digit:]]+\\'" string))
-
-(defun ar/string-alpha-numeric-p (string)
-  "Return t if STRING is alphanumeric.  nil otherwise."
-  (ar/string-match-p "\\`[[:alnum:]]+\\'" string))
-
 (defun ar/numeric-clipboard-or-prompt (prompt)
   "Return an integer from clipboard or PROMPT."
   (let* ((clipboard (current-kill 0))
@@ -1503,31 +1485,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                    (read-string (format "%s: "
                                         prompt)))))
     alpha-num-string))
-
-(defun ar/org-insert-prefixed-link (prefix prompt)
-  "Insert a link with PREFIX and PROMPT if not found in clipboard."
-  (interactive)
-  (let* ((clipboard (current-kill 0))
-         (cl-number (if (ar/string-numeric-p clipboard)
-                        clipboard
-                      (read-string (format "%s: "
-                                           prompt))))
-         (rendered-cl (format "[[http://%s%s][%s%s]]"
-                              prefix
-                              cl-number
-                              prefix
-                              cl-number)))
-    (insert rendered-cl)))
-
-(defun ar/org-insert-cl-link ()
-  "Insert a CL link."
-  (interactive)
-  (ar/org-insert-prefixed-link "cl/" "CL number"))
-
-(defun ar/org-insert-bug-link ()
-  "Insert a bug link."
-  (interactive)
-  (ar/org-insert-prefixed-link "b/" "Bug number"))
 
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
@@ -1663,8 +1620,8 @@ Quick insert: _c_l  _w_eb bookmark
 "
   ("c" ar/org-insert-cl-link nil)
   ("b" ar/org-insert-bug-link nil)
-  ("w" ar/helm-add-bookmark nil)
-  ("t" ar/add-todo nil)
+  ("w" ar/helm-org-add-bookmark nil)
+  ("t" ar/org-add-todo nil)
   ("q" nil nil :color blue))
 (bind-key "C-c x" #'hydra-quick-insert/body)
 
@@ -1786,45 +1743,11 @@ _y_outube
                                       (action . (("Open" . (lambda (url)
                                                              (browse-url url)))))))
 
-(defun ar/format-helm-candidates (helm-candidates)
-  "Format HELM-CANDIDATES.  For each candidate:
-
-index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
-<-------------------- remove ------------------->"
-  (mapcar (lambda (helm-candidate)
-            (let* ((text (replace-regexp-in-string ".*#\\]\\] " ""
-                                                   (car helm-candidate)))
-                   (text-no-properties (substring-no-properties text)))
-              (setcar helm-candidate text-no-properties)
-              helm-candidate))
-          helm-candidates))
-
-(defun ar/filter-helm-candidates (helm-candidates match)
-  "Remove candidates in HELM-CANDIDATES not containing MATCH."
-  (cl-remove-if-not (lambda (helm-candidate)
-                      (string-match-p match
-                                      (car helm-candidate)))
-                    helm-candidates))
-
-;; TODO: Merge with ar/get-helm-blog-candidates.
-(defun ar/get-helm-blog-bookmark-candidates ()
-  "Gets helm candidates for my blog bookmarks."
-  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
-         (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
-    (ar/format-helm-candidates (ar/filter-helm-candidates helm-candidates "bookmarks"))))
-
-(defun ar/get-helm-blog-candidates ()
-  "Gets helm candidates for my blog."
-  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
-         (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
-    (ar/format-helm-candidates helm-candidates)))
-
 (defvar ar/helm-source-blog '((name . "Blog")
-                              (candidates . ar/get-helm-blog-candidates)
+                              (candidates . ar/helm-get-blog-candidates)
                               (action . (lambda (candidate)
                                           (helm-org-goto-marker candidate)
                                           (org-show-subtree)))))
-
 
 (use-package cl
   :commands (cl-flet))
@@ -1834,43 +1757,6 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
     (around no-query-kill-emacs activate)
   "Prevent \"Active processes exist\" query on exit."
   (cl-flet ((process-list ())) ad-do-it))
-
-(defun ar/build-org-link ()
-  "Build an org link, prompting for url and description."
-  (format "[[%s][%s]]"
-          (if (string-match-p "^http" (current-kill 0))
-              (current-kill 0)
-            (read-string "URL: "))
-          (read-string "Description: ")))
-
-(defvar ar/bookmark-link-in-process nil)
-
-(defun ar/save-bookmark-link-in-process ()
-  "Prompt and save a bookmark link in process."
-  (setq ar/bookmark-link-in-process (ar/build-org-link)))
-
-(defun ar/retrieve-bookmark-link-in-process ()
-  "Get bookmark link in process."
-  (let ((bookmark-link-in-process ar/bookmark-link-in-process))
-    (setq ar/bookmark-link-in-process nil)
-    bookmark-link-in-process))
-
-(defun ar/helm-add-bookmark ()
-  "Add a bookmark to blog."
-  (interactive)
-  (ar/save-bookmark-link-in-process)
-  (helm :sources '(((name . "Blog bookmarks")
-                    (candidates . ar/get-helm-blog-bookmark-candidates)
-                    (action . (lambda (candidate)
-                                (helm-org-goto-marker candidate)
-                                (org-show-subtree)
-                                (org-end-of-meta-data-and-drawers)
-                                (org-insert-heading)
-                                (insert (ar/retrieve-bookmark-link-in-process))
-                                (org-sort-list nil ?a)
-                                (ar/update-blog-timestamp-at-point)
-                                (hide-other)
-                                (save-buffer)))))))
 
 (use-package define-word :ensure t
   :commands (define-word-at-point define-word))
@@ -1974,129 +1860,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
-(defun ar/org-todo-heading-plist (todo-heading)
-  "Create a TODO-HEADING plist."
-  (cond ((string-match "\\[\\[.*?\\]\\]" todo-heading)
-         `(:heading ,todo-heading :url ,(match-string 0 todo-heading)))
-        (`(:heading ,todo-heading :marker ,(copy-marker (point))))))
-
-(defun ar/org-helm-entry-child-candidates (path id)
-  "Get org child headings for entry with PATH and ID."
-  (with-current-buffer (find-file-noselect (expand-file-name path))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (if (ar/current-buffer-match-p (format ":CUSTOM_ID:[ ]*%s" id))
-            (progn
-              (org-open-link-from-string (format "[[#%s]]" id))
-              (org-end-of-meta-data-and-drawers)
-              (let ((child-headings '())
-                    (child-heading))
-                (when (org-at-heading-p)
-                  ;; Extract first child.
-                  (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-                  (add-to-list 'child-headings
-                               (cons child-heading
-                                     (ar/org-todo-heading-plist child-heading)))
-                  (while (org-get-next-sibling)
-                    (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-                    (add-to-list 'child-headings
-                                 (cons child-heading
-                                       (ar/org-todo-heading-plist child-heading)))))
-                child-headings))
-          (message "Cannot find %s#%s" path id)
-          '())))))
-
-(defun ar/todos-helm-candidates ()
-  "Get this week's TODOS helm candidates."
-  (ar/org-helm-entry-child-candidates "~/stuff/active/non-public/daily.org" "backlog"))
-
-(defun ar/add-todo (todo)
-  "Add a new TODO."
-  (interactive "sTODO: ")
-  (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "backlog"
-                             (org-meta-return)
-                             (insert (format "TODO %s" todo))
-                             (save-buffer)))
-
-(defun ar/org-move-current-tree-to-top ()
-  "Move entire current tree to top."
-  (interactive)
-  (ar/org-point-to-heading-1)
-  (while (not (org-first-sibling-p))
-    (outline-move-subtree-up 1)))
-
-(defun ar/org-update-drawer (drawer content)
-  "Update DRAWER with CONTENT."
-  (save-excursion
-    (save-restriction
-      ;; e.g match drawer like:
-      ;; :MODIFIED:
-      ;; [2015-03-22 Sun]
-      ;; :END:
-      (let ((drawer-re (concat "^[ \t]*:"
-                               drawer
-                               ":[[:ascii:]]*?:END:[ \t]*\n")))
-        (ar/org-point-to-heading-1)
-        (narrow-to-region (point)
-                          (save-excursion
-                            (outline-next-heading)
-                            (point)))
-        (if (re-search-forward drawer-re
-                               nil t)
-            ;; Remove existing drawer.
-            (progn
-              (goto-char (match-beginning 0))
-              (replace-match ""))
-          (org-end-of-meta-data-and-drawers))
-        ;; Insert new drawer + format.
-        (org-insert-drawer nil drawer)
-        (beginning-of-line 0)
-        (org-indent-line)
-        (forward-line)
-        (insert content)
-        (beginning-of-line 1)
-        (org-indent-line)
-        (beginning-of-line 2)
-        (org-indent-line)
-        ;; TODO: Avoid adding trailing caused by org-indent-line.
-        (delete-trailing-whitespace)))))
-
-(defvar ar/helm-source-my-todos
-  '((name . "TODOS")
-    (candidates . ar/todos-helm-candidates)
-    (action . (lambda (candidate)
-                (cond ((plist-get candidate
-                                  :marker)
-                       (org-goto-marker-or-bmk (plist-get candidate
-                                                          :marker)))
-                      ((plist-get candidate :url)
-                       (org-open-link-from-string (plist-get candidate
-                                                             :url))))))))
-
-(defun ar/helm-todos ()
-  "Current TODOS."
-  (interactive)
-  (helm :sources '(ar/helm-source-my-todos)))
-
-(defun ar/helm-my-hotspots ()
-  "Show my hotspots."
-  (interactive)
-  (unless helm-source-buffers-list
-    (setq helm-source-buffers-list
-          (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   ar/helm-source-local-hotspots
-                   ar/helm-source-web-hotspots
-                   ar/helm-source-blog
-                   ar/helm-source-my-todos
-                   helm-source-ido-virtual-buffers
-                   helm-source-buffer-not-found)
-        :buffer "*helm buffers*"
-        :keymap helm-buffer-map
-        :truncate-lines t))
-(bind-key "C-x b" #'ar/helm-my-hotspots)
+(bind-key "C-x b" #'ar/helm-org-my-hotspots)
 
 (defun ar/update-blog-timestamp-at-point ()
   "Update blog entry timestamp at point."
