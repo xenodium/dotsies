@@ -71,12 +71,16 @@ Version 2015-02-07."
     (ar/buffer-sort-lines-ignore-case)
     (goto-char saved-point)))
 
-(defun ar/buffer-first-match-begining (re)
+(defun ar/buffer-first-match-beginning (re)
   "Return the first match beginning position for RE."
   (save-excursion
     (goto-char (point-min))
     (re-search-forward re nil t)
     (match-beginning 0)))
+
+(defun ar/buffer-goto-first-match-beginning (re)
+  "Go to first match of RE."
+  (goto-char (ar/buffer-first-match-beginning re)))
 
 (defun ar/buffer-last-match-end (re)
   "Return the last match ending position for RE."
@@ -109,7 +113,7 @@ For:
 #include \"six.h\"
 
 #include \"seven.h\""
-  (let ((beg-pos (ar/buffer-first-match-begining re))
+  (let ((beg-pos (ar/buffer-first-match-beginning re))
         (end-pos (ar/buffer-last-match-end re))
         (substring nil))
     (when (and beg-pos end-pos)
