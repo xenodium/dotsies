@@ -56,6 +56,7 @@
 
 (defmacro ar/file-with-current-file (file-path &rest body)
   "Open file at FILE-PATH and execute BODY."
+  (declare (indent 1))
   `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
      (save-excursion
        (progn ,@body))))
