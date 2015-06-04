@@ -3,49 +3,44 @@
 ;;; Commentary:
 ;; Org mode helpers.
 
+;;; Code:
+
 (require 'ar-file)
 (require 'ar-time)
 (require 'ar-buffer)
 (require 'org)
 
-(defun ar/org-add-week-headline-if-needed ()
-  (when (not (ar/org-now-in-week-headline-p))
-    (insert "")))
-
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
   (when (not (ar/org-now-in-week-headline-p))
-    (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "snippets"
-                               (org-meta-return)
-                               (insert "Week of <TODO>--<TODO>")
-                               (save-buffer))))
+    (ar/org-with-file-location
+        "~/stuff/active/non-public/daily.org" "snippets"
+        (org-meta-return)
+        (insert (format "Week of %s"
+                        (ar/time-current-work-week-string)))
+        (save-buffer))))
+
+(defun ar/org-add-child-to-current-week (child)
+  "Add CHILD to current week."
+  (ar/org-add-current-week-headline)
+  (ar/buffer-goto-first-match-beginning (format "Week of %s"
+                                                (ar/time-current-work-week-string)))
+  (org-end-of-line)
+  (org-meta-return)
+  (org-metaright)
+  (insert child))
 
 (defun ar/org-now-in-week-headline-p ()
   "Check if current date corresponds to existing week headline."
   (save-excursion
-    (let ((weeks (mapcar #'ar/org-week-headline-to-times
+    (let ((weeks (mapcar #'ar/time-week-string-to-range
                          (ar/buffer-re-string-match-list "^*** Week of .*"))))
       ;; Check current time against all ranges and create a list. is t present?
       (member t (mapcar (lambda (dates)
-                          (ar/time-between-p (nth 0 dates)
-                                             (current-time)
+                          (ar/time-between-p (current-time)
+                                             (nth 0 dates)
                                              (nth 1 dates)))
                         weeks)))))
-
-(defun ar/org-week-headline-to-time-range (headline)
-  "Parse org HEADLINE formatted as *** Week of <2015-06-01 Mon>--<2015-06-05 Fri>.
-For example: ((21867 41088) (21872 59008))."
-  (when (string-match "<\\([[:digit:]]+\\)-\\([[:digit:]]+\\)-\\([[:digit:]]+\\).+>--<\\([[:digit:]]+\\)-\\([[:digit:]]+\\)-\\([[:digit:]]+\\).+>" headline)
-    (list (encode-time 0 0 0
-                       (string-to-number (match-string 3 headline))
-                       (string-to-number (match-string 2 headline))
-                       (string-to-number (match-string 1 headline))
-                       0 0 0 )
-          (encode-time 0 0 0
-                       (string-to-number (match-string 6 headline))
-                       (string-to-number (match-string 5 headline))
-                       (string-to-number (match-string 4 headline))
-                       0 0 0 ))))
 
 (defun ar/org-move-current-tree-to-top ()
   "Move entire current tree to top."
@@ -160,6 +155,7 @@ For example: ((21867 41088) (21872 59008))."
 
 (defmacro ar/org-with-file-location (file-path item-id &rest body)
   "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
+  (declare (indent 1))
   `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
      (save-excursion
        (org-open-link-from-string (format "[[#%s]]" ,item-id))
