@@ -12,9 +12,9 @@
 
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
-  (when (not (ar/org-now-in-week-headline-p))
-    (ar/org-with-file-location
-        "~/stuff/active/non-public/daily.org" "snippets"
+  (ar/org-with-file-location
+      "~/stuff/active/non-public/daily.org" "snippets"
+      (unless (ar/org-now-in-week-headline-p)
         (org-meta-return)
         (insert (format "Week of %s"
                         (ar/time-current-work-week-string)))
@@ -22,13 +22,16 @@
 
 (defun ar/org-add-child-to-current-week (child)
   "Add CHILD to current week."
-  (ar/org-add-current-week-headline)
-  (ar/buffer-goto-first-match-beginning (format "Week of %s"
-                                                (ar/time-current-work-week-string)))
-  (org-end-of-line)
-  (org-meta-return)
-  (org-metaright)
-  (insert child))
+  (interactive "sAdd to this week: ")
+  (ar/file-with-current-file "~/stuff/active/non-public/daily.org"
+    (ar/org-add-current-week-headline)
+    (ar/buffer-goto-first-match-beginning (format "Week of %s"
+                                                  (ar/time-current-work-week-string)))
+    (org-end-of-line)
+    (org-meta-return)
+    (org-metaright)
+    (insert child)
+    (save-buffer)))
 
 (defun ar/org-now-in-week-headline-p ()
   "Check if current date corresponds to existing week headline."
