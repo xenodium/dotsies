@@ -89,9 +89,6 @@
   :commands (synosaurus-lookup
              synosaurus-choose-and-replace))
 
-;; Automatically highlight all instances of thing at point.
-(use-package highlight-thing :ensure t)
-
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
@@ -457,8 +454,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq show-paren-style 'mixed)
 
 
+;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t)
-(global-highlight-thing-mode)
 
 ;; Partially use path in buffer name.
 (use-package uniquify
