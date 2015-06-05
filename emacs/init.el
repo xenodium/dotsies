@@ -455,7 +455,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 
 ;; Automatically highlight all instances of thing at point.
-(use-package highlight-thing :ensure t)
+(use-package highlight-thing :ensure t
+  :commands highlight-thing-mode)
 
 ;; Partially use path in buffer name.
 (use-package uniquify
