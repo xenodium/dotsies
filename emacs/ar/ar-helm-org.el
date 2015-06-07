@@ -15,14 +15,8 @@
 (defvar ar/helm-org-source-my-todos
   '((name . "TODOS")
     (candidates . ar/helm-org-todo-candidates)
-    (action . (lambda (candidate)
-                (cond ((plist-get candidate
-                                  :marker)
-                       (org-goto-marker-or-bmk (plist-get candidate
-                                                          :marker)))
-                      ((plist-get candidate :url)
-                       (org-open-link-from-string (plist-get candidate
-                                                             :url))))))))
+    (action . (lambda (marker)
+                (org-goto-marker-or-bmk marker)))))
 
 (defun ar/helm-org-todos ()
   "Current TODOS."
@@ -59,21 +53,19 @@
         (goto-char (point-min))
         (if (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
             (progn
-              (org-open-link-from-string (format "[[#%s]]" id))
+              (goto-char (ar/buffer-first-match-beginning))
               (org-end-of-meta-data-and-drawers)
               (let ((child-headings '())
                     (child-heading))
                 (when (org-at-heading-p)
                   ;; Extract first child.
-                  (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
                   (add-to-list 'child-headings
-                               (cons child-heading
-                                     (ar/org-todo-heading-plist child-heading)))
+                               (cons (org-get-heading 'no-tags)
+                                     (copy-marker (point))))
                   (while (org-get-next-sibling)
-                    (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
                     (add-to-list 'child-headings
-                                 (cons child-heading
-                                       (ar/org-todo-heading-plist child-heading)))))
+                                 (cons (org-get-heading 'no-tags)
+                                       (copy-marker (point))))))
                 child-headings))
           (message "Cannot find %s#%s" path id)
           '())))))
