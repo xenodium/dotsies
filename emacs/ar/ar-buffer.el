@@ -71,11 +71,12 @@ Version 2015-02-07."
     (ar/buffer-sort-lines-ignore-case)
     (goto-char saved-point)))
 
-(defun ar/buffer-first-match-beginning (re)
-  "Return the first match beginning position for RE."
+(defun ar/buffer-first-match-beginning (&optional re)
+  "Return the first match beginning position for RE. nil otherwise."
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward re nil t)
+    (when re
+      (re-search-forward re nil t))
     (match-beginning 0)))
 
 (defun ar/buffer-goto-first-match-beginning (re)
