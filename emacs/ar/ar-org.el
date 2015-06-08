@@ -96,12 +96,6 @@
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
 
-(defun ar/org-todo-heading-plist (todo-heading)
-  "Create a TODO-HEADING plist."
-  (cond ((string-match "\\[\\[.*?\\]\\]" todo-heading)
-         `(:heading ,todo-heading :url ,(match-string 0 todo-heading)))
-        (`(:heading ,todo-heading :marker ,(copy-marker (point))))))
-
 (defun ar/org-build-link ()
   "Build an org link, prompting for url and description."
   (format "[[%s][%s]]"

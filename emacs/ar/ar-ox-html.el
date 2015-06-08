@@ -89,6 +89,11 @@
          pre {
            box-shadow: none;
          }
+         pre.src {
+           overflow: scroll;
+         }
+         /* Hide sh/bash/Emacs Lisp overlay */
+         pre.src:hover:before { display: none;}
          p, .org-ol, .org-ul {
            color: rgb(77, 77, 77);
            font-size: 1em;
@@ -138,14 +143,6 @@
          }
          .outline-2 {
            margin-bottom: 50px;
-         }
-         @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
-           body {
-             font-size: 230%;
-           }
-           #content {
-             width: 90%;
-          }
          }
        </style>")
 
