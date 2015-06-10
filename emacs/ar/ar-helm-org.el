@@ -16,7 +16,8 @@
   '((name . "TODOS")
     (candidates . ar/helm-org-todo-candidates)
     (action . (lambda (marker)
-                (org-goto-marker-or-bmk marker)))))
+                (org-goto-marker-or-bmk marker)
+                ((show-all))))))
 
 (defun ar/helm-org-todos ()
   "Current TODOS."
@@ -42,7 +43,7 @@
 
 (defun ar/helm-org-todo-candidates ()
   "Get this week's TODOS helm candidates."
-  (ar/helm-org-entry-child-candidates "~/stuff/active/non-public/daily.org" "backlog"))
+  (ar/helm-org-entry-child-candidates "~/stuff/active/non-public/daily/daily.org" "backlog"))
 
 (defun ar/helm-org-entry-child-candidates (path id)
   "Get org child headings for entry with PATH and ID."

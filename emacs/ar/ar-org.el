@@ -13,7 +13,7 @@
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
   (ar/org-with-file-location
-      "~/stuff/active/non-public/daily.org" "snippets"
+      "~/stuff/active/non-public/daily/daily.org" "snippets"
       (unless (ar/org-now-in-week-headline-p)
         (org-meta-return)
         (insert (format "Week of %s"
@@ -23,7 +23,7 @@
 (defun ar/org-add-child-to-current-week (child)
   "Add CHILD to current week."
   (interactive "sAdd to this week: ")
-  (ar/file-with-current-file "~/stuff/active/non-public/daily.org"
+  (ar/file-with-current-file "~/stuff/active/non-public/daily/daily.org"
     (ar/org-add-current-week-headline)
     (ar/buffer-goto-first-match-beginning (format "Week of %s"
                                                   (ar/time-current-work-week-string)))
@@ -91,7 +91,7 @@
 (defun ar/org-add-todo (todo)
   "Add a new TODO."
   (interactive "sTODO: ")
-  (ar/org-with-file-location "~/stuff/active/non-public/daily.org" "backlog"
+  (ar/org-with-file-location "~/stuff/active/non-public/daily/daily.org" "backlog"
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
