@@ -1729,7 +1729,7 @@ _y_outube
 (add-hook 'find-file-hook #'ar/try-smerge t)
 
 (defvar ar/helm-source-local-hotspots '((name . "Local")
-                                        (candidates . (("Daily" . "~/stuff/active/non-public/daily.org")
+                                        (candidates . (("Daily" . "~/stuff/active/non-public/daily/daily.org")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Init" . "~/stuff/active/dots/emacs/init.el")))
@@ -1792,7 +1792,7 @@ _y_outube
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-(setq org-refile-targets '((nil :regexp . "Week of")))
+(setq org-refile-targets '((nil :regexp . "\\(Week of\\)\\|\\(Backlog\\)")))
 
 (setq org-ellipsis "…")
 
