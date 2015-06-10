@@ -13,11 +13,18 @@
 (defvar ar/helm-org-bookmark-link-in-process nil)
 
 (defvar ar/helm-org-source-my-todos
-  '((name . "TODOS")
+  `((name . "TODOS")
     (candidates . ar/helm-org-todo-candidates)
-    (action . (lambda (marker)
-                (org-goto-marker-or-bmk marker)
-                ((show-all))))))
+    (action . ,(helm-make-actions "goto" (lambda (marker)
+                                           (org-goto-marker-or-bmk marker)
+                                           (show-all))
+                                  "mark DONE" (lambda (marker)
+                                                (with-current-buffer (marker-buffer marker)
+                                                  (goto-char (marker-position marker))
+                                                  (org-shiftright)
+                                                  (ar/org-add-child-to-current-week (org-get-heading))
+                                                  (kill-whole-line)
+                                                  (save-buffer)))))))
 
 (defun ar/helm-org-todos ()
   "Current TODOS."
