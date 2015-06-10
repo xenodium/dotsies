@@ -27,6 +27,7 @@
     (ar/org-add-current-week-headline)
     (ar/buffer-goto-first-match-beginning (format "Week of %s"
                                                   (ar/time-current-work-week-string)))
+    (show-subtree)
     (org-end-of-line)
     (org-meta-return)
     (org-metaright)
@@ -87,6 +88,11 @@
         (org-indent-line)
         ;; TODO: Avoid adding trailing caused by org-indent-line.
         (delete-trailing-whitespace)))))
+
+(defun ar/org-add-done (done)
+  "Add DONE task to current week."
+  (interactive "sDONE: ")
+  (ar/org-add-child-to-current-week (format "DONE %s" done)))
 
 (defun ar/org-add-todo (todo)
   "Add a new TODO."
