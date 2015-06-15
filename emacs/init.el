@@ -1749,13 +1749,14 @@ _y_outube
                                           (org-show-subtree)))))
 
 (use-package cl
-  :commands (cl-flet))
-;; Ignore running processes when closing Emacs
-;; From http://oremacs.com/2015/01/04/dired-nohup
-(defadvice save-buffers-kill-emacs
-    (around no-query-kill-emacs activate)
-  "Prevent \"Active processes exist\" query on exit."
-  (cl-flet ((process-list ())) ad-do-it))
+  :init
+  ;; Ignore running processes when closing Emacs
+  ;; From http://oremacs.com/2015/01/04/dired-nohup
+  (defadvice save-buffers-kill-emacs
+      (around no-query-kill-emacs activate)
+    "Prevent \"Active processes exist\" query on exit."
+    (flet ((process-list ())) ad-do-it))
+  :commands (flet))
 
 (use-package define-word :ensure t
   :commands (define-word-at-point define-word))
