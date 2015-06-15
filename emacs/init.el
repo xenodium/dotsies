@@ -12,8 +12,6 @@
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
-;; Graphical initializations.
-
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
 (setq inhibit-splash-screen t)
