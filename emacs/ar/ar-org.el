@@ -113,7 +113,11 @@
 
 (defun ar/org-blog-custom-id-from-title (title)
   "Create an org CUSTOM_ID from a TITLE."
-  (replace-regexp-in-string " " "-" (downcase title)))
+  (replace-regexp-in-string " "
+                            "-"
+                            (replace-regexp-in-string "[^-a-zA-Z ]"
+                                                      ""
+                                                      (downcase title))))
 
 (defun ar/org-insert-prefixed-link (prefix prompt)
   "Insert a link with PREFIX and PROMPT if not found in clipboard."
