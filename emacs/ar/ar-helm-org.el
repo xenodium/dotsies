@@ -17,7 +17,7 @@
     (candidates . ar/helm-org-todo-candidates)
     (action . ,(helm-make-actions "goto" (lambda (marker)
                                            (org-goto-marker-or-bmk marker)
-                                           (show-all))
+                                           (org-show-siblings))
                                   "mark DONE" (lambda (marker)
                                                 (with-current-buffer (marker-buffer marker)
                                                   (goto-char (marker-position marker))
