@@ -10,6 +10,25 @@
 (require 'ar-buffer)
 (require 'org)
 
+(defun ar/org-search-file-buffer-forward (file-path regex)
+  "Search FILE-PATH buffer using regex REGEX. Moves point to first instance."
+  (ar/buffer-switch-to-file file-path)
+  (goto-char 0)
+  (re-search-forward regex nil)
+  (beginning-of-line))
+
+(defun ar/org-open-file-special-path (file-path)
+  "Open special FILE-PATH. Examples:
+path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
+  (cond ((ar/string-match-p "#/s/" file-path)
+         (let* ((split-path (split-string file-path "#/s/"))
+                (path (expand-file-name (nth 0 split-path)))
+                (regex (nth 1 split-path)))
+           (ar/org-search-file-buffer-forward path regex)
+           (org-flag-heading nil)))
+        (t
+         (find-file file-path))))
+
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
   (ar/org-with-file-location
