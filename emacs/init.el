@@ -1366,8 +1366,6 @@ Argument LEN Length."
   (dolist (file (file-expand-wildcards pattern))
     (load file)))
 
-(ar/load-all-files "~/.emacs.d/local/*.el")
-
 (use-package google-translate :ensure t)
 
 ;; From http://ergoemacs.org/emacs/emacs_copy_file_path.html
@@ -1745,7 +1743,7 @@ _y_outube
                                                              (browse-url url)))))))
 
 (defvar ar/helm-source-blog '((name . "Blog")
-                              (candidates . ar/helm-get-blog-candidates)
+                              (candidates . ar/helm-org-get-blog-candidates)
                               (action . (lambda (candidate)
                                           (helm-org-goto-marker candidate)
                                           (org-show-subtree)))))
@@ -1903,6 +1901,8 @@ _y_outube
              server-start))
 (unless (server-running-p)
   (server-start))
+
+(ar/load-all-files "~/.emacs.d/local/*.el")
 
 (provide 'init)
 ;;; init.el ends here
