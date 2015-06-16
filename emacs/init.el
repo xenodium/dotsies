@@ -1743,6 +1743,10 @@ _y_outube
                                                      ("Twitter" . "http://twitter.com/xenodium")))
                                       (action . (("Open" . (lambda (url)
                                                              (browse-url url)))))))
+;; Append with:
+;; (add-to-list 'ar/helm-source-web-hotspots
+;;              `(candidates . ,(let-alist ar/helm-source-web-hotspots
+;;                                (add-to-list '.candidates '("Google Play" . "https://play.google.com/music/listen?u=my@gmail.com")))))
 
 (defvar ar/helm-source-blog '((name . "Blog")
                               (candidates . ar/helm-org-get-blog-candidates)
