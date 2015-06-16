@@ -1731,7 +1731,9 @@ _y_outube
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Init" . "~/stuff/active/dots/emacs/init.el")
                                                        ("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
-                                                       ("This Week" . "~/stuff/active/non-public/daily/daily.org#/s/Week")))
+                                                       ("This Week" . "~/stuff/active/non-public/daily/daily.org#/s/Week")
+                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")
+                                                       ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")))
                                         (action . (("Open" . (lambda (file-path)
                                                                (ar/org-open-file-special-path file-path)))))))
 
