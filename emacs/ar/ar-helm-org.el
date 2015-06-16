@@ -8,6 +8,7 @@
 
 
 (require 'helm)
+(require 'helm-org)
 (require 'org)
 
 (defvar ar/helm-org-bookmark-link-in-process nil)
