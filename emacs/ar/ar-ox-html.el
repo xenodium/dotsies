@@ -90,7 +90,7 @@
            box-shadow: none;
          }
          pre.src {
-           overflow: scroll;
+           overflow: auto;
          }
          /* Hide sh/bash/Emacs Lisp overlay */
          pre.src:hover:before { display: none;}
