@@ -100,7 +100,8 @@
                                 (org-show-subtree)
                                 (org-end-of-meta-data-and-drawers)
                                 (org-insert-heading)
-                                (insert (ar/helm-org-retrieve-bookmark-link-in-process))
+                                (insert (format "%s."
+                                                (ar/helm-org-retrieve-bookmark-link-in-process)))
                                 (org-sort-list nil ?a)
                                 (ar/update-blog-timestamp-at-point)
                                 (hide-other)
