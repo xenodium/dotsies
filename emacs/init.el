@@ -931,6 +931,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
 
+(use-package go-eldoc :ensure t
+  :commands go-eldoc-setup)
+
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
@@ -945,6 +948,7 @@ Repeated invocations toggle between the two most recently open buffers."
                           (helm-dash-activate-docset "Go")
                           (setq-local company-backends '(company-go))
                           (company-mode)
+                          (go-eldoc-setup)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
 
