@@ -44,7 +44,7 @@
                         (ar/buffer-file-name-equal-p ,file-name))
                       (lambda ()
                         (ar/process-call ,program (buffer-file-name))
-                        (revert-buffer))))
+                        (revert-buffer nil t))))
 
 (defun ar/buffer-re-string-match-list (re)
   (save-excursion
