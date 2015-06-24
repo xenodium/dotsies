@@ -3,7 +3,47 @@
 ;;; Commentary:
 ;; Buffer text helpers.
 
+
 ;;; Code:
+
+(require 'ar-process)
+
+(defmacro ar/buffer-on-save (action-p-function action-function)
+  "If ACTION-P-FUNCTION, add ACTION-FUNCTION to `after-save-hook'."
+  `(add-hook 'find-file-hook
+             (lambda ()
+               (when (funcall ,action-p-function)
+                 (add-hook 'after-save-hook
+                           ,action-function t t)))))
+
+(defun ar/buffer-file-name-equal-p (file-name)
+  "Return t if buffer file name equals FILE-NAME."
+  (string-equal (file-name-nondirectory (buffer-file-name))
+                file-name))
+
+(defun ar/buffer-file-extension-equal-p (extension)
+  "Return t if buffer file has EXTENSION."
+  (string-equal (file-name-extension (buffer-file-name))
+                extension))
+
+(defmacro ar/buffer-on-save-for-extension (extension action-function)
+  "When saving files with EXTENSION, call ACTION-FUNCTION."
+  `(ar/buffer-on-save (lambda ()
+                        (ar/buffer-file-extension-equal-p ,extension))
+                      ,action-function))
+
+(defmacro ar/buffer-on-save-for-file-name (file-name action-function)
+  "When saving files with FILE-NAME, call ACTION-FUNCTION."
+  `(ar/buffer-on-save (lambda ()
+                        (ar/buffer-file-extension-equal-p ,file-name))
+                      ,action-function))
+
+(defmacro ar/buffer-run-for-saved-file-name (program file-name)
+  "Run PROGRAM when saving files with FILE-NAME."
+  `(ar/buffer-on-save (lambda ()
+                        (ar/buffer-file-name-equal-p ,file-name))
+                      (lambda ()
+                        (ar/process-call ,program (buffer-file-name)))))
 
 (defun ar/buffer-re-string-match-list (re)
   (save-excursion
