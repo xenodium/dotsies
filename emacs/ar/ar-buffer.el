@@ -43,7 +43,8 @@
   `(ar/buffer-on-save (lambda ()
                         (ar/buffer-file-name-equal-p ,file-name))
                       (lambda ()
-                        (ar/process-call ,program (buffer-file-name)))))
+                        (ar/process-call ,program (buffer-file-name))
+                        (revert-buffer))))
 
 (defun ar/buffer-re-string-match-list (re)
   (save-excursion
