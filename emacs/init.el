@@ -362,7 +362,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (setq projectile-enable-caching t)
+  (setq projectile-enable-caching nil)
   ;; C-u magit-status presents list of repositories.
   (setq magit-repo-dirs (mapcar (lambda (dir)
                                   (substring dir 0 -1))
