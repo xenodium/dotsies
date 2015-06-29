@@ -1809,6 +1809,9 @@ _y_outube
 
 (setq org-fontify-emphasized-text +1)
 
+;; Fontify code in code blocks.
+(setq org-src-fontify-natively t)
+
 ;; When exporting anything, do not insert in kill ring.
 (setq org-export-copy-to-kill-ring nil)
 
