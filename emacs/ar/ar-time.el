@@ -9,8 +9,7 @@
 (defun ar/time-range-to-week-string (range)
   "Convert RANGE to a week org headnline.
 For example: ((21868 54482 769103 0) (21874 6866 769103 0)) =>
-             <2015-06-01 Mon>--<2015-06-05 Fri>
-"
+             <2015-06-01 Mon>--<2015-06-05 Fri>"
   (concat
    (format-time-string "<%Y-%m-%d %a>--" (nth 0 range))
    (format-time-string "<%Y-%m-%d %a>" (nth 1 range))))
@@ -65,6 +64,19 @@ For example: ((21868 53857 429468 0) (21874 6241 429468 0))."
   "Return non nil if TIME is week day."
   (let ((weekday (nth 6 (decode-time time))))
     (and (> weekday 0) (< weekday 6))))
+
+(defun ar/time-prompt-ret ()
+  "Insert a new line and time stamp. For example:
+
+14:07:14 >
+
+May want to bind to RET. For example:
+
+(define-key org-mode-map (kbd "RET") 'ar/time-prompt-ret)
+"
+  (interactive)
+  (insert (format-time-string "\n%H:%M:%S > "
+                              (current-time))))
 
 (provide 'ar-time)
 
