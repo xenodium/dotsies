@@ -439,6 +439,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
+(use-package electric-operator :ensure t
+  :commands electric-operator-mode)
+
 ;; Automatically closes brackets.
 (electric-pair-mode)
 ;; Additional electric pairs.
@@ -915,6 +918,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (setq python-indent-offset 4)
+  (electric-operator-mode)
   (anaconda-mode)
   (eldoc-mode +1)
   ;; FIXME python-docstring-mode currently broken
@@ -1020,6 +1024,7 @@ Argument LEN Length."
             #'ar/clang-format-buffer
             nil
             'make-it-local)
+  (electric-operator-mode)
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
@@ -1054,6 +1059,7 @@ Argument LEN Length."
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
   (bind-key [f6] java-mode-map)
+  (electric-operator-mode)
   ;; 2-char indent for java.
   (defvar c-basic-offset)
   (setq c-basic-offset 2)
