@@ -1558,12 +1558,6 @@ _v_ariable       _u_ser-option
   ("q" nil "quit"))
 (bind-key "M-g" #'hydra-goto-line/body)
 
-(defhydra hydra-org-add-object (:color blue)
-  "add"
-  ("c" ar/org-add-cl "cl")
-  ("b" ar/org-add-bug "bug")
-  ("q" nil "quit"))
-
 (defhydra hydra-open-c-mode (:color blue)
   "open"
   ("o" ff-find-other-file "other")
@@ -1615,11 +1609,9 @@ Git: _n_ext     _s_tage  _d_iff
 
 (defhydra hydra-quick-insert (:color blue)
   "
-Quick insert: _c_l  _w_eb bookmark
-              _b_ug _t_odo _d_one
+Quick insert: _w_eb bookmark
+              _t_odo _d_one
 "
-  ("c" ar/org-insert-cl-link nil)
-  ("b" ar/org-insert-bug-link nil)
   ("w" ar/helm-org-add-bookmark nil)
   ("t" ar/org-add-todo nil)
   ("d" ar/org-add-done nil)
