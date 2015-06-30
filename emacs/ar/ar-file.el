@@ -103,6 +103,29 @@
 (add-to-list 'find-file-not-found-functions
              #'ar/file-create-non-existent-directory)
 
+(defun ar/file-parent-directory (path)
+  "Get parent directory for PATH."
+  (unless (equal "/" path)
+    (file-name-directory (directory-file-name path))))
+
+(defun ar/file-find-upwards (path filename)
+  "Search upwards from PATH for a file named FILENAME."
+  (let ((file (concat path filename))
+        (parent (ar/file-parent-directory (expand-file-name path))))
+    (if (file-exists-p file)
+        file
+      (when parent
+        (ar/file-find-upwards parent filename)))))
+
+(defun ar/file-open-closest (filename)
+  "Open the closest FILENAME in current or parent dirs (handy for finding Makefiles)."
+  (let ((closest-file-path (ar/file-find-upwards (buffer-file-name)
+                                                 filename)))
+    (unless closest-file-path
+      (error (format "No %s found" filename)))
+    (message closest-file-path)
+    (switch-to-buffer (find-file-noselect closest-file-path))))
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
