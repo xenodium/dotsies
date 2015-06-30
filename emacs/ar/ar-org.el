@@ -153,16 +153,6 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                               cl-number)))
     (insert rendered-cl)))
 
-(defun ar/org-insert-cl-link ()
-  "Insert a CL link."
-  (interactive)
-  (ar/org-insert-prefixed-link "cl/" "CL number"))
-
-(defun ar/org-insert-bug-link ()
-  "Insert a bug link."
-  (interactive)
-  (ar/org-insert-prefixed-link "b/" "Bug number"))
-
 (defun ar/org-entry-child-headings (id)
   "Get org child headings for entry with ID."
   (save-excursion
