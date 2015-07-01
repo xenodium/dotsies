@@ -1196,10 +1196,11 @@ Argument LEN Length."
   :init
   ;; Customize shell-pop.
   (setq shell-pop-term-shell "/bin/bash")
-  (setq shell-pop-shell-type '("ansi-term"
-                               "terminal"
-                               (lambda
-                                 nil (ansi-term shell-pop-term-shell))))
+  ;; Trying shell out. Disabling ansi-term for now.
+  ;; (setq shell-pop-shell-type '("ansi-term"
+  ;;                              "terminal"
+  ;;                              (lambda
+  ;;                                nil (ansi-term shell-pop-term-shell))))
   (setq shell-pop-window-position "full")
   ;; Do not auto cd to working directory.
   (setq shell-pop-autocd-to-working-dir nil)
