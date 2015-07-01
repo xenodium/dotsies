@@ -993,6 +993,9 @@ Repeated invocations toggle between the two most recently open buffers."
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
 
+;; Super handy for highlighting bookmarks.
+(use-package bookmark+ :ensure t)
+
 (defun ar/save-point-to-register ()
   "Save point to register."
   (interactive)
