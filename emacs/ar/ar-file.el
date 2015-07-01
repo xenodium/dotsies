@@ -126,6 +126,38 @@
     (message closest-file-path)
     (switch-to-buffer (find-file-noselect closest-file-path))))
 
+(defun ar/file-find-duplicate-filenames ()
+  "Find files recursively which have the same name."
+  (interactive)
+  (let ((files-hash-table (make-hash-table :test 'equal))
+        (duplicate-file-names '())
+        (record-function (lambda (path)
+                           "Add to hash-table, key=filename value=paths."
+                           ;; nil means file.
+                           (unless (nth 0 (file-attributes path 'string))
+                             (let ((key (file-name-nondirectory path))
+                                   (values))
+                               (setq values (gethash key files-hash-table))
+                               (unless values
+                                 (setq values '()))
+                               (push path values)
+                               (puthash key values files-hash-table))))))
+    (mapc record-function
+          (ar/file-find "\\*" default-directory))
+    (maphash (lambda (key paths)
+               (when (> (length paths) 1)
+                 (mapc (lambda (path)
+                         (push path duplicate-file-names))
+                       paths)))
+             files-hash-table)
+    (when (eq (length duplicate-file-names) 0)
+      (error "No duplicates found"))
+    (switch-to-buffer (get-buffer-create "*Duplicates*"))
+    (erase-buffer)
+    (mapc (lambda (duplicate-file-name)
+            (insert (format "%s\n" duplicate-file-name)))
+          duplicate-file-names)))
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
