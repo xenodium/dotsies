@@ -9,6 +9,11 @@
 (require 'ar-string)
 (require 'simple)
 
+(defun ar/file-file-p (path)
+  "Return t if PATH is file.  nil otherwise."
+  (and (file-exists-p path)
+       (not (nth 0 (file-attributes path 'string)))))
+
 ;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
 (defun ar/file-rename-current ()
   "Rename the current buffer and file it is visiting."
