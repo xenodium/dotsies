@@ -303,7 +303,7 @@
   (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
   (bind-key "M-p" #'helm-previous-source helm-map)
   (bind-key "M-n" #'helm-next-source helm-map)
-  :bind (("C-c i" . helm-imenu)
+  :bind (("C-c i" . helm-semantic-or-imenu)
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
          ("C-h a" . helm-apropos)
