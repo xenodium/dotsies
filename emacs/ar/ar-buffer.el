@@ -9,7 +9,8 @@
 (require 'ar-process)
 
 (defun ar/buffer-flush-kill (regex)
-  "Flush lines matching regex and append to kill ring. Restrict to POINT and MARK if active region."
+  "Flush lines matching REGEX and append to kill ring.  Restrict to \
+POINT and MARK if active region."
   (interactive "sFlush kill regex: ")
   (save-excursion
     (save-restriction
