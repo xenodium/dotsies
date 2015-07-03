@@ -8,6 +8,21 @@
 
 (require 'ar-process)
 
+(defun ar/buffer-flush-kill (regex)
+  "Flush lines matching regex and append to kill ring. Restrict to POINT and MARK if active region."
+  (interactive "sFlush kill regex: ")
+  (save-excursion
+    (save-restriction
+      (when (use-region-p)
+        (narrow-to-region (point) (mark)))
+      (goto-char 0)
+      (while (search-forward-regexp regex nil t)
+        (move-beginning-of-line nil)
+        (kill-line)
+        (append-next-kill)
+        (kill-line) ;; Kill newline also.
+        (setq first-kill nil)))))
+
 (defmacro ar/buffer-on-save (action-p-function action-function)
   "If ACTION-P-FUNCTION, add ACTION-FUNCTION to `after-save-hook'."
   `(add-hook 'find-file-hook
