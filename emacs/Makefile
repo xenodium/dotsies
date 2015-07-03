@@ -20,6 +20,11 @@ emaxcode:
 	mkdir -p ~/.emacs.d/downloads/emaXcode
 	mv /tmp/emaXcode.el ~/.emacs.d/downloads/emaXcode
 
+ox-rss:
+	curl http://orgmode.org/cgit.cgi/org-mode.git/plain/contrib/lisp/ox-rss.el -o /tmp/ox-rss.el
+	mkdir -p ~/.emacs.d/downloads/ox-rss
+	mv /tmp/ox-rss.el ~/.emacs.d/downloads/ox-rss
+
 local_path := ~/local
 ifeq ($(shell uname), Darwin)
   local_path := ~/homebrew
