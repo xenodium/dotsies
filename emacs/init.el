@@ -480,13 +480,13 @@ Optional argument NON-RECURSIVE to shallow-search."
          ("C-c <down>" . git-gutter:next-hunk)))
 (global-git-gutter-mode +1)
 
-(use-package git-commit-training-wheels-mode :ensure t
-  :commands (git-commit-training-wheels-mode))
-
-(use-package git-commit-mode :ensure t
-  :config
-  (add-hook 'git-commit-mode-hook 'git-commit-training-wheels-mode)
-  :commands (git-commit-mode))
+;; Disabling, since git-commit-mode conflicts with magit.
+;; (use-package git-commit-training-wheels-mode :ensure t
+;;   :commands (git-commit-training-wheels-mode))
+;; (use-package git-commit-mode :ensure t
+;;   :config
+;;   (add-hook 'git-commit-mode-hook 'git-commit-training-wheels-mode)
+;;   :commands (git-commit-mode))
 
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
@@ -852,6 +852,10 @@ Repeated invocations toggle between the two most recently open buffers."
 ; :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
+
+;; Still evaluating. Disabled for now.
+;; (load "~/.emacs.d/downloads/ox-rss/ox-rss.el")
+;; (require 'ox-rss)
 
 ;; From http://sakito.jp/emacs/emacsobjectivec.html#xcode
 (defun ar/xc:build ()
