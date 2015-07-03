@@ -70,7 +70,7 @@
   "Read image file name."
   (read-file-name "Choose image: " nil nil t nil
                   (lambda (path)
-                    (or (string-match-p "\\(\\.JPG\\|\\.jpg\\|\\.PNG\\|\\.png\\)" path)
+                    (or (string-match-p "\\(\\.JPG\\|\\.jpg\\|\\.PNG\\|\\.png\\|\\.GIF\\|\\.gif\\)" path)
                         (file-directory-p path)))))
 
 (defun ar/file-find (filename-pattern &rest search-paths)
