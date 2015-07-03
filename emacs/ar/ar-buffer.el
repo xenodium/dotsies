@@ -19,8 +19,7 @@ region if active."
         (goto-char 0))
       (while (search-forward-regexp regex nil t)
         (move-beginning-of-line nil)
-        (kill-whole-line)
-        (append-next-kill)))))
+        (kill-whole-line)))))
 
 (defmacro ar/buffer-on-save (action-p-function action-function)
   "If ACTION-P-FUNCTION, add ACTION-FUNCTION to `after-save-hook'."
