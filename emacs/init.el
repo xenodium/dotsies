@@ -1450,7 +1450,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package flycheck :ensure t)
 
-(use-package flycheck-pos-tip :ensure t)
+(use-package flycheck-tip :ensure t
+  :config
+  (flycheck-tip-use-timer 'verbose))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -1653,7 +1655,7 @@ Sort: _l_ines _o_rg list
   (bind-key "C-c x" #'hydra-git-commit/body git-commit-mode-map))
 
 (defun ar/org-insert-youtube-video ()
-  "Inserts a youtube video to current org file."
+  "Insert a youtube video to current org file."
   (interactive)
   (insert (format
 "#+BEGIN_HTML
