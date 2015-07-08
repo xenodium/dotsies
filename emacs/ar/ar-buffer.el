@@ -95,6 +95,12 @@ region if active."
     (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
       (replace-match "\\1"))))
 
+(defun ar/buffer-select-current-line ()
+  "Select the current line."
+  (interactive)
+  (end-of-line)
+  (set-mark (line-beginning-position)))
+
 (defun ar/buffer-select-current-block ()
   "Select the current block of text between blank lines.
 URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
