@@ -39,18 +39,23 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                         (ar/time-current-work-week-string)))
         (save-buffer))))
 
-(defun ar/org-add-child-to-current-week (child)
-  "Add CHILD to current week."
-  (interactive "sAdd to this week: ")
+(defun ar/org-goto-current-week ()
+  "Go to current week."
+  (ar/org-add-current-week-headline)
+  (ar/buffer-goto-first-match-beginning (format "Week of %s"
+                                                (ar/time-current-work-week-string))))
+
+(defun ar/org-paste-subtree-to-current-week (&optional subtree)
+  "Paste SUBTREE to current week."
   (ar/file-with-current-file "~/stuff/active/non-public/daily/daily.org"
-    (ar/org-add-current-week-headline)
-    (ar/buffer-goto-first-match-beginning (format "Week of %s"
-                                                  (ar/time-current-work-week-string)))
-    (show-subtree)
-    (org-end-of-line)
-    (org-meta-return)
-    (org-metaright)
-    (insert child)
+    (save-excursion
+      (ar/org-goto-current-week)
+      (org-end-of-line)
+      ;; See org-refile for details.
+      (goto-char (or (save-excursion (org-get-next-sibling))
+                     (org-end-of-subtree t t)
+                     (point-max)))
+      (org-paste-subtree (+ (org-current-level) 2) subtree))
     (save-buffer)))
 
 (defun ar/org-now-in-week-headline-p ()
@@ -111,7 +116,7 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
 (defun ar/org-add-done (done)
   "Add DONE task to current week."
   (interactive "sDONE: ")
-  (ar/org-add-child-to-current-week (format "DONE %s" done)))
+  (ar/org-paste-subtree-to-current-week (format "* DONE %s" done)))
 
 (defun ar/org-add-todo (todo)
   "Add a new TODO."
