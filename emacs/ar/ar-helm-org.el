@@ -21,11 +21,11 @@
                                            (org-show-siblings))
                                   "mark DONE" (lambda (marker)
                                                 (with-current-buffer (marker-buffer marker)
-                                                  (goto-char (marker-position marker))
-                                                  (org-shiftright)
-                                                  (ar/org-add-child-to-current-week (org-get-heading))
-                                                  (kill-whole-line)
-                                                  (save-buffer)))))))
+                                                  (save-excursion
+                                                    (goto-char (marker-position marker))
+                                                    (org-shiftright) ; mark done
+                                                    (org-cut-subtree 1)
+                                                    (ar/org-paste-subtree-to-current-week))))))))
 
 (defun ar/helm-org-todos ()
   "Current TODOS."
