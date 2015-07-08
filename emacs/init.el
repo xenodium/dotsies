@@ -686,6 +686,9 @@ point reaches the beginning or end of the buffer, stop there."
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
 
+;; Removing accidental use. Don't need compose-mail (yet anyway).
+(global-unset-key (kbd "C-x m"))
+
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'ar/smarter-move-beginning-of-line)
