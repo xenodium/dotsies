@@ -1132,7 +1132,6 @@ Argument LEN Length."
   (ar/org-src-color-blocks-dark)
   (flyspell-mode-on)
   (rainbow-delimiters-mode)
-  (semantic-mode 1)
   (org-bullets-mode 1)
   (yas-minor-mode)
   (org-display-inline-images))
