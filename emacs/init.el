@@ -107,8 +107,6 @@
                magit-status
                magit-log
                magit-anything-modified-p)
-    :init
-    (setq magit-last-seen-setup-instructions "1.4.0")
     :config
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
