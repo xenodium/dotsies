@@ -1204,6 +1204,17 @@ Argument LEN Length."
   (setq shell-pop-autocd-to-working-dir nil)
   :bind (([f5] . shell-pop)))
 
+(defun ar/shell-mode-hook-function ()
+  "Called when entering shell mode."
+  (company-mode)
+  ;; Enable company completion on TAB when in shell mode.
+  (bind-key "TAB" #'company-manual-begin shell-mode-map))
+
+(use-package shell
+  :commands shell-mode
+  :init
+  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
+
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
   ;; Don't need trailing spaces highlighted in terminal.
