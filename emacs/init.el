@@ -1904,6 +1904,7 @@ _y_outube
           ((error "Error: plantuml not installed on platform.")))))
 
 (use-package ob-plantuml
+  :commands org-babel-execute:plantuml
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
