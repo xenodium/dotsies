@@ -107,8 +107,6 @@
                magit-status
                magit-log
                magit-anything-modified-p)
-    :init
-    (setq magit-last-seen-setup-instructions "1.4.0")
     :config
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
@@ -1205,6 +1203,17 @@ Argument LEN Length."
   ;; Do not auto cd to working directory.
   (setq shell-pop-autocd-to-working-dir nil)
   :bind (([f5] . shell-pop)))
+
+(defun ar/shell-mode-hook-function ()
+  "Called when entering shell mode."
+  (company-mode)
+  ;; Enable company completion on TAB when in shell mode.
+  (bind-key "TAB" #'company-manual-begin shell-mode-map))
+
+(use-package shell
+  :commands shell-mode
+  :init
+  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
 
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
