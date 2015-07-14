@@ -1593,7 +1593,7 @@ _v_ariable       _u_ser-option
 
 (defhydra hydra-open (:color blue)
   "
-Open: _p_oint _e_externally
+Open: _p_oint _e_xternally
       _u_rls
 "
   ("e" ar/platform-open-in-external-app nil)
