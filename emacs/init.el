@@ -1595,7 +1595,7 @@ _v_ariable       _u_ser-option
 
 (defhydra hydra-open (:color blue)
   "
-Open: _p_oint _e_externally
+Open: _p_oint _e_xternally
       _u_rls
 "
   ("e" ar/platform-open-in-external-app nil)
@@ -1920,7 +1920,8 @@ _y_outube
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  (setq org-plantuml-jar-path (ar/plantum-jar-path)))
+  (unless (file-exists-p org-plantuml-jar-path)
+    (setq org-plantuml-jar-path (ar/plantum-jar-path))))
 
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)
