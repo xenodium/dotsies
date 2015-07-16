@@ -11,7 +11,7 @@
   (mapconcat 'identity strings " "))
 
 (defun ar/string-match-p (regex string)
-  "Return t if REGEX matches STRING. nil otherwise."
+  "Return t if REGEX matches STRING.  nil otherwise."
   (if (string-match regex string) t nil))
 
 (defun ar/string-numeric-p (string)

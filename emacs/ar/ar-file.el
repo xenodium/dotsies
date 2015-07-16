@@ -126,10 +126,24 @@
   "Open the closest FILENAME in current or parent dirs (handy for finding Makefiles)."
   (let ((closest-file-path (ar/file-find-upwards (buffer-file-name)
                                                  filename)))
-    (unless closest-file-path
-      (error (format "No %s found" filename)))
-    (message closest-file-path)
-    (switch-to-buffer (find-file-noselect closest-file-path))))
+    (when closest-file-path
+      (message closest-file-path)
+      (switch-to-buffer (find-file-noselect closest-file-path)))
+    closest-file-path))
+
+(defvar ar/file-project-file-names '("Makefile" "SConstruct" "BUILD"))
+
+(defun ar/file-open-project-file ()
+  "Open the closest project file in current or parent directory.
+For example: Makefile, SConstruct, BUILD, etc.
+Append `ar/file-project-file-names' to search for other file names."
+  (interactive)
+  (catch 'found
+    (mapc (lambda (filename)
+            (when (ar/file-open-closest filename)
+              (throw 'found t)))
+          ar/file-project-file-names)
+    (error "No project file found")))
 
 (defun ar/file-find-duplicate-filenames ()
   "Find files recursively which have the same name."
