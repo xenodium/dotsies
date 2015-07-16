@@ -208,6 +208,9 @@
 ;; Search StackOverflow snippets.
 (use-package howdoi :ensure t)
 
+;; Displays available keybindings in a popup.
+(use-package which-key :ensure t)
+
 ;; Twitter.
 (use-package twittering-mode :ensure t)
 
@@ -1921,7 +1924,7 @@ _y_outube
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  (unless (file-exists-p org-plantuml-jar-path)
+  (unless (ar/file-file-p org-plantuml-jar-path)
     (setq org-plantuml-jar-path (ar/plantum-jar-path))))
 
 ;; Avoid native dialogs when running graphical.
