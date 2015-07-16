@@ -1374,7 +1374,7 @@ Argument LEN Length."
     (erase-buffer)
     (insert clipboard-content)
     (prog-mode)
-    (toggle-truncate-lines)))
+    (toggle-truncate-lines 0)))
 (bind-key "C-c y" #'ar/view-clipboard-buffer)
 
 ;;  Save Emacs state from one session to another.
