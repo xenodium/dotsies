@@ -686,6 +686,9 @@ point reaches the beginning or end of the buffer, stop there."
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
 
+;; Removing accidental use. Don't need compose-mail (yet anyway).
+(global-unset-key (kbd "C-x m"))
+
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'ar/smarter-move-beginning-of-line)
@@ -1129,7 +1132,6 @@ Argument LEN Length."
   (ar/org-src-color-blocks-dark)
   (flyspell-mode-on)
   (rainbow-delimiters-mode)
-  (semantic-mode 1)
   (org-bullets-mode 1)
   (yas-minor-mode)
   (org-display-inline-images))
@@ -1594,7 +1596,7 @@ _v_ariable       _u_ser-option
 
 (defhydra hydra-open (:color blue)
   "
-Open: _p_oint _e_externally
+Open: _p_oint _e_xternally
       _u_rls
 "
   ("e" ar/platform-open-in-external-app nil)
@@ -1914,11 +1916,13 @@ _y_outube
           ((error "Error: plantuml not installed on platform.")))))
 
 (use-package ob-plantuml
+  :commands org-babel-execute:plantuml
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  (setq org-plantuml-jar-path (ar/plantum-jar-path)))
+  (unless (file-exists-p org-plantuml-jar-path)
+    (setq org-plantuml-jar-path (ar/plantum-jar-path))))
 
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)
