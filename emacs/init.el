@@ -1590,12 +1590,8 @@ _v_ariable       _u_ser-option
   ("o" ff-find-other-file "other")
   ("e" ar/platform-open-in-external-app "externally")
   ("u" ar/open-file-at-point "url at point")
+  ("b" ar/file-open-build-file "build file")
   ("q" nil "cancel"))
-
-(add-hook 'c-mode-common-hook
-          (lambda()
-            (local-set-key (kbd "C-c o")
-                           #'hydra-open-c-mode/body)))
 
 (defhydra hydra-open (:color blue)
   "
@@ -1607,8 +1603,6 @@ Open: _p_oint _e_xternally
   ("u" ar/helm-buffer-urls nil)
   ("q" nil "cancel"))
 
-(bind-key "C-c o" #'hydra-open/body)
-
 (defhydra hydra-open-prog-mode (:color blue)
   "open"
   ("o" ff-find-other-file "other")
@@ -1619,9 +1613,12 @@ Open: _p_oint _e_xternally
 
 (defun ar/hydra-open-dwim ()
   "Choose \"open\" hydra based on current mode."
+  (interactive)
   (cond ((derived-mode-p 'c-mode) (hydra-open-c-mode/body))
         ((derived-mode-p 'prog-mode) (hydra-open-prog-mode/body))
         (t (hydra-open/body))))
+
+(bind-key "C-c o" #'ar/hydra-open-dwim)
 
 (defhydra hydra-search (:color blue)
   "search"
