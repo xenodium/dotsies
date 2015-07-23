@@ -1140,6 +1140,12 @@ Argument LEN Length."
 ;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
 ;;                  'ar/org-src-color-blocks-dark)
 
+(use-package centered-cursor-mode :ensure t
+  :pin melpa
+  :init
+  ;; Workaround to use centered-cursor-mode in --nw.
+  (defvar mouse-wheel-mode nil))
+
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -1176,11 +1182,6 @@ Argument LEN Length."
 
 (ar/add-functions-to-mode-hooks '(ar/org-mode-hook-function)
                                 '(org-mode-hook))
-
-(use-package centered-cursor-mode :ensure t
-  :init
-  ;; Workaround to use centered-cursor-mode in --nw.
-  (defvar mouse-wheel-mode nil))
 
 ;; Select help window by default.
 (setq help-window-select t)
