@@ -762,13 +762,6 @@ With a prefix ARG open line above the current line."
 
 (bind-key "C-o" #'ar/smart-open-line)
 
-(use-package ace-jump-mode :ensure t)
-
-(use-package ace-jump-zap :ensure t
-  :bind
-  (("M-z" . ace-jump-zap-up-to-char-dwim)
-   ("C-M-z" . ace-jump-zap-to-char-dwim)))
-
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window))
@@ -783,8 +776,9 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
+(use-package avy :ensure t)
 (use-package key-chord :ensure t)
-(key-chord-define-global "jj" #'ace-jump-char-mode)
+(key-chord-define-global "jj" #'avy-goto-char-2)
 
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
 (defun ar/switch-to-previous-buffer ()
