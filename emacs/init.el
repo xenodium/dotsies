@@ -967,9 +967,10 @@ Repeated invocations toggle between the two most recently open buffers."
 (bind-key "C-c l" #'ar/split-camel-region)
 
 ;; Simplify lisp navigation/editing (ie. slurp/barf).
-(use-package lispy :ensure t
-  :config
-  (bind-key "M-i" #'helm-swoop lispy-mode-map))
+;; Disabling lispy for the time being (affecting imenu).
+;; (use-package lispy :ensure t
+;;   :config
+;;   (bind-key "M-i" #'helm-swoop lispy-mode-map))
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
@@ -985,7 +986,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (helm-dash-activate-docset "Emacs Lisp")
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
-  (lispy-mode 1)
+  ;; Disabling lispy for the time being (affecting imenu).
+  ;; (lispy-mode 1)
   (eldoc-mode)
   (set-fill-column 70)
   (turn-on-elisp-slime-nav-mode))
