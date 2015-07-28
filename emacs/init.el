@@ -1682,16 +1682,9 @@ Sort: _l_ines _o_rg list
 (defun ar/org-insert-youtube-video ()
   "Insert a youtube video to current org file."
   (interactive)
-  (insert (format
-"#+BEGIN_HTML
-  <iframe width='420'
-          height='315'
-          src='https://www.youtube.com/embed/%s'
-          frameborder='0'
-          allowfullscreen>
-  </iframe>
-#+END_HTML"
-(ar/alpha-numeric-clipboard-or-prompt "youtube video id"))))
+  (insert (format "[[youtube:%s][%s]]"
+                  (ar/alpha-numeric-clipboard-or-prompt "youtube video id")
+                  (read-string "description: "))))
 
 ;; From http://oremacs.com/2015/03/07/hydra-org-templates
 (defun ar/hot-expand (str)
@@ -1829,6 +1822,24 @@ _y_outube
       #'flycheck-pos-tip-error-messages)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
+;; Based on http://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html
+(org-add-link-type
+ "youtube"
+ (lambda (handle)
+   (browse-url (concat "https://www.youtube.com/watch?v=" handle)))
+ (lambda (path desc backend)
+   (cl-case backend
+     (html (format
+            "<iframe width='420'
+                     height='315'
+                     src='https://www.youtube.com/embed/%s'
+                     frameborder='0'
+                     allowfullscreen>%s
+             </iframe>"
+            path (or desc "")))
+     (latex (format "\href{%s}{%s}" path (or desc "video"))))))
 
 (setq org-refile-targets '((nil :regexp . "Week of")))
 
