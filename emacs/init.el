@@ -75,7 +75,8 @@
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
-  :commands (py-yapf-enable-on-save))
+  :commands (py-yapf-enable-on-save)
+  :config (setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
@@ -918,7 +919,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
-  (setq python-indent-offset 4)
+  (setq python-indent-offset 2)
   (anaconda-mode)
   (eldoc-mode +1)
   ;; FIXME python-docstring-mode currently broken
