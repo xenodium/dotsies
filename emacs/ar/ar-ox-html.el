@@ -93,7 +93,9 @@
            overflow: auto;
          }
          /* Hide sh/bash/Emacs Lisp overlay */
-         pre.src:hover:before { display: none;}
+         pre.src:hover:before {
+           display: none;
+         }
          p, .org-ol, .org-ul {
            color: rgb(77, 77, 77);
            font-size: 1em;
@@ -103,6 +105,8 @@
                Verdana, sans-serif;
            font-weight: 300;
            text-rendering: optimizelegibility;
+           line-height: 1.5;
+           letter-spacing: 0.01rem;
          }
          h1, h2, h3, h4, h5, #preamble {
            font-family: jaf-bernino-sans, 'Lucida Grande',
@@ -112,14 +116,17 @@
            color: rgb(51, 51, 51);
          }
          h1 {
-           font-size: 2em;
+           font-size: 3em;
          }
          h2 {
-           font-size: 1.6em;
+           font-size: 2em;
+           letter-spacing: -0.02em;
+           line-height: 1.2;
+           font-weight: 700;
            margin-bottom: 0px;
          }
          h3 {
-           font-size: 1.2em;
+           font-size: 1.6em;
          }
          #preamble {
            text-align: right;
