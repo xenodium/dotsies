@@ -23,9 +23,7 @@
                                                 (with-current-buffer (marker-buffer marker)
                                                   (save-excursion
                                                     (goto-char (marker-position marker))
-                                                    (org-shiftright) ; mark done
-                                                    (org-cut-subtree 1)
-                                                    (ar/org-paste-subtree-to-current-week))))))))
+                                                    (ar/org-move-to-current-week-as-done))))))))
 
 (defun ar/helm-org-todos ()
   "Current TODOS."

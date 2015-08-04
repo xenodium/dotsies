@@ -29,6 +29,13 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
         (t
          (find-file file-path))))
 
+(defun ar/org-move-to-current-week-as-done ()
+  "Move current tree to current week as DONE."
+  (interactive)
+  (org-shiftright) ; mark done
+  (org-cut-subtree 1)
+  (ar/org-paste-subtree-to-current-week))
+
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
   (ar/org-with-file-location
