@@ -112,6 +112,9 @@
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
+    (add-to-list 'magit-no-confirm 'stage-all-changes)
+    (setq magit-push-always-verify nil)
+    (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
