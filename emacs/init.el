@@ -1212,9 +1212,10 @@ Argument LEN Length."
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
-  (company-mode)
   ;; Enable company completion on TAB when in shell mode.
-  (bind-key "TAB" #'company-manual-begin shell-mode-map))
+  ;; (company-mode)
+  ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
+  )
 
 (use-package shell
   :commands shell-mode
