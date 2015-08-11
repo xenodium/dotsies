@@ -1852,6 +1852,9 @@ _y_outube
 
 (setq org-fontify-emphasized-text +1)
 
+;; Required by code block syntax highlighting.
+(use-package htmlize :ensure t)
+
 ;; Fontify code in code blocks.
 (setq org-src-fontify-natively t)
 

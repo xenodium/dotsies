@@ -88,6 +88,7 @@
          }
          pre {
            box-shadow: none;
+           border: none;
          }
          pre.src {
            overflow: auto;
