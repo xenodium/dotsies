@@ -1922,6 +1922,9 @@ _y_outube
 
 (bind-key "C-x b" #'ar/helm-org-my-hotspots)
 
+;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
+;; (use-package  puml-mode :ensure t)
+
 (defun ar/update-blog-timestamp-at-point ()
   "Update blog entry timestamp at point."
   (interactive)
