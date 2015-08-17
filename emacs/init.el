@@ -1212,9 +1212,10 @@ Argument LEN Length."
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
-  (company-mode)
   ;; Enable company completion on TAB when in shell mode.
-  (bind-key "TAB" #'company-manual-begin shell-mode-map))
+  ;; (company-mode)
+  ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
+  )
 
 (use-package shell
   :commands shell-mode
@@ -1932,6 +1933,9 @@ _y_outube
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
 (bind-key "C-x b" #'ar/helm-org-my-hotspots)
+
+;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
+;; (use-package  puml-mode :ensure t)
 
 (defun ar/update-blog-timestamp-at-point ()
   "Update blog entry timestamp at point."
