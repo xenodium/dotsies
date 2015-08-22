@@ -813,6 +813,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
+(use-package company-emoji :ensure t
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
 (global-company-mode)
 (company-quickhelp-mode +1)
 
