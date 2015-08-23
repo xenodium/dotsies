@@ -1137,7 +1137,7 @@ Argument LEN Length."
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
-  (flyspell-mode-on)
+  (flyspell-mode)
   (rainbow-delimiters-mode)
   (org-bullets-mode 1)
   (yas-minor-mode)
