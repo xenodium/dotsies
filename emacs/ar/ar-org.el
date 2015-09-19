@@ -146,7 +146,7 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   "Create an org CUSTOM_ID from a TITLE."
   (replace-regexp-in-string " "
                             "-"
-                            (replace-regexp-in-string "[^-a-zA-Z ]"
+                            (replace-regexp-in-string "[^-a-zA-Z 0-9]"
                                                       ""
                                                       (downcase title))))
 
