@@ -1127,6 +1127,37 @@ Argument LEN Length."
 (use-package fill-column-indicator :ensure t
   :commands (turn-on-fci-mode))
 
+;; Work in progress.
+;; (use-package web-mode :ensure t
+;;   :config
+;;   ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
+;;   ;; Ensure you install: npm install -g jsxhint
+;;   (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+;;   (defadvice web-mode-highlight-part (around tweak-jsx activate)
+;;     (if (equal web-mode-content-type "jsx")
+;;         (let ((web-mode-enable-part-face nil))
+;;           ad-do-it)
+;;       ad-do-it)))
+
+;; (use-package jsx-mode :ensure t
+;;   :config
+;;   ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
+;;   ;; Ensure you install: npm install -g jsxhint
+;;   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . jsx-mode)))
+
+;; (use-package company-tern :ensure t
+;;   :config
+;;   (add-to-list 'company-backends 'company-tern))
+
+;; (defun ar/js-mode-hook-function ()
+;;   "Called when entering `js-mode'."
+;;   (setq company-tooltip-align-annotations t)
+;;   (setq company-tern-meta-as-single-line t)
+;;   (setq company-tern-property-marker "")
+;;   (setq js-indent-level 2))
+
+;; (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
+
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (add-hook 'after-change-functions
