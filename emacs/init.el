@@ -1087,6 +1087,10 @@ Argument LEN Length."
 (use-package ar-helm
   :commands (ar/helm-find))
 
+(use-package ar-org-blog
+  :commands (ar/org-blog-insert-image
+             ar/org-blog-insert-resized-image))
+
 (use-package ar-helm-org)
 
 (use-package ar-helm-objc
