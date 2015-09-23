@@ -1032,6 +1032,7 @@ Argument LEN Length."
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
+  (c-toggle-hungry-state +1)
   (setq-local company-backends
        ;; List with multiple back-ends for mutual inclusion.
        '(( ;;company-ycmd
@@ -1065,6 +1066,7 @@ Argument LEN Length."
   (bind-key [f6] java-mode-map)
   ;; 2-char indent for java.
   (defvar c-basic-offset)
+  (c-toggle-hungry-state +1)
   (setq c-basic-offset 2)
   (set-fill-column 100))
 
