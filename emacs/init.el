@@ -75,7 +75,8 @@
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
-  :commands (py-yapf-enable-on-save))
+  :commands (py-yapf-enable-on-save)
+  :config (setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
@@ -111,6 +112,9 @@
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
+    (add-to-list 'magit-no-confirm 'stage-all-changes)
+    (setq magit-push-always-verify nil)
+    (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
@@ -809,6 +813,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
+(use-package company-emoji :ensure t
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
 (global-company-mode)
 (company-quickhelp-mode +1)
 
@@ -918,7 +926,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
-  (setq python-indent-offset 4)
+  (setq python-indent-offset 2)
   (anaconda-mode)
   (eldoc-mode +1)
   ;; FIXME python-docstring-mode currently broken
@@ -1121,6 +1129,37 @@ Argument LEN Length."
 (use-package fill-column-indicator :ensure t
   :commands (turn-on-fci-mode))
 
+;; Work in progress.
+;; (use-package web-mode :ensure t
+;;   :config
+;;   ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
+;;   ;; Ensure you install: npm install -g jsxhint
+;;   (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+;;   (defadvice web-mode-highlight-part (around tweak-jsx activate)
+;;     (if (equal web-mode-content-type "jsx")
+;;         (let ((web-mode-enable-part-face nil))
+;;           ad-do-it)
+;;       ad-do-it)))
+
+;; (use-package jsx-mode :ensure t
+;;   :config
+;;   ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
+;;   ;; Ensure you install: npm install -g jsxhint
+;;   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . jsx-mode)))
+
+;; (use-package company-tern :ensure t
+;;   :config
+;;   (add-to-list 'company-backends 'company-tern))
+
+;; (defun ar/js-mode-hook-function ()
+;;   "Called when entering `js-mode'."
+;;   (setq company-tooltip-align-annotations t)
+;;   (setq company-tern-meta-as-single-line t)
+;;   (setq company-tern-property-marker "")
+;;   (setq js-indent-level 2))
+
+;; (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
+
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (add-hook 'after-change-functions
@@ -1128,10 +1167,11 @@ Argument LEN Length."
             t t)
   (let ((m org-mode-map))
     (define-key m [f6] #'ar/ox-html-export))
+  (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
-  (flyspell-mode-on)
+  (flyspell-mode)
   (rainbow-delimiters-mode)
   (org-bullets-mode 1)
   (yas-minor-mode)
@@ -1210,9 +1250,10 @@ Argument LEN Length."
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
-  (company-mode)
   ;; Enable company completion on TAB when in shell mode.
-  (bind-key "TAB" #'company-manual-begin shell-mode-map))
+  ;; (company-mode)
+  ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
+  )
 
 (use-package shell
   :commands shell-mode
@@ -1225,6 +1266,89 @@ Argument LEN Length."
   (setq-local whitespace-style '(face empty tabs)))
 
 (add-hook 'term-mode-hook #'ar/term-mode-hook-function)
+
+;; From http://endlessparentheses.com/a-comment-or-uncomment-sexp-command.html
+(defun ar/uncomment-sexp (&optional n)
+  "Uncomment a sexp around point."
+  (interactive "P")
+  (let* ((initial-point (point-marker))
+         (p)
+         (end (save-excursion
+                (when (elt (syntax-ppss) 4)
+                  (re-search-backward comment-start-skip
+                                      (line-beginning-position)
+                                      t))
+                (setq p (point-marker))
+                (comment-forward (point-max))
+                (point-marker)))
+         (beg (save-excursion
+                (forward-line 0)
+                (while (= end (save-excursion
+                                (comment-forward (point-max))
+                                (point)))
+                  (forward-line -1))
+                (goto-char (line-end-position))
+                (re-search-backward comment-start-skip
+                                    (line-beginning-position)
+                                    t)
+                (while (looking-at-p comment-start-skip)
+                  (forward-char -1))
+                (point-marker))))
+    (unless (= beg end)
+      (uncomment-region beg end)
+      (goto-char p)
+      ;; Indentify the "top-level" sexp inside the comment.
+      (while (and (ignore-errors (backward-up-list) t)
+                  (>= (point) beg))
+        (skip-chars-backward (rx (syntax expression-prefix)))
+        (setq p (point-marker)))
+      ;; Re-comment everything before it. 
+      (ignore-errors
+        (comment-region beg p))
+      ;; And everything after it.
+      (goto-char p)
+      (forward-sexp (or n 1))
+      (skip-chars-forward "\r\n[:blank:]")
+      (if (< (point) end)
+          (ignore-errors
+            (comment-region (point) end))
+        ;; If this is a closing delimiter, pull it up.
+        (goto-char end)
+        (skip-chars-forward "\r\n[:blank:]")
+        (when (= 5 (car (syntax-after (point))))
+          (delete-indentation))))
+    ;; Without a prefix, it's more useful to leave point where
+    ;; it was.
+    (unless n
+      (goto-char initial-point))))
+
+(defun ar/comment-sexp--raw ()
+  "Comment the sexp at point or ahead of point."
+  (pcase (or (bounds-of-thing-at-point 'sexp)
+             (save-excursion
+               (skip-chars-forward "\r\n[:blank:]")
+               (bounds-of-thing-at-point 'sexp)))
+    (`(,l . ,r)
+     (goto-char r)
+     (skip-chars-forward "\r\n[:blank:]")
+     (comment-region l r)
+     (skip-chars-forward "\r\n[:blank:]"))))
+
+(defun ar/comment-or-uncomment-sexp (&optional n)
+  "Comment the sexp at point and move past it.
+If already inside (or before) a comment, uncomment instead.
+With a prefix argument N, (un)comment that many sexps."
+  (interactive "P")
+  (if (or (elt (syntax-ppss) 4)
+          (< (save-excursion
+               (skip-chars-forward "\r\n[:blank:]")
+               (point))
+             (save-excursion
+               (comment-forward 1)
+               (point))))
+      (ar/uncomment-sexp n)
+    (dotimes (_ (or n 1))
+      (ar/comment-sexp--raw))))
 
 (defun ar/comment-dwim ()
   "Comment current line or region."
@@ -1684,16 +1808,9 @@ Sort: _l_ines _o_rg list
 (defun ar/org-insert-youtube-video ()
   "Insert a youtube video to current org file."
   (interactive)
-  (insert (format
-"#+BEGIN_HTML
-  <iframe width='420'
-          height='315'
-          src='https://www.youtube.com/embed/%s'
-          frameborder='0'
-          allowfullscreen>
-  </iframe>
-#+END_HTML"
-(ar/alpha-numeric-clipboard-or-prompt "youtube video id"))))
+  (insert (format "[[youtube:%s][%s]]"
+                  (ar/alpha-numeric-clipboard-or-prompt "youtube video id")
+                  (read-string "description: "))))
 
 ;; From http://oremacs.com/2015/03/07/hydra-org-templates
 (defun ar/hot-expand (str)
@@ -1832,11 +1949,32 @@ _y_outube
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
+;; Based on http://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html
+(org-add-link-type
+ "youtube"
+ (lambda (handle)
+   (browse-url (concat "https://www.youtube.com/watch?v=" handle)))
+ (lambda (path desc backend)
+   (cl-case backend
+     (html (format
+            "<iframe width='420'
+                     height='315'
+                     src='https://www.youtube.com/embed/%s'
+                     frameborder='0'
+                     allowfullscreen>%s
+             </iframe>"
+            path (or desc "")))
+     (latex (format "\href{%s}{%s}" path (or desc "video"))))))
+
 (setq org-refile-targets '((nil :regexp . "Week of")))
 
 (setq org-ellipsis "…")
 
 (setq org-fontify-emphasized-text +1)
+
+;; Required by code block syntax highlighting.
+(use-package htmlize :ensure t)
 
 ;; Fontify code in code blocks.
 (setq org-src-fontify-natively t)
@@ -1905,6 +2043,9 @@ _y_outube
 
 (bind-key "C-x b" #'ar/helm-org-my-hotspots)
 
+;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
+;; (use-package  puml-mode :ensure t)
+
 (defun ar/update-blog-timestamp-at-point ()
   "Update blog entry timestamp at point."
   (interactive)
@@ -1912,7 +2053,7 @@ _y_outube
                         (format-time-string "[%Y-%m-%d %a]")))
 
 (defun ar/org-confirm-babel-evaluate (lang body)
-  "Do not confirm org babel evaluation for known languages."
+  "Do not confirm org babel evaluation for LANG and BODY."
   (and
    (not (string= lang "emacs-lisp"))
    (not (string= lang "plantuml"))))
@@ -1926,7 +2067,7 @@ _y_outube
            jar-path-osx)
           ((file-exists-p jar-path-linux)
            jar-path-linux)
-          ((error "Error: plantuml not installed on platform.")))))
+          ((error "Error: plantuml not installed on platform")))))
 
 (use-package ob-plantuml
   :commands org-babel-execute:plantuml
