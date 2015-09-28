@@ -20,6 +20,13 @@ export PATH=~/local/bin:~/homebrew/bin:$PATH
 
 ### Environment variables ### end
 
+### nvm setup ### start
+
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+
+### nvm setup ### end
+
 ### Functions ### start
 
 err() {
