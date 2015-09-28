@@ -813,6 +813,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
+(use-package company-emoji :ensure t
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
 (global-company-mode)
 (company-quickhelp-mode +1)
 
@@ -1133,7 +1137,7 @@ Argument LEN Length."
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
-  (flyspell-mode-on)
+  (flyspell-mode)
   (rainbow-delimiters-mode)
   (org-bullets-mode 1)
   (yas-minor-mode)
@@ -1228,6 +1232,90 @@ Argument LEN Length."
   (setq-local whitespace-style '(face empty tabs)))
 
 (add-hook 'term-mode-hook #'ar/term-mode-hook-function)
+
+;; From http://endlessparentheses.com/a-comment-or-uncomment-sexp-command.html
+(defun ar/uncomment-sexp (&optional n)
+  "Uncomment a sexp around point."
+  (interactive "P")
+  (let* ((initial-point (point-marker))
+         (p)
+         (end (save-excursion
+                (when (elt (syntax-ppss) 4)
+                  (re-search-backward comment-start-skip
+                                      (line-beginning-position)
+                                      t))
+                (setq p (point-marker))
+                (comment-forward (point-max))
+                (point-marker)))
+         (beg (save-excursion
+                (forward-line 0)
+                (while (= end (save-excursion
+                                (comment-forward (point-max))
+                                (point)))
+                  (forward-line -1))
+                (goto-char (line-end-position))
+                (re-search-backward comment-start-skip
+                                    (line-beginning-position)
+                                    t)
+                (while (looking-at-p comment-start-skip)
+                  (forward-char -1))
+                (point-marker))))
+    (unless (= beg end)
+      (uncomment-region beg end)
+      (goto-char p)
+      ;; Indentify the "top-level" sexp inside the comment.
+      (while (and (ignore-errors (backward-up-list) t)
+                  (>= (point) beg))
+        (skip-chars-backward (rx (syntax expression-prefix)))
+        (setq p (point-marker)))
+      ;; Re-comment everything before it. 
+      (ignore-errors
+        (comment-region beg p))
+      ;; And everything after it.
+      (goto-char p)
+      (forward-sexp (or n 1))
+      (skip-chars-forward "\r\n[:blank:]")
+      (if (< (point) end)
+          (ignore-errors
+            (comment-region (point) end))
+        ;; If this is a closing delimiter, pull it up.
+        (goto-char end)
+        (skip-chars-forward "\r\n[:blank:]")
+        (when (= 5 (car (syntax-after (point))))
+          (delete-indentation))))
+    ;; Without a prefix, it's more useful to leave point where
+    ;; it was.
+    (unless n
+      (goto-char initial-point))))
+
+(defun ar/comment-sexp--raw ()
+  "Comment the sexp at point or ahead of point."
+  (pcase (or (bounds-of-thing-at-point 'sexp)
+             (save-excursion
+               (skip-chars-forward "\r\n[:blank:]")
+               (bounds-of-thing-at-point 'sexp)))
+    (`(,l . ,r)
+     (goto-char r)
+     (skip-chars-forward "\r\n[:blank:]")
+     (comment-region l r)
+     (skip-chars-forward "\r\n[:blank:]"))))
+
+;; From http://endlessparentheses.com/a-comment-or-uncomment-sexp-command.html
+(defun ar/comment-or-uncomment-sexp (&optional n)
+  "Comment the sexp at point and move past it.
+If already inside (or before) a comment, uncomment instead.
+With a prefix argument N, (un)comment that many sexps."
+  (interactive "P")
+  (if (or (elt (syntax-ppss) 4)
+          (< (save-excursion
+               (skip-chars-forward "\r\n[:blank:]")
+               (point))
+             (save-excursion
+               (comment-forward 1)
+               (point))))
+      (ar/uncomment-sexp n)
+    (dotimes (_ (or n 1))
+      (ar/comment-sexp--raw))))
 
 (defun ar/comment-dwim ()
   "Comment current line or region."
@@ -1944,7 +2032,7 @@ _y_outube
                         (format-time-string "[%Y-%m-%d %a]")))
 
 (defun ar/org-confirm-babel-evaluate (lang body)
-  "Do not confirm org babel evaluation for known languages."
+  "Do not confirm org babel evaluation for LANG and BODY."
   (and
    (not (string= lang "emacs-lisp"))
    (not (string= lang "plantuml"))))
@@ -1958,7 +2046,7 @@ _y_outube
            jar-path-osx)
           ((file-exists-p jar-path-linux)
            jar-path-linux)
-          ((error "Error: plantuml not installed on platform.")))))
+          ((error "Error: plantuml not installed on platform")))))
 
 (use-package ob-plantuml
   :commands org-babel-execute:plantuml
