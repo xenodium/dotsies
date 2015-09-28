@@ -68,6 +68,9 @@
 (use-package restclient :ensure t
   :commands (restclient-mode))
 
+(use-package restart-emacs :ensure t
+  :commands (restart-emacs))
+
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
