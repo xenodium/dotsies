@@ -177,6 +177,12 @@ Append `ar/file-build-file-names' to search for other file names."
             (insert (format "%s\n" duplicate-file-name)))
           duplicate-file-names)))
 
+(defun ar/file-dir-locals-directory ()
+  "Get closest .dir-locals.el directory."
+  (file-name-directory (if (stringp (dir-locals-find-file default-directory))
+                           (dir-locals-find-file default-directory)
+                         (car (dir-locals-find-file default-directory)))))
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
