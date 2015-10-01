@@ -966,6 +966,7 @@ Repeated invocations toggle between the two most recently open buffers."
                           (go-eldoc-setup)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
+(use-package golint :ensure)
 
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
@@ -1126,6 +1127,20 @@ Argument LEN Length."
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
+
+(defun ar/js2-mode-hook-function ()
+  "Called when entering `js2-mode'."
+  (js2-imenu-extras-setup)
+  (setq-local js2-basic-offset 2)
+  ;; Moving about by list and expression.
+  ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
+  (modify-syntax-entry ?< "(>")
+  (modify-syntax-entry ?> ")<"))
+
+(use-package js2-mode :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 ;; I prefer sentences to end with one space instead.
 (setq sentence-end-double-space nil)
