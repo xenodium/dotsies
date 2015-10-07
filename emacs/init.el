@@ -112,6 +112,9 @@
                magit-log
                magit-anything-modified-p)
     :config
+    (use-package magit-filenotify :ensure t
+      :config
+      (add-hook 'magit-status-mode-hook 'magit-filenotify-mode))
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
