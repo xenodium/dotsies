@@ -6,7 +6,9 @@
 (require 'comint)
 
 (defun ar/shell-cd (dir-path)
-  "Change shell current working directory to DIR-PATH."
+  "Change shell current working directory to DIR-PATH.
+
+Like shell-pop--cd-to-cwd-shell, but without recentering."
   (unless (string-equal mode-name "Shell")
     (error "Not in Shell mode"))
   (message mode-name)
