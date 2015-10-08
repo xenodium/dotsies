@@ -120,6 +120,8 @@
     (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
+  (use-package discover-my-major :ensure t)
+
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
   ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
@@ -372,7 +374,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (setq projectile-enable-caching nil)
+  (setq projectile-enable-caching t)
   ;; C-u magit-status presents list of repositories.
   (setq magit-repo-dirs (mapcar (lambda (dir)
                                   (substring dir 0 -1))
@@ -1092,6 +1094,9 @@ Argument LEN Length."
 
 (use-package ar-helm
   :commands (ar/helm-find))
+
+(use-package ar-helm-projectile
+  :commands (ar/helm-shell-projectile-cd))
 
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
