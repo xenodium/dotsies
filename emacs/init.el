@@ -388,14 +388,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
-  :bind (("C-x f" . helm-projectile))
-  :config
-  (use-package ar-helm-projectile
-    :commands (ar/helm-projectile-shell-cd)
-    :config
-    (add-hook 'shell-mode-hook (lambda ()
-                                 (local-set-key (kbd "<f7>")
-                                                #'ar/helm-projectile-shell-cd)))))
+  :demand
+  :bind ("C-x f" . helm-projectile))
+
+(use-package ar-helm-projectile
+  :bind ("<f7>" . ar/helm-projectile-shell-cd))
 
 (use-package ediff
   :config
