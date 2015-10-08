@@ -2104,6 +2104,23 @@ _y_outube
            jar-path-linux)
           ((error "Error: plantuml not installed on platform")))))
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (ditaa . t)
+   (dot . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (haskell . nil)
+   (ocaml . nil)
+   (python . t)
+   (ruby . t)
+   (screen . nil)
+   (sh . t)
+   (js . t)
+   (sql . nil)
+   (sqlite . t)))
+
 (use-package ob-plantuml
   :commands org-babel-execute:plantuml
   :config
