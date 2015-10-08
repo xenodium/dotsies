@@ -124,7 +124,7 @@
     (fullframe magit-status magit-mode-quit-window))
 
   (use-package discover-my-major :ensure t)
-  
+
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
   ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
