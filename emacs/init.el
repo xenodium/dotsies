@@ -1096,7 +1096,7 @@ Argument LEN Length."
   :commands (ar/helm-find))
 
 (use-package ar-helm-projectile
-  :commands (ar/helm-shell-projectile-cd))
+  :commands (ar/helm-projectile-shell-cd))
 
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
