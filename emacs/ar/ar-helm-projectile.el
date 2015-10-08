@@ -9,12 +9,14 @@
 (require 'helm-projectile)
 
 (defun ar/helm-projectile-shell-cd ()
-  "Change shell shell current working directory using helm projectile."
+  "Change shell current working directory using helm projectile."
   (interactive)
   (unless (string-equal mode-name "Shell")
     (error "Not in Shell mode"))
   (let ((helm-dir-source (copy-tree  helm-source-projectile-directories-list)))
     (add-to-list 'helm-dir-source '(action . ar/shell-cd))
+    (add-to-list 'helm-dir-source '(keymap . nil))
+    (add-to-list 'helm-dir-source '(header-line . "cd to directory..."))
     (helm :sources helm-dir-source
           :buffer "*helm-dirs*"
           :candidate-number-limit 10000)))
