@@ -10,8 +10,12 @@
   "Join strings in STRINGS list with spaces."
   (mapconcat 'identity strings " "))
 
+(defun ar/string-join (separator &rest strings)
+  "Join strings with SEPARATOR in STRINGS list."
+  (mapconcat 'identity strings separator))
+
 (defun ar/string-match-p (regex string)
-  "Return t if REGEX matches STRING.  nil otherwise."
+  "Return t if REGEX is a match in STRING.  nil otherwise."
   (if (string-match regex string) t nil))
 
 (defun ar/string-numeric-p (string)
