@@ -96,6 +96,8 @@
 
 (use-package async :ensure t :demand)
 
+(use-package enlive :ensure t)
+
 (use-package fullframe :ensure t
   :commands (fullframe)
   :config
