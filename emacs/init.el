@@ -1637,6 +1637,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
         ("\\.m$" (".h"))
         ("\\.mm$" (".h"))))
 
+;; Usually, both `C-x C-m' and `C-x RET' invoke the
+;; `mule-keymap', but that's a waste of keys. Here we put it
+;; _just_ under `C-x RET'.
+;; From http://endlessparentheses.com/multiple-cursors-keybinds.html
+(define-key ctl-x-map (kbd "<return>") mule-keymap)
+
 (defun ar/find-dired-current-dir ()
   "Find files from current location."
   (interactive)
@@ -1646,8 +1652,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (setq save-interprogram-paste-before-kill t)
 
 (use-package multiple-cursors :ensure t
-  :bind (("C-c n" . mc/mark-next-like-this)
-         ("C-c a" . mc/mark-all-like-this)))
+  :bind (("C-c a" . mc/mark-all-like-this-dwim)
+         ("M-1" . mc/mark-next-like-this)
+         ("M-!" . mc/unmark-next-like-this)
+         ("M-2" . mc/mark-previous-like-this)
+         ("M-@" . mc/unmark-previous-like-this)))
+
 (use-package phi-search :ensure t)
 (use-package phi-search-mc :ensure t
   :config
