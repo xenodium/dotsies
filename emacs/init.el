@@ -293,7 +293,7 @@
   (use-package helm-dash :ensure t
     :commands (helm-dash-activate-docset)
     :config (setq helm-dash-browser-func #'browse-url))
-  (setq helm-google-suggest-use-curl-p t)
+  (setq helm-net-prefer-curl t)
   (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (setq helm-quick-update t)  ; do not display invisible candidates
   (setq helm-idle-delay 0.01) ; be idle for this many seconds, before updating in delayed sources.
@@ -1653,6 +1653,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package multiple-cursors :ensure t
   :bind (("C-c a" . mc/mark-all-like-this-dwim)
+         ("C-c n" . mc/mark-more-like-this-extended)
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
