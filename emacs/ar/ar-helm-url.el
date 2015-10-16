@@ -9,16 +9,6 @@
 
 ;;; Code:
 
-(defun ar/helm-url-fetch-anchor-elements (url)
-  "Fetch anchors elements in URL as list of alist:
-\((title . \"my title\")
- (url . \"http://some.location.com\"))."
-  (let ((elements (enlive-query-all (enlive-fetch url) [a])))
-    (mapcar (lambda (element)
-              `((title . ,(enlive-text element))
-                (url . ,(enlive-attr element 'href))))
-            elements)))
-
 (defun ar/helm-url-fetch-anchor-helm-candidates (url)
   "Fetch anchors elements in URL as helm source (TITLE . URL)."
   (let ((elements (enlive-query-all (enlive-fetch url) [a])))
