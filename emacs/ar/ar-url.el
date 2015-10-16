@@ -33,6 +33,7 @@
 
 (defun ar/url-view-anchor-elements-in-url (url)
   "View anchor elements in URL content."
+  (interactive "s URL: ")
   (with-current-buffer (get-buffer-create "*anchor elementss*")
     (erase-buffer)
     (let ((anchors (ar/url-fetch-anchor-elements url)))
