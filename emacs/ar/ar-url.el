@@ -34,14 +34,18 @@
 (defun ar/url-view-anchor-elements-in-url (url)
   "View anchor elements in URL content."
   (interactive "s URL: ")
-  (with-current-buffer (get-buffer-create "*anchor elementss*")
+  (with-current-buffer (get-buffer-create "*anchor elements*")
     (erase-buffer)
     (let ((anchors (ar/url-fetch-anchor-elements url)))
       (mapc (lambda (anchor)
-              (insert (format "%s \n" (cdr (assoc 'url anchor)))))
+              (insert (format "%s\n" (cdr (assoc 'url anchor)))))
             anchors)
       (goto-char (point-min)))
-    (switch-to-buffer (current-buffer))))
+    (switch-to-buffer (current-buffer))
+    (keep-lines "^http")
+    (delete-duplicate-lines (point-min) (point-max))
+    (sort-lines nil (point-min) (point-max))
+    (org-mode)))
 
 (provide 'ar-url)
 
