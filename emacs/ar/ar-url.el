@@ -22,7 +22,7 @@
       urls)))
 
 (defun ar/url-fetch-anchor-elements (url)
-  "Fetch anchors elements in URL as list of alist:
+  "Fetch anchor elements in URL as list of alist:
 \((title . \"my title\")
  (url . \"http://some.location.com\"))."
   (let ((elements (enlive-query-all (enlive-fetch url) [a])))
@@ -31,21 +31,25 @@
                 (url . ,(enlive-attr element 'href))))
             elements)))
 
-(defun ar/url-view-anchor-elements-in-url (url)
-  "View anchor elements in URL content."
+(defun ar/url-view-links-at (url)
+  "View external links in HTML at URL location."
   (interactive "s URL: ")
   (with-current-buffer (get-buffer-create "*anchor elements*")
+    (read-only-mode -1)
     (erase-buffer)
-    (let ((anchors (ar/url-fetch-anchor-elements url)))
-      (mapc (lambda (anchor)
-              (insert (format "%s\n" (cdr (assoc 'url anchor)))))
-            anchors)
-      (goto-char (point-min)))
-    (switch-to-buffer (current-buffer))
-    (keep-lines "^http")
+    (mapc (lambda (anchor)
+            (let-alist anchor
+              (when (and .url (string-match "^http" .url))
+                (insert (org-make-link-string href .title) "\n"))))
+          (ar/url-fetch-anchor-elements url))
+    (goto-char (point-min))
     (delete-duplicate-lines (point-min) (point-max))
     (sort-lines nil (point-min) (point-max))
-    (org-mode)))
+    (org-mode)
+    (toggle-truncate-lines +1)
+    (read-only-mode +1)
+    (switch-to-buffer (current-buffer))))
+
 
 (provide 'ar-url)
 
