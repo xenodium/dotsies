@@ -40,7 +40,7 @@
     (mapc (lambda (anchor)
             (let-alist anchor
               (when (and .url (string-match "^http" .url))
-                (insert (org-make-link-string href .title) "\n"))))
+                (insert (org-make-link-string .url .title) "\n"))))
           (ar/url-fetch-anchor-elements url))
     (goto-char (point-min))
     (delete-duplicate-lines (point-min) (point-max))
