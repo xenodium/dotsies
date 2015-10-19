@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'ar-buffer)
+(require 'ar-input)
 (require 'enlive)
 (require 'goto-addr)
 
@@ -31,21 +32,22 @@
                 (url . ,(enlive-attr element 'href))))
             elements)))
 
-(defun ar/url-view-links-at (url)
-  "View external links in HTML at URL location."
-  (interactive "s URL: ")
-  (with-current-buffer (get-buffer-create "*anchor elements*")
+(defun ar/url-view-links-at ()
+  "View external links in HTML from prompted URL or clipboard."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*links*")
+    (org-mode)
     (read-only-mode -1)
     (erase-buffer)
     (mapc (lambda (anchor)
             (let-alist anchor
               (when (and .url (string-match "^http" .url))
-                (insert (org-make-link-string href .title) "\n"))))
-          (ar/url-fetch-anchor-elements url))
-    (goto-char (point-min))
+                (insert (org-make-link-string .url
+                                              .title) "\n"))))
+          (ar/url-fetch-anchor-elements
+           (ar/input-clipboard-url-or-prompt)))
     (delete-duplicate-lines (point-min) (point-max))
-    (sort-lines nil (point-min) (point-max))
-    (org-mode)
+    (goto-char (point-min))
     (toggle-truncate-lines +1)
     (read-only-mode +1)
     (switch-to-buffer (current-buffer))))
