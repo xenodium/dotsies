@@ -152,6 +152,9 @@
          .outline-2 {
            margin-bottom: 50px;
          }
+         .example {
+           white-space: pre-wrap;
+         }
        </style>")
 
 (provide 'ar-ox-html)
