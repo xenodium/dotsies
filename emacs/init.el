@@ -555,7 +555,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package git-messenger :ensure t)
 
 ;; Highlights current line.
-(use-package hl-line :ensure t)
+;; Disabling while I try beacon-mode instead.
+;;(use-package hl-line :ensure t)
+
+(use-package beacon :ensure t
+  :config (beacon-mode))
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -1240,7 +1244,7 @@ Argument LEN Length."
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
   (flyspell-prog-mode)
   (rainbow-delimiters-mode)
-  (hl-line-mode)
+  ;;(hl-line-mode)
   (rainbow-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
