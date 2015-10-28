@@ -1145,10 +1145,10 @@ Argument LEN Length."
   "Called when entering `js2-mode'."
   (js2-imenu-extras-setup)
   (setq-local js2-basic-offset 2)
-    (setq company-tooltip-align-annotations t)
-    (setq company-tern-meta-as-single-line t)
-    (setq company-tern-property-marker "")
-    (tern-mode 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-tern-meta-as-single-line t)
+  (setq company-tern-property-marker "")
+  (tern-mode 1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
   (modify-syntax-entry ?< "(>")
@@ -1156,8 +1156,15 @@ Argument LEN Length."
 
 (use-package js2-mode :ensure t
   :config
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
+
+;; Requires npm install -g jscs
+;; and .jscsrc with:
+;; {
+;;   "preset": "google",
+;;   "esnext": true
+;; }
+(use-package jscs :ensure t)
 
 ;; I prefer sentences to end with one space instead.
 (setq sentence-end-double-space nil)
@@ -1168,25 +1175,34 @@ Argument LEN Length."
 (use-package fill-column-indicator :ensure t
   :commands (turn-on-fci-mode))
 
+(defun ar/web-mode-hook-function ()
+  "Called when entering `js2-mode'."
+  (js2-imenu-extras-setup)
+  (setq-local web-mode-code-indent-offset 2)
+  (setq-local web-mode-markup-indent-offset 2)
+  (setq-local web-mode-sql-indent-offset 2)
+  (setq-local web-mode-css-indent-offset 2)
+  (setq-local indent-tabs-mode nil)
+  (setq-local standard-indent 2)
+  (set-fill-column 70)
+  ;; Moving about by list and expression.
+  ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
+  (modify-syntax-entry ?< "(>")
+  (modify-syntax-entry ?> ")<")
+  (jscs-fix-run-before-save))
+
 ;; Work in progress.
 (use-package web-mode :ensure t
   :config
   (setq web-mode-code-indent-offset 2)
-  ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
-  ;; Ensure you install: npm install -g jsxhint
   (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
   (defadvice web-mode-highlight-part (around tweak-jsx activate)
     (if (equal web-mode-content-type "jsx")
         (let ((web-mode-enable-part-face nil))
           ad-do-it)
       ad-do-it))
-  (add-hook #'web-mode-hook #'ar/js2-mode-hook-function))
-
-(use-package jsx-mode :ensure t
-  :config
-  ;; Based on https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/
-  ;; Ensure you install: npm install -g jsxhint
-  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . jsx-mode)))
+  (add-hook #'web-mode-hook #'ar/web-mode-hook-function))
 
 (use-package company-tern :ensure t
   :config
