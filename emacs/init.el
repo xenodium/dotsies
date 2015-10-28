@@ -1158,7 +1158,16 @@ Argument LEN Length."
   :config
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
-;; Requires npm install -g jscs
+(use-package json-mode :ensure t)
+
+;; Needs
+;; npm install -g eslint-plugin-flowtype
+;; npm install -g eslint
+;; TODO: Add eslint flycheck.
+
+;; Needs
+;; npm install -g jscs
+;; npm install -g esprima-fb
 ;; and .jscsrc with:
 ;; {
 ;;   "preset": "google",
