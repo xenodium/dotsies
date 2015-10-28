@@ -62,6 +62,8 @@
          .figure {
            padding: 0;
          }
+         /* Table left border */
+         .left { border-left: 1px solid #ccc; }
          .title {
            font-size: 1em;
            text-align: right;
@@ -151,6 +153,9 @@
          }
          .outline-2 {
            margin-bottom: 50px;
+         }
+         .example {
+           white-space: pre-wrap;
          }
        </style>")
 
