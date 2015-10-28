@@ -2117,7 +2117,8 @@ _y_outube
   "Do not confirm org babel evaluation for LANG and BODY."
   (and
    (not (string= lang "emacs-lisp"))
-   (not (string= lang "plantuml"))))
+   (not (string= lang "plantuml"))
+   (not (string= lang "python"))))
 
 (defun ar/plantum-jar-path ()
   "Get plantuml path for different platforms."
