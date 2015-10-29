@@ -1173,7 +1173,8 @@ Argument LEN Length."
 ;;   "preset": "google",
 ;;   "esnext": true
 ;; }
-(use-package jscs :ensure t)
+;; Not working on Linux. Disabled.
+;;(use-package jscs :ensure t)
 
 ;; I prefer sentences to end with one space instead.
 (setq sentence-end-double-space nil)
@@ -1194,11 +1195,12 @@ Argument LEN Length."
   (setq-local indent-tabs-mode nil)
   (setq-local standard-indent 2)
   (set-fill-column 70)
+  ;; Not working on Linux. Disabled.
+  ;; (jscs-fix-run-before-save)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
   (modify-syntax-entry ?< "(>")
-  (modify-syntax-entry ?> ")<")
-  (jscs-fix-run-before-save))
+  (modify-syntax-entry ?> ")<"))
 
 ;; Work in progress.
 (use-package web-mode :ensure t
