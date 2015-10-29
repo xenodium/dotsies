@@ -18,6 +18,13 @@
   "Return t if REGEX is a match in STRING.  nil otherwise."
   (if (string-match regex string) t nil))
 
+(defun ar/string-first-match (regex string)
+  "Return first match if REGEX is a match in STRING.  nil otherwise."
+  (when (ar/string-match-p regex string)
+    (substring string
+               (match-beginning 0)
+               (match-end 0))))
+
 (defun ar/string-numeric-p (string)
   "Return t if STRING is an unsigned integer.  nil otherwise."
   (ar/string-match-p "\\`[[:digit:]]+\\'" string))
