@@ -122,6 +122,9 @@
     (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
+  ;; Well, just because.
+  (use-package zone-nyan :ensure t)
+
   (use-package discover-my-major :ensure t)
 
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
