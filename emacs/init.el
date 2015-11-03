@@ -2064,7 +2064,8 @@ _y_outube
 
 (setq org-refile-targets '((nil :regexp . "Week of")))
 
-(setq org-ellipsis "…")
+(setq org-ellipsis "⤵")
+
 
 (setq org-fontify-emphasized-text +1)
 
