@@ -14,6 +14,24 @@
   (and (file-exists-p path)
        (not (nth 0 (file-attributes path 'string)))))
 
+(defun ar/file-modification-time (file-path)
+  "Return modification time for FILE-PATH or error."
+  (assert (ar/file-file-p file-path) nil "File not found %s: " file-path)
+  (nth 5 (file-attributes  file-path 'string)))
+
+(defun ar/file-last-modified (file-paths)
+  "Return last modified file path in FILE-PATHS."
+  (assert (> (length file-paths) 0) nil "You need at least on path in FILE-PATHS")
+  (let ((newest-file-path (nth 0 file-paths)))
+    (mapc (lambda (file-path)
+            (when (and (ar/file-file-p file-path)
+                       (time-less-p (ar/file-modification-time newest-file-path)
+                                    (ar/file-modification-time file-path)))
+              (setq newest-file-path file-path))
+            (message file-path))
+          file-paths)
+    newest-file-path))
+
 ;; From: http://emacsredux.com/blog/2013/05/04/rename-file-and-buffer
 (defun ar/file-rename-current ()
   "Rename the current buffer and file it is visiting."
@@ -75,6 +93,8 @@
 
 (defun ar/file-find (filename-pattern &rest search-paths)
   "Find file with FILENAME-PATTERN and SEARCH-PATHS."
+  (assert filename-pattern nil "Missing FILENAME-PATTERN")
+  (assert search-paths nil "Missing SEARCH-PATHS")
   (let* ((search-paths-string (mapconcat 'expand-file-name
                                          search-paths
                                          " "))
