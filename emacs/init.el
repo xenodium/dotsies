@@ -821,6 +821,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (key-chord-define-global "BB" #'other-window)
 (key-chord-mode +1)
 
+;; Promising background process runner.
+(use-package bpr :ensure t)
+
 ;; Needs clang-format installed.
 ;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
 ;; See http://clang.llvm.org/docs/ClangFormat.html
