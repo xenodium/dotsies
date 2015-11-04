@@ -55,6 +55,14 @@
 
 (use-package molokai-theme :ensure t)
 
+;; Playing around with dracula-theme.
+;; (use-package dracula-theme :ensure t
+;;   :config
+;;   (custom-theme-set-faces
+;;    'dracula
+;;    '(default
+;;      ((t (:background "black"))))))
+
 ;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
@@ -122,8 +130,16 @@
     (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
-  ;; Well, just because.
-  (use-package zone-nyan :ensure t)
+  ;; A screensaver of sorts
+  (use-package zone
+    :config
+    (zone-when-idle 120)
+
+    ;; A Nyan zone. Well, just because.
+    (use-package zone-nyan :ensure t
+      :config
+      (when (window-system)
+        (setq zone-programs (vconcat [zone-nyan] zone-programs)))))
 
   (use-package discover-my-major :ensure t)
 
@@ -252,6 +268,9 @@
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15))
+
+;; Visual feedback for query-replace, replace, and multiple cursors.
+(use-package visual-regexp :ensure t)
 
 (use-package yasnippet :ensure t)
 (setq yas-snippet-dirs
@@ -812,6 +831,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (key-chord-define-global "JJ" #'ar/switch-to-previous-buffer)
 (key-chord-define-global "BB" #'other-window)
 (key-chord-mode +1)
+
+;; Promising background process runner.
+(use-package bpr :ensure t)
 
 ;; Needs clang-format installed.
 ;; See http://blog.hardcodes.de/articles/63/building-clang-format-and-friends-on-osx-mountain-lion
@@ -2064,7 +2086,8 @@ _y_outube
 
 (setq org-refile-targets '((nil :regexp . "Week of")))
 
-(setq org-ellipsis "…")
+(setq org-ellipsis "⤵")
+
 
 (setq org-fontify-emphasized-text +1)
 
