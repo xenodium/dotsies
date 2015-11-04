@@ -1100,8 +1100,8 @@ Argument LEN Length."
 (use-package ar-org)
 
 (use-package ar-objc
-  :commands (ar/objc-include-header
-             ar/objc-import-header))
+  :commands (ar/objc-import
+             ar/objc-include))
 
 (use-package ar-url
   :commands (ar/url-view-links-at))
