@@ -479,6 +479,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
+;; Override selection with new text.
+(delete-selection-mode)
+
 ;; Automatically closes brackets.
 (electric-pair-mode)
 ;; Additional electric pairs.
