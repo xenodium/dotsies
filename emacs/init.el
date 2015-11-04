@@ -130,8 +130,16 @@
     (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
-  ;; Well, just because.
-  (use-package zone-nyan :ensure t)
+  ;; A screensaver of sorts
+  (use-package zone
+    :config
+    (zone-when-idle 120)
+
+    ;; A Nyan zone. Well, just because.
+    (use-package zone-nyan :ensure t
+      :config
+      (when (window-system)
+        (setq zone-programs (vconcat [zone-nyan] zone-programs)))))
 
   (use-package discover-my-major :ensure t)
 
