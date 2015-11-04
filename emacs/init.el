@@ -55,6 +55,14 @@
 
 (use-package molokai-theme :ensure t)
 
+;; Playing around with dracula-theme.
+;; (use-package dracula-theme :ensure t
+;;   :config
+;;   (custom-theme-set-faces
+;;    'dracula
+;;    '(default
+;;      ((t (:background "black"))))))
+
 ;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
