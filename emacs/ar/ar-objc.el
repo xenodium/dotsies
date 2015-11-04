@@ -84,7 +84,7 @@ file.m -> file.h"
 
 (defun ar/objc-import (prefix filename)
   "Insert a new header, with PREFIX, use #include else #import and FILENAME."
-  (interactive "P")
+  (interactive "P\nsfile: ")
   (ar/objc--insert-new (if prefix "include" "import")
                        (or filename (read-string "name: "))))
 
