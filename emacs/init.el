@@ -261,6 +261,9 @@
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15))
 
+;; Visual feedback for query-replace, replace, and multiple cursors.
+(use-package visual-regexp :ensure t)
+
 (use-package yasnippet :ensure t)
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets/personal"))
