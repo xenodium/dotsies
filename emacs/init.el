@@ -296,6 +296,10 @@
 (use-package exec-path-from-shell :ensure t
   :commands (exec-path-from-shell-initialize))
 
+;; Alert me when moving cursor inefficiently.
+(use-package annoying-arrows-mode :ensure t
+  :config (global-annoying-arrows-mode))
+
 (use-package helm
   :config
   (use-package imenu-anywhere :ensure t)
@@ -685,7 +689,7 @@ Argument PROMPT to check for additional prompt."
                                          try-expand-dabbrev-all-buffers
                                          try-expand-dabbrev-from-kill
                                          try-complete-file-name-partially
-                                         try-complete-file-name
+                                         try-complete-file-nameac
                                          try-expand-all-abbrevs
                                          try-expand-list
                                          try-expand-line))
