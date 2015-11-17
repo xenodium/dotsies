@@ -6,9 +6,9 @@
 
 ;;; Code:
 
-(require 'package)
 (require 'ar-process)
 (require 'ar-python)
+(require 'package)
 
 (defun ar/package-initialize ()
   "Initialize package sources more securely.
@@ -16,6 +16,7 @@ Based on: https://glyph.twistedmatrix.com/2015/11/editor-malware.html"
   (setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
                            ("melpa" . "https://melpa.org/packages/")))
   (ar/process-assert-binary-installed "gnutls-cli")
+  (ar/python-assert-module-installed "certifi")
   (let ((trustfile
          (replace-regexp-in-string
           "\\\\" "/"
