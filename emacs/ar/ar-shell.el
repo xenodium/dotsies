@@ -3,6 +3,7 @@
 ;;; Commentary:
 ;; Shell helpers.
 
+(require 'cl)
 (require 'comint)
 
 (defun ar/shell-cd (dir-path)
