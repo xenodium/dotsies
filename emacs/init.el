@@ -79,6 +79,10 @@
 (use-package restart-emacs :ensure t
   :commands (restart-emacs))
 
+;; Display chars/lines or row/columns in the region.
+(use-package region-state :ensure t
+  :config (region-state-mode))
+
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
