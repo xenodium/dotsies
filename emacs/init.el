@@ -41,11 +41,8 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
-(require 'package)
-
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
-(package-initialize)
+(require 'ar-package)
+(ar/package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
