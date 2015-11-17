@@ -76,6 +76,10 @@
 (use-package restart-emacs :ensure t
   :commands (restart-emacs))
 
+;; Display chars/lines or row/columns in the region.
+(use-package region-state :ensure t
+  :config (region-state-mode))
+
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
@@ -293,6 +297,10 @@
 (use-package exec-path-from-shell :ensure t
   :commands (exec-path-from-shell-initialize))
 
+;; Alert me when moving cursor inefficiently.
+(use-package annoying-arrows-mode :ensure t
+  :config (global-annoying-arrows-mode))
+
 (use-package helm
   :config
   (use-package imenu-anywhere :ensure t)
@@ -475,6 +483,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
+
+;; Override selection with new text.
+(delete-selection-mode)
 
 ;; Automatically closes brackets.
 (electric-pair-mode)
@@ -679,7 +690,7 @@ Argument PROMPT to check for additional prompt."
                                          try-expand-dabbrev-all-buffers
                                          try-expand-dabbrev-from-kill
                                          try-complete-file-name-partially
-                                         try-complete-file-name
+                                         try-complete-file-nameac
                                          try-expand-all-abbrevs
                                          try-expand-list
                                          try-expand-line))
