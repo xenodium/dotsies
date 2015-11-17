@@ -13,9 +13,7 @@
 (defun ar/package-initialize ()
   "Initialize package sources more securely.
 Based on: https://glyph.twistedmatrix.com/2015/11/editor-malware.html"
-  (setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/")))
-  (ar/process-assert-binary-installed "gnutls-cli")
+  (ar/process-assert-binary-installed "gnutls-cli" "Install with: brew install gnutls or apt-get install gnutls-bin")
   (ar/python-assert-module-installed "certifi")
   (let ((trustfile
          (replace-regexp-in-string
@@ -27,6 +25,8 @@ Based on: https://glyph.twistedmatrix.com/2015/11/editor-malware.html"
           (list
            (format "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)))
     (setq gnutls-trustfiles (list trustfile)))
+  (setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/")))
   (setq tls-checktrust t)
   (package-initialize))
 
