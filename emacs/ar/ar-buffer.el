@@ -12,6 +12,18 @@
 (require 'url)
 (require 'url-http)
 
+(defun ar/buffer-current-dir-path ()
+  "Return current buffer directory path."
+  (if (equal major-mode 'dired-mode)
+      default-directory
+    (file-name-directory (buffer-file-name))))
+
+(defun ar/buffer-current-path ()
+  "Return current buffer path."
+  (if (equal major-mode 'dired-mode)
+      default-directory
+    (buffer-file-name)))
+
 (defun ar/buffer-fetch-urls-in-url (url)
   "Return URLs in fetched URL content as a list."
   (with-current-buffer (ar/buffer-fetch-url url)
