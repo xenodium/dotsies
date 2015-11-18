@@ -33,6 +33,16 @@
   "Return t if STRING is alphanumeric.  nil otherwise."
   (ar/string-match-p "\\`[[:alnum:]]+\\'" string))
 
+(defun ar/string-replace-regex-pairs (haystack &rest pairs)
+  "Replace in HAYSTACK all PAIRS. For example: (ar/string-replace \"one two\" '(\"one\" . \"three\") '(\"two\" . \"four\"))"
+  (mapc (lambda (pair)
+          (assert (consp pair) nil "Each pair must be a cons cell")
+          (setq haystack (replace-regexp-in-string (car pair)
+                                                   (cdr pair)
+                                                   haystack)))
+        pairs)
+  haystack)
+
 (provide 'ar-string)
 
 ;;; ar-string.el ends here

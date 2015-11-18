@@ -1129,6 +1129,9 @@ Argument LEN Length."
 
 (use-package ar-org)
 
+(use-package ar-image
+  :commands (ar/image-open-html-for-current-dir))
+
 (use-package ar-objc
   :commands (ar/objc-import
              ar/objc-include))

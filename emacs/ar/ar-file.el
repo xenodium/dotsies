@@ -101,7 +101,7 @@
          (find-command (format "find %s -iname %s"
                                search-paths-string
                                filename-pattern)))
-    (split-string (shell-command-to-string find-command) "\n")))
+    (remove "" (split-string (shell-command-to-string find-command) "\n"))))
 
 (defun ar/file-grep (regexp filename-pattern &rest search-paths)
   "Grep for REGEXP and narrow to FILENAME-PATTERN and SEARCH-PATHS."
