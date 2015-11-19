@@ -166,24 +166,45 @@
       ;; Hide dired details by default.
       (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
 
+;; Disabling while trying out spaceline.
+;; (defun ar/setup-graphical-mode-line ()
+;;   "Set up graphical mode line."
+;;   (use-package rich-minority :ensure t)
+;;   ;; Hide all minor modes from mode line.
+;;   (add-to-list 'rm-whitelist nil t)
+;;   (use-package smart-mode-line :ensure t)
+;;   ;; Disabling, to try out dark theme.
+;;   ;;  (use-package smart-mode-line-powerline-theme :ensure t)
+;;   (setq sml/theme 'dark
+;;         sml/mule-info nil
+;;         sml/show-remote nil
+;;         sml/name-width '(20 . 40)
+;;         sml/shorten-modes t
+;;         sml/mode-width 'right)
+;;   (custom-set-faces
+;;    '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
+;;   (add-hook 'after-init-hook #'ar/enable-graphical-time)
+;;   (sml/setup))
+
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
-  (use-package rich-minority :ensure t)
-  ;; Hide all minor modes from mode line.
-  (add-to-list 'rm-whitelist nil t)
-  (use-package smart-mode-line :ensure t)
-  ;; Disabling, to try out dark theme.
-  ;;  (use-package smart-mode-line-powerline-theme :ensure t)
-  (setq sml/theme 'dark
-        sml/mule-info nil
-        sml/show-remote nil
-        sml/name-width '(20 . 40)
-        sml/shorten-modes t
-        sml/mode-width 'right)
+  (use-package spaceline :ensure t)
+  (require 'spaceline-config)
   (custom-set-faces
    '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
-  (add-hook 'after-init-hook #'ar/enable-graphical-time)
-  (sml/setup))
+  (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-buffer-encoding-off)
+  (spaceline-toggle-buffer-encoding-abbrev-off)
+  (setq powerline-default-separator 'wave)
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+  (spaceline-define-segment line-column
+    "The current line and column numbers."
+    "l:%l c:%2c")
+  (spaceline-define-segment date-time
+    "The current date and time."
+    (format-time-string "%Y-%m-%d %H:%M"))
+  (spaceline-toggle-date-time-on)
+  (spaceline-emacs-theme 'date-time))
 
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
@@ -2071,9 +2092,6 @@ _y_outube
 (setq flycheck-check-syntax-automatically
       '(save idle-change mode-enabled)
       flycheck-idle-change-delay 0.8)
-
-(setq flycheck-display-errors-function
-      #'flycheck-pos-tip-error-messages)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
