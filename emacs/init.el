@@ -190,8 +190,6 @@
   "Set up graphical mode line."
   (use-package spaceline :ensure t)
   (require 'spaceline-config)
-  (custom-set-faces
-   '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
   (spaceline-toggle-minor-modes-off)
   (spaceline-toggle-buffer-encoding-off)
   (spaceline-toggle-buffer-encoding-abbrev-off)
@@ -200,11 +198,14 @@
   (spaceline-define-segment line-column
     "The current line and column numbers."
     "l:%l c:%2c")
-  (spaceline-define-segment date-time
-    "The current date and time."
-    (format-time-string "%Y-%m-%d %H:%M"))
-  (spaceline-toggle-date-time-on)
-  (spaceline-emacs-theme 'date-time))
+  (spaceline-define-segment time
+    "The current time."
+    (format-time-string "%H:%M"))
+  (spaceline-define-segment date
+    "The current date."
+    (format-time-string "%h %m"))
+  (spaceline-toggle-time-on)
+  (spaceline-emacs-theme 'date 'time))
 
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
