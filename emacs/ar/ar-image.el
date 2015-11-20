@@ -18,7 +18,7 @@
   (let ((body-html-template "<html><header><title>{{dir-path}}</title></header><body><h1>{{dir-path}}<h1/>{{images}}</body></html>")
         (image-html-template (format "<img width='%d%%' src='{{image-path}}'/>" image-percentage-size))
         (images-html "")
-        (images-paths (directory-files (expand-file-name dir-path) t "\\(png\\|jpg\\|bmp\\|gif\\)$"))
+        (images-paths (directory-files (expand-file-name dir-path) t "\\(PNG\\|JPG\\|BMP\\|GIF\\|png\\|jpg\\|bmp\\|gif\\)$"))
         (output-file-path (format "/tmp/%d.html" (random 9999))))
     (assert (> (length images-paths) 0) nil "No images found")
     (mapc (lambda (image-path)
