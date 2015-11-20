@@ -203,7 +203,7 @@
     (format-time-string "%H:%M"))
   (spaceline-define-segment date
     "The current date."
-    (format-time-string "%h %m"))
+    (format-time-string "%h %d"))
   (spaceline-toggle-time-on)
   (spaceline-emacs-theme 'date 'time))
 
