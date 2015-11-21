@@ -1016,6 +1016,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package go-eldoc :ensure t
   :commands go-eldoc-setup)
 
+(use-package gotest :ensure t)
+
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
