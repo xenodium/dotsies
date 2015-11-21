@@ -16,7 +16,7 @@ if [[ -z $STUFF_DIR ]]; then
    export STUFF_DIR=~/stuff
 fi
 
-export PATH=~/local/bin:~/homebrew/bin:$PATH
+export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
 ### Environment variables ### end
 
