@@ -285,13 +285,6 @@
 (use-package expand-region :ensure t
   :bind ("C-c w" . er/expand-region))
 
-(use-package recentf
-  :init
-  (recentf-mode)
-  :config
-  (setq recentf-max-saved-items 200
-        recentf-max-menu-items 15))
-
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
 
@@ -342,6 +335,12 @@
   (use-package helm-dash :ensure t
     :commands (helm-dash-activate-docset)
     :config (setq helm-dash-browser-func #'browse-url))
+  (use-package recentf
+    :init
+    (recentf-mode)
+    :config
+    (setq recentf-max-saved-items 200
+          recentf-max-menu-items 15))
   (setq helm-net-prefer-curl t)
   (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (setq helm-quick-update t)  ; do not display invisible candidates
@@ -1017,6 +1016,8 @@ Repeated invocations toggle between the two most recently open buffers."
   :commands go-eldoc-setup)
 
 (use-package gotest :ensure t)
+
+(use-package go-snippets :ensure t)
 
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
