@@ -18,6 +18,12 @@
       default-directory
     (file-name-directory (buffer-file-name))))
 
+(defun ar/buffer-ignore-process-query (buffer)
+  "Do not query to kill BUFFER with process."
+  (let ((proc (get-buffer-process buffer)))
+    (when (processp proc)
+      (set-process-query-on-exit-flag proc nil))))
+
 (defun ar/buffer-current-path ()
   "Return current buffer path."
   (if (equal major-mode 'dired-mode)
