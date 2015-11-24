@@ -318,6 +318,8 @@
 
 (use-package helm
   :config
+  ;; Switch major modes and toggle minor modes.
+  (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t)
   (use-package helm-buffers
@@ -349,7 +351,7 @@
   (setq helm-ff-search-library-in-sexp t)
   (setq helm-split-window-default-side 'below) ;; open helm buffer below.
   (setq helm-split-window-in-side-p t)
-  (setq helm-candidate-number-limit 100)
+  (setq helm-candidate-number-limit 200)
   (setq helm-boring-file-regexp-list
         '("\\.git$" "\\.hg$"
           "\\.svn$" "\\.CVS$"
