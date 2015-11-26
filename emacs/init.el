@@ -316,11 +316,13 @@
 (use-package annoying-arrows-mode :ensure t
   :config (global-annoying-arrows-mode))
 
-;; (use-package saveplace :ensure t :defer t
-;;   :init
-;;   (setq-default save-place t)
-;;   (setq save-place-file (expand-file-name ".places"
-;;                                           user-emacs-directory)))
+;; Remember point/place for each file.
+(use-package saveplace :defer t
+  :init
+  (setq-default save-place t)
+  (setq save-place-file (expand-file-name ".places"
+                                          user-emacs-directory))
+  (save-place-mode))
 
 (use-package helm
   :config
