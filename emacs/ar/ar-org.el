@@ -215,30 +215,6 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
               (ar/org-element-at-heading-1))
              :CUSTOM_ID))
 
-;; TODO. Move to ar-blog.el.
-(defun ar/org-insert-image ()
-  "Insert an image into the current headline, creating a subdirectory with CUSTOM_ID."
-  (interactive)
-  (let ((custom-id (ar/org-custom-id-at-heading-1))
-        (image-path nil)
-        (destination-path nil)
-        (default-name nil)
-        (file-name nil))
-    (unless custom-id
-      (error "Can't find a heading 1 CUSTOM_ID"))
-    (setq image-path (ar/file-read-image-name))
-    (setq default-name (file-name-nondirectory image-path))
-    (setq file-name (read-string (format "Default name (%s): "
-                                         default-name)
-                                 nil nil default-name))
-    (setq destination-path (format "images/%s" custom-id))
-    (mkdir destination-path t)
-    (setq destination-path (format "%s/%s" destination-path
-                                   file-name))
-    (copy-file image-path destination-path)
-    (insert (format "[[file:%s]]" destination-path))
-    (org-display-inline-images)))
-
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/org-src-color-blocks-light ()
   "Color the block headers and footers to make them stand out more for lighter themes."
