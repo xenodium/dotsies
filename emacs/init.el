@@ -316,6 +316,12 @@
 (use-package annoying-arrows-mode :ensure t
   :config (global-annoying-arrows-mode))
 
+;; (use-package saveplace :ensure t :defer t
+;;   :init
+;;   (setq-default save-place t)
+;;   (setq save-place-file (expand-file-name ".places"
+;;                                           user-emacs-directory)))
+
 (use-package helm
   :config
   ;; Switch major modes and toggle minor modes.
