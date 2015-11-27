@@ -17,6 +17,9 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
+;; Show keystrokes earlier (ie. C-x)
+(setq echo-keystrokes 0.1)
+
 ;; Prevent split-window-sensibly to split horizontally.
 (setq split-width-threshold nil)
 
@@ -1212,7 +1215,7 @@ Argument LEN Length."
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
 
-;; Produce HTML from CSS-like selectors. TODO: Enable for HTMLcr mode.
+;; Produce HTML from CSS-like selectors. TODO: Enable for HTML mode.
 (use-package emmet-mode :ensure t)
 
 (defun ar/js2-mode-hook-function ()
