@@ -1212,6 +1212,9 @@ Argument LEN Length."
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
 
+;; Produce HTML from CSS-like selectors. TODO: Enable for HTMLcr mode.
+(use-package emmet-mode :ensure t)
+
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
   (js2-imenu-extras-setup)
