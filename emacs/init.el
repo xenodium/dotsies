@@ -168,6 +168,11 @@
       (fullframe dired quit-window)
       ;; Try to guess the target directory for operations.
       (setq dired-dwim-target t)
+      ;; Enable since disabled by default.
+      (put 'dired-find-alternate-file 'disabled nil)
+      ;; Automatically refresh dired buffers when contents changes.
+      (setq dired-auto-revert-buffer t)
+
       (add-hook 'dired-mode-hook 'discover-mode)
       ;; Hide dired details by default.
       (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
@@ -243,7 +248,6 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
 
 (use-package anchored-transpose :ensure t)
 
