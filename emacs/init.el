@@ -328,7 +328,13 @@
   (setq-default save-place t)
   (setq save-place-file (expand-file-name ".places"
                                           user-emacs-directory))
-  (save-place-mode))
+  ;; Different methods available across Emacs versions.
+  (cond ((fboundp 'save-place-mode)
+         (save-place-mode))
+        ((fboundp 'toggle-save-place-globally)
+         (toggle-save-place-globally))
+        (t
+         (error "Neither save-place-mode nor toggle-save-place-globally available"))))
 
 (use-package helm
   :config
