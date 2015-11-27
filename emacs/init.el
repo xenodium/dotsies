@@ -23,6 +23,9 @@
 ;; Prevent split-window-sensibly to split horizontally.
 (setq split-width-threshold nil)
 
+;; Automatically uncompress/compress compressed files for reading/writing.
+(auto-compression-mode t)
+
 ;; Customize vertical window divider:
 ;; Set symbol for the border.
 (set-display-table-slot standard-display-table
