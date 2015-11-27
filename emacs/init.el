@@ -328,7 +328,7 @@
   (setq-default save-place t)
   (setq save-place-file (expand-file-name ".places"
                                           user-emacs-directory))
-  ;; Different methods available across Emacs versions.
+  ;; Different functions available across Emacs versions.
   (cond ((fboundp 'save-place-mode)
          (save-place-mode))
         ((fboundp 'toggle-save-place-globally)
