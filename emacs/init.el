@@ -278,7 +278,8 @@
 (use-package howdoi :ensure t)
 
 ;; Displays available keybindings in a popup.
-(use-package which-key :ensure t)
+(use-package which-key :ensure t
+  (which-key-mode))
 
 ;; Twitter.
 (use-package twittering-mode :ensure t)
