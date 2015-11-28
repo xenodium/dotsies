@@ -30,8 +30,6 @@
   "Perform initializations for Mac OS X."
   (unless (ar/osx-p)
     (error "Loading OS X config on different platform"))
-  ;; This sets $MANPATH, $PATH and exec-path from your shell.
-  (exec-path-from-shell-initialize)
   ;; On Mac, this is effectively fn-M-backspace.
   (bind-key "M-(" #'kill-word)
   ;; Keep menu bar under graphical OS X for fullscreen.
