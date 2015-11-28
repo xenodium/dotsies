@@ -1,11 +1,13 @@
 all: init emaxcode silver_searcher global yasnippet
 
 silver_searcher:
-	brew install ag || apt-get install silversearcher-a
+	which ag || brew install ag || apt-get install silversearcher-a
 
 init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
+	mkdir -p ~/.emacs.d/downloads/exec-path-from-shell
+	curl https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el -o ~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el
 	make -C ar
 
 global:

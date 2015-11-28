@@ -9,6 +9,12 @@
 ;; Increase memory threshold for garbage collection.
 (setq gc-cons-threshold 20000000)
 
+;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment (Mac UI only).
+(when (memq window-system '(mac ns))
+  (load "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el")
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
+
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
@@ -318,9 +324,6 @@
 
 ;; (global-set-key (kbd "C-s")
 ;;                 #'ar/prefilled-swiper)
-
-(use-package exec-path-from-shell :ensure t
-  :commands (exec-path-from-shell-initialize))
 
 ;; Alert me when moving cursor inefficiently.
 (use-package annoying-arrows-mode :ensure t
