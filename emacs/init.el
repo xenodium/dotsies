@@ -89,6 +89,71 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
 
+;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(defun ar/setup-graphical-fonts ()
+  "Setup fonts (on graphical display only."
+  ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+  (deftheme ar/org-theme "Sub-theme to beautify org mode")
+  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color  (face-foreground 'default nil 'default))
+         (background-color (face-background 'default nil 'default))
+         (primary-color    (face-foreground 'mode-line nil))
+         (secondary-color  (face-background 'secondary-selection nil 'region))
+         (headline        `(:inherit default :foreground ,base-font-color))
+         (padding         `(:line-width 5 :color ,background-color)))
+    (custom-theme-set-faces 'ar/org-theme
+                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
+                            `(org-level-8 ((t (,@headline ,@sans-font))))
+                            `(org-level-7 ((t (,@headline ,@sans-font))))
+                            `(org-level-6 ((t (,@headline ,@sans-font))))
+                            `(org-level-5 ((t (,@headline ,@sans-font))))
+                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
+                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
+                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
+                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
+                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
+
+(defun ar/setup-graphical-fringe ()
+  "Setup up the fringe (graphical display only)."
+  (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
+
+(defun ar/setup-graphical-mode-line ()
+  "Set up graphical mode line."
+  (use-package spaceline :ensure t
+    :config
+    (require 'spaceline-config)
+    (spaceline-toggle-minor-modes-off)
+    (spaceline-toggle-buffer-encoding-off)
+    (spaceline-toggle-buffer-encoding-abbrev-off)
+    (setq powerline-default-separator 'wave)
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+    (spaceline-define-segment line-column
+      "The current line and column numbers."
+      "l:%l c:%2c")
+    (spaceline-define-segment time
+      "The current time."
+      (format-time-string "%H:%M"))
+    (spaceline-define-segment date
+      "The current date."
+      (format-time-string "%h %d"))
+    (spaceline-toggle-time-on)
+    (spaceline-emacs-theme 'date 'time)))
+
+;; TODO: Revisit this.
+(defun ar/setup-graphical-display ()
+  "Setup graphical display."
+  (when (window-system)
+    (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
+    (toggle-frame-fullscreen)
+    (ar/setup-graphical-mode-line)
+    (ar/setup-graphical-fringe)
+    (ar/setup-graphical-fonts)))
+(ar/setup-graphical-display)
+
 ;; Tip of the day.
 (use-package totd :ensure t
   :commands (totd)
@@ -212,28 +277,6 @@
 ;;    '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
 ;;   (add-hook 'after-init-hook #'ar/enable-graphical-time)
 ;;   (sml/setup))
-
-(defun ar/setup-graphical-mode-line ()
-  "Set up graphical mode line."
-  (use-package spaceline :ensure t
-    :config
-    (require 'spaceline-config)
-    (spaceline-toggle-minor-modes-off)
-    (spaceline-toggle-buffer-encoding-off)
-    (spaceline-toggle-buffer-encoding-abbrev-off)
-    (setq powerline-default-separator 'wave)
-    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-    (spaceline-define-segment line-column
-      "The current line and column numbers."
-      "l:%l c:%2c")
-    (spaceline-define-segment time
-      "The current time."
-      (format-time-string "%H:%M"))
-    (spaceline-define-segment date
-      "The current date."
-      (format-time-string "%h %d"))
-    (spaceline-toggle-time-on)
-    (spaceline-emacs-theme 'date 'time)))
 
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
@@ -599,51 +642,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;;   :config
 ;;   (add-hook 'git-commit-mode-hook 'git-commit-training-wheels-mode)
 ;;   :commands (git-commit-mode))
-
-(defun ar/setup-graphical-fringe ()
-  "Setup up the fringe (graphical display only)."
-  (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(deftheme ar/org-theme "Sub-theme to beautify org mode")
-
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/setup-graphical-fonts ()
-  "Setup fonts (on graphical display only."
-  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color  (face-foreground 'default nil 'default))
-         (background-color (face-background 'default nil 'default))
-         (primary-color    (face-foreground 'mode-line nil))
-         (secondary-color  (face-background 'secondary-selection nil 'region))
-         (headline        `(:inherit default :foreground ,base-font-color))
-         (padding         `(:line-width 5 :color ,background-color)))
-    (custom-theme-set-faces 'ar/org-theme
-                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
-                            `(org-level-8 ((t (,@headline ,@sans-font))))
-                            `(org-level-7 ((t (,@headline ,@sans-font))))
-                            `(org-level-6 ((t (,@headline ,@sans-font))))
-                            `(org-level-5 ((t (,@headline ,@sans-font))))
-                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
-                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
-                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
-                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
-
-;; TODO: Revisit this.
-(defun ar/setup-graphical-display ()
-  "Setup graphical display."
-  (when (window-system)
-    (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
-    (toggle-frame-fullscreen)
-    (ar/setup-graphical-mode-line)
-    (ar/setup-graphical-fringe)
-    (ar/setup-graphical-fonts)))
-
-(ar/setup-graphical-display)
 
 ;; Handy pop-up messages with git info.
 (use-package git-messenger :ensure t)
@@ -1076,7 +1074,8 @@ Repeated invocations toggle between the two most recently open buffers."
                           (go-eldoc-setup)
                           (setq tab-width 2 indent-tabs-mode 1)
                           (add-hook 'before-save-hook #'gofmt-before-save)))
-(use-package golint :ensure)
+
+(use-package golint :ensure t)
 
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
