@@ -84,6 +84,11 @@
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
 
+(use-package dabbrev
+  :config
+  ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
+  (setq dabbrev-case-fold-search nil))
+
 ;; Tip of the day.
 (use-package totd :ensure t
   :commands (totd)
@@ -138,10 +143,7 @@
     (fullframe paradox-list-packages paradox-quit-and-close))
   (use-package magit :ensure t
     :bind ("C-x g" . magit-status)
-    :commands (magit-pull
-               magit-status
-               magit-log
-               magit-anything-modified-p)
+    :defer 2
     :config
     ;;  Revert visited buffers silently when pullling, merging, etc.
     (setq magit-revert-buffers 'silent)
@@ -667,9 +669,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
 
-;; Case-sensitive fold search search (ie. M-/ to autocomplete).
-(setq dabbrev-case-fold-search nil)
-
 ;;  http://scottmcpeak.com/elisp/scott.emacs.el
 ;;  ------------------- yes-or-no-p ---------------------
 ;;  There are a number of situations where Emacs wants to ask me a question,
@@ -743,17 +742,19 @@ Argument PROMPT to check for additional prompt."
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
-(bind-key "M-/" #'hippie-expand)
+(use-package hippie-expand
+  :bind ("M-/" . hippie-expand)
+  :config
+  (setq hippie-expand-try-functions-list '(try-expand-dabbrev
+                                           try-expand-dabbrev-visible
+                                           try-expand-dabbrev-all-buffers
+                                           try-expand-dabbrev-from-kill
+                                           try-complete-file-name-partially
+                                           try-complete-file-nameac
+                                           try-expand-all-abbrevs
+                                           try-expand-list
+                                           try-expand-line)))
 
-(setq hippie-expand-try-functions-list '(try-expand-dabbrev
-                                         try-expand-dabbrev-visible
-                                         try-expand-dabbrev-all-buffers
-                                         try-expand-dabbrev-from-kill
-                                         try-complete-file-name-partially
-                                         try-complete-file-nameac
-                                         try-expand-all-abbrevs
-                                         try-expand-list
-                                         try-expand-line))
 ;; Thank you Sacha Chua.
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
 (fset 'yes-or-no-p 'y-or-n-p)
