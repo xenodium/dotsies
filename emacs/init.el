@@ -57,7 +57,9 @@
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
 
-(set-cursor-color "#FA009A")
+;; Set default cursor color.
+(setq default-frame-alist
+      '((cursor-color . "#FA009A")))
 
 (require 'ar-package)
 (ar/package-initialize)
@@ -211,24 +213,25 @@
 
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
-  (use-package spaceline :ensure t)
-  (require 'spaceline-config)
-  (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-buffer-encoding-off)
-  (spaceline-toggle-buffer-encoding-abbrev-off)
-  (setq powerline-default-separator 'wave)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (spaceline-define-segment line-column
-    "The current line and column numbers."
-    "l:%l c:%2c")
-  (spaceline-define-segment time
-    "The current time."
-    (format-time-string "%H:%M"))
-  (spaceline-define-segment date
-    "The current date."
-    (format-time-string "%h %d"))
-  (spaceline-toggle-time-on)
-  (spaceline-emacs-theme 'date 'time))
+  (use-package spaceline :ensure t
+    :config
+    (require 'spaceline-config)
+    (spaceline-toggle-minor-modes-off)
+    (spaceline-toggle-buffer-encoding-off)
+    (spaceline-toggle-buffer-encoding-abbrev-off)
+    (setq powerline-default-separator 'wave)
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+    (spaceline-define-segment line-column
+      "The current line and column numbers."
+      "l:%l c:%2c")
+    (spaceline-define-segment time
+      "The current time."
+      (format-time-string "%H:%M"))
+    (spaceline-define-segment date
+      "The current date."
+      (format-time-string "%h %d"))
+    (spaceline-toggle-time-on)
+    (spaceline-emacs-theme 'date 'time)))
 
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
@@ -634,9 +637,9 @@ Optional argument NON-RECURSIVE to shallow-search."
   (when (window-system)
     (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
+    (ar/setup-graphical-mode-line)
     (ar/setup-graphical-fringe)
-    (ar/setup-graphical-fonts)
-    (ar/setup-graphical-mode-line)))
+    (ar/setup-graphical-fonts)))
 
 (ar/setup-graphical-display)
 
@@ -1017,7 +1020,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
 ;; (setq ycmd--log-enabled t)
 
-
+;; Consider elpy mode instead. See https://github.com/daschwa/emacs.d
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
@@ -1222,6 +1225,7 @@ Argument LEN Length."
   :demand
   :bind (("C-x t" . ar/platform-new-browser-tab)))
 
+;; TODO: Migrate to a config module.
 (use-package ar-mode-line
   :demand)
 
@@ -1255,7 +1259,9 @@ Argument LEN Length."
   (modify-syntax-entry ?> ")<"))
 
 (use-package js2-mode :ensure t
+  :interpreter "node"
   :config
+  (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 (use-package json-mode :ensure t)
@@ -2157,45 +2163,35 @@ _y_outube
             path (or desc "")))
      (latex (format "\href{%s}{%s}" path (or desc "video"))))))
 
-(setq org-refile-targets '((nil :regexp . "Week of")))
-
-(setq org-ellipsis "⤵")
-
-
-(setq org-fontify-emphasized-text +1)
+(use-package org
+  :ensure t
+  :defer t
+  :init
+  (setq org-refile-targets '((nil :regexp . "Week of")))
+  (setq org-ellipsis "⤵")
+  (setq org-fontify-emphasized-text +1)
+  ;; Fontify code in code blocks.
+  (setq org-src-fontify-natively t)
+  ;; When exporting anything, do not insert in kill ring.
+  (setq org-export-copy-to-kill-ring nil)
+  ;; Display images inline when running in GUI.
+  (setq org-startup-with-inline-images (display-graphic-p))
+  (setq org-src-tab-acts-natively t)
+  ;; Prevent inadvertently editing invisible areas in Org.
+  (setq org-catch-invisible-edits 'error)
+  (setq org-image-actual-width t)
+  (setq org-hide-emphasis-markers t)
+  ;; All Org leading stars become invisible.
+  (setq org-hide-leading-stars t)
+  ;; Skip Org's odd indentation levels (1, 3, ...).
+  (setq org-odd-levels-only t)
+  ;; Disable auto isearch within org-goto.
+  (setq org-goto-auto-isearch nil)
+  ;; Enable RET to follow Org links.
+  (setq org-return-follows-link t))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
-
-;; Fontify code in code blocks.
-(setq org-src-fontify-natively t)
-
-;; When exporting anything, do not insert in kill ring.
-(setq org-export-copy-to-kill-ring nil)
-
-;; Display images inline when running in GUI.
-(setq org-startup-with-inline-images (display-graphic-p))
-
-(setq org-src-tab-acts-natively t)
-
-;; Prevent inadvertently editing invisible areas in Org.
-(setq org-catch-invisible-edits 'error)
-
-(setq org-image-actual-width t)
-
-(setq org-hide-emphasis-markers t)
-
-;; All Org leading stars become invisible.
-(setq org-hide-leading-stars t)
-
-;; Skip Org's odd indentation levels (1, 3, ...).
-(setq org-odd-levels-only t)
-
-;; Disable auto isearch within org-goto.
-(setq org-goto-auto-isearch nil)
-
-;; Enable RET to follow Org links.
-(setq org-return-follows-link t)
 
 (ignore-errors (use-package org-beautify-theme :ensure t))
 

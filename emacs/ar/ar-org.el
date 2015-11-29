@@ -226,7 +226,6 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
      ((t (:background "#FFFFEA"))))
    '(org-block-end-line
      ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
    '(which-func ((t (:foreground "#008000"))))))
 
 ;; Based on https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
@@ -241,7 +240,6 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
      ((t (:background "#111111"))))
    '(org-block-end-line
      ((t (:foreground "#008ED1" :background nil))))
-   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
    '(which-func ((t (:foreground "green"))))))
 
 (setq org-drawers(append '("MODIFIED") org-drawers))
