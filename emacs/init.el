@@ -3,11 +3,29 @@
 ;; Just another init.el file.
 ;;; Code:
 
+;; Hide UI (early on).
+(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
+
+;; Get rid of splash screens.
+;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+
+;; No Alarms.
+(setq ring-bell-function 'ignore)
+
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
 ;; Increase memory threshold for garbage collection.
 (setq gc-cons-threshold 20000000)
+
+;; From https://github.com/daschwa/emacs.d
+;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
+;; that you can always see what's happening.
+(setq eval-expression-print-level nil)
 
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment (Mac UI only).
 (when (memq window-system '(mac ns))
@@ -17,11 +35,6 @@
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
-
-;; Get rid of splash screens.
-;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
 
 ;; Show keystrokes earlier (ie. C-x)
 (setq echo-keystrokes 0.1)
@@ -45,13 +58,6 @@
 (set-face-attribute 'default nil :height 180)
 
 (set-cursor-color "#FA009A")
-
-;; Hide UI.
-(menu-bar-mode -1)
-(when (fboundp 'toggle-scroll-bar)
-  (toggle-scroll-bar -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
 
 (require 'ar-package)
 (ar/package-initialize)
@@ -277,23 +283,25 @@
 ;; Search StackOverflow snippets.
 (use-package howdoi :ensure t)
 
-;; Displays available keybindings in a popup.
 (use-package which-key :ensure t
-  (which-key-mode))
+  :config (which-key-mode))
 
 ;; Twitter.
 (use-package twittering-mode :ensure t)
 
 (use-package rainbow-delimiters :ensure t)
 
-(use-package hungry-delete :ensure t)
-(global-hungry-delete-mode)
+(use-package hungry-delete :ensure t
+  :config (global-hungry-delete-mode))
+
 (global-font-lock-mode)
 (global-auto-revert-mode)
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
 (setq global-auto-revert-non-file-buffers t)
+;; Be quiet about dired refresh.
+(setq auto-revert-verbose nil)
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
@@ -624,7 +632,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (defun ar/setup-graphical-display ()
   "Setup graphical display."
   (when (window-system)
-    (setq frame-title-format '("𝔼𝕞𝕒𝕔𝕤"))
+    (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
     (ar/setup-graphical-fringe)
     (ar/setup-graphical-fonts)
@@ -711,8 +719,6 @@ Argument PROMPT to check for additional prompt."
   '(define-key vc-prefix-map "=" #'vc-ediff))
 
 (setq css-indent-offset 2)
-
-(setq ring-bell-function 'ignore)
 
 (use-package markdown-mode+ :ensure t)
 (autoload 'markdown-mode "markdown-mode"
@@ -1813,6 +1819,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package hydra :ensure t)
 (setq hydra-is-helpful t)
 
+;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro :ensure t)
 
 (defhydra hydra-vc-log-edit (:color blue :hint nil)
