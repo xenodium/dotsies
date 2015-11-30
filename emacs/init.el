@@ -129,7 +129,7 @@
     (spaceline-toggle-minor-modes-off)
     (spaceline-toggle-buffer-encoding-off)
     (spaceline-toggle-buffer-encoding-abbrev-off)
-    (setq powerline-default-separator 'wave)
+    (setq powerline-default-separator 'arrow)
     (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
     (spaceline-define-segment line-column
       "The current line and column numbers."
