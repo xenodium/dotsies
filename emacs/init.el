@@ -84,6 +84,10 @@
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
 
+;; Restart Emacs from Emacs.
+(use-package restart-emacs :ensure t
+  :commands (restart-emacs))
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
@@ -165,9 +169,6 @@
 
 (use-package restclient :ensure t
   :commands (restclient-mode))
-
-(use-package restart-emacs :ensure t
-  :commands (restart-emacs))
 
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state :ensure t
