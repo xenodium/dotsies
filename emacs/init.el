@@ -177,6 +177,8 @@
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
 
+(use-package fontawesome :ensure t)
+
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
