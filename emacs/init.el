@@ -2310,10 +2310,10 @@ line instead."
   (setq use-dialog-box nil))
 
 (use-package server
-  :commands (server-running-p
-             server-start))
-(unless (server-running-p)
-  (server-start))
+  :defer 2
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
 
