@@ -227,12 +227,26 @@
   (use-package zone
     :config
     (zone-when-idle 120)
+    (setq zone-programs
+          [zone-pgm-jitter
+           zone-pgm-putz-with-case
+           zone-pgm-whack-chars
+           zone-pgm-rotate
+           zone-pgm-rotate-LR-lockstep
+           zone-pgm-rotate-RL-lockstep
+           zone-pgm-rotate-LR-variable
+           zone-pgm-rotate-RL-variable
+           zone-pgm-drip
+           zone-pgm-drip-fretfully
+           zone-pgm-five-oclock-swan-dive
+           zone-pgm-martini-swan-dive]))
 
-    ;; A Nyan zone. Well, just because.
-    (use-package zone-nyan :ensure t
-      :config
-      (when (window-system)
-        (setq zone-programs (vconcat [zone-nyan] zone-programs)))))
+  ;; A Nyan zone. Well, just because.
+  (use-package zone-nyan :ensure t
+    :after zone
+    :config
+    (when (window-system)
+      (setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
