@@ -228,8 +228,7 @@
     :config
     (zone-when-idle 120)
     (setq zone-programs
-          [zone-pgm-jitter
-           zone-pgm-putz-with-case
+          [zone-pgm-putz-with-case
            zone-pgm-whack-chars
            zone-pgm-rotate
            zone-pgm-rotate-LR-lockstep
