@@ -1822,6 +1822,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   (phi-search-mc/setup-keys))
 
+;; Modify multiple cursors.
+(use-package broadcast :ensure t)
+
 (defun ar/numeric-clipboard-or-prompt (prompt)
   "Return an integer from clipboard or PROMPT."
   (let* ((clipboard (current-kill 0))
