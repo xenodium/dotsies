@@ -437,8 +437,11 @@
     :commands (helm-swoop))
   (use-package helm-config)
   (use-package helm-dash :ensure t
-    :commands (helm-dash-activate-docset)
-    :config (setq helm-dash-browser-func #'browse-url))
+    :config
+    ;; View documentation in external browser.
+    ;; (setq helm-dash-browser-func #'browse-url)
+    ;; View documentation in ewww.
+    (setq helm-dash-browser-func #'eww))
   (use-package recentf
     :init
     (recentf-mode)
@@ -758,7 +761,7 @@ Argument PROMPT to check for additional prompt."
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
-(use-package hippie-expand
+(use-package hippie-exp
   :bind ("M-/" . hippie-expand)
   :config
   (setq hippie-expand-try-functions-list '(try-expand-dabbrev
@@ -2026,7 +2029,8 @@ Sort: _l_ines _o_rg list
   ("o" org-sort-list nil)
   ("b" ar/buffer-sort-current-block nil)
   ("q" nil nil :color blue))
-(bind-key "M-s" #'hydra-sort/body)
+;; Not great. Conflicts with company search.
+;; (bind-key "M-s" #'hydra-sort/body)
 
 (defhydra hydra-jingle (:color red)
   "jingle"
