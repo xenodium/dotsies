@@ -1038,6 +1038,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (setq ycmd--log-enabled t)
 
 ;; Consider elpy mode instead. See https://github.com/daschwa/emacs.d
+;; Consider company jedi. See https://github.com/syohex/emacs-company-jedi
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
@@ -1045,6 +1046,32 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
+
+;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun ar/narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if you
+         ;; don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
 
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
@@ -1265,6 +1292,7 @@ Argument LEN Length."
 
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
+  (requirejs-mode)
   (js2-imenu-extras-setup)
   (setq-local js2-basic-offset 2)
   (setq company-tooltip-align-annotations t)
@@ -1276,7 +1304,10 @@ Argument LEN Length."
   (modify-syntax-entry ?< "(>")
   (modify-syntax-entry ?> ")<"))
 
+(use-package requirejs :ensure t)
+
 (use-package js2-mode :ensure t
+  :after requirejs-emacs
   :interpreter "node"
   :config
   (ar/process-assert-binary-installed "node")
