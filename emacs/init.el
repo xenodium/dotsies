@@ -1316,7 +1316,13 @@ Argument LEN Length."
   (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
-(use-package json-mode :ensure t)
+(defun ar/json-mode-hook-function ()
+  "Called when entering `json-mode'."
+  (json-mode-beautify))
+
+(use-package json-mode :ensure t
+  :config
+  (add-hook #'json-mode-hook #'ar/json-mode-hook-function))
 
 ;; Needs
 ;; npm install -g eslint-plugin-flowtype
