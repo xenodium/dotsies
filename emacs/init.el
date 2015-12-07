@@ -1316,6 +1316,16 @@ Argument LEN Length."
   (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
+(defun ar/dart-mode-hook-function ()
+  "Called when entering `dart-mode'."
+  (flycheck-mode))
+
+(use-package dart-mode :ensure t
+  :config
+  ;; TODO: Add analysis server path.
+  (setq dart-enable-analysis-server t)
+  (add-hook 'dart-mode-hook #'ar/dart-mode-hook-function))
+
 (defun ar/json-mode-hook-function ()
   "Called when entering `json-mode'."
   (json-mode-beautify))
