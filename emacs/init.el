@@ -1346,13 +1346,7 @@ Argument LEN Length."
   (setq dart-enable-analysis-server t)
   (add-hook 'dart-mode-hook #'ar/dart-mode-hook-function))
 
-(defun ar/json-mode-hook-function ()
-  "Called when entering `json-mode'."
-  (json-mode-beautify))
-
-(use-package json-mode :ensure t
-  :config
-  (add-hook #'json-mode-hook #'ar/json-mode-hook-function))
+(use-package json-mode :ensure t)
 
 ;; Needs
 ;; npm install -g eslint-plugin-flowtype
