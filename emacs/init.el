@@ -320,6 +320,9 @@
           ("http://blog.roteiv.com/atom.xml" blog vietor)
           ("https://news.ycombinator.com/rss" news hackernews)
           ("http://reddit.com/r/emacs/.rss" social reddit))))
+(use-package elfeed-goodies :ensure t :after elfeed
+  :config
+  (elfeed-goodies/setup))
 
 ;; Start off with elfeed.
 
