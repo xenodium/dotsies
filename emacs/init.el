@@ -891,6 +891,17 @@ With a prefix ARG open line above the current line."
 
 (bind-key "C-o" #'ar/smart-open-line)
 
+;; From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
+(defun ar/join-line-or-lines-in-region ()
+  "Join this line or the lines in the selected region."
+  (interactive)
+  (cond ((region-active-p)
+         (let ((min (line-number-at-pos (region-beginning))))
+           (goto-char (region-end))
+           (while (> (line-number-at-pos) min)
+             (join-line))))
+        (t (call-interactively 'join-line))))
+
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window))
