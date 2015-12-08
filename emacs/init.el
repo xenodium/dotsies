@@ -322,6 +322,7 @@
           ("http://reddit.com/r/emacs/.rss" social reddit))))
 (use-package elfeed-goodies :ensure t :after elfeed
   :config
+  (setq elfeed-goodies/entry-pane-position 'bottom)
   (elfeed-goodies/setup))
 
 ;; Start off with elfeed.
@@ -1328,9 +1329,11 @@ Argument LEN Length."
 
 (use-package js2-mode :ensure t
   :after requirejs-emacs
-  :interpreter "node"
+  ;; Enable for node
+  ;; :interpreter "node"
   :config
-  (ar/process-assert-binary-installed "node")
+  ;; Enable for node
+  ;; (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 (defun ar/dart-mode-hook-function ()
