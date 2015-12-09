@@ -84,6 +84,8 @@
 (use-package bug-hunter :ensure t
   :commands (bug-hunter-init-file))
 
+(use-package esup :ensure t)
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
