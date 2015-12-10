@@ -204,6 +204,34 @@
 
 (use-package enlive :ensure t)
 
+(use-package dired
+  :after (discover fullframe)
+  :commands dired-mode
+  :config
+  ;; Use RET instead of "a" in dired.
+  (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
+  ;; Use ^ for moving to parent dir.
+  (bind-key "^" (lambda ()
+                  (interactive)
+                  (find-alternate-file "..")) dired-mode-map)
+  (fullframe dired quit-window)
+  ;; Try to guess the target directory for operations.
+  (setq dired-dwim-target t)
+  ;; Enable since disabled by default.
+  (put 'dired-find-alternate-file 'disabled nil)
+  ;; Automatically refresh dired buffers when contents changes.
+  (setq dired-auto-revert-buffer t)
+
+  (add-hook 'dired-mode-hook 'discover-mode)
+  ;; Hide dired details by default.
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+
+(use-package dired-subtree :ensure t
+  :after dired
+  :config
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+
 (use-package fullframe :ensure t
   :commands (fullframe)
   :config
@@ -255,28 +283,7 @@
   ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
     :demand
-    :commands (discover-mode)
-    :config
-    (use-package dired
-      :commands dired-mode
-      :config
-      ;; Use RET instead of "a" in dired.
-      (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
-      ;; Use ^ for moving to parent dir.
-      (bind-key "^" (lambda ()
-                      (interactive)
-                      (find-alternate-file "..")) dired-mode-map)
-      (fullframe dired quit-window)
-      ;; Try to guess the target directory for operations.
-      (setq dired-dwim-target t)
-      ;; Enable since disabled by default.
-      (put 'dired-find-alternate-file 'disabled nil)
-      ;; Automatically refresh dired buffers when contents changes.
-      (setq dired-auto-revert-buffer t)
-
-      (add-hook 'dired-mode-hook 'discover-mode)
-      ;; Hide dired details by default.
-      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
+    :commands (discover-mode)))
 
 ;; Disabling while trying out spaceline.
 ;; (defun ar/setup-graphical-mode-line ()
