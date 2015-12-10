@@ -632,10 +632,19 @@ Optional argument NON-RECURSIVE to shallow-search."
 (electric-indent-mode)
 
 ;; Highlight matching parenthesis.
-(show-paren-mode)
-;; Highlight entire bracket expression.
-(setq show-paren-style 'mixed)
-
+(use-package paren :ensure t
+  :config
+  (show-paren-mode 1)
+  ;; Without this matching parens aren't highlighted in region.
+  (setq show-paren-priority -50)
+  (setq show-paren-delay 0)
+  ;; Highlight entire bracket expression.
+  (setq show-paren-style 'mixed)
+  (set-face-attribute 'show-paren-match nil
+                      :weight 'extra-bold
+                      :foreground "#FA009A"
+                      :background "default"
+                      :underline nil))
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t
