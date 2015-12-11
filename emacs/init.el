@@ -266,7 +266,6 @@
            zone-pgm-rotate-LR-variable
            zone-pgm-rotate-RL-variable
            zone-pgm-drip
-           zone-pgm-drip-fretfully
            zone-pgm-five-oclock-swan-dive
            zone-pgm-martini-swan-dive]))
 
