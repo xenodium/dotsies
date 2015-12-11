@@ -648,10 +648,8 @@ Optional argument NON-RECURSIVE to shallow-search."
   ;; Highlight entire bracket expression.
   (setq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
-                      :weight 'extra-bold
-                      :foreground "#FA009A"
                       :background "default"
-                      :underline nil))
+                      :foreground "#FA009A"))
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t
