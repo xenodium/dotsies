@@ -88,6 +88,8 @@
 (use-package restart-emacs :ensure t
   :commands (restart-emacs))
 
+(use-package esup :ensure t)
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
@@ -178,6 +180,8 @@
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
 
+(use-package fontawesome :ensure t)
+
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
@@ -200,6 +204,34 @@
 (use-package async :ensure t :demand)
 
 (use-package enlive :ensure t)
+
+(use-package dired
+  :after (discover fullframe)
+  :commands dired-mode
+  :config
+  ;; Use RET instead of "a" in dired.
+  (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
+  ;; Use ^ for moving to parent dir.
+  (bind-key "^" (lambda ()
+                  (interactive)
+                  (find-alternate-file "..")) dired-mode-map)
+  (fullframe dired quit-window)
+  ;; Try to guess the target directory for operations.
+  (setq dired-dwim-target t)
+  ;; Enable since disabled by default.
+  (put 'dired-find-alternate-file 'disabled nil)
+  ;; Automatically refresh dired buffers when contents changes.
+  (setq dired-auto-revert-buffer t)
+
+  (add-hook 'dired-mode-hook 'discover-mode)
+  ;; Hide dired details by default.
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+
+(use-package dired-subtree :ensure t
+  :after dired
+  :config
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
 (use-package fullframe :ensure t
   :commands (fullframe)
@@ -226,12 +258,24 @@
   (use-package zone
     :config
     (zone-when-idle 120)
+    (setq zone-programs
+          [zone-pgm-putz-with-case
+           zone-pgm-whack-chars
+           zone-pgm-rotate
+           zone-pgm-rotate-LR-lockstep
+           zone-pgm-rotate-RL-lockstep
+           zone-pgm-rotate-LR-variable
+           zone-pgm-rotate-RL-variable
+           zone-pgm-drip
+           zone-pgm-five-oclock-swan-dive
+           zone-pgm-martini-swan-dive]))
 
-    ;; A Nyan zone. Well, just because.
-    (use-package zone-nyan :ensure t
-      :config
-      (when (window-system)
-        (setq zone-programs (vconcat [zone-nyan] zone-programs)))))
+  ;; A Nyan zone. Well, just because.
+  (use-package zone-nyan :ensure t
+    :after zone
+    :config
+    (when (window-system)
+      (setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
@@ -239,28 +283,7 @@
   ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
     :demand
-    :commands (discover-mode)
-    :config
-    (use-package dired
-      :commands dired-mode
-      :config
-      ;; Use RET instead of "a" in dired.
-      (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
-      ;; Use ^ for moving to parent dir.
-      (bind-key "^" (lambda ()
-                      (interactive)
-                      (find-alternate-file "..")) dired-mode-map)
-      (fullframe dired quit-window)
-      ;; Try to guess the target directory for operations.
-      (setq dired-dwim-target t)
-      ;; Enable since disabled by default.
-      (put 'dired-find-alternate-file 'disabled nil)
-      ;; Automatically refresh dired buffers when contents changes.
-      (setq dired-auto-revert-buffer t)
-
-      (add-hook 'dired-mode-hook 'discover-mode)
-      ;; Hide dired details by default.
-      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
+    :commands (discover-mode)))
 
 ;; Disabling while trying out spaceline.
 ;; (defun ar/setup-graphical-mode-line ()
@@ -297,13 +320,20 @@
 (use-package maxframe :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
-(use-package elfeed :ensure t)
-(setq elfeed-feeds
-      '(("http://planet.emacsen.org/atom.xml" blog emacs)
-        ("http://planet.gnome.org/rss20.xml" blog gnome)
-        ("http://sachachua.com/blog/feed" blog sachachua)
-        ("http://blog.roteiv.com/atom.xml" blog vietor)
-        ("http://reddit.com/r/emacs/.rss" blog reddit)))
+(use-package elfeed :ensure t
+  :config
+  (setq elfeed-feeds
+        '(("http://planet.emacsen.org/atom.xml" blog emacs)
+          ("http://planet.gnome.org/rss20.xml" blog gnome)
+          ("http://sachachua.com/blog/feed" blog sachachua)
+          ("http://blog.roteiv.com/atom.xml" blog vietor)
+          ("https://news.ycombinator.com/rss" news hackernews)
+          ("http://reddit.com/r/emacs/.rss" social reddit))))
+(use-package elfeed-goodies :ensure t :after elfeed
+  :config
+  (setq elfeed-goodies/entry-pane-position 'bottom)
+  (elfeed-goodies/setup))
+
 ;; Start off with elfeed.
 
 (use-package bind-key :ensure t)
@@ -423,8 +453,11 @@
     :commands (helm-swoop))
   (use-package helm-config)
   (use-package helm-dash :ensure t
-    :commands (helm-dash-activate-docset)
-    :config (setq helm-dash-browser-func #'browse-url))
+    :config
+    ;; View documentation in external browser.
+    ;; (setq helm-dash-browser-func #'browse-url)
+    ;; View documentation in ewww.
+    (setq helm-dash-browser-func #'eww))
   (use-package recentf
     :init
     (recentf-mode)
@@ -606,10 +639,19 @@ Optional argument NON-RECURSIVE to shallow-search."
 (electric-indent-mode)
 
 ;; Highlight matching parenthesis.
-(show-paren-mode)
-;; Highlight entire bracket expression.
-(setq show-paren-style 'mixed)
-
+(use-package paren :ensure t
+  :config
+  (show-paren-mode 1)
+  ;; Without this matching parens aren't highlighted in region.
+  (setq show-paren-priority -50)
+  (setq show-paren-delay 0)
+  ;; Highlight entire bracket expression.
+  (setq show-paren-style 'mixed)
+  (set-face-attribute 'show-paren-match nil
+                      :weight 'extra-bold
+                      :foreground "#FA009A"
+                      :background "default"
+                      :underline nil))
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t
@@ -744,7 +786,7 @@ Argument PROMPT to check for additional prompt."
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
-(use-package hippie-expand
+(use-package hippie-exp
   :bind ("M-/" . hippie-expand)
   :config
   (setq hippie-expand-try-functions-list '(try-expand-dabbrev
@@ -873,6 +915,17 @@ With a prefix ARG open line above the current line."
       (newline-and-indent))))
 
 (bind-key "C-o" #'ar/smart-open-line)
+
+;; From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
+(defun ar/join-line-or-lines-in-region ()
+  "Join this line or the lines in the selected region."
+  (interactive)
+  (cond ((region-active-p)
+         (let ((min (line-number-at-pos (region-beginning))))
+           (goto-char (region-end))
+           (while (> (line-number-at-pos) min)
+             (join-line))))
+        (t (call-interactively 'join-line))))
 
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -1024,6 +1077,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (setq ycmd--log-enabled t)
 
 ;; Consider elpy mode instead. See https://github.com/daschwa/emacs.d
+;; Consider company jedi. See https://github.com/syohex/emacs-company-jedi
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
@@ -1031,6 +1085,32 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
+
+;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun ar/narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if you
+         ;; don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
 
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
@@ -1251,6 +1331,7 @@ Argument LEN Length."
 
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
+  (requirejs-mode)
   (js2-imenu-extras-setup)
   (setq-local js2-basic-offset 2)
   (setq company-tooltip-align-annotations t)
@@ -1262,11 +1343,26 @@ Argument LEN Length."
   (modify-syntax-entry ?< "(>")
   (modify-syntax-entry ?> ")<"))
 
+(use-package requirejs :ensure t)
+
 (use-package js2-mode :ensure t
-  :interpreter "node"
+  :after requirejs-emacs
+  ;; Enable for node
+  ;; :interpreter "node"
   :config
-  (ar/process-assert-binary-installed "node")
+  ;; Enable for node
+  ;; (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
+
+(defun ar/dart-mode-hook-function ()
+  "Called when entering `dart-mode'."
+  (flycheck-mode))
+
+(use-package dart-mode :ensure t
+  :config
+  ;; TODO: Add analysis server path.
+  (setq dart-enable-analysis-server t)
+  (add-hook 'dart-mode-hook #'ar/dart-mode-hook-function))
 
 (use-package json-mode :ensure t)
 
@@ -1808,6 +1904,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   (phi-search-mc/setup-keys))
 
+;; Modify multiple cursors.
+(use-package broadcast :ensure t)
+
 (defun ar/numeric-clipboard-or-prompt (prompt)
   "Return an integer from clipboard or PROMPT."
   (let* ((clipboard (current-kill 0))
@@ -1978,7 +2077,8 @@ Sort: _l_ines _o_rg list
   ("o" org-sort-list nil)
   ("b" ar/buffer-sort-current-block nil)
   ("q" nil nil :color blue))
-(bind-key "M-s" #'hydra-sort/body)
+;; Not great. Conflicts with company search.
+;; (bind-key "M-s" #'hydra-sort/body)
 
 (defhydra hydra-jingle (:color red)
   "jingle"
@@ -2311,10 +2411,10 @@ line instead."
   (setq use-dialog-box nil))
 
 (use-package server
-  :commands (server-running-p
-             server-start))
-(unless (server-running-p)
-  (server-start))
+  :defer 2
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
 
