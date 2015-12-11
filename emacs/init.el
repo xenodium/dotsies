@@ -54,13 +54,6 @@
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
 
-;; Set default cursor color.
-(setq default-frame-alist
-      '((cursor-color . "#FA009A")))
-
-;; Set region color.
-(set-face-attribute 'region nil :background "#FA009A")
-
 (require 'ar-package)
 (ar/package-initialize)
 
@@ -70,7 +63,14 @@
 
 (require 'use-package)
 
-(use-package molokai-theme :ensure t)
+(use-package molokai-theme :ensure t
+  :config
+  ;; Set default cursor color.
+  (setq default-frame-alist
+        '((cursor-color . "#FA009A")))
+
+  ;; Set region color.
+  (set-face-attribute 'region nil :background "#FA009A"))
 
 ;; Playing around with dracula-theme.
 ;; (use-package dracula-theme :ensure t
