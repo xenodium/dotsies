@@ -51,15 +51,15 @@
                         'vertical-border
                         (make-glyph-code ?|))
 
-;; Set region color.
-(set-face-attribute 'region nil :background "#0000ff")
-
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
 
 ;; Set default cursor color.
 (setq default-frame-alist
       '((cursor-color . "#FA009A")))
+
+;; Set region color.
+(set-face-attribute 'region nil :background "#FA009A")
 
 (require 'ar-package)
 (ar/package-initialize)
@@ -655,7 +655,11 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Automatically highlight all instances of thing at point.
 (use-package highlight-thing :ensure t
-  :commands highlight-thing-mode)
+  :commands highlight-thing-mode
+  :config
+  (set-face-attribute 'highlight-thing nil
+                      :foreground "default"
+                      :background "deep sky blue"))
 
 ;; Partially use path in buffer name.
 (use-package uniquify
