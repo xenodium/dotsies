@@ -646,7 +646,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (setq show-paren-priority -50)
   (setq show-paren-delay 0)
   ;; Highlight entire bracket expression.
-  (setq show-paren-style 'mixed)
+  (setq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
                       :weight 'extra-bold
                       :foreground "#FA009A"
