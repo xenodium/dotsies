@@ -70,7 +70,9 @@
         '((cursor-color . "#FA009A")))
 
   ;; Set region color.
-  (set-face-attribute 'region nil :background "#FA009A"))
+  (set-face-attribute 'region nil
+                      :background "#FA009A"
+                      :foreground "default"))
 
 ;; Playing around with dracula-theme.
 ;; (use-package dracula-theme :ensure t
@@ -656,8 +658,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :commands highlight-thing-mode
   :config
   (set-face-attribute 'highlight-thing nil
-                      :foreground "default"
-                      :background "deep sky blue"))
+                      :foreground "#FA009A"))
 
 ;; Partially use path in buffer name.
 (use-package uniquify
