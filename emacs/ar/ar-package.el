@@ -9,6 +9,7 @@
 (require 'ar-process)
 (require 'ar-python)
 (require 'package)
+(require 'tls)
 
 (defun ar/package-initialize ()
   "Initialize package sources more securely.
@@ -25,9 +26,9 @@ Based on: https://glyph.twistedmatrix.com/2015/11/editor-malware.html"
           (list
            (format "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)))
     (setq gnutls-trustfiles (list trustfile)))
+  (setq tls-checktrust t)
   (setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
                            ("melpa" . "https://melpa.org/packages/")))
-  (setq tls-checktrust t)
   (package-initialize))
 
 (provide 'ar-package)
