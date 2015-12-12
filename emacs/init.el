@@ -69,6 +69,10 @@
   (setq default-frame-alist
         '((cursor-color . "#FA009A")))
 
+  (set-face-attribute 'highlight nil
+                      :background "default"
+                      :foreground "blue"
+                      :underline t)
   ;; Set region color.
   (set-face-attribute 'region nil
                       :background "#FA009A"
