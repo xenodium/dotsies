@@ -264,10 +264,6 @@
           [zone-pgm-putz-with-case
            zone-pgm-whack-chars
            zone-pgm-rotate
-           zone-pgm-rotate-LR-lockstep
-           zone-pgm-rotate-RL-lockstep
-           zone-pgm-rotate-LR-variable
-           zone-pgm-rotate-RL-variable
            zone-pgm-drip
            zone-pgm-five-oclock-swan-dive
            zone-pgm-martini-swan-dive]))
@@ -658,6 +654,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :commands highlight-thing-mode
   :config
   (set-face-attribute 'highlight-thing nil
+                      :background "default"
                       :foreground "#FA009A"))
 
 ;; Partially use path in buffer name.
