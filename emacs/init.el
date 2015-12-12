@@ -69,11 +69,16 @@
   (setq default-frame-alist
         '((cursor-color . "#FA009A")))
 
+  (set-face-attribute 'isearch nil
+                      :foreground "dim gray"
+                      :background "yellow")
+  (set-face-attribute 'lazy-highlight nil
+                      :foreground "yellow"
+                      :background "dim gray")
   (set-face-attribute 'highlight nil
                       :background "default"
                       :foreground "blue"
                       :underline t)
-  ;; Set region color.
   (set-face-attribute 'region nil
                       :background "#FA009A"
                       :foreground "default"))
