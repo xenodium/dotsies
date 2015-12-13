@@ -51,7 +51,8 @@
   "Kill the current buffer and deletes the file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
-    (when filename
+    (when (and filename
+               (y-or-n-p (format "Delete %s ? " filename)))
       (if (vc-backend filename)
           (vc-delete-file filename)
         (progn
