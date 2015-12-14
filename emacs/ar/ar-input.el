@@ -9,10 +9,10 @@
 (defun ar/input-clipboard-url-or-prompt ()
   "Return a URL from clipboard or prompt user for one."
   (let* ((clipboard (current-kill 0))
-         (url (if (string-match "^http://" clipboard)
+         (url (if (string-match "^https?://" clipboard)
                   clipboard
                 (read-string "URL: "))))
-    (unless (string-match "^http://" url)
+    (unless (string-match "^https?://" url)
       (error "Not a URL"))
     url))
 
