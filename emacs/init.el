@@ -274,7 +274,6 @@
            zone-pgm-whack-chars
            zone-pgm-rotate
            zone-pgm-drip
-           zone-pgm-five-oclock-swan-dive
            zone-pgm-martini-swan-dive]))
 
   ;; A Nyan zone. Well, just because.
