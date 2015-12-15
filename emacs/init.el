@@ -1369,7 +1369,6 @@ Argument LEN Length."
 (use-package dart-mode :ensure t
   :config
   ;; TODO: Add analysis server path.
-  (setq dart-enable-analysis-server t)
   (add-hook 'dart-mode-hook #'ar/dart-mode-hook-function))
 
 (use-package json-mode :ensure t)
