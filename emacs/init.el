@@ -1198,6 +1198,9 @@ already narrowed."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
+;; Edit HTML templates in Javascript code (automatically escape).
+(use-package string-edit :ensure t)
+
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
   "Add HOOK-FUNCTIONS to mode HOOKS."
   (dolist (hook hooks)
