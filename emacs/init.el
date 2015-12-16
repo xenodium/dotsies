@@ -161,6 +161,16 @@
       (spaceline-toggle-time-on)
       (spaceline-emacs-theme 'date 'time))))
 
+;; Based on http://www.pygopar.com/setting-emacs-transparency
+(defun ar/set-current-frame-alpha-channel (focused-alpha
+                                           unfocused-alpha)
+  "Set FOCUSED-ALPHA and UNFOCUSED-ALPHA channels for current frame.
+Values between 0 - 100."
+  (interactive "nOn Focus: \nnOn Unfocus: ")
+  (set-frame-parameter (selected-frame)
+                       'alpha
+                       '(focused-alpha unfocused-alpha)))
+
 ;; TODO: Revisit this.
 (defun ar/setup-graphical-display ()
   "Setup graphical display."
