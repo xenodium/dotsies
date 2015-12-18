@@ -339,7 +339,8 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (setq elfeed-feeds
-        '(("http://planet.emacsen.org/atom.xml" blog emacs)
+        '(("http://www.pygopar.com/rss" blog pygopar)
+          ("http://planet.emacsen.org/atom.xml" blog emacs)
           ("http://planet.gnome.org/rss20.xml" blog gnome)
           ("http://sachachua.com/blog/feed" blog sachachua)
           ("http://blog.roteiv.com/atom.xml" blog vietor)
@@ -2203,7 +2204,7 @@ _y_outube
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Daily" . "~/stuff/active/non-public/daily/daily.org")
                                                        ("Desktop" . "~/Desktop")
-                                                       ("Init" . "~/stuff/active/dots/emacs/init.el")
+                                                       ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("This Week" . "~/stuff/active/non-public/daily/daily.org#/s/Week")
                                                        ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
