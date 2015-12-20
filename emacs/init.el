@@ -280,8 +280,7 @@ Values between 0 - 100."
     :config
     (zone-when-idle 120)
     (setq zone-programs
-          [zone-pgm-putz-with-case
-           zone-pgm-whack-chars
+          [zone-pgm-whack-chars
            zone-pgm-rotate
            zone-pgm-drip
            zone-pgm-martini-swan-dive]))
