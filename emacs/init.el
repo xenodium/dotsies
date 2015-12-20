@@ -1308,8 +1308,14 @@ Argument LEN Length."
 (use-package ar-url
   :commands (ar/url-view-links-at))
 
-(use-package ar-helm
-  :commands (ar/helm-find))
+(use-package ar-helm)
+(use-package ar-helm-shell
+  :after ar-helm
+  :config
+  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+
+(use-package ar-shell)
+
 
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
