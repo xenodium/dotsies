@@ -55,8 +55,16 @@ get_active_dir() {
   echo "$(get_stuff_dir)/active"
 }
 
+get_downloads_dir() {
+  echo "$HOME/Downloads"
+}
+
 cd_active() {
   cd $(get_active_dir)
+}
+
+cd_downloads() {
+  cd $(get_downloads_dir)
 }
 
 cd_inactive() {
@@ -93,6 +101,7 @@ alias es="emacs --daemon"
 alias e="emacsclient -t"
 alias ec="emacsclient -n"
 alias a="cd_active"
+alias d="cd_downloads"
 alias i="cd_inactive"
 alias t="tmux attach-session"
 alias td="tmux attach-session -d"
