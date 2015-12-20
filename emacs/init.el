@@ -169,7 +169,7 @@ Values between 0 - 100."
   (interactive "nOn Focus: \nnOn Unfocus: ")
   (set-frame-parameter (selected-frame)
                        'alpha
-                       '(focused-alpha unfocused-alpha)))
+                       (list focused-alpha unfocused-alpha)))
 
 ;; TODO: Revisit this.
 (defun ar/setup-graphical-display ()
