@@ -285,6 +285,9 @@ Values between 0 - 100."
            zone-pgm-drip
            zone-pgm-martini-swan-dive]))
 
+  ;; A fireplace? Yeah, I know...
+  (use-package fireplace :ensure t)
+
   ;; A Nyan zone. Well, just because.
   (use-package zone-nyan :ensure t
     :after zone
