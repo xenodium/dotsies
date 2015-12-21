@@ -15,7 +15,9 @@
   (ar/helm-helm "bash history"
                 (with-temp-buffer
                   (insert-file-contents "~/.bash_history")
-                  (delete-dups (split-string (buffer-string) "\n")))
+                  (reverse
+                   (delete-dups
+                    (split-string (buffer-string) "\n"))))
                 #'ar/shell-send-command))
 
 (provide 'ar-helm-shell)
