@@ -161,6 +161,10 @@
       (spaceline-toggle-time-on)
       (spaceline-emacs-theme 'date 'time))))
 
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
+
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
 (defun ar/set-current-frame-alpha-channel (focused-alpha
                                            unfocused-alpha)
@@ -985,25 +989,41 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-(use-package company :ensure t)
-(use-package company-quickhelp :ensure t
-  :commands (company-quickhelp-mode))
+(defun ar/swift-mode-hook-function ()
+  "Called when entering `swift-mode'."
+  (setq-local company-backends '(company-sourcekit)))
 
-(use-package company-c-headers :ensure t
+(use-package swift-mode :ensure t
+  :after company-sourcekit
   :config
-  (setq company-backends (delete 'company-semantic company-backends))
-  (setq company-minimum-prefix-length 2)
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+
+(use-package company :ensure t
+  :config
   (setq company-idle-delay 0.5)
   (setq company-show-numbers t)
+  (setq company-minimum-prefix-length 2)
+  (global-company-mode))
+
+(use-package company-sourcekit :ensure t
+  :after company)
+
+(use-package company-quickhelp :ensure t
+  :after company
+  :config
+  (company-quickhelp-mode +1))
+
+(use-package company-c-headers :ensure t
+  :after company
+  :config
+  (setq company-backends (delete 'company-semantic company-backends))
   (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
 (use-package company-emoji :ensure t
+  :after company
   :config
   (add-to-list 'company-backends 'company-emoji))
-
-(global-company-mode)
-(company-quickhelp-mode +1)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -1102,7 +1122,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
-(use-package company-anaconda :ensure t)
+(use-package company-anaconda :ensure t
+  :after company)
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
@@ -1144,7 +1165,6 @@ already narrowed."
   ;; FIXME python-docstring-mode currently broken
   ;; (python-docstring-mode +1)
   (setq-local company-backends '(company-anaconda))
-  (company-mode)
   (py-yapf-enable-on-save))
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
 
@@ -1171,14 +1191,18 @@ already narrowed."
 ;; http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
 ;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
 ;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
-(use-package company-go :ensure t)
-(add-hook 'go-mode-hook (lambda ()
-                          (helm-dash-activate-docset "Go")
-                          (setq-local company-backends '(company-go))
-                          (company-mode)
-                          (go-eldoc-setup)
-                          (setq tab-width 2 indent-tabs-mode 1)
-                          (add-hook 'before-save-hook #'gofmt-before-save)))
+(defun ar/go-mode-hook-function ()
+  "Called when entering `go-mode'."
+  (helm-dash-activate-docset "Go")
+  (setq-local company-backends '(company-go))
+  (company-mode)
+  (go-eldoc-setup)
+  (setq tab-width 2 indent-tabs-mode 1)
+  (add-hook 'before-save-hook #'gofmt-before-save))
+
+(use-package company-go :ensure t
+  :config
+  (add-hook 'go-mode-hook #'ar/go-mode-hook-function))
 
 (use-package golint :ensure t)
 
@@ -1456,10 +1480,10 @@ Argument LEN Length."
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
-  (setq company-tooltip-align-annotations t)
-  (setq company-tern-meta-as-single-line t)
-  (setq company-tern-property-marker "")
-  (setq js-indent-level 2))
+  (setq-local company-tooltip-align-annotations t)
+  (setq-local company-tern-meta-as-single-line t)
+  (setq-local company-tern-property-marker "")
+  (setq-local js-indent-level 2))
 
 (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
 
