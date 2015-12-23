@@ -129,7 +129,7 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 (defun ar/helm-org-get-blog-bookmark-candidates ()
   "Gets helm candidates for my blog bookmarks."
   (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
-         (helm-candidates (helm-get-org-candidates-in-file org-filepath 0 1)))
+         (helm-candidates (helm-org-get-candidates (list org-filepath) 0 1)))
     (ar/helm-org-cleanse-candidates (ar/helm-org-filter-candidates helm-candidates "bookmarks"))))
 
 (defun ar/helm-org-get-blog-candidates ()
