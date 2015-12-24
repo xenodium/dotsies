@@ -588,6 +588,8 @@ Optional argument NON-RECURSIVE to shallow-search."
   :demand
   :bind ("C-x f" . helm-projectile))
 
+(use-package ar-imagemagick)
+
 (use-package ar-helm-projectile
   :bind ("<f7>" . ar/helm-projectile-shell-cd))
 
