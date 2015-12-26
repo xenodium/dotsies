@@ -204,6 +204,11 @@ Append `ar/file-build-file-names' to search for other file names."
                            (dir-locals-find-file default-directory)
                          (car (dir-locals-find-file default-directory)))))
 
+(defun ar/file-assert-file-exists (file-path)
+  "Assert FILE-PATH exists."
+  (assert (file-exists-p file-path) nil (format "File not found: %s" file-path))
+  file-path)
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
