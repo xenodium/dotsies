@@ -1135,6 +1135,26 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
 
+(defun ar/org-mode-hook-function ()
+  "Called when entering org mode."
+  (add-hook 'after-change-functions
+            #'ar/after-prog-mode-text-change
+            t t)
+  (let ((m org-mode-map))
+    (define-key m [f6] #'ar/ox-html-export))
+  (toggle-truncate-lines 0)
+  (setq show-trailing-whitespace t)
+  (set-fill-column 1000)
+  (ar/org-src-color-blocks-dark)
+  (flyspell-mode)
+  (rainbow-delimiters-mode)
+  (org-bullets-mode 1)
+  (yas-minor-mode)
+  (org-display-inline-images))
+
+(use-package org-mode :config
+  (add-hook 'python-mode-hook #'ar/org-mode-hook-function))
+
 ;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
@@ -1494,23 +1514,6 @@ Argument LEN Length."
 
 (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
 
-(defun ar/org-mode-hook-function ()
-  "Called when entering org mode."
-  (add-hook 'after-change-functions
-            #'ar/after-prog-mode-text-change
-            t t)
-  (let ((m org-mode-map))
-    (define-key m [f6] #'ar/ox-html-export))
-  (toggle-truncate-lines 0)
-  (setq show-trailing-whitespace t)
-  (set-fill-column 1000)
-  (ar/org-src-color-blocks-dark)
-  (flyspell-mode)
-  (rainbow-delimiters-mode)
-  (org-bullets-mode 1)
-  (yas-minor-mode)
-  (org-display-inline-images))
-
 ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (use-package color-theme-sanityinc-tomorrow :ensure t)
 
@@ -1557,9 +1560,6 @@ Argument LEN Length."
 (ar/add-functions-to-mode-hooks '(ar/prog-mode-hook-function
                                   ar/markdown-mode-hook-function)
                                 '(markdown-mode-hook))
-
-(ar/add-functions-to-mode-hooks '(ar/org-mode-hook-function)
-                                '(org-mode-hook))
 
 ;; Select help window by default.
 (setq help-window-select t)
