@@ -1214,7 +1214,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (org-display-inline-images))
 
 (use-package org-mode :config
-  (add-hook 'python-mode-hook #'ar/org-mode-hook-function))
+  (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 ;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
