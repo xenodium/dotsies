@@ -626,13 +626,15 @@ Optional argument NON-RECURSIVE to shallow-search."
 (add-hook 'ediff-quit-hook #'ar/ediff-qh)
 
 (use-package whitespace
-  :commands (whitespace-mode global-whitespace-mode)
   :config
   ;; When nil, fill-column is used instead.
   (setq whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines
   ;; longer than fill-column, and trailing blanks.
   (setq whitespace-style '(face empty tabs lines-tail trailing))
+  (set-face-attribute 'whitespace-line nil
+                      :foreground "DarkOrange1"
+                      :background "default")
   (global-whitespace-mode))
 
 (defun ar/compile-autoclose (buffer string)
