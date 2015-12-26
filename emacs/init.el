@@ -630,8 +630,10 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   ;; When nil, fill-column is used instead.
   (setq whitespace-line-column nil)
-  (setq whitespace-style '(face empty tabs lines-tail trailing)))
-(global-whitespace-mode)
+  ;; Highlight empty lines, TABs, blanks at beginning/end, lines
+  ;; longer than fill-column, and trailing blanks.
+  (setq whitespace-style '(face empty tabs lines-tail trailing))
+  (global-whitespace-mode))
 
 (defun ar/compile-autoclose (buffer string)
   "Hide successful builds window with BUFFER and STRING."
