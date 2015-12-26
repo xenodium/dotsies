@@ -165,6 +165,63 @@
   :config
   (setq tramp-default-method "ssh"))
 
+(use-package ar-org)
+
+(use-package ar-image
+  :commands (ar/image-open-html-for-current-dir))
+
+(use-package ar-objc
+  :commands (ar/objc-import
+             ar/objc-include))
+
+(use-package ar-url
+  :commands (ar/url-view-links-at))
+
+(use-package ar-helm)
+(use-package ar-helm-shell
+  :after ar-helm
+  :config
+  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+
+(use-package ar-shell)
+
+
+(use-package ar-org-blog
+  :commands (ar/org-blog-insert-image
+             ar/org-blog-insert-resized-image))
+
+(use-package ar-helm-org)
+
+(use-package ar-helm-objc
+  :commands (ar/helm-objc-import-update))
+
+(use-package ar-osx
+  :demand
+  :commands (ar/osx-convert-plist-to-xml))
+
+(use-package ar-linux)
+
+(use-package ar-platform
+  :demand
+  :bind (("C-x t" . ar/platform-new-browser-tab)))
+
+;; TODO: Migrate to a config module.
+(use-package ar-mode-line
+  :demand)
+
+(use-package ar-ox-html
+  :commands (ar/ox-html-export)
+  :config
+  (ar/ox-html-setup))
+
+(use-package ar-buffer
+  ;; No need to confirm killing buffers.
+  :bind ([(control x) (k)] . kill-this-buffer))
+
+(use-package ar-text
+  :bind (("C-c c" . ar/text-capitalize-word-toggle)
+         ("C-c r" . set-rectangular-region-anchor)))
+
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
 (defun ar/set-current-frame-alpha-channel (focused-alpha
                                            unfocused-alpha)
@@ -1360,63 +1417,6 @@ Argument LEN Length."
   (set-fill-column 100))
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
-
-(use-package ar-org)
-
-(use-package ar-image
-  :commands (ar/image-open-html-for-current-dir))
-
-(use-package ar-objc
-  :commands (ar/objc-import
-             ar/objc-include))
-
-(use-package ar-url
-  :commands (ar/url-view-links-at))
-
-(use-package ar-helm)
-(use-package ar-helm-shell
-  :after ar-helm
-  :config
-  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
-
-(use-package ar-shell)
-
-
-(use-package ar-org-blog
-  :commands (ar/org-blog-insert-image
-             ar/org-blog-insert-resized-image))
-
-(use-package ar-helm-org)
-
-(use-package ar-helm-objc
-  :commands (ar/helm-objc-import-update))
-
-(use-package ar-osx
-  :demand
-  :commands (ar/osx-convert-plist-to-xml))
-
-(use-package ar-linux)
-
-(use-package ar-platform
-  :demand
-  :bind (("C-x t" . ar/platform-new-browser-tab)))
-
-;; TODO: Migrate to a config module.
-(use-package ar-mode-line
-  :demand)
-
-(use-package ar-ox-html
-  :commands (ar/ox-html-export)
-  :config
-  (ar/ox-html-setup))
-
-(use-package ar-buffer
-  ;; No need to confirm killing buffers.
-  :bind ([(control x) (k)] . kill-this-buffer))
-
-(use-package ar-text
-  :bind (("C-c c" . ar/text-capitalize-word-toggle)
-         ("C-c r" . set-rectangular-region-anchor)))
 
 ;; Produce HTML from CSS-like selectors. TODO: Enable for HTML mode.
 (use-package emmet-mode :ensure t)
