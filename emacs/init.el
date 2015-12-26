@@ -1307,6 +1307,13 @@ Argument LEN Length."
   (clang-format (point-min)
                 (point-max)))
 
+;; Disabled. Figure out the right helm-xcdoc-document-path.
+;; (use-package helm-xcdoc :ensure t
+;;   :config
+;;   (setq
+;;    helm-xcdoc-command-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil")
+;;    helm-xcdoc-document-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.iOS.docset")))
+
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
   (add-hook 'before-save-hook
