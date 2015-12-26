@@ -105,18 +105,21 @@
                                 (hide-other)
                                 (save-buffer)))))))
 
-(defun ar/helm-org-cleanse-candidates (helm-candidates)
-  "Format HELM-CANDIDATES.  For each candidate:
+(defun ar/helm-org-format-candidates (helm-candidates)
+  "Format and sort HELM-CANDIDATES.  For each candidate:
 
 index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
 <-------------------- remove ------------------->"
-  (mapcar (lambda (helm-candidate)
-            (let* ((text (replace-regexp-in-string ".*#\\]\\] " ""
-                                                   (car helm-candidate)))
-                   (text-no-properties (substring-no-properties text)))
-              (setcar helm-candidate text-no-properties)
-              helm-candidate))
-          helm-candidates))
+  (sort
+   (mapcar (lambda (helm-candidate)
+             (let* ((text (replace-regexp-in-string ".*#\\]\\] " ""
+                                                    (car helm-candidate)))
+                    (text-no-properties (substring-no-properties text)))
+               (setcar helm-candidate text-no-properties)
+               helm-candidate))
+           helm-candidates)
+   (lambda (a b)
+     (string< (car a) (car b)))))
 
 (defun ar/helm-org-filter-candidates (helm-candidates match)
   "Remove candidates in HELM-CANDIDATES not containing MATCH."
@@ -130,13 +133,13 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   "Gets helm candidates for my blog bookmarks."
   (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
          (helm-candidates (helm-org-get-candidates (list org-filepath))))
-    (ar/helm-org-cleanse-candidates (ar/helm-org-filter-candidates helm-candidates "bookmarks"))))
+    (ar/helm-org-format-candidates (ar/helm-org-filter-candidates helm-candidates "bookmarks"))))
 
 (defun ar/helm-org-get-blog-candidates ()
   "Gets helm candidates for my blog."
   (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
          (helm-candidates (helm-org-get-candidates (list org-filepath))))
-    (ar/helm-org-cleanse-candidates helm-candidates)))
+    (ar/helm-org-format-candidates (ar/helm-org-filter-candidates helm-candidates "^\\* \\["))))
 
 (provide 'ar-helm-org)
 
