@@ -194,7 +194,7 @@ Version 2015-02-07."
     (goto-char saved-point)))
 
 (defun ar/buffer-first-match-beginning (&optional re)
-  "Return the first match beginning position for RE. nil otherwise."
+  "Return the first match beginning position for RE.  Nil otherwise."
   (save-excursion
     (goto-char (point-min))
     (when re

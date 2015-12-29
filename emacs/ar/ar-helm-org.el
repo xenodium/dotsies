@@ -30,6 +30,7 @@
   (interactive)
   (helm :sources '(ar/helm-org-source-my-todos)))
 
+;; TODO: Move out of helm-org.
 (defun ar/helm-org-my-hotspots ()
   "Show my hotspots."
   (interactive)
@@ -87,6 +88,23 @@
     (setq ar/helm-org-bookmark-link-in-process nil)
     bookmark-link-in-process))
 
+(defun ar/helm-org-add-backlog-link ()
+  "Add a bookmark to blog."
+  (interactive)
+  (let ((new-backlog-link (ar/org-build-backlog-link)))
+    (helm :sources '(((name . "Blog backlogs")
+                      (candidates . ar/helm-org-get-blog-backlog-candidates)
+                      (action . (lambda (candidate)
+                                  (save-excursion
+                                    (save-restriction
+                                      (helm-org-goto-marker candidate)
+                                      (org-show-subtree)
+                                      (org-end-of-meta-data-and-drawers)
+                                      (org-insert-heading)
+                                      (insert (concat new-backlog-link "."))
+                                      (ar/update-blog-timestamp-at-point)
+                                      (save-buffer))))))))))
+
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
   (interactive)
@@ -134,6 +152,12 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
   (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
          (helm-candidates (helm-org-get-candidates (list org-filepath))))
     (ar/helm-org-format-candidates (ar/helm-org-filter-candidates helm-candidates "bookmarks"))))
+
+(defun ar/helm-org-get-blog-backlog-candidates ()
+  "Gets helm candidates for my blog backlogs."
+  (ar/helm-org-format-candidates
+   (ar/helm-org-filter-candidates
+    (helm-org-get-candidates (list "~/stuff/active/blog/index.org")) "backlog")))
 
 (defun ar/helm-org-get-blog-candidates ()
   "Gets helm candidates for my blog."
