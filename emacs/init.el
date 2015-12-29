@@ -2138,10 +2138,11 @@ Git: _n_ext     _s_tage  _d_iff
 
 (defhydra hydra-quick-insert (:color blue)
   "
-Quick insert: _w_eb bookmark
+Quick insert: _w_eb bookmark _b_acklog bookmark
               _t_odo _d_one
 "
   ("w" ar/helm-org-add-bookmark nil)
+  ("b" ar/helm-org-add-backlog-link nil)
   ("t" ar/org-add-todo nil)
   ("d" ar/org-add-done nil)
   ("q" nil nil :color blue))

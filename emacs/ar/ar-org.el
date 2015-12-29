@@ -11,11 +11,14 @@
 (require 'org)
 
 (defun ar/org-search-file-buffer-forward (file-path regex)
-  "Search FILE-PATH buffer using regex REGEX. Moves point to first instance."
+  "Search FILE-PATH buffer using regex REGEX.  Move point to first instance."
   (ar/buffer-switch-to-file file-path)
   (goto-char 0)
   (re-search-forward regex nil)
   (beginning-of-line))
+
+(defun ar/org-goto-file (file-path id)
+  (org-open-link-from-string (format "[[#%s]]" id)))
 
 (defun ar/org-open-file-special-path (file-path)
   "Open special FILE-PATH. Examples:
@@ -45,6 +48,19 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
         (insert (format "Week of %s"
                         (ar/time-current-work-week-string)))
         (save-buffer))))
+
+(defun ar/org-add-child-to-heading (file-path heading-id child)
+  "Go to heading in FILE-PATH with HEADING-ID and add CHILD."
+  (save-excursion
+    (save-restriction
+      (ar/org-goto-file file-path heading-id)
+      (org-narrow-to-subtree)
+      (org-show-subtree)
+      (org-end-of-meta-data-and-drawers)
+      (org-insert-heading)
+      (insert child)
+      (ar/update-blog-timestamp-at-point)
+      (save-buffer))))
 
 (defun ar/org-goto-current-week ()
   "Go to current week."
@@ -133,6 +149,14 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
                              (save-buffer)))
+
+(defun ar/org-build-backlog-link ()
+  "Build an org backlog link, prompting for url and description."
+  (format "TODO [[%s][%s]]"
+          (if (string-match-p "^http" (current-kill 0))
+              (current-kill 0)
+            (read-string "URL: "))
+          (read-string "Description: ")))
 
 (defun ar/org-build-link ()
   "Build an org link, prompting for url and description."
