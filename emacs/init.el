@@ -1192,9 +1192,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
 
-(use-package org-autolist :ensure t
-  :config
-  (add-hook 'org-mode-hook #'org-autolist-mode))
+(use-package org-autolist :ensure t)
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
@@ -1203,6 +1201,7 @@ Repeated invocations toggle between the two most recently open buffers."
             t t)
   (let ((m org-mode-map))
     (define-key m [f6] #'ar/ox-html-export))
+  (org-autolist-mode)
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
@@ -1213,7 +1212,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode)
   (org-display-inline-images))
 
-(use-package org-mode :config
+(use-package org :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 ;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
