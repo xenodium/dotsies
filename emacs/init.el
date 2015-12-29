@@ -2260,6 +2260,7 @@ _y_outube
                                         (candidates . (("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Daily" . "~/stuff/active/non-public/daily/daily.org")
+                                                       ("Downloads" . "~/Downloads")
                                                        ("Desktop" . "~/Desktop")
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
