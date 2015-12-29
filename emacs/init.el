@@ -1294,6 +1294,14 @@ already narrowed."
 
 (use-package golint :ensure t)
 
+;; http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  "Continue popping mark until the cursor is actually moved."
+  (let ((p (point)))
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
+(setq set-mark-command-repeat-pop t)
+
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
   (interactive)
