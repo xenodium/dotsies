@@ -37,8 +37,8 @@
   (unless helm-source-buffers-list
     (setq helm-source-buffers-list
           (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   ar/helm-source-local-hotspots
+  (helm :sources '(ar/helm-source-local-hotspots
+                   helm-source-buffers-list
                    ar/helm-source-web-hotspots
                    ar/helm-source-blog
                    ar/helm-org-source-my-todos
