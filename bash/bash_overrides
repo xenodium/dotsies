@@ -20,7 +20,7 @@ export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
 ### Environment variables ### end
 
-### nvm setup ### start
+### nvm setup (Node Version Manager) ### start
 
 export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh

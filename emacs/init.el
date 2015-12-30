@@ -1428,6 +1428,8 @@ Argument LEN Length."
 ;; Produce HTML from CSS-like selectors. TODO: Enable for HTML mode.
 (use-package emmet-mode :ensure t)
 
+(use-package nodejs-repl :ensure t)
+
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
   (requirejs-mode)
@@ -2480,7 +2482,6 @@ line instead."
    (sqlite . t)))
 
 (use-package ob-plantuml
-  :commands org-babel-execute:plantuml
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
