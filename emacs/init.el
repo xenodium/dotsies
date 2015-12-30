@@ -1194,8 +1194,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
 
-(use-package org-autolist :ensure t)
-
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (add-hook 'after-change-functions
