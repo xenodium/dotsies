@@ -167,6 +167,8 @@
 
 (use-package ar-org)
 
+(use-package ar-dired)
+
 (use-package ar-image
   :commands (ar/image-open-html-for-current-dir))
 
@@ -2261,15 +2263,17 @@ _y_outube
                                         (candidates . (("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Daily" . "~/stuff/active/non-public/daily/daily.org")
-                                                       ("Downloads" . "~/Downloads")
-                                                       ("Desktop" . "~/Desktop")
+                                                       ("Downloads" . ar/dired-split-downloads-to-active)
+                                                       ("Desktop" . ar/dired-split-desktop-to-active)
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("This Week" . "~/stuff/active/non-public/daily/daily.org#/s/Week")
                                                        ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
                                                        ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")))
-                                        (action . (("Open" . (lambda (file-path)
-                                                               (ar/org-open-file-special-path file-path)))))))
+                                        (action . (("Open" . (lambda (item)
+                                                               (if (functionp item)
+                                                                   (funcall item)
+                                                                 (ar/org-open-file-special-path item))))))))
 
 (defvar ar/helm-source-web-hotspots '((name . "Web")
                                       (candidates . (("Github" . "https://github.com/xenodium")
