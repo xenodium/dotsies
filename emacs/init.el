@@ -2486,6 +2486,7 @@ line instead."
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
+  (setq org-export-babel-evaluate nil)
   (unless (ar/file-file-p org-plantuml-jar-path)
     (setq org-plantuml-jar-path (ar/plantum-jar-path))))
 
