@@ -1201,7 +1201,6 @@ Repeated invocations toggle between the two most recently open buffers."
             t t)
   (let ((m org-mode-map))
     (define-key m [f6] #'ar/ox-html-export))
-  (org-autolist-mode)
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
