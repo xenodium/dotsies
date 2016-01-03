@@ -25,6 +25,12 @@
   (ar/dired-split-directories "~/Desktop"
                               "~/stuff/active"))
 
+(defun ar/dired-split-active-to-active ()
+  "Split window with active to active directory."
+  (interactive)
+  (ar/dired-split-directories "~/stuff/active"
+                              "~/stuff/active"))
+
 (provide 'ar-dired)
 
 ;;; ar-dired.el ends here
