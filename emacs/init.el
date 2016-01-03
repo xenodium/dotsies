@@ -740,13 +740,22 @@ Optional argument NON-RECURSIVE to shallow-search."
                       :background "default"
                       :foreground "#FA009A"))
 
-;; Automatically highlight all instances of thing at point.
-(use-package highlight-thing :ensure t
-  :commands highlight-thing-mode
+(use-package highlight-symbol :ensure t
   :config
-  (set-face-attribute 'highlight-thing nil
+  (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
-                      :foreground "#FA009A"))
+                      :foreground "#FA009A")
+  (setq highlight-symbol-idle-delay 0)
+  (setq highlight-symbol-on-navigation-p t))
+
+;; Disabling in favor of highlight-symbol.
+;; Automatically highlight all instances of thing at point.
+;; (use-package highlight-thing :ensure t
+;;   :commands highlight-thing-mode
+;;   :config
+;;   (set-face-attribute 'highlight-thing nil
+;;                       :background "default"
+;;                       :foreground "#FA009A"))
 
 ;; Partially use path in buffer name.
 (use-package uniquify
@@ -1071,16 +1080,13 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq company-minimum-prefix-length 2)
   (global-company-mode))
 
-(use-package company-sourcekit :ensure t
-  :after company)
+(use-package company-sourcekit :ensure t)
 
 (use-package company-quickhelp :ensure t
-  :after company
   :config
   (company-quickhelp-mode +1))
 
 (use-package company-c-headers :ensure t
-  :after company
   :config
   (setq company-backends (delete 'company-semantic company-backends))
   (add-to-list 'company-backends 'company-c-headers)
@@ -1553,7 +1559,8 @@ Argument LEN Length."
             t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
-  (highlight-thing-mode)
+  (highlight-symbol-mode +1)
+  (highlight-symbol-nav-mode +1)
   (setq show-trailing-whitespace t)
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
@@ -2259,7 +2266,8 @@ _y_outube
 (add-hook 'find-file-hook #'ar/try-smerge t)
 
 (defvar ar/helm-source-local-hotspots '((name . "Local")
-                                        (candidates . (("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
+                                        (candidates . (("Active" . ar/dired-split-active-to-active)
+                                                       ("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Daily" . "~/stuff/active/non-public/daily/daily.org")
                                                        ("Downloads" . ar/dired-split-downloads-to-active)
