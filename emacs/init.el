@@ -404,7 +404,9 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (setq elfeed-feeds
-        '(("http://www.pygopar.com/rss" blog pygopar)
+        '(("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
+          ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
+          ("http://www.pygopar.com/rss" blog pygopar)
           ("http://planet.emacsen.org/atom.xml" blog emacs)
           ("http://planet.gnome.org/rss20.xml" blog gnome)
           ("http://sachachua.com/blog/feed" blog sachachua)
