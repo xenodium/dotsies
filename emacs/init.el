@@ -212,8 +212,8 @@
   :demand)
 
 (use-package ar-ox-html
-  :commands (ar/ox-html-export)
   :config
+  (bind-key [f6] #'ar/ox-html-export)
   (ar/ox-html-setup))
 
 (use-package ar-buffer
@@ -1207,8 +1207,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-hook 'after-change-functions
             #'ar/after-prog-mode-text-change
             t t)
-  (let ((m org-mode-map))
-    (define-key m [f6] #'ar/ox-html-export))
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
@@ -2462,17 +2460,6 @@ line instead."
    (not (string= lang "plantuml"))
    (not (string= lang "python"))))
 
-(defun ar/plantum-jar-path ()
-  "Get plantuml path for different platforms."
-  (let* ((jar-path-osx "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
-         (jar-path-linux "FIXME"))
-    (cond ((file-exists-p jar-path-osx)
-           (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot"))
-           jar-path-osx)
-          ((file-exists-p jar-path-linux)
-           jar-path-linux)
-          ((error "Error: plantuml not installed on platform")))))
-
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
@@ -2490,14 +2477,21 @@ line instead."
    (sql . nil)
    (sqlite . t)))
 
+(use-package org-src)
+
 (use-package ob-plantuml
+  :after org-src
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (setq org-export-babel-evaluate nil)
-  (unless (ar/file-file-p org-plantuml-jar-path)
-    (setq org-plantuml-jar-path (ar/plantum-jar-path))))
+  (cond ((ar/osx-p)
+         (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
+         (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+        (t
+         (message "Warning: Could not find plantuml.8018.jar")
+         (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)

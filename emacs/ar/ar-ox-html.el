@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'ox-html)
+(require 'ar-file)
 
 (defun ar/ox-html-filter-timestamp-in-drawer-content (content)
   "Remove unnecessary HTML from exported modified CONTENT drawer."
@@ -45,6 +46,8 @@
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
+  (ar/file-assert-file-exists org-plantuml-jar-path)
+  (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/blog/index.org"))
     (org-html-export-to-html)
