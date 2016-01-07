@@ -630,6 +630,10 @@ Optional argument NON-RECURSIVE to shallow-search."
   :bind ("M-." . helm-gtags-dwim))
 (helm-gtags-mode 1)
 
+(use-package projectile-sift :ensure t
+  :config
+  (ar/process-assert-binary-installed "sift" "Install via brew install sift."))
+
 (use-package projectile :ensure t
   :config
   (setq projectile-enable-caching t)
