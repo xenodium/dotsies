@@ -1430,6 +1430,8 @@ Argument LEN Length."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
+(use-package tldr :ensure t)
+
 ;; Produce HTML from CSS-like selectors. TODO: Enable for HTML mode.
 (use-package emmet-mode :ensure t)
 
