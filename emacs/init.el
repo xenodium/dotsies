@@ -634,7 +634,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile-sift :ensure t
   :config
-  (ar/process-assert-binary-installed "sift" "Install via brew install sift."))
+  (ar/process-assert-binary-installed "sift" "Install via: \
+\"brew install sift\" or download from https://sift-tool.org/download"))
 
 (use-package projectile :ensure t
   :config
