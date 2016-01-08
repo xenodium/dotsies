@@ -143,6 +143,7 @@
       (when parent
         (ar/file-find-upwards parent filename)))))
 
+;; TODO: Consider using locate-dominating-file instead.
 (defun ar/file-open-closest (filename)
   "Open the closest FILENAME in current or parent dirs (handy for finding Makefiles)."
   (let ((closest-file-path (ar/file-find-upwards (buffer-file-name)
