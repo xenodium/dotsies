@@ -27,11 +27,13 @@
 ;; that you can always see what's happening.
 (setq eval-expression-print-level nil)
 
-;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment (Mac UI only).
-(when (memq window-system '(mac ns))
-  (load "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el")
-  (require 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
+;; We do this early on as we assert binaries are installed throughout
+;; init.
+(eval-after-load
+    "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"
+  '(progn (require 'exec-path-from-shell)
+          (exec-path-from-shell-initialize)))
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
