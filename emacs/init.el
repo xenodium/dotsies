@@ -27,11 +27,13 @@
 ;; that you can always see what's happening.
 (setq eval-expression-print-level nil)
 
-;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment (Mac UI only).
-(when (memq window-system '(mac ns))
-  (load "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el")
-  (require 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
+;; We do this early on as we assert binaries are installed throughout
+;; init.
+(eval-after-load
+    "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"
+  '(progn (require 'exec-path-from-shell)
+          (exec-path-from-shell-initialize)))
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
@@ -212,8 +214,8 @@
   :demand)
 
 (use-package ar-ox-html
-  :commands (ar/ox-html-export)
   :config
+  (bind-key [f6] #'ar/ox-html-export)
   (ar/ox-html-setup))
 
 (use-package ar-buffer
@@ -630,6 +632,11 @@ Optional argument NON-RECURSIVE to shallow-search."
   :ensure t
   :bind ("M-." . helm-gtags-dwim))
 (helm-gtags-mode 1)
+
+(use-package projectile-sift :ensure t
+  :config
+  (ar/process-assert-binary-installed "sift" "Install via: \
+\"brew install sift\" or download from https://sift-tool.org/download"))
 
 (use-package projectile :ensure t
   :config
@@ -1208,8 +1215,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-hook 'after-change-functions
             #'ar/after-prog-mode-text-change
             t t)
-  (let ((m org-mode-map))
-    (define-key m [f6] #'ar/ox-html-export))
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
@@ -1432,6 +1437,8 @@ Argument LEN Length."
   (set-fill-column 100))
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
+
+(use-package tldr :ensure t)
 
 ;; Produce HTML from CSS-like selectors. TODO: Enable for HTML mode.
 (use-package emmet-mode :ensure t)
@@ -2463,17 +2470,6 @@ line instead."
    (not (string= lang "plantuml"))
    (not (string= lang "python"))))
 
-(defun ar/plantum-jar-path ()
-  "Get plantuml path for different platforms."
-  (let* ((jar-path-osx "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
-         (jar-path-linux "FIXME"))
-    (cond ((file-exists-p jar-path-osx)
-           (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot"))
-           jar-path-osx)
-          ((file-exists-p jar-path-linux)
-           jar-path-linux)
-          ((error "Error: plantuml not installed on platform")))))
-
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
@@ -2491,14 +2487,21 @@ line instead."
    (sql . nil)
    (sqlite . t)))
 
+(use-package org-src)
+
 (use-package ob-plantuml
+  :after org-src
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (setq org-export-babel-evaluate nil)
-  (unless (ar/file-file-p org-plantuml-jar-path)
-    (setq org-plantuml-jar-path (ar/plantum-jar-path))))
+  (cond ((ar/osx-p)
+         (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
+         (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+        (t
+         (message "Warning: Could not find plantuml.8018.jar")
+         (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)
