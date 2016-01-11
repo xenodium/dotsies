@@ -540,6 +540,7 @@ Values between 0 - 100."
     :commands (helm-swoop))
   (use-package helm-config)
   (use-package helm-dash :ensure t
+    :after (go-mode)
     :config
     ;; View documentation in external browser.
     ;; (setq helm-dash-browser-func #'browse-url)
