@@ -1118,6 +1118,23 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (add-to-list 'company-backends 'company-rtags)
 ;; (rtags-diagnostics)
 
+;; NOTE: Needs libclang: Install with "brew install llvm --with-clang"
+;; By default, irony-install-server does not find libclang on Mac OS.
+;; The implementation invokes cmake for you. Ensure you add:
+;; -DCMAKE_PREFIX_PATH=/Users/alvaroramirez/homebrew/opt/llvm
+;; For example:
+;; cmake -DCMAKE_PREFIX_PATH=/Users/alvaroramirez/homebrew/opt/llvm -DCMAKE_INSTALL_PREFIX\=/Users/alvaroramirez/.emacs.d/irony/ /Users/alvaroramirez/.emacs.d/elpa/irony-20160106.1223/server && cmake --build . --use-stderr --config Release --target install
+(use-package irony :ensure t
+  :config
+  (add-hook 'objc-mode-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+(use-package company-irony :ensure t
+  :config
+  (add-hook 'objc-mode-hook (lambda ()
+                              (setq-local company-backends '((company-irony)))))
+  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
+
 (use-package helm-c-yasnippet :ensure t)
 
 (use-package helm-make :ensure t)
@@ -1399,13 +1416,14 @@ Argument LEN Length."
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
-  (setq-local company-backends
-       ;; List with multiple back-ends for mutual inclusion.
-       '(( ;;company-ycmd
-          company-yasnippet
-          company-gtags
-          company-dabbrev-code
-          company-files)))
+  ;; NOTE: Disabling while trying irony out
+  ;; (setq-local company-backends
+  ;;      ;; List with multiple back-ends for mutual inclusion.
+  ;;      '(( ;;company-ycmd
+  ;;         company-yasnippet
+  ;;         company-gtags
+  ;;         company-dabbrev-code
+  ;;         company-files)))
   ;;(ycmd-mode)
 
   ;; List targets with xcodebuild -list
