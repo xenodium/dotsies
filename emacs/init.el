@@ -2297,7 +2297,6 @@ _y_outube
                                         (candidates . (("Active" . ar/dired-split-active-to-active)
                                                        ("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
-                                                       ("Daily" . "~/stuff/active/non-public/daily/daily.org")
                                                        ("Downloads" . ar/dired-split-downloads-to-active)
                                                        ("Desktop" . ar/dired-split-desktop-to-active)
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
