@@ -41,7 +41,6 @@
                    ar/helm-source-local-hotspots
                    ar/helm-source-web-hotspots
                    ar/helm-source-blog
-                   ar/helm-org-source-my-todos
                    helm-source-ido-virtual-buffers
                    helm-source-buffer-not-found)
         :buffer "*helm buffers*"

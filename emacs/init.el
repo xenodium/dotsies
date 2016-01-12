@@ -2302,7 +2302,6 @@ _y_outube
                                                        ("Desktop" . ar/dired-split-desktop-to-active)
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
-                                                       ("This Week" . "~/stuff/active/non-public/daily/daily.org#/s/Week")
                                                        ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
                                                        ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")))
                                         (action . (("Open" . (lambda (item)
