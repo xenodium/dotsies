@@ -109,10 +109,17 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
 
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+(use-package abbrev
+  :config
+  (setq save-abbrevs 'silently)
+  (setq-default abbrev-mode t))
+
+(use-package ar-auto-correct
+  :after abbrev)
+
+;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/setup-graphical-fonts ()
   "Setup fonts (on graphical display only."
-  ;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
   (deftheme ar/org-theme "Sub-theme to beautify org mode")
   (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
                           ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
