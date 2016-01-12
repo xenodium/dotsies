@@ -72,14 +72,14 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("autocomplete" "auto-complete" nil 3)
-    ("dont" "don't" nil 5)
+    ("dont" "don't" nil 7)
     ("erfect" "perfect" nil 1)
     ("inst" "isn't" nil 1)
     ("isnt" "isn't" nil 1)
     ("rhtym" "rhythm" nil 1)
-    ("sint" "isn't" nil 1)
-    ("tomorrowg" "tomorrow" nil 2)
+    ("sint" "isn't" nil 2)
     ("tomsthing" "something" nil 1)
+    ("wasnt" "t" nil 2)
    ))
 
 (define-abbrev-table 'go-mode-abbrev-table '())
@@ -180,6 +180,10 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'paradox-commit-list-mode-abbrev-table '())
+
+(define-abbrev-table 'paradox-menu-mode-abbrev-table '())
+
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
    ))
@@ -219,6 +223,8 @@
 (define-abbrev-table 'swift-repl-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'term-mode-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 
