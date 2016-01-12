@@ -2297,7 +2297,6 @@ _y_outube
 
 (defvar ar/helm-source-local-hotspots '((name . "Local")
                                         (candidates . (("Active" . ar/dired-split-active-to-active)
-                                                       ("Backlog" . "~/stuff/active/non-public/daily/daily.org#/s/Backlog")
                                                        ("Blog" . "~/stuff/active/blog/index.org")
                                                        ("Downloads" . ar/dired-split-downloads-to-active)
                                                        ("Desktop" . ar/dired-split-desktop-to-active)
