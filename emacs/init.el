@@ -109,6 +109,8 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
 
+(use-package ar-file)
+
 (use-package abbrev
   :after ar-file
   :config

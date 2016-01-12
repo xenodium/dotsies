@@ -72,9 +72,11 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("autocomplete" "auto-complete" nil 3)
-    ("dont" "don't" nil 4)
+    ("dont" "don't" nil 5)
+    ("erfect" "perfect" nil 1)
     ("inst" "isn't" nil 1)
     ("isnt" "isn't" nil 1)
+    ("rhtym" "rhythm" nil 1)
     ("sint" "isn't" nil 1)
     ("tomorrowg" "tomorrow" nil 2)
     ("tomsthing" "something" nil 1)
