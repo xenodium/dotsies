@@ -371,7 +371,7 @@ Values between 0 - 100."
   (use-package discover-my-major :ensure t)
 
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
-  ;; http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
+  ;; From http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
     :demand
     :commands (discover-mode)))
@@ -599,7 +599,7 @@ Values between 0 - 100."
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
-;; http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
+;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
 With argument ARG, do this that many times."
@@ -1254,7 +1254,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
-;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
 Dwim means: region, org-src-block, org-subtree, or defun,
@@ -1314,9 +1314,9 @@ already narrowed."
 ;; go get -u code.google.com/p/rog-go/exp/cmd/godef
 ;; go get -u code.google.com/p/go.tools/cmd/goimports
 ;; Useful info at:
-;; http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
-;; http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
-;; http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
+;; From http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
+;; From http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
+;; From http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
 (defun ar/go-mode-hook-function ()
   "Called when entering `go-mode'."
   (helm-dash-activate-docset "Go")
@@ -1332,7 +1332,7 @@ already narrowed."
 
 (use-package golint :ensure t)
 
-;; http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss
+;; From http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss
 (defadvice pop-to-mark-command (around ensure-new-position activate)
   "Continue popping mark until the cursor is actually moved."
   (let ((p (point)))
@@ -1576,10 +1576,10 @@ Argument LEN Length."
 
 (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
 
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (use-package color-theme-sanityinc-tomorrow :ensure t)
 
-;; https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 ;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
 ;;                  'ar/org-src-color-blocks-dark)
 
