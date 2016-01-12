@@ -7,6 +7,7 @@
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
+(when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
