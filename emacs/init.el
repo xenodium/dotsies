@@ -110,7 +110,9 @@
   (setq dabbrev-case-fold-search nil))
 
 (use-package abbrev
+  :after ar-file
   :config
+  (setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
 
