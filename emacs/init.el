@@ -562,6 +562,7 @@ Values between 0 - 100."
   (setq helm-split-window-default-side 'below) ;; open helm buffer below.
   (setq helm-split-window-in-side-p t)
   (setq helm-candidate-number-limit 200)
+  (seqt helm-ff-skip-boring-files t)
   (setq helm-boring-file-regexp-list
         '("\\.git$" "\\.hg$"
           "\\.svn$" "\\.CVS$"
