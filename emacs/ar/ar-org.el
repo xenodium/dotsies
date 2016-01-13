@@ -10,6 +10,12 @@
 (require 'ar-buffer)
 (require 'org)
 
+(defvar ar/org-daily-file-path "set/path/to/daily.org"
+  "Path to daily.org file.")
+
+(defun ar/org-get-daily-file-path ()
+  (ar/file-assert-file-exists ar/org-daily-file-path))
+
 (defun ar/org-search-file-buffer-forward (file-path regex)
   "Search FILE-PATH buffer using regex REGEX.  Move point to first instance."
   (ar/buffer-switch-to-file file-path)
@@ -41,8 +47,9 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
 
 (defun ar/org-add-current-week-headline ()
   "Add current week to daily.org."
+  (interactive)
   (ar/org-with-file-location
-      "~/stuff/active/non-public/daily/daily.org" "snippets"
+      (ar/org-get-daily-file-path) "snippets"
       (unless (ar/org-now-in-week-headline-p)
         (org-meta-return)
         (insert (format "Week of %s"
@@ -70,7 +77,7 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
 
 (defun ar/org-paste-subtree-to-current-week (&optional subtree)
   "Paste SUBTREE to current week."
-  (ar/file-with-current-file "~/stuff/active/non-public/daily/daily.org"
+  (ar/file-with-current-file (ar/org-get-daily-file-path)
     (save-excursion
       (ar/org-goto-current-week)
       (org-end-of-line)
@@ -144,7 +151,7 @@ path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
 (defun ar/org-add-todo (todo)
   "Add a new TODO."
   (interactive "sTODO: ")
-  (ar/org-with-file-location "~/stuff/active/non-public/daily/daily.org" "backlog"
+  (ar/org-with-file-location (ar/org-get-daily-file-path) "backlog"
                              (show-subtree)
                              (org-meta-return)
                              (insert (format "TODO %s" todo))
