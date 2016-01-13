@@ -45,6 +45,10 @@
 
 (define-abbrev-table 'data-debug-mode-abbrev-table '())
 
+(define-abbrev-table 'diary-fancy-display-mode-abbrev-table '())
+
+(define-abbrev-table 'diary-mode-abbrev-table '())
+
 (define-abbrev-table 'diff-mode-abbrev-table '())
 
 (define-abbrev-table 'edebug-eval-mode-abbrev-table '())
@@ -54,6 +58,14 @@
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-info-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-list-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'eshell-mode-abbrev-table '())
 
 (define-abbrev-table 'esup-mode-abbrev-table '())
 
@@ -76,6 +88,7 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("responsd" "respond" nil 0)
+    ("trying" "trying" nil 3)
    ))
 
 (define-abbrev-table 'go-mode-abbrev-table '())
@@ -188,6 +201,10 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'paradox-commit-list-mode-abbrev-table '())
+
+(define-abbrev-table 'paradox-menu-mode-abbrev-table '())
+
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
    ))
@@ -203,6 +220,8 @@
 (define-abbrev-table 'python-mode-skeleton-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'restclient-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
@@ -226,7 +245,11 @@
 
 (define-abbrev-table 'swift-repl-mode-abbrev-table '())
 
+(define-abbrev-table 'synosaurus-list-mode-abbrev-table '())
+
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'tar-mode-abbrev-table '())
 
 (define-abbrev-table 'term-mode-abbrev-table '())
 
