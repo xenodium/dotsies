@@ -2393,6 +2393,17 @@ _y_outube
   :ensure t
   :defer t
   :init
+  (setq org-todo-keywords
+        '((sequence
+           "TODO"
+           "DONE"
+           "OBSOLETE"
+           "CANCELLED")))
+  (setq org-todo-keyword-faces
+        '(("TODO" . (:foreground "red" :weight bold))
+          ("DONE" . (:foreground "green" :weight bold))
+          ("OBSOLETE" . (:foreground "blue" :weight bold))
+          ("CANCELLED" . (:foreground "gray" :weight bold))))
   (setq org-refile-targets '((nil :regexp . "Week of")))
   (setq org-ellipsis "⤵")
   (setq org-fontify-emphasized-text +1)
