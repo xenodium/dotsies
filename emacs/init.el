@@ -491,10 +491,11 @@ Values between 0 - 100."
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
 
-(use-package yasnippet :ensure t)
-(setq yas-snippet-dirs
-      '("~/.emacs.d/yasnippets/personal"))
-(yas-reload-all)
+(use-package yasnippet :ensure t
+  :config
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/yasnippets/personal"))
+  (yas-reload-all))
 
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
@@ -549,13 +550,6 @@ Values between 0 - 100."
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
   (use-package helm-config)
-  (use-package helm-dash :ensure t
-    :after (go-mode)
-    :config
-    ;; View documentation in external browser.
-    ;; (setq helm-dash-browser-func #'browse-url)
-    ;; View documentation in ewww.
-    (setq helm-dash-browser-func #'eww))
   (use-package recentf
     :init
     (recentf-mode)
@@ -587,14 +581,23 @@ Values between 0 - 100."
   (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
   (bind-key "M-p" #'helm-previous-source helm-map)
   (bind-key "M-n" #'helm-next-source helm-map)
-  :bind (("C-c i" . helm-semantic-or-imenu)
+  (helm-mode 1)
+  :bind (("C-x C-f" . helm-find-files)
+         ("C-c i" . helm-semantic-or-imenu)
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
          ("C-h a" . helm-apropos)
          ("C-h y" . helm-dash-at-point))
   :commands (helm-buffers-list)
   :ensure t)
-(helm-mode 1)
+
+(use-package helm-dash :ensure t
+  :after (go-mode)
+  :config
+  ;; View documentation in external browser.
+  ;; (setq helm-dash-browser-func #'browse-url)
+  ;; View documentation in ewww.
+  (setq helm-dash-browser-func #'eww))
 
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
