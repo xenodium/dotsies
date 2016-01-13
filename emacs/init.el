@@ -1800,7 +1800,8 @@ With a prefix argument N, (un)comment that many sexps."
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  :bind (("C-c <right>" . winner-redo)
+  :bind (("<escape>" . winner-undo)
+         ("C-c <right>" . winner-redo)
          ("C-c <left>" . winner-undo)))
 
 (use-package helm-descbinds :ensure
