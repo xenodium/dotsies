@@ -31,15 +31,19 @@
   '(
    ))
 
+(define-abbrev-table 'calc-trail-mode-abbrev-table '())
+
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
 (define-abbrev-table 'change-log-mode-abbrev-table '())
 
-(define-abbrev-table 'checkdoc-output-mode-abbrev-table '())
-
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
 (define-abbrev-table 'completion-list-mode-abbrev-table '())
+
+(define-abbrev-table 'css-mode-abbrev-table '())
+
+(define-abbrev-table 'data-debug-mode-abbrev-table '())
 
 (define-abbrev-table 'diff-mode-abbrev-table '())
 
@@ -71,15 +75,7 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("autocomplete" "auto-complete" nil 3)
-    ("dont" "don't" nil 7)
-    ("erfect" "perfect" nil 1)
-    ("inst" "isn't" nil 1)
-    ("isnt" "isn't" nil 1)
-    ("rhtym" "rhythm" nil 1)
-    ("sint" "isn't" nil 2)
-    ("tomsthing" "something" nil 1)
-    ("wasnt" "t" nil 2)
+    ("responsd" "respond" nil 0)
    ))
 
 (define-abbrev-table 'go-mode-abbrev-table '())
@@ -158,6 +154,18 @@
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
 
+(define-abbrev-table 'makefile-automake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-bsdmake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-gmake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-imake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-makepp-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-mode-abbrev-table '())
+
 (define-abbrev-table 'message-mode-abbrev-table '())
 
 (define-abbrev-table 'messages-buffer-mode-abbrev-table '())
@@ -179,10 +187,6 @@
 (define-abbrev-table 'outline-mode-abbrev-table '())
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
-
-(define-abbrev-table 'paradox-commit-list-mode-abbrev-table '())
-
-(define-abbrev-table 'paradox-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
@@ -234,13 +238,9 @@
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
 
-(define-abbrev-table 'vc-bzr-log-view-mode-abbrev-table '())
-
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
-
-(define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'web-mode-abbrev-table '())
 
