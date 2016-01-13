@@ -53,6 +53,6 @@
                                  image-file-path))
     (error "Unable to resize image"))))
 
-(provide 'ar-blog)
+(provide 'ar-org-blog)
 
 ;;; ar-blog.el ends here

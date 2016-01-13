@@ -5,6 +5,7 @@
 
 (require 'cl)
 (require 'comint)
+(require 'shell)
 
 (defun ar/shell-cd (dir-path)
   "Change shell current working directory to DIR-PATH.

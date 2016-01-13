@@ -109,7 +109,67 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
 
-(use-package ar-file)
+(use-package ar-auto-correct
+  :after (abbrev ispell))
+(use-package ar-buffer
+  :after (ar-process ar-string goto-addr url url-http)
+  ;; No need to confirm killing buffers.
+  :bind ([(control x) (k)] . kill-this-buffer))
+(use-package ar-dired)
+(use-package ar-file
+  :after (ar-string simple))
+(use-package ar-helm
+  :after helm)
+(use-package ar-helm-objc
+  :after (ar-file ar-helm ar-objc)
+  :commands (ar/helm-objc-import-update))
+(use-package ar-helm-projectile
+  :bind ("<f7>" . ar/helm-projectile-shell-cd))
+(use-package ar-helm-org
+  :after (helm helm-org org))
+(use-package ar-helm-shell
+  :after (ar-helm ar-shell shell)
+  :config
+  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+(use-package ar-image
+  :after (ar-buffer ar-string)
+  :commands (ar/image-open-html-for-current-dir))
+(use-package ar-imagemagick
+  :after (ar-process cl))
+(use-package ar-linux)
+;; TODO: Migrate to a config module.
+(use-package ar-mode-line
+  :demand)
+(use-package ar-objc
+  :after (ar-buffer ar-file)
+  :commands (ar/objc-import
+             ar/objc-include))
+(use-package ar-org
+  :after (ar-file ar-time ar-buffer org))
+(use-package ar-org-blog
+  :after (ar-file ar-org ar-process)
+  :commands (ar/org-blog-insert-image
+             ar/org-blog-insert-resized-image))
+(use-package ar-shell
+  :after (cl comint))
+(use-package ar-url
+  :after (ar-buffer ar-input enlive goto-addr)
+  :commands (ar/url-view-links-at))
+(use-package ar-osx
+  :demand
+  :commands (ar/osx-convert-plist-to-xml))
+(use-package ar-platform
+  :after (ar-osx ar-linux)
+  :demand
+  :bind (("C-x t" . ar/platform-new-browser-tab)))
+(use-package ar-ox-html
+  :after (ox-html ar-file)
+  :config
+  (bind-key [f6] #'ar/ox-html-export)
+  (ar/ox-html-setup))
+(use-package ar-text
+  :bind (("C-c c" . ar/text-capitalize-word-toggle)
+         ("C-c r" . set-rectangular-region-anchor)))
 
 (use-package abbrev
   :after ar-file
@@ -117,9 +177,6 @@
   (setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
-
-(use-package ar-auto-correct
-  :after abbrev)
 
 ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (defun ar/setup-graphical-fonts ()
@@ -178,65 +235,6 @@
 (use-package tramp
   :config
   (setq tramp-default-method "ssh"))
-
-(use-package ar-org)
-
-(use-package ar-dired)
-
-(use-package ar-image
-  :commands (ar/image-open-html-for-current-dir))
-
-(use-package ar-objc
-  :commands (ar/objc-import
-             ar/objc-include))
-
-(use-package ar-url
-  :commands (ar/url-view-links-at))
-
-(use-package ar-helm)
-(use-package ar-helm-shell
-  :after ar-helm
-  :config
-  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
-
-(use-package ar-shell)
-
-
-(use-package ar-org-blog
-  :commands (ar/org-blog-insert-image
-             ar/org-blog-insert-resized-image))
-
-(use-package ar-helm-org)
-
-(use-package ar-helm-objc
-  :commands (ar/helm-objc-import-update))
-
-(use-package ar-osx
-  :demand
-  :commands (ar/osx-convert-plist-to-xml))
-
-(use-package ar-linux)
-
-(use-package ar-platform
-  :demand
-  :bind (("C-x t" . ar/platform-new-browser-tab)))
-
-;; TODO: Migrate to a config module.
-(use-package ar-mode-line
-  :demand)
-
-(use-package ar-ox-html
-  :config
-  (bind-key [f6] #'ar/ox-html-export)
-  (ar/ox-html-setup))
-
-(use-package ar-buffer
-  ;; No need to confirm killing buffers.
-  :bind ([(control x) (k)] . kill-this-buffer))
-
-(use-package ar-text
-  :bind (("C-c c" . ar/text-capitalize-word-toggle)
-         ("C-c r" . set-rectangular-region-anchor)))
 
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
 (defun ar/set-current-frame-alpha-channel (focused-alpha
@@ -669,11 +667,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package helm-projectile :ensure t
   :demand
   :bind ("C-x f" . helm-projectile))
-
-(use-package ar-imagemagick)
-
-(use-package ar-helm-projectile
-  :bind ("<f7>" . ar/helm-projectile-shell-cd))
 
 (use-package ediff
   :config
