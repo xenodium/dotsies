@@ -1131,9 +1131,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; NOTE: Needs libclang: Install with "brew install llvm --with-clang"
 ;; By default, irony-install-server does not find libclang on Mac OS.
 ;; The implementation invokes cmake for you. Ensure you add:
-;; -DCMAKE_PREFIX_PATH=/Users/alvaroramirez/homebrew/opt/llvm
+;; -DCMAKE_PREFIX_PATH=/Users/your-user-name/homebrew/opt/llvm
 ;; For example:
-;; cmake -DCMAKE_PREFIX_PATH=/Users/alvaroramirez/homebrew/opt/llvm -DCMAKE_INSTALL_PREFIX\=/Users/alvaroramirez/.emacs.d/irony/ /Users/alvaroramirez/.emacs.d/elpa/irony-20160106.1223/server && cmake --build . --use-stderr --config Release --target install
+;; cmake -DCMAKE_PREFIX_PATH=/Users/your-user-name/homebrew/opt/llvm -DCMAKE_INSTALL_PREFIX\=/Users/your-user-name/.emacs.d/irony/ /Users/your-user-name/.emacs.d/elpa/irony-20160106.1223/server && cmake --build . --use-stderr --config Release --target install
 (use-package irony :ensure t
   :config
   (add-hook 'objc-mode-hook 'irony-mode)
