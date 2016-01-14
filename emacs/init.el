@@ -493,6 +493,7 @@ Values between 0 - 100."
 
 (use-package yasnippet :ensure t
   :config
+  (setq yas-indent-line 'fixed)
   (setq yas-snippet-dirs
         '("~/.emacs.d/yasnippets/personal"))
   (yas-reload-all))
