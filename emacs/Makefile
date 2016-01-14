@@ -15,6 +15,7 @@ global:
 
 yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
+	cd yasnippets/personal && python ../generate-xcode-yasnippets.py
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
 
 emaxcode:
