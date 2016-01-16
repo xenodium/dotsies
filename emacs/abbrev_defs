@@ -87,6 +87,7 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("make" "make" nil 1)
     ("responsd" "respond" nil 0)
     ("trying" "trying" nil 3)
    ))
