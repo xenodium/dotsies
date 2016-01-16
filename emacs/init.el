@@ -170,6 +170,8 @@
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
+(use-package ar-yas
+  :after yasnippet)
 
 (use-package abbrev
   :after ar-file
@@ -1246,7 +1248,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (flyspell-mode)
   (rainbow-delimiters-mode)
   (org-bullets-mode 1)
-  (yas-minor-mode)
+  (yas-minor-mode 1)
   (org-display-inline-images))
 
 (use-package org :config
@@ -1607,7 +1609,7 @@ Argument LEN Length."
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
   (turn-on-fci-mode)
-  (yas-minor-mode))
+  (yas-minor-mode 1))
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
@@ -2309,7 +2311,8 @@ _y_outube
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
-                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")))
+                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")
+                                                       ("Yasnippets" . "~/.emacs.d/yasnippets")))
                                         (action . (("Open" . (lambda (item)
                                                                (if (functionp item)
                                                                    (funcall item)
