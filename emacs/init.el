@@ -824,9 +824,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq backup-inhibited t)
 
 ;; Disable auto save.
-(setq auto-save-default nil)
-
-;; Disable auto save.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq auto-save-default nil)
 
