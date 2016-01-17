@@ -497,7 +497,8 @@ Values between 0 - 100."
   :config
   (setq yas-indent-line 'fixed)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/yasnippets/personal"))
+        '("~/.emacs.d/yasnippets/personal"
+          "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
 
 ;; Back to helm-swoop for now.
@@ -1111,10 +1112,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
-(use-package company-emoji :ensure t
-  :after company
-  :config
-  (add-to-list 'company-backends 'company-emoji))
+(use-package company-emoji :ensure t)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -1375,7 +1373,14 @@ already narrowed."
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   ;; Disabling lispy for the time being (affecting imenu).
   ;; (lispy-mode 1)
-  (add-to-list 'company-backends 'company-yasnippet)
+  ;; (setq-local company-backends '((company-yasnippet company-dabbrev-code company-emoji company-capf company-keywords company-files)))
+  (setq-local company-backends '((company-yasnippet
+                                  company-dabbrev-code
+                                  company-keywords
+                                  company-files
+                                  company-emoji
+                                  company-capf)))
+  ;; (add-to-list 'company-backends 'company-yasnippet)
   (eldoc-mode)
   (set-fill-column 70)
   (turn-on-elisp-slime-nav-mode))
