@@ -1108,8 +1108,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-c-headers :ensure t
   :config
-  (setq company-backends (delete 'company-semantic company-backends))
-  (add-to-list 'company-backends 'company-c-headers)
+  ;; TODO: Set in mode hook.
+  ;; (setq company-backends (delete 'company-semantic company-backends))
+  ;; (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
 (use-package company-emoji :ensure t)
@@ -1228,8 +1229,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
-(use-package company-anaconda :ensure t
-  :after company)
+(use-package company-anaconda :ensure t)
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
@@ -1571,8 +1571,10 @@ Argument LEN Length."
   (add-hook #'web-mode-hook #'ar/web-mode-hook-function))
 
 (use-package company-tern :ensure t
-  :config
-  (add-to-list 'company-backends 'company-tern))
+  ;; :config
+  ;; TODO add in mode hook.
+  ;; (add-to-list 'company-backends 'company-tern)
+  )
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
