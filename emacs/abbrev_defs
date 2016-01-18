@@ -91,6 +91,7 @@
   '(
     ("displaed" "displayed" nil 4)
     ("exected" "executed" nil 0)
+    ("make" "make" nil 1)
     ("responsd" "respond" nil 0)
     ("trying" "trying" nil 3)
     ("update" "update" nil 0)
