@@ -1598,6 +1598,20 @@ Argument LEN Length."
   ;; Workaround to use centered-cursor-mode in --nw.
   (defvar mouse-wheel-mode nil))
 
+(defun ar/company-fci-workaround ()
+  (defvar-local company-fci-mode-on-p nil
+    "Keep track if fci-mode if currently on.")
+  ;; Disable fci if needed.
+  (add-hook 'company-completion-started-hook (lambda (&rest ignore)
+                                               (when (boundp 'fci-mode)
+                                                 (setq company-fci-mode-on-p fci-mode)
+                                                 (when fci-mode (fci-mode -1)))))
+  ;; Re-enable fci if needed.
+  (add-hook 'company-completion-finished-hook (lambda (&rest ignore)
+                                                (when company-fci-mode-on-p (fci-mode 1))))
+  ;; Re-enable fci if needed.
+  (add-hook 'company-completion-cancelled-hook (lambda (&rest ignore)
+                                                 (when company-fci-mode-on-p (fci-mode 1)))))
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -1618,6 +1632,7 @@ Argument LEN Length."
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
   (turn-on-fci-mode)
+  (ar/company-fci-workaround)
   (yas-minor-mode 1))
 
 (defun ar/markdown-mode-hook-function ()
