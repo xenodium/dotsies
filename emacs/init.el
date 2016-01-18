@@ -170,6 +170,8 @@
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
+(use-package ar-yas
+  :after yasnippet)
 
 (use-package abbrev
   :after ar-file
@@ -495,7 +497,8 @@ Values between 0 - 100."
   :config
   (setq yas-indent-line 'fixed)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/yasnippets/personal"))
+        '("~/.emacs.d/yasnippets/personal"
+          "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
 
 ;; Back to helm-swoop for now.
@@ -824,9 +827,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq backup-inhibited t)
 
 ;; Disable auto save.
-(setq auto-save-default nil)
-
-;; Disable auto save.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
 (setq auto-save-default nil)
 
@@ -1108,14 +1108,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-c-headers :ensure t
   :config
-  (setq company-backends (delete 'company-semantic company-backends))
-  (add-to-list 'company-backends 'company-c-headers)
+  ;; TODO: Set in mode hook.
+  ;; (setq company-backends (delete 'company-semantic company-backends))
+  ;; (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
-(use-package company-emoji :ensure t
-  :after company
-  :config
-  (add-to-list 'company-backends 'company-emoji))
+(use-package company-emoji :ensure t)
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -1231,8 +1229,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package anaconda-mode :ensure t
   :commands (anaconda-mode))
 
-(use-package company-anaconda :ensure t
-  :after company)
+(use-package company-anaconda :ensure t)
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
@@ -1249,7 +1246,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (flyspell-mode)
   (rainbow-delimiters-mode)
   (org-bullets-mode 1)
-  (yas-minor-mode)
+  (yas-minor-mode 1)
   (org-display-inline-images))
 
 (use-package org :config
@@ -1376,9 +1373,18 @@ already narrowed."
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   ;; Disabling lispy for the time being (affecting imenu).
   ;; (lispy-mode 1)
+  ;; (setq-local company-backends '((company-yasnippet company-dabbrev-code company-emoji company-capf company-keywords company-files)))
+  (setq-local company-backends '((company-yasnippet
+                                  company-dabbrev-code
+                                  company-keywords
+                                  company-files
+                                  company-emoji
+                                  company-capf)))
+  ;; (add-to-list 'company-backends 'company-yasnippet)
   (eldoc-mode)
   (set-fill-column 70)
   (turn-on-elisp-slime-nav-mode))
+
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
@@ -1487,6 +1493,11 @@ Argument LEN Length."
   (modify-syntax-entry ?< "(>")
   (modify-syntax-entry ?> ")<"))
 
+(use-package html-check-frag :ensure t
+  :config
+  (add-hook 'html-mode-hook (lambda ()
+                              (html-check-frag-mode 1))))
+
 (use-package requirejs :ensure t)
 
 (use-package js2-mode :ensure t
@@ -1565,8 +1576,10 @@ Argument LEN Length."
   (add-hook #'web-mode-hook #'ar/web-mode-hook-function))
 
 (use-package company-tern :ensure t
-  :config
-  (add-to-list 'company-backends 'company-tern))
+  ;; :config
+  ;; TODO add in mode hook.
+  ;; (add-to-list 'company-backends 'company-tern)
+  )
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
@@ -1590,6 +1603,20 @@ Argument LEN Length."
   ;; Workaround to use centered-cursor-mode in --nw.
   (defvar mouse-wheel-mode nil))
 
+(defun ar/company-fci-workaround ()
+  (defvar-local company-fci-mode-on-p nil
+    "Keep track if fci-mode if currently on.")
+  ;; Disable fci if needed.
+  (add-hook 'company-completion-started-hook (lambda (&rest ignore)
+                                               (when (boundp 'fci-mode)
+                                                 (setq company-fci-mode-on-p fci-mode)
+                                                 (when fci-mode (fci-mode -1)))))
+  ;; Re-enable fci if needed.
+  (add-hook 'company-completion-finished-hook (lambda (&rest ignore)
+                                                (when company-fci-mode-on-p (fci-mode 1))))
+  ;; Re-enable fci if needed.
+  (add-hook 'company-completion-cancelled-hook (lambda (&rest ignore)
+                                                 (when company-fci-mode-on-p (fci-mode 1)))))
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (add-hook 'after-change-functions
@@ -1610,7 +1637,8 @@ Argument LEN Length."
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
   (turn-on-fci-mode)
-  (yas-minor-mode))
+  (ar/company-fci-workaround)
+  (yas-minor-mode 1))
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
@@ -2312,7 +2340,8 @@ _y_outube
                                                        ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                        ("Private" . "~/stuff/active/non-public/private.org")
                                                        ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
-                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")))
+                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")
+                                                       ("Yasnippets" . "~/.emacs.d/yasnippets")))
                                         (action . (("Open" . (lambda (item)
                                                                (if (functionp item)
                                                                    (funcall item)
