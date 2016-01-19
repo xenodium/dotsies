@@ -89,9 +89,11 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("deserialising" "deserializing" nil 0)
     ("displaed" "displayed" nil 4)
     ("exected" "executed" nil 0)
     ("make" "make" nil 1)
+    ("poppped" "popped" nil 0)
     ("responsd" "respond" nil 0)
     ("trying" "trying" nil 3)
     ("update" "update" nil 0)
