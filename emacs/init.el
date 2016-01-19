@@ -365,6 +365,10 @@ Values between 0 - 100."
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
 
+  (use-package zone-rainbow :ensure t
+    :config
+    (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+
   ;; A Nyan zone. Well, just because.
   (use-package zone-nyan :ensure t
     :after zone
