@@ -1494,6 +1494,11 @@ Argument LEN Length."
   (modify-syntax-entry ?< "(>")
   (modify-syntax-entry ?> ")<"))
 
+(use-package html-check-frag :ensure t
+  :config
+  (add-hook 'html-mode-hook (lambda ()
+                              (html-check-frag-mode 1))))
+
 (use-package requirejs :ensure t)
 
 (use-package js2-mode :ensure t
