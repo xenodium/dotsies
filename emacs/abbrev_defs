@@ -45,6 +45,8 @@
 
 (define-abbrev-table 'data-debug-mode-abbrev-table '())
 
+(define-abbrev-table 'debugger-mode-abbrev-table '())
+
 (define-abbrev-table 'diary-fancy-display-mode-abbrev-table '())
 
 (define-abbrev-table 'diary-mode-abbrev-table '())
@@ -88,8 +90,16 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("ectracted" "extracted" nil 0)
+    ("deserialising" "deserializing" nil 0)
+    ("displaed" "displayed" nil 4)
+    ("exected" "executed" nil 0)
+    ("exsits" "exists" nil 0)
+    ("make" "make" nil 1)
+    ("poppped" "popped" nil 0)
     ("responsd" "respond" nil 0)
     ("trying" "trying" nil 3)
+    ("update" "update" nil 1)
+    ("updated" "updated" nil 1)
    ))
 
 (define-abbrev-table 'go-mode-abbrev-table '())
@@ -267,4 +277,6 @@
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'web-mode-abbrev-table '())
+
+(define-abbrev-table 'zone-select-mode-abbrev-table '())
 
