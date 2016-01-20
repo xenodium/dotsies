@@ -1618,6 +1618,7 @@ Argument LEN Length."
   (defvar mouse-wheel-mode nil))
 
 (defun ar/company-fci-workaround ()
+  "Enable a workaround to disable fci while company-completing."
   (defvar-local company-fci-mode-on-p nil
     "Keep track if fci-mode if currently on.")
   ;; Disable fci if needed.
