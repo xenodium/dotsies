@@ -1111,6 +1111,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq company-idle-delay 0.5)
   (setq company-show-numbers t)
   (setq company-minimum-prefix-length 2)
+  (setq company-tooltip-align-annotations t)
   (global-company-mode))
 
 (use-package company-sourcekit :ensure t)
