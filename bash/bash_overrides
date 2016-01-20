@@ -23,7 +23,10 @@ export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 ### nvm setup (Node Version Manager) ### start
 
 export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
+# TODO: Add linux support.
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  source $(brew --prefix nvm)/nvm.sh
+fi
 
 ### nvm setup ### end
 
