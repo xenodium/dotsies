@@ -236,6 +236,11 @@
 
 (use-package tramp
   :config
+  ;; Problem with TRAMP mode
+  ;; Control Path too long error
+  ;; TMPDIR variable is really large
+  ;; http://lists.macosforge.org/pipermail/macports-tickets/2011-June/084295.html
+  (setenv "TMPDIR" "/tmp")
   (setq tramp-default-method "ssh"))
 
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
@@ -364,6 +369,14 @@ Values between 0 - 100."
 
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
+
+  (use-package zone-rainbow :ensure t
+    :after zone
+    :config
+    (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+
+  (use-package zone-select :ensure t
+    :after zone)
 
   ;; A Nyan zone. Well, just because.
   (use-package zone-nyan :ensure t
@@ -1605,6 +1618,7 @@ Argument LEN Length."
   (defvar mouse-wheel-mode nil))
 
 (defun ar/company-fci-workaround ()
+  "Enable a workaround to disable fci while company-completing."
   (defvar-local company-fci-mode-on-p nil
     "Keep track if fci-mode if currently on.")
   ;; Disable fci if needed.
