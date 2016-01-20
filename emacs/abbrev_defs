@@ -89,8 +89,11 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("apologised" "apologized" nil 0)
     ("displaed" "displayed" nil 4)
     ("exected" "executed" nil 0)
+    ("flights" "flight" nil 0)
+    ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 1)
     ("responsd" "respond" nil 0)
     ("trying" "trying" nil 3)
