@@ -236,6 +236,11 @@
 
 (use-package tramp
   :config
+  ;; Problem with TRAMP mode
+  ;; Control Path too long error
+  ;; TMPDIR variable is really large
+  ;; http://lists.macosforge.org/pipermail/macports-tickets/2011-June/084295.html
+  (setenv "TMPDIR" "/tmp")
   (setq tramp-default-method "ssh"))
 
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
@@ -364,6 +369,14 @@ Values between 0 - 100."
 
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
+
+  (use-package zone-rainbow :ensure t
+    :after zone
+    :config
+    (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+
+  (use-package zone-select :ensure t
+    :after zone)
 
   ;; A Nyan zone. Well, just because.
   (use-package zone-nyan :ensure t
@@ -1098,6 +1111,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq company-idle-delay 0.5)
   (setq company-show-numbers t)
   (setq company-minimum-prefix-length 2)
+  (setq company-tooltip-align-annotations t)
   (global-company-mode))
 
 (use-package company-sourcekit :ensure t)
