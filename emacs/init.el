@@ -1258,7 +1258,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (set-fill-column 1000)
   (ar/org-src-color-blocks-dark)
   (flyspell-mode)
-  (rainbow-delimiters-mode)
   (org-bullets-mode 1)
   (yas-minor-mode 1)
   (org-display-inline-images))
