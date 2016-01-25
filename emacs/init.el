@@ -154,6 +154,7 @@
   :after (ar-file ar-org ar-process)
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
+(use-package ar-ping)
 (use-package ar-shell
   :after (cl comint))
 (use-package ar-url
