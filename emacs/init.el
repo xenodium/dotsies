@@ -301,6 +301,12 @@ Values between 0 - 100."
   :commands (synosaurus-lookup
              synosaurus-choose-and-replace))
 
+(use-package wordnut :ensure t
+  :after ar-process
+  :config (ar/process-assert-binary-installed "wn" "brew install wordnet")
+  :commands (wordnut-search
+             wordnut-lookup-current-word))
+
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
