@@ -281,5 +281,5 @@
 
 (define-abbrev-table 'web-mode-abbrev-table '())
 
-(define-abbrev-table 'zone-select-mode-abbrev-table '())
+(define-abbrev-table 'wordnut-mode-abbrev-table '())
 
