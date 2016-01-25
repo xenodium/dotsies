@@ -131,6 +131,9 @@
   :after (ar-helm ar-shell shell)
   :config
   (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+(use-package ar-helm-hotspots-config
+  :after (ar-dired ar-helm-org ar-org helm-buffers)
+  :bind ("C-x b" . ar/helm-hotspots))
 (use-package ar-image
   :after (ar-buffer ar-string)
   :commands (ar/image-open-html-for-current-dir))
@@ -2352,38 +2355,6 @@ _y_outube
       (smerge-mode 1))))
 (add-hook 'find-file-hook #'ar/try-smerge t)
 
-(defvar ar/helm-source-local-hotspots '((name . "Local")
-                                        (candidates . (("Active" . ar/dired-split-active-to-active)
-                                                       ("Blog" . "~/stuff/active/blog/index.org")
-                                                       ("Downloads" . ar/dired-split-downloads-to-active)
-                                                       ("Desktop" . ar/dired-split-desktop-to-active)
-                                                       ("Init" . "~/stuff/active/code/dots/emacs/init.el")
-                                                       ("Private" . "~/stuff/active/non-public/private.org")
-                                                       ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
-                                                       ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")
-                                                       ("Yasnippets" . "~/.emacs.d/yasnippets")))
-                                        (action . (("Open" . (lambda (item)
-                                                               (if (functionp item)
-                                                                   (funcall item)
-                                                                 (ar/org-open-file-special-path item))))))))
-
-(defvar ar/helm-source-web-hotspots '((name . "Web")
-                                      (candidates . (("Github" . "https://github.com/xenodium")
-                                                     ("Pinboard" . "https://www.pinterest.com/alvaro1192/wheretogo")
-                                                     ("Twitter" . "http://twitter.com/xenodium")))
-                                      (action . (("Open" . (lambda (url)
-                                                             (browse-url url)))))))
-;; Append with:
-;; (ar/alist-append-to-value ar/helm-source-web-hotspots
-;;                           'candidates
-;;                           '("Google Play" . "https://play.google.com/music/listen?u=my@gmail.com"))
-
-(defvar ar/helm-source-blog '((name . "Blog")
-                              (candidates . ar/helm-org-get-blog-candidates)
-                              (action . (lambda (candidate)
-                                          (helm-org-goto-marker candidate)
-                                          (org-show-subtree)))))
-
 (use-package cl
   :init
   ;; Ignore running processes when closing Emacs
@@ -2537,8 +2508,6 @@ line instead."
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
-
-(bind-key "C-x b" #'ar/helm-org-my-hotspots)
 
 ;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
 ;; (use-package  puml-mode :ensure t)
