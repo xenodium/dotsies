@@ -109,8 +109,7 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
 (use-package ar-auto-correct
-  :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map)
-  :after (abbrev ispell flyspell))
+  :after (abbrev ispell))
 
 (use-package ar-buffer
   :after (ar-process ar-string goto-addr url url-http)
@@ -1566,7 +1565,8 @@ Argument LEN Length."
 (setq sentence-end-double-space nil)
 
 (use-package flyspell
-  :commands (flyspell-mode-on))
+  :after ar-auto-correct
+  :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
 
 (use-package fill-column-indicator :ensure t
   :commands (turn-on-fci-mode))
