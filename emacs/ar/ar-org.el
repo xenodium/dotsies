@@ -10,6 +10,7 @@
 (require 'ar-buffer)
 (require 'org)
 
+;; TODO: Move to ar/org-daily.
 (defvar ar/org-daily-file-path "set/path/to/daily.org"
   "Path to daily.org file.")
 
