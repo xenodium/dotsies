@@ -12,7 +12,7 @@
 ;; From http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
 (defun ar/auto-correct-ispell-word-then-abbrev (p)
   "Call `ispell-word', then create an abbrev for it.
-With prefix P, create local abbrev. Otherwise it will
+With prefix P, create local abbrev.  Otherwise it will
 be global."
   (interactive "P")
   (let (bef aft)
