@@ -98,6 +98,7 @@
     ("flights" "flight" nil 0)
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 1)
+    ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
     ("responsd" "respond" nil 0)
     ("saving" "saving" nil 0)
@@ -106,7 +107,7 @@
     ("trying" "trying" nil 3)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
-    ("updating" "updating" nil 3)
+    ("updating" "updating" nil 4)
     ("wrning" "warning" nil 0)
    ))
 
