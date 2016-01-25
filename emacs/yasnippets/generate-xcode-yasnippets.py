@@ -3,6 +3,7 @@
 import plistlib
 import re
 import os
+import sys
 
 from collections import namedtuple
 
@@ -65,6 +66,9 @@ def convert_to_yasnippets():
 
 
 def main():
+  if sys.platform != "darwin":
+    print "Error: Not on Mac OS X"
+    return
   convert_to_yasnippets()
 
 
