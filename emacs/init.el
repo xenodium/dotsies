@@ -108,9 +108,10 @@
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (setq dabbrev-case-fold-search nil))
-
 (use-package ar-auto-correct
-  :after (abbrev ispell))
+  :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map)
+  :after (abbrev ispell flyspell))
+
 (use-package ar-buffer
   :after (ar-process ar-string goto-addr url url-http)
   ;; No need to confirm killing buffers.
@@ -1299,6 +1300,8 @@ already narrowed."
         ((derived-mode-p 'latex-mode)
          (LaTeX-narrow-to-environment))
         (t (narrow-to-defun))))
+
+(bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
 
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
