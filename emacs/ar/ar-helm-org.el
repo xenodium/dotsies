@@ -30,23 +30,6 @@
   (interactive)
   (helm :sources '(ar/helm-org-source-my-todos)))
 
-;; TODO: Move out of helm-org.
-(defun ar/helm-org-my-hotspots ()
-  "Show my hotspots."
-  (interactive)
-  (unless helm-source-buffers-list
-    (setq helm-source-buffers-list
-          (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   ar/helm-source-local-hotspots
-                   ar/helm-source-web-hotspots
-                   ar/helm-source-blog
-                   helm-source-ido-virtual-buffers
-                   helm-source-buffer-not-found)
-        :buffer "*helm buffers*"
-        :keymap helm-buffer-map
-        :truncate-lines t))
-
 (defun ar/helm-org-todo-candidates ()
   "Get this week's TODOS helm candidates."
   (ar/helm-org-entry-child-candidates "~/stuff/active/non-public/daily/daily.org" "backlog"))
@@ -104,12 +87,23 @@
                                       (ar/update-blog-timestamp-at-point)
                                       (save-buffer))))))))))
 
+(defun ar/helm-org--blog-bookmark-candidates ()
+  "Gets helm candidates for my blog bookmarks."
+  (ar/helm-org-candidates "~/stuff/active/blog/index.org"
+                          "bookmarks"))
+
+(defun ar/helm-org-goto-marker (marker)
+  "Go to org file MARKER."
+  (helm-org-goto-marker marker)
+  (org-show-subtree)
+  (recenter-top-bottom 3))
+
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
   (interactive)
   (ar/helm-org-save-bookmark-link-in-process)
   (helm :sources '(((name . "Blog bookmarks")
-                    (candidates . ar/helm-org-get-blog-bookmark-candidates)
+                    (candidates . ar/helm-org--blog-bookmark-candidates)
                     (action . (lambda (candidate)
                                 (helm-org-goto-marker candidate)
                                 (org-show-subtree)
@@ -145,24 +139,17 @@ index.org: * [2014-07-13 Sun] [[#emacs-meetup][#]] Emacs London meetup bookmarks
                                       (car helm-candidate)))
                     helm-candidates))
 
-;; TODO: Merge with ar/helm-org-get-blog-candidates.
-(defun ar/helm-org-get-blog-bookmark-candidates ()
-  "Gets helm candidates for my blog bookmarks."
-  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
-         (helm-candidates (helm-org-get-candidates (list org-filepath))))
-    (ar/helm-org-format-candidates (ar/helm-org-filter-candidates helm-candidates "bookmarks"))))
-
 (defun ar/helm-org-get-blog-backlog-candidates ()
   "Gets helm candidates for my blog backlogs."
   (ar/helm-org-format-candidates
    (ar/helm-org-filter-candidates
     (helm-org-get-candidates (list "~/stuff/active/blog/index.org")) "backlog")))
 
-(defun ar/helm-org-get-blog-candidates ()
-  "Gets helm candidates for my blog."
-  (let* ((org-filepath (expand-file-name "~/stuff/active/blog/index.org"))
-         (helm-candidates (helm-org-get-candidates (list org-filepath))))
-    (ar/helm-org-format-candidates (ar/helm-org-filter-candidates helm-candidates "^\\* \\["))))
+(defun ar/helm-org-candidates (org-file-path filter-re)
+  "Get helm candidates in ORG-FILE-PATH and filter matching FILTER-RE."
+  (ar/helm-org-format-candidates
+   (ar/helm-org-filter-candidates
+    (helm-org-get-candidates (list org-file-path)) filter-re)))
 
 (provide 'ar-helm-org)
 
