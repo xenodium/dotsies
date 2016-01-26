@@ -53,6 +53,14 @@
                                                   (action . (lambda (candidate)
                                                               (ar/helm-org-goto-marker candidate)))))
 
+(defvar ar/helm-hotspots-config--sources '(helm-source-buffers-list
+                                           ar/helm-hotspots-config--local-source
+                                           ar/helm-hotspots-config--web-source
+                                           ar/helm-hotspots-config--blog-source
+                                           ar/helm-hotspots-config--private-source
+                                           helm-source-ido-virtual-buffers
+                                           helm-source-buffer-not-found))
+
 ;; Append with:
 ;; (ar/alist-append-to-value ar/helm-hotspots-config--web-source
 ;;                           'candidates
@@ -64,13 +72,7 @@
   (unless helm-source-buffers-list
     (setq helm-source-buffers-list
           (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   ar/helm-hotspots-config--local-source
-                   ar/helm-hotspots-config--web-source
-                   ar/helm-hotspots-config--blog-source
-                   ar/helm-hotspots-config--private-source
-                   helm-source-ido-virtual-buffers
-                   helm-source-buffer-not-found)
+  (helm :sources ar/helm-hotspots-config--sources
         :buffer "*helm buffers*"
         :keymap helm-buffer-map
         :truncate-lines t))
