@@ -2461,7 +2461,10 @@ _y_outube
 
 (ignore-errors (use-package org-beautify-theme :ensure t))
 
-(use-package org-bullets :ensure t)
+(use-package org-bullets :ensure t
+  :config
+  (setq org-bullets-bullet-list
+        '("◉" "◎" "⚫" "○" "►" "◇")))
 
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
 (defun ar/comint-clear-buffer ()
