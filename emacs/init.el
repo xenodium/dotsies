@@ -307,7 +307,7 @@ Values between 0 - 100."
 
 (use-package wordnut :ensure t
   :after ar-process
-  :config (ar/process-assert-binary-installed "wn" "brew install wordnet")
+  :config (ar/process-assert-binary-installed "wn" "brew/apt-get install wordnet")
   :commands (wordnut-search
              wordnut-lookup-current-word))
 
@@ -681,7 +681,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (setq projectile-enable-caching t)
+  (setq projectile-enable-caching nil)
   ;; C-u magit-status presents list of repositories.
   (setq magit-repo-dirs (mapcar (lambda (dir)
                                   (substring dir 0 -1))
