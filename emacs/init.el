@@ -307,7 +307,7 @@ Values between 0 - 100."
 
 (use-package wordnut :ensure t
   :after ar-process
-  :config (ar/process-assert-binary-installed "wn" "brew install wordnet")
+  :config (ar/process-assert-binary-installed "wn" "brew/apt-get install wordnet")
   :commands (wordnut-search
              wordnut-lookup-current-word))
 
