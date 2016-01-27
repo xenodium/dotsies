@@ -131,6 +131,8 @@
   :after (ar-helm ar-shell shell)
   :config
   (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+(use-package ar-helm-url
+  :after helm)
 (use-package ar-helm-hotspots-config
   :after (ar-dired ar-helm-org ar-org helm-buffers)
   :bind ("C-x b" . ar/helm-hotspots))
@@ -561,6 +563,7 @@ Values between 0 - 100."
 (use-package helm
   :config
   ;; Switch major modes and toggle minor modes.
+  (use-package helm-source)
   (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t)
