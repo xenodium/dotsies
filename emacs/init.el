@@ -289,8 +289,6 @@ Values between 0 - 100."
 (use-package package-safe-delete :ensure t
   :commands (package-safe-delete))
 
-(use-package fontawesome :ensure t)
-
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
@@ -567,6 +565,7 @@ Values between 0 - 100."
   (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t)
+  (use-package fontawesome :ensure t)
   (use-package helm-buffers
     :config
     (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
