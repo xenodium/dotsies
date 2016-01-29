@@ -1283,6 +1283,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
+(use-package ox-html)
+
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
