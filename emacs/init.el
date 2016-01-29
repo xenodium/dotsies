@@ -377,6 +377,12 @@ Values between 0 - 100."
            zone-pgm-drip
            zone-pgm-martini-swan-dive]))
 
+  ;; Locomotives zone.
+  (use-package zone-sl :ensure t
+    :after zone
+    :config
+    (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
+
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
 
