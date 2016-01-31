@@ -25,11 +25,12 @@
   (beginning-of-line))
 
 (defun ar/org-goto-file (file-path id)
+  "Open org FILE-PATH at ID."
   (org-open-link-from-string (format "[[#%s]]" id)))
 
 (defun ar/org-open-file-special-path (file-path)
-  "Open special FILE-PATH. Examples:
-path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
+  "Open special FILE-PATH.
+Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   (cond ((ar/string-match-p "#/s/" file-path)
          (let* ((split-path (split-string file-path "#/s/"))
                 (path (expand-file-name (nth 0 split-path)))
