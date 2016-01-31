@@ -21,11 +21,11 @@
           nil
           "Not in `ar/org-iter-with-org-file' block"))
 
-(defun ar/org-iter-with-org-file (org-file-path &rest body)
+(defmacro ar/org-iter-with-org-file (org-file-path &rest body)
   "With ORG-FILE-PATH, execute BODY."
-  (let (ar/org-iter--with-block)
-   (ar/file-with-current-file org-file-path
-    body)))
+  `(let ((ar/org-iter--with-block t))
+     (ar/file-with-current-file ,org-file-path
+       ,@body)))
 
 (defun ar/org-iter-heading-1-markers ()
   "Get heading 1 markers.
@@ -82,6 +82,7 @@ FUN should `save-excursion' if moving point."
 
 (ert-deftest ar/org-iter-heading-1-markers-test ()
   (with-temp-buffer
+    ;; TODO: Remove org-mode.
     (org-mode)
     (insert "#+TITLE: This is a test\n")
     (insert "* Heading 1-a\n")
@@ -97,6 +98,7 @@ FUN should `save-excursion' if moving point."
 
 (ert-deftest ar/org-iter-for-each-link-test ()
   (with-temp-buffer
+    ;; TODO: Remove org-mode.
     (org-mode)
     (insert "#+TITLE: This is a test\n")
     (insert "* Heading 1\n")
@@ -120,6 +122,7 @@ FUN should `save-excursion' if moving point."
 
 (ert-deftest ar/org-iter-for-each-heading-1-link-test ()
   (with-temp-buffer
+    ;; TODO: Remove org-mode.
     (org-mode)
     (insert "#+TITLE: This is a test\n")
     (insert "* Heading 1\n")
@@ -143,6 +146,36 @@ FUN should `save-excursion' if moving point."
          (setq link-called-count (1+ link-called-count))))
       (should (= heading-called-count 2))
       (should (= link-called-count 5)))))
+
+(defun __wip-helm-bookmarks ()
+  (interactive)
+  (ar/org-iter-with-org-file
+   "~/stuff/active/blog/index.org"
+   (let ((sources '()))
+     (ar/org-iter-for-each-heading-1
+      (lambda (heading)
+        (let ((candidates '()))
+          ;; TODO: Consider using widen instead.
+          (save-restriction
+            (org-narrow-to-subtree)
+            (ar/org-iter-for-each-link
+             (lambda (link)
+               (add-to-list 'candidates
+                (cons (cond ((and (org-element-property :contents-begin link)
+                            (org-element-property :contents-end link))
+                       (buffer-substring (org-element-property :contents-begin link)
+                                         (org-element-property :contents-end link)))
+                      (t
+                       (org-element-property :raw-link link)))
+                      (org-element-property :raw-link link))
+                t))))
+          (add-to-list 'sources
+                       (helm-build-sync-source (org-element-property :raw-value heading)
+                         :candidates candidates
+                         :resume 'noresume
+                         :action (lambda (href)
+                                   (browse-url href)))))))
+     (helm :sources sources))))
 
 (provide 'ar-org-iter)
 
