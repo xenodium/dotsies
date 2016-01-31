@@ -83,7 +83,9 @@
   (declare (indent 1))
   `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
      (save-excursion
-       (progn ,@body))))
+       (save-restriction
+         (goto-char 0)
+         (progn ,@body)))))
 
 (defun ar/file-read-image-name ()
   "Read image file name."
