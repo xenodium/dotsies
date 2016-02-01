@@ -1281,7 +1281,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (org-display-inline-images))
 
 (use-package org :config
-  (setq org-drawers(append '("MODIFIED") org-drawers))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
