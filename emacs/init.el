@@ -1281,6 +1281,23 @@ Repeated invocations toggle between the two most recently open buffers."
   (org-display-inline-images))
 
 (use-package org :config
+  (setq org-drawers(append '("MODIFIED") org-drawers))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (ditaa . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (gnuplot . t)
+     (haskell . nil)
+     (ocaml . nil)
+     (python . t)
+     (ruby . t)
+     (screen . nil)
+     (sh . t)
+     (js . t)
+     (sql . nil)
+     (sqlite . t)))
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 ;; Plan London Underground journeys.
@@ -2545,23 +2562,6 @@ line instead."
    (not (string= lang "emacs-lisp"))
    (not (string= lang "plantuml"))
    (not (string= lang "python"))))
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((R . t)
-   (ditaa . t)
-   (dot . t)
-   (emacs-lisp . t)
-   (gnuplot . t)
-   (haskell . nil)
-   (ocaml . nil)
-   (python . t)
-   (ruby . t)
-   (screen . nil)
-   (sh . t)
-   (js . t)
-   (sql . nil)
-   (sqlite . t)))
 
 (use-package org-src)
 

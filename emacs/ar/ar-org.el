@@ -275,8 +275,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
      ((t (:foreground "#008ED1" :background nil))))
    '(which-func ((t (:foreground "green"))))))
 
-(setq org-drawers(append '("MODIFIED") org-drawers))
-
 (provide 'ar-org)
 
 ;;; ar-org.el ends here
