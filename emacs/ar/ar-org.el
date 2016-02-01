@@ -65,7 +65,7 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
       (ar/org-goto-file file-path heading-id)
       (org-narrow-to-subtree)
       (org-show-subtree)
-      (org-end-of-meta-data-and-drawers)
+      (org-end-of-meta-data t)
       (org-insert-heading)
       (insert child)
       (ar/update-blog-timestamp-at-point)
@@ -131,7 +131,7 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
             (progn
               (goto-char (match-beginning 0))
               (replace-match ""))
-          (org-end-of-meta-data-and-drawers))
+          (org-end-of-meta-data t))
         ;; Insert new drawer + format.
         (org-insert-drawer nil drawer)
         (beginning-of-line 0)
@@ -202,7 +202,7 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   "Get org child headings for entry with ID."
   (save-excursion
     (org-open-link-from-string (format "[[#%s]]" id))
-    (org-end-of-meta-data-and-drawers)
+    (org-end-of-meta-data t)
     (let ((child-headings '())
           (child-heading))
       (when (org-at-heading-p)
@@ -221,7 +221,7 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
      (save-excursion
        (org-open-link-from-string (format "[[#%s]]" ,item-id))
-       (org-end-of-meta-data-and-drawers)
+       (org-end-of-meta-data t)
        (progn ,@body))))
 
 (defun ar/org-point-to-heading-1 ()

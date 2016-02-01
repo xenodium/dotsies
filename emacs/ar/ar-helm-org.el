@@ -44,7 +44,7 @@
         (if (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
             (progn
               (goto-char (ar/buffer-first-match-beginning))
-              (org-end-of-meta-data-and-drawers)
+              (org-end-of-meta-data t)
               (let ((child-headings '())
                     (child-heading))
                 (when (org-at-heading-p)
@@ -81,7 +81,7 @@
                                     (save-restriction
                                       (helm-org-goto-marker candidate)
                                       (org-show-subtree)
-                                      (org-end-of-meta-data-and-drawers)
+                                      (org-end-of-meta-data t)
                                       (org-insert-heading)
                                       (insert (concat new-backlog-link "."))
                                       (ar/update-blog-timestamp-at-point)
@@ -107,7 +107,7 @@
                     (action . (lambda (candidate)
                                 (helm-org-goto-marker candidate)
                                 (org-show-subtree)
-                                (org-end-of-meta-data-and-drawers)
+                                (org-end-of-meta-data t)
                                 (org-insert-heading)
                                 (insert (format "%s."
                                                 (ar/helm-org-retrieve-bookmark-link-in-process)))

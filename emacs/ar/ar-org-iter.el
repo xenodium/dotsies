@@ -7,9 +7,10 @@
 ;;; Code:
 
 (require 'ar-file)
-(require 'outline)
-(require 'org)
 (require 'cl)
+(require 'org)
+(require 'org-element)
+(require 'outline)
 
 (defun ar/org-iter--assert-org-mode ()
   "Assert buffer in `org-mode'."
