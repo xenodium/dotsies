@@ -1281,6 +1281,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (org-display-inline-images))
 
 (use-package org :config
+  (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
+
+(use-package ob
+  :config
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -1296,8 +1300,7 @@ Repeated invocations toggle between the two most recently open buffers."
      (sh . t)
      (js . t)
      (sql . nil)
-     (sqlite . t)))
-  (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
+     (sqlite . t))))
 
 ;; Plan London Underground journeys.
 (use-package org-tfl :ensure t
