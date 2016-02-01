@@ -1283,7 +1283,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
-;; Plan London Underground journeys
+;; Plan London Underground journeys.
 (use-package org-tfl :ensure t
   :after org)
 
