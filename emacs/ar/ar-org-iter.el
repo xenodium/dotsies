@@ -170,7 +170,9 @@ FUN should `save-excursion' if moving point."
                       (org-element-property :raw-link link))
                 t))))
           (add-to-list 'sources
-                       (helm-build-sync-source (org-element-property :raw-value heading)
+                       (helm-build-sync-source (replace-regexp-in-string ".*#\\]\\] " ""
+                                                                         (org-element-property :raw-value heading))
+                         :nomark t
                          :candidates candidates
                          :resume 'noresume
                          :action (lambda (href)
