@@ -106,8 +106,10 @@
     ("responsd" "respond" nil 0)
     ("saving" "saving" nil 0)
     ("sepaate" "separate" nil 0)
+    ("temove" "remove" nil 0)
     ("thiz" "this" nil 0)
     ("toomorrow" "tomorrow" nil 0)
+    ("tracel" "travel" nil 0)
     ("trying" "trying" nil 3)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
@@ -214,6 +216,8 @@
 (define-abbrev-table 'nodejs-repl-mode-abbrev-table '())
 
 (define-abbrev-table 'nslookup-mode-abbrev-table '())
+
+(define-abbrev-table 'nxml-mode-abbrev-table '())
 
 (define-abbrev-table 'objc-mode-abbrev-table
   '(
