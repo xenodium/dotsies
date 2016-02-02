@@ -1416,6 +1416,9 @@ already narrowed."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
+;; Evaluate line on the fly and overlay result.
+(use-package litable :ensure t)
+
 ;; Edit HTML templates in Javascript code (automatically escape).
 (use-package string-edit :ensure t)
 
