@@ -1286,6 +1286,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package ob
   :config
+  (setq org-export-babel-evaluate nil)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -1415,6 +1416,9 @@ already narrowed."
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
+
+;; Evaluate line on the fly and overlay result.
+(use-package litable :ensure t)
 
 ;; Edit HTML templates in Javascript code (automatically escape).
 (use-package string-edit :ensure t)
@@ -2574,7 +2578,6 @@ line instead."
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  (setq org-export-babel-evaluate nil)
   (cond ((ar/osx-p)
          (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
