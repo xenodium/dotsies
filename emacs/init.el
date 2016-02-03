@@ -526,6 +526,7 @@ Values between 0 - 100."
 
 (use-package easy-escape :ensure t
   :config
+  ;; TODO: Figure out why face foreground isn't displayed.
   (set-face-attribute 'easy-escape-face nil :foreground "red")
   (setq easy-escape-character ?⑊))
 
