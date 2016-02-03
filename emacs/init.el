@@ -395,11 +395,11 @@ Values between 0 - 100."
     :after zone)
 
   ;; A Nyan zone. Well, just because.
-  (use-package zone-nyan :ensure t
-    :after zone
-    :config
-    (when (window-system)
-      (setq zone-programs (vconcat [zone-nyan] zone-programs))))
+  ;; (use-package zone-nyan :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (when (window-system)
+  ;;     (setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
