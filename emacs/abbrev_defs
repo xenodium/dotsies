@@ -33,6 +33,8 @@
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
+(define-abbrev-table 'calculator-mode-abbrev-table '())
+
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
 (define-abbrev-table 'change-log-mode-abbrev-table '())
@@ -92,6 +94,8 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("apologised" "apologized" nil 0)
+    ("breadcrumbs" "crumbs" nil 0)
+    ("chekckout" "checkout" nil 0)
     ("deserialising" "deserializing" nil 0)
     ("displaed" "displayed" nil 4)
     ("ectracted" "extracted" nil 0)
@@ -100,6 +104,8 @@
     ("flights" "flight" nil 0)
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 1)
+    ("make" "make" nil 2)
+    ("nattural" "natural" nil 0)
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
