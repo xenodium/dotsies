@@ -523,6 +523,11 @@ Values between 0 - 100."
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
 
+(use-package easy-escape :ensure t
+  :config
+  (set-face-attribute 'easy-escape-face nil :foreground "red")
+  (setq easy-escape-character ?⑊))
+
 (use-package yasnippet :ensure t
   :config
   (setq yas-indent-line 'fixed)
