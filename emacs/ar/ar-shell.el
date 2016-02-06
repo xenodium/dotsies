@@ -33,9 +33,3 @@ Optional argument NO-NEWLINE to avoid inserting a newline (ie. execute/return)."
 (provide 'ar-shell)
 
 ;;; ar-shell.el ends here
-
-
-
-
-
-
