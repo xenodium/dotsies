@@ -1288,7 +1288,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
-(use-package org :config
+(use-package org :ensure t :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 (use-package ob
