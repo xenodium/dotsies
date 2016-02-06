@@ -18,7 +18,8 @@
                   (reverse
                    (delete-dups
                     (split-string (buffer-string) "\n"))))
-                #'ar/shell-send-command))
+                (lambda (command)
+                  (ar/shell-send-command command t))))
 
 (provide 'ar-helm-shell)
 
