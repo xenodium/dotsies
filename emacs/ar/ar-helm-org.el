@@ -7,6 +7,7 @@
 ;;; Code:
 
 
+(require 'cl)
 (require 'helm)
 (require 'helm-org)
 (require 'org)
@@ -41,24 +42,22 @@
       (save-restriction
         (widen)
         (goto-char (point-min))
-        (if (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
-            (progn
-              (goto-char (ar/buffer-first-match-beginning))
-              (org-end-of-meta-data t)
-              (let ((child-headings '())
-                    (child-heading))
-                (when (org-at-heading-p)
-                  ;; Extract first child.
-                  (add-to-list 'child-headings
-                               (cons (org-get-heading 'no-tags)
-                                     (copy-marker (point))))
-                  (while (org-get-next-sibling)
-                    (add-to-list 'child-headings
-                                 (cons (org-get-heading 'no-tags)
-                                       (copy-marker (point))))))
-                child-headings))
-          (message "Cannot find %s#%s" path id)
-          '())))))
+        (assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
+                (format "Cannot find %s#%s" path id))
+        (goto-char (ar/buffer-first-match-beginning))
+        (org-end-of-meta-data t)
+        (let ((child-headings '())
+              (child-heading))
+          (when (org-at-heading-p)
+            ;; Extract first child.
+            (add-to-list 'child-headings
+                         (cons (org-get-heading 'no-tags)
+                               (copy-marker (point))))
+            (while (org-get-next-sibling)
+              (add-to-list 'child-headings
+                           (cons (org-get-heading 'no-tags)
+                                 (copy-marker (point))))))
+          child-headings)))))
 
 (defun ar/helm-org-save-bookmark-link-in-process ()
   "Prompt and save a bookmark link in process."
