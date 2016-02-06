@@ -27,7 +27,8 @@ Optional argument NO-NEWLINE to avoid inserting a newline (ie. execute/return)."
   (goto-char (point-max))
   (comint-kill-input)
   (insert command)
-  (comint-send-input no-newline))
+  (unless no-newline
+    (comint-send-input no-newline)))
 
 (provide 'ar-shell)
 
