@@ -78,6 +78,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            margin: 0 auto;
            font-size: 100%;
            width: 50%;
+           max-width: 710px;
          }
          .figure {
            padding: 0;
