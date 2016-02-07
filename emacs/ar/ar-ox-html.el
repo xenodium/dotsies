@@ -18,8 +18,8 @@
   "Format drawer NAME and CONTENT for HTML export."
   (concat "<span class=\"modified-timestamp\">"
           "  <em>"
+          "updated: "
           (ar/ox-html-filter-timestamp-in-drawer-content content)
-          "  updated"
           "  </em>"
           "</span>"))
 
