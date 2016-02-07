@@ -524,6 +524,8 @@ Values between 0 - 100."
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
 
+(use-package replace-pairs :ensure t)
+
 (use-package easy-escape :ensure t
   :config
   ;; TODO: Figure out why face foreground isn't displayed.
