@@ -61,9 +61,11 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
           (org-display-custom-times 't))
       (unwind-protect
-          (advice-add 'org-timestamp-translate
-                      :around
-                      'ar/ox-html--timestamp-translate-advice-fun)
+          (progn
+           (advice-add 'org-timestamp-translate
+                       :around
+                       'ar/ox-html--timestamp-translate-advice-fun)
+           (org-html-export-to-html))
         (advice-remove 'org-timestamp-translate
                        'ar/ox-html--timestamp-translate-advice-fun))
       (browse-url (format "file:%s" (expand-file-name
