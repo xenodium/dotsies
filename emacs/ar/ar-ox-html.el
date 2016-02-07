@@ -74,102 +74,134 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
 (setq org-html-head-extra
       "<style type='text/css'>
          body {
-           padding: 25px;
-           margin: 0 auto;
            font-size: 100%;
-           width: 50%;
+           margin: 0 auto;
            max-width: 710px;
+           padding: 25px;
+           width: 50%;
          }
+
+         @media handheld {
+           body {
+             margin: 0 auto;
+             padding: 25px;
+             width: 100%;
+           }
+         }
+
          .figure {
            padding: 0;
          }
+
          /* Table left border */
-         .left { border-left: 1px solid #ccc; }
+         .left {
+           border-left: 1px solid #ccc;
+         }
+
          .title {
+           color: rgb(51, 51, 51);
            font-size: 1em;
            text-align: right;
-           color: rgb(51, 51, 51);
          }
+
          #contact-header {
            width: 100%;
          }
+
          #contact-right {
            text-align: right;
          }
+
          #contact-left {
            text-align: left;
          }
+
          #content {
          }
+
          pre {
-           box-shadow: none;
            border: none;
+           box-shadow: none;
          }
+
          pre.src {
            overflow: auto;
          }
+
          /* Hide sh/bash/Emacs Lisp overlay */
          pre.src:hover:before {
            display: none;
          }
+
          p, .org-ol, .org-ul {
            color: #3A4145;
-           font-size: 1.2em;
-           font-style: normal;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
+           font-size: 1.2em;
+           font-style: normal;
            font-weight: 300;
-           text-rendering: optimizelegibility;
-           line-height: 1.5;
            letter-spacing: 0.01rem;
+           line-height: 1.5;
+           text-rendering: optimizelegibility;
          }
+
          h1, h2, h3, h4, h5, #preamble {
-           font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
            color: #2E2E2E;
+           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
            line-height: 1.15em;
          }
+
          h1 {
            font-size: 4em;
          }
+
          h2 {
-           text-indent: -3px;
            font-size: 3em;
            letter-spacing: -0.02em;
            margin-bottom: 0px;
+           text-indent: -3px;
          }
+
          h3 {
            font-size: 1.6em;
          }
+
          #preamble {
            text-align: right;
          }
+
          .timestamp {
-          line-height: 1em;
           color: #a9a9a9;
+          display: block;
           font-family: 'Lucida Grande', 'Lucida Sans Unicode',
               'Lucida Sans', Geneva, Verdana, sans-serif;
           font-size: 0.5em;
           font-style: normal;
           font-weight: 300;
-          display: block;
+          line-height: 1em;
          }
+
          .modified-timestamp {
+           color: #D3d3d3;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
-           text-rendering: optimizelegibility;
            font-size: 0.8em;
-           color: #D3d3d3;
+           text-rendering: optimizelegibility;
          }
+
          a {
-          text-decoration: none;
           color: #4183C4;
+          text-decoration: none;
          }
+
          a:visited {
           background-color: #4183C4;
          }
+
          .outline-2 {
            margin-bottom: 50px;
          }
+
          .example {
            white-space: pre-wrap;
          }
