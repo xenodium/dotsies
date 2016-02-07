@@ -1670,6 +1670,10 @@ Argument LEN Length."
 ;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
 ;;                  'ar/org-src-color-blocks-dark)
 
+(use-package aggressive-indent :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+
 (use-package centered-cursor-mode :ensure t
   :pin melpa
   :init
