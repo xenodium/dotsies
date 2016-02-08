@@ -11,16 +11,15 @@
 
 (defun ar/ox-html-filter-timestamp-in-drawer-content (content)
   "Remove unnecessary HTML from exported modified CONTENT drawer."
-  (string-match "\\(\\[.*\\]\\)" content)
-  (match-string 0 content))
+  (string-match "<span class=\"timestamp\">\\(.*?\\)</span>" content)
+  (match-string 1 content))
 
 (defun ar/ox-html-export-format-drawer (name content)
   "Format drawer NAME and CONTENT for HTML export."
-  (concat "<br>"
-          "<span class=\"modified-timestamp\">"
+  (concat "<span class=\"modified-timestamp\">"
           "  <em>"
+          "updated: "
           (ar/ox-html-filter-timestamp-in-drawer-content content)
-          "  updated"
           "  </em>"
           "</span>"))
 
@@ -43,6 +42,14 @@
   (setq org-html-postamble nil)
   (setq org-html-format-drawer-function #'ar/ox-html-export-format-drawer))
 
+(defun ar/ox-html--timestamp-translate-advice-fun (orig-fun &rest r)
+  "Translate advice function around ORIG-FUN and R arguments.
+Remove angle brackets: <06 February 2016> => 06 February 2016"
+  (let ((orig-timestamp (apply orig-fun r)))
+    (if (string-match "<\\(.*\\)?>" orig-timestamp)
+        (match-string 1 orig-timestamp)
+      orig-timestamp)))
+
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
@@ -50,113 +57,151 @@
   (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
   (with-current-buffer (find-file-noselect (expand-file-name
                                             "~/stuff/active/blog/index.org"))
-    (org-html-export-to-html)
-    (browse-url (format "file:%s" (expand-file-name
-                                   "~/stuff/active/blog/index.html")))))
+    (let ((org-time-stamp-custom-formats
+           '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
+          (org-display-custom-times 't))
+      (unwind-protect
+          (progn
+           (advice-add 'org-timestamp-translate
+                       :around
+                       'ar/ox-html--timestamp-translate-advice-fun)
+           (org-html-export-to-html))
+        (advice-remove 'org-timestamp-translate
+                       'ar/ox-html--timestamp-translate-advice-fun))
+      (browse-url (format "file:%s" (expand-file-name
+                                     "~/stuff/active/blog/index.html"))))))
 
 (setq org-html-head-extra
       "<style type='text/css'>
          body {
-           padding: 25px;
-           margin: 0 auto;
            font-size: 100%;
+           margin: 0 auto;
+           max-width: 710px;
+           padding: 25px;
            width: 50%;
          }
+
+         @media handheld {
+           body {
+             margin: 0 auto;
+             padding: 25px;
+             width: 100%;
+           }
+         }
+
          .figure {
            padding: 0;
          }
+
          /* Table left border */
-         .left { border-left: 1px solid #ccc; }
+         .left {
+           border-left: 1px solid #ccc;
+         }
+
          .title {
+           color: rgb(51, 51, 51);
            font-size: 1em;
            text-align: right;
-           color: rgb(51, 51, 51);
          }
+
          #contact-header {
            width: 100%;
          }
+
          #contact-right {
            text-align: right;
          }
+
          #contact-left {
            text-align: left;
          }
+
          #content {
          }
-         .modified-timestamp {
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
-           text-rendering: optimizelegibility;
-           font-size: 0.8em;
-           color: #a9a9a9;
-         }
+
          pre {
-           box-shadow: none;
            border: none;
+           box-shadow: none;
          }
+
          pre.src {
            overflow: auto;
          }
+
          /* Hide sh/bash/Emacs Lisp overlay */
          pre.src:hover:before {
            display: none;
          }
+
          p, .org-ol, .org-ul {
-           color: rgb(77, 77, 77);
-           font-size: 1em;
+           color: #3A4145;
+           font-family: 'Lucida Grande', 'Lucida Sans Unicode',
+               'Lucida Sans', Geneva, Verdana, sans-serif;
+           font-size: 1.2em;
            font-style: normal;
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
            font-weight: 300;
-           text-rendering: optimizelegibility;
-           line-height: 1.5;
            letter-spacing: 0.01rem;
-         }
-         h1, h2, h3, h4, h5, #preamble {
-           font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
+           line-height: 1.5;
            text-rendering: optimizelegibility;
-           color: rgb(51, 51, 51);
          }
+
+         h1, h2, h3, h4, h5, #preamble {
+           color: #2E2E2E;
+           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+           line-height: 1.15em;
+         }
+
          h1 {
-           font-size: 3em;
+           font-size: 4em;
          }
+
          h2 {
-           font-size: 2em;
+           font-size: 3em;
            letter-spacing: -0.02em;
-           line-height: 1.2;
-           font-weight: 700;
            margin-bottom: 0px;
+           text-indent: -3px;
          }
+
          h3 {
            font-size: 1.6em;
          }
+
          #preamble {
            text-align: right;
          }
+
          .timestamp {
-          color: #FF3E96;
-          font-family: jaf-bernino-sans, 'Lucida Grande',
-               'Lucida Sans Unicode', 'Lucida Sans', Geneva,
-               Verdana, sans-serif;
+          color: #a9a9a9;
+          display: block;
+          font-family: 'Lucida Grande', 'Lucida Sans Unicode',
+              'Lucida Sans', Geneva, Verdana, sans-serif;
           font-size: 0.5em;
           font-style: normal;
           font-weight: 300;
-          display: block;
+          line-height: 1em;
          }
+
+         .modified-timestamp {
+           color: #D3d3d3;
+           font-family: 'Lucida Grande', 'Lucida Sans Unicode',
+               'Lucida Sans', Geneva, Verdana, sans-serif;
+           font-size: 0.8em;
+           text-rendering: optimizelegibility;
+         }
+
          a {
-          text-decoration: none;
           color: #4183C4;
+          text-decoration: none;
          }
+
          a:visited {
           background-color: #4183C4;
          }
+
          .outline-2 {
            margin-bottom: 50px;
          }
+
          .example {
            white-space: pre-wrap;
          }

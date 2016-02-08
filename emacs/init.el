@@ -524,6 +524,14 @@ Values between 0 - 100."
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
 
+(use-package replace-pairs :ensure t)
+
+(use-package easy-escape :ensure t
+  :config
+  ;; TODO: Figure out why face foreground isn't displayed.
+  (set-face-attribute 'easy-escape-face nil :foreground "red")
+  (setq easy-escape-character ?⑊))
+
 (use-package yasnippet :ensure t
   :config
   (setq yas-indent-line 'fixed)
@@ -1282,7 +1290,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
-(use-package org :config
+(use-package org :ensure t :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 (use-package ob
@@ -1661,6 +1669,10 @@ Argument LEN Length."
 ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 ;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
 ;;                  'ar/org-src-color-blocks-dark)
+
+(use-package aggressive-indent :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
 
 (use-package centered-cursor-mode :ensure t
   :pin melpa
