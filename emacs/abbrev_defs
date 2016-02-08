@@ -98,6 +98,7 @@
     ("exected" "executed" nil 0)
     ("exsits" "exists" nil 0)
     ("flights" "flight" nil 0)
+    ("interesgt" "interest" nil 0)
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 1)
     ("playfull" "playful" nil 0)
