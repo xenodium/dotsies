@@ -95,6 +95,7 @@
   '(
     ("apologised" "apologized" nil 0)
     ("breadcrumbs" "crumbs" nil 0)
+    ("cambredge" "cambridge" nil 0)
     ("chekckout" "checkout" nil 0)
     ("deserialising" "deserializing" nil 0)
     ("displaed" "displayed" nil 4)
@@ -104,7 +105,6 @@
     ("flights" "flight" nil 0)
     ("interesgt" "interest" nil 0)
     ("liverpool" "liverpool" nil 0)
-    ("make" "make" nil 1)
     ("make" "make" nil 2)
     ("nattural" "natural" nil 0)
     ("playfull" "playful" nil 0)
