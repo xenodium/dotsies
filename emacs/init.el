@@ -1908,11 +1908,20 @@ With a prefix argument N, (un)comment that many sexps."
 (use-package winner :ensure t
   :init (winner-mode 1)
   :config
+  (defun ar/dwim-key-esc ()
+    "Do what I mean when pressing ESC."
+    (interactive)
+    (cond ((string-equal major-mode 'shell-mode)
+           (keyboard-escape-quit))
+          ((string-equal major-mode 'term-mode)
+           (term-send-raw-meta))
+          (t
+           (winner-undo))))
   (setq winner-boring-buffers
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  :bind (("<escape>" . winner-undo)
+  :bind (("<escape>" . ar/dwim-key-esc)
          ("C-c <right>" . winner-redo)
          ("C-c <left>" . winner-undo)))
 
