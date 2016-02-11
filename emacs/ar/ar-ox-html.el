@@ -9,6 +9,16 @@
 (require 'ox-html)
 (require 'ar-file)
 
+(defun ar/org-html-export-to-kill-ring ()
+  "Export current buffer as HTML to kill ring.
+
+If narrowing is active in the current buffer, only export its
+narrowed part.
+
+If a region is active, export that region."
+  (interactive)
+  (kill-new (org-export-as 'html nil nil t nil)))
+
 (defun ar/ox-html-filter-timestamp-in-drawer-content (content)
   "Remove unnecessary HTML from exported modified CONTENT drawer."
   (string-match "<span class=\"timestamp\">\\(.*?\\)</span>" content)
