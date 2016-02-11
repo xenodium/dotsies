@@ -452,6 +452,7 @@ Values between 0 - 100."
         '(("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
           ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
           ("http://emacsredux.com/atom.xml" blog emacs-redux)
+          ("https://ghuntley.com/feed.xml" blog ghuntley)
           ("http://www.pygopar.com/rss" blog pygopar)
           ("http://planet.emacsen.org/atom.xml" blog emacs)
           ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
