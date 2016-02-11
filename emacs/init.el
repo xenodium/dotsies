@@ -298,6 +298,8 @@ Values between 0 - 100."
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
+(use-package helm-describe-modes :ensure t)
+
 ;; Needs:
 ;;   brew install Caskroom/cask/xquartz
 ;;   brew install wordnet
