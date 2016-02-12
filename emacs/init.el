@@ -169,7 +169,7 @@
   :demand
   :bind (("C-x t" . ar/platform-new-browser-tab)))
 (use-package ar-ox-html
-  :after (ox-html ar-file)
+  :after (org ox-html ar-file)
   :config
   (bind-key [f6] #'ar/ox-html-export)
   (ar/ox-html-setup))
@@ -185,33 +185,6 @@
   (setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
-
-;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/setup-graphical-fonts ()
-  "Setup fonts (on graphical display only."
-  (deftheme ar/org-theme "Sub-theme to beautify org mode")
-  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color  (face-foreground 'default nil 'default))
-         (background-color (face-background 'default nil 'default))
-         (primary-color    (face-foreground 'mode-line nil))
-         (secondary-color  (face-background 'secondary-selection nil 'region))
-         (headline        `(:inherit default :foreground ,base-font-color))
-         (padding         `(:line-width 5 :color ,background-color)))
-    (custom-theme-set-faces 'ar/org-theme
-                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
-                            `(org-level-8 ((t (,@headline ,@sans-font))))
-                            `(org-level-7 ((t (,@headline ,@sans-font))))
-                            `(org-level-6 ((t (,@headline ,@sans-font))))
-                            `(org-level-5 ((t (,@headline ,@sans-font))))
-                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
-                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
-                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
-                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
 
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
@@ -266,8 +239,7 @@ Values between 0 - 100."
     (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
     (ar/setup-graphical-mode-line)
-    (ar/setup-graphical-fringe)
-    (ar/setup-graphical-fonts)))
+    (ar/setup-graphical-fringe)))
 (ar/setup-graphical-display)
 
 ;; Tip of the day.
@@ -297,6 +269,8 @@ Values between 0 - 100."
 
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
+
+(use-package helm-describe-modes :ensure t)
 
 ;; Needs:
 ;;   brew install Caskroom/cask/xquartz
@@ -395,11 +369,11 @@ Values between 0 - 100."
     :after zone)
 
   ;; A Nyan zone. Well, just because.
-  (use-package zone-nyan :ensure t
-    :after zone
-    :config
-    (when (window-system)
-      (setq zone-programs (vconcat [zone-nyan] zone-programs))))
+  ;; (use-package zone-nyan :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (when (window-system)
+  ;;     (setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
@@ -449,13 +423,16 @@ Values between 0 - 100."
   (setq elfeed-feeds
         '(("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
           ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
+          ("http://emacsredux.com/atom.xml" blog emacs-redux)
+          ("https://ghuntley.com/feed.xml" blog ghuntley)
           ("http://www.pygopar.com/rss" blog pygopar)
           ("http://planet.emacsen.org/atom.xml" blog emacs)
-          ("http://planet.gnome.org/rss20.xml" blog gnome)
+          ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
           ("http://sachachua.com/blog/feed" blog sachachua)
           ("http://blog.roteiv.com/atom.xml" blog vietor)
           ("https://news.ycombinator.com/rss" news hackernews)
-          ("http://reddit.com/r/emacs/.rss" social reddit))))
+          ("http://reddit.com/r/emacs/.rss" social reddit)
+          ("http://dangrover.com/feed.xml" blog dangrover))))
 (use-package elfeed-goodies :ensure t :after elfeed
   :config
   (setq elfeed-goodies/entry-pane-position 'bottom)
@@ -521,6 +498,14 @@ Values between 0 - 100."
 
 ;; Visual feedback for query-replace, replace, and multiple cursors.
 (use-package visual-regexp :ensure t)
+
+(use-package replace-pairs :ensure t)
+
+(use-package easy-escape :ensure t
+  :config
+  ;; TODO: Figure out why face foreground isn't displayed.
+  (set-face-attribute 'easy-escape-face nil :foreground "red")
+  (setq easy-escape-character ?⑊))
 
 (use-package yasnippet :ensure t
   :config
@@ -1280,11 +1265,12 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
-(use-package org :config
+(use-package org :ensure t :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
 (use-package ob
   :config
+  (setq org-export-babel-evaluate nil)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -1414,6 +1400,9 @@ already narrowed."
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
+
+;; Evaluate line on the fly and overlay result.
+(use-package litable :ensure t)
 
 ;; Edit HTML templates in Javascript code (automatically escape).
 (use-package string-edit :ensure t)
@@ -1656,6 +1645,10 @@ Argument LEN Length."
 ;; (ar/change-theme 'color-theme-sanityinc-tomorrow-night
 ;;                  'ar/org-src-color-blocks-dark)
 
+(use-package aggressive-indent :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+
 (use-package centered-cursor-mode :ensure t
   :pin melpa
   :init
@@ -1888,11 +1881,20 @@ With a prefix argument N, (un)comment that many sexps."
 (use-package winner :ensure t
   :init (winner-mode 1)
   :config
+  (defun ar/dwim-key-esc ()
+    "Do what I mean when pressing ESC."
+    (interactive)
+    (cond ((string-equal major-mode 'shell-mode)
+           (keyboard-escape-quit))
+          ((string-equal major-mode 'term-mode)
+           (term-send-raw-meta))
+          (t
+           (winner-undo))))
   (setq winner-boring-buffers
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  :bind (("<escape>" . winner-undo)
+  :bind (("<escape>" . ar/dwim-key-esc)
          ("C-c <right>" . winner-redo)
          ("C-c <left>" . winner-undo)))
 
@@ -2075,6 +2077,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                   (find-file (concat ξpath ".el"))
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
+
+(use-package highlight2clipboard :ensure t)
 
 (use-package flycheck :ensure t)
 
@@ -2492,7 +2496,34 @@ _y_outube
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
 
-(ignore-errors (use-package org-beautify-theme :ensure t))
+(ignore-errors
+  (use-package org-beautify-theme :ensure t
+    :config
+    (when (window-system)
+      ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+      (deftheme ar/org-theme "Sub-theme to beautify org mode")
+      (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                              ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+             (base-font-color  (face-foreground 'default nil 'default))
+             (background-color (face-background 'default nil 'default))
+             (primary-color    (face-foreground 'mode-line nil))
+             (secondary-color  (face-background 'secondary-selection nil 'region))
+             (headline        `(:inherit default :foreground ,base-font-color))
+             (padding         `(:line-width 5 :color ,background-color)))
+        (custom-theme-set-faces 'ar/org-theme
+                                `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
+                                `(org-level-8 ((t (,@headline ,@sans-font))))
+                                `(org-level-7 ((t (,@headline ,@sans-font))))
+                                `(org-level-6 ((t (,@headline ,@sans-font))))
+                                `(org-level-5 ((t (,@headline ,@sans-font))))
+                                `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
+                                `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
+                                `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
+                                `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
+                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))))
 
 (use-package org-bullets :ensure t
   :config
@@ -2573,7 +2604,6 @@ line instead."
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
-  (setq org-export-babel-evaluate nil)
   (cond ((ar/osx-p)
          (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
