@@ -41,15 +41,18 @@ The app is chosen from your OS's preference.
 Version 2015-01-26
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
-  (let* ((ξfile-list
-          (if (string-equal major-mode "dired-mode")
-              (dired-get-marked-files)
-            (list (buffer-file-name))))
-         (ξdo-it-p (if (<= (length ξfile-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when ξdo-it-p
-      (mapc (ar/platform-open-in-external-app-function) ξfile-list))))
+  (if (eq major-mode 'eww-mode)
+      (eww-browse-with-external-browser eww-current-url)
+    (let* ((ξfile-list
+            (cond ((eq major-mode 'dired-mode)
+                   (dired-get-marked-files))
+                  (t
+                   (list (buffer-file-name)))))
+           (ξdo-it-p (if (<= (length ξfile-list) 5)
+                         t
+                       (y-or-n-p "Open more than 5 files? "))))
+      (when ξdo-it-p
+        (mapc (ar/platform-open-in-external-app-function) ξfile-list)))))
 
 (provide 'ar-platform)
 
