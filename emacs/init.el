@@ -186,33 +186,6 @@
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
 
-;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
-(defun ar/setup-graphical-fonts ()
-  "Setup fonts (on graphical display only."
-  (deftheme ar/org-theme "Sub-theme to beautify org mode")
-  (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                          ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                          ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                          ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                          (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color  (face-foreground 'default nil 'default))
-         (background-color (face-background 'default nil 'default))
-         (primary-color    (face-foreground 'mode-line nil))
-         (secondary-color  (face-background 'secondary-selection nil 'region))
-         (headline        `(:inherit default :foreground ,base-font-color))
-         (padding         `(:line-width 5 :color ,background-color)))
-    (custom-theme-set-faces 'ar/org-theme
-                            `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
-                            `(org-level-8 ((t (,@headline ,@sans-font))))
-                            `(org-level-7 ((t (,@headline ,@sans-font))))
-                            `(org-level-6 ((t (,@headline ,@sans-font))))
-                            `(org-level-5 ((t (,@headline ,@sans-font))))
-                            `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
-                            `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
-                            `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
-                            `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                            `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))
-
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
   (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
@@ -266,8 +239,7 @@ Values between 0 - 100."
     (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
     (ar/setup-graphical-mode-line)
-    (ar/setup-graphical-fringe)
-    (ar/setup-graphical-fonts)))
+    (ar/setup-graphical-fringe)))
 (ar/setup-graphical-display)
 
 ;; Tip of the day.
@@ -2523,7 +2495,34 @@ _y_outube
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
 
-(ignore-errors (use-package org-beautify-theme :ensure t))
+(ignore-errors
+  (use-package org-beautify-theme :ensure t
+    :config
+    (when (window-system)
+      ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
+      (deftheme ar/org-theme "Sub-theme to beautify org mode")
+      (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                              ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+             (base-font-color  (face-foreground 'default nil 'default))
+             (background-color (face-background 'default nil 'default))
+             (primary-color    (face-foreground 'mode-line nil))
+             (secondary-color  (face-background 'secondary-selection nil 'region))
+             (headline        `(:inherit default :foreground ,base-font-color))
+             (padding         `(:line-width 5 :color ,background-color)))
+        (custom-theme-set-faces 'ar/org-theme
+                                `(org-agenda-structure ((t (:inherit default ,@sans-font :height 2.0 :underline nil))))
+                                `(org-level-8 ((t (,@headline ,@sans-font))))
+                                `(org-level-7 ((t (,@headline ,@sans-font))))
+                                `(org-level-6 ((t (,@headline ,@sans-font))))
+                                `(org-level-5 ((t (,@headline ,@sans-font))))
+                                `(org-level-4 ((t (,@headline ,@sans-font :height 1.1   :box ,padding))))
+                                `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
+                                `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
+                                `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
+                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))))
 
 (use-package org-bullets :ensure t
   :config
