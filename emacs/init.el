@@ -169,7 +169,7 @@
   :demand
   :bind (("C-x t" . ar/platform-new-browser-tab)))
 (use-package ar-ox-html
-  :after (ox-html ar-file)
+  :after (org ox-html ar-file)
   :config
   (bind-key [f6] #'ar/ox-html-export)
   (ar/ox-html-setup))
@@ -2104,6 +2104,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                   (find-file (concat ξpath ".el"))
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
+
+(use-package highlight2clipboard :ensure t)
 
 (use-package flycheck :ensure t)
 
