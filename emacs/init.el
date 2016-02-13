@@ -1556,14 +1556,7 @@ Argument LEN Length."
   ;; (ar/process-assert-binary-installed "node")
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
-(defun ar/dart-mode-hook-function ()
-  "Called when entering `dart-mode'."
-  (flycheck-mode))
-
-(use-package dart-mode :ensure t
-  :config
-  ;; TODO: Add analysis server path.
-  (add-hook 'dart-mode-hook #'ar/dart-mode-hook-function))
+(use-package dart-mode :ensure t)
 
 (use-package json-mode :ensure t)
 
@@ -2085,7 +2078,27 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package highlight2clipboard :ensure t)
 
-(use-package flycheck :ensure t)
+(use-package flycheck :ensure t
+  :config
+  ;; TODO: Ensure proselint is installed.
+  ;; From http://unconj.ca/blog/linting-prose-in-emacs.html
+  (flycheck-define-checker proselint
+    "A linter for prose."
+    :command ("proselint" source-inplace)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": "
+              (id (one-or-more (not (any " "))))
+              (message) line-end))
+    :modes (gfm-mode
+            markdown-mode
+            org-mode
+            text-mode))
+  (add-to-list 'flycheck-checkers 'proselint)
+  ;; Override default flycheck triggers
+  (setq flycheck-check-syntax-automatically
+        '(save idle-change mode-enabled)
+        flycheck-idle-change-delay 0.8)
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 (use-package flycheck-tip :ensure t
   :config
@@ -2434,13 +2447,6 @@ _y_outube
 ;;    "cheatsheet"
 ;;    ("C-c s" hydra-search/body "search")
 ;;    ("q" nil "quit")))
-
-;; Override default flycheck triggers
-(setq flycheck-check-syntax-automatically
-      '(save idle-change mode-enabled)
-      flycheck-idle-change-delay 0.8)
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
 ;; Based on http://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html
