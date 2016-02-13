@@ -1741,6 +1741,11 @@ Argument LEN Length."
 (global-set-key [(control x) (k)]
                 #'kill-this-buffer)
 
+(use-package comint
+  :config
+  ;; Ensure shell prompts are read-only.
+  (setq comint-prompt-read-only t))
+
 (use-package shell-pop :ensure t
   :init
   ;; Customize shell-pop.
