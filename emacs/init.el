@@ -2078,6 +2078,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package highlight2clipboard :ensure t)
 
+(use-package writegood-mode :ensure t)
+
 (use-package flycheck :ensure t
   :config
   ;; TODO: Ensure proselint is installed.
