@@ -1633,13 +1633,12 @@ Argument LEN Length."
   ;; :config
   ;; TODO add in mode hook.
   ;; (add-to-list 'company-backends 'company-tern)
-  )
+  (setq company-tern-meta-as-single-line t)
+  (setq company-tern-property-marker ""))
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
   (setq-local company-tooltip-align-annotations t)
-  (setq-local company-tern-meta-as-single-line t)
-  (setq-local company-tern-property-marker "")
   (setq-local js-indent-level 2))
 
 (add-hook 'js-mode-hook #'ar/js-mode-hook-function)
