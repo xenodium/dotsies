@@ -1111,7 +1111,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company :ensure t
   :config
-  (setq company-idle-delay 0.5)
+  (setq company-idle-delay 0.2)
   (setq company-show-numbers t)
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
@@ -1533,7 +1533,13 @@ Argument LEN Length."
   (setq-local js2-basic-offset 2)
   (setq company-tooltip-align-annotations t)
   (setq company-tern-meta-as-single-line t)
-  (setq company-tern-property-marker "")
+  (setq company-backends '(company-tern
+                           (company-dabbrev-code
+                            company-gtags
+                            company-etags
+                            company-keywords)
+                           company-files
+                           company-dabbrev))
   (tern-mode 1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
@@ -1554,6 +1560,8 @@ Argument LEN Length."
   :config
   ;; Enable for node
   ;; (ar/process-assert-binary-installed "node")
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 (use-package dart-mode :ensure t)
@@ -1607,14 +1615,17 @@ Argument LEN Length."
 (use-package web-mode :ensure t
   :config
   (setq web-mode-code-indent-offset 2)
-  (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
   (defadvice web-mode-highlight-part (around tweak-jsx activate)
     (if (equal web-mode-content-type "jsx")
         (let ((web-mode-enable-part-face nil))
           ad-do-it)
       ad-do-it))
   (add-hook #'web-mode-hook #'ar/web-mode-hook-function))
+
+(defun ar/tern-delete-process ()
+  "Delete tern.jsp process."
+  (interactive)
+  (delete-process "Tern"))
 
 (use-package company-tern :ensure t
   ;; :config
