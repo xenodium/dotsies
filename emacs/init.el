@@ -1627,6 +1627,8 @@ Argument LEN Length."
   (interactive)
   (delete-process "Tern"))
 
+(use-package tern :ensure t)
+
 (use-package company-tern :ensure t
   ;; :config
   ;; TODO add in mode hook.
