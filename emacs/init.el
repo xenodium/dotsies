@@ -1630,11 +1630,8 @@ Argument LEN Length."
 (use-package tern :ensure t)
 
 (use-package company-tern :ensure t
-  ;; :config
-  ;; TODO add in mode hook.
-  ;; (add-to-list 'company-backends 'company-tern)
-  (setq company-tern-meta-as-single-line t)
-  (setq company-tern-property-marker ""))
+  :config
+  (setq company-tern-meta-as-single-line t))
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
