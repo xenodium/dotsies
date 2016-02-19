@@ -2093,18 +2093,19 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   ;; TODO: Ensure proselint is installed.
   ;; From http://unconj.ca/blog/linting-prose-in-emacs.html
-  (flycheck-define-checker proselint
-    "A linter for prose."
-    :command ("proselint" source-inplace)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": "
-              (id (one-or-more (not (any " "))))
-              (message) line-end))
-    :modes (gfm-mode
-            markdown-mode
-            org-mode
-            text-mode))
-  (add-to-list 'flycheck-checkers 'proselint)
+  ;; Disabling. Lots of locks in org mode.
+  ;; (flycheck-define-checker proselint
+  ;;   "A linter for prose."
+  ;;   :command ("proselint" source-inplace)
+  ;;   :error-patterns
+  ;;   ((warning line-start (file-name) ":" line ":" column ": "
+  ;;             (id (one-or-more (not (any " "))))
+  ;;             (message) line-end))
+  ;;   :modes (gfm-mode
+  ;;           markdown-mode
+  ;;           org-mode
+  ;;           text-mode))
+  ;;(add-to-list 'flycheck-checkers 'proselint)
   ;; Override default flycheck triggers
   (setq flycheck-check-syntax-automatically
         '(save idle-change mode-enabled)
