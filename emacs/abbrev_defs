@@ -93,6 +93,7 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("accross" "across" nil 0)
     ("apologised" "apologized" nil 0)
     ("breadcrumbs" "crumbs" nil 0)
     ("cambredge" "cambridge" nil 0)
@@ -114,7 +115,7 @@
     ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
     ("responsd" "respond" nil 0)
-    ("saving" "saving" nil 0)
+    ("saving" "saving" nil 1)
     ("sepaate" "separate" nil 0)
     ("temove" "remove" nil 0)
     ("thiz" "this" nil 0)
@@ -123,7 +124,7 @@
     ("trying" "trying" nil 3)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
-    ("updating" "updating" nil 5)
+    ("updating" "updating" nil 7)
     ("wrning" "warning" nil 0)
    ))
 
