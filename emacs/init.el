@@ -427,6 +427,7 @@ Values between 0 - 100."
           ("https://ghuntley.com/feed.xml" blog ghuntley)
           ("http://www.pygopar.com/rss" blog pygopar)
           ("http://planet.emacsen.org/atom.xml" blog emacs)
+          ("http://emacsist.com/rss" blog emacs)
           ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
           ("http://sachachua.com/blog/feed" blog sachachua)
           ("http://blog.roteiv.com/atom.xml" blog vietor)
