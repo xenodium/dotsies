@@ -19,6 +19,8 @@
                                                                ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                                                                ("Private" . "~/stuff/active/non-public/private.org")
                                                                ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
+                                                               ("iPhone Simulator SDK" . "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk")
+                                                               ("iPhone SDK" . "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk")
                                                                ("iPhone Simulator Devices" . "~/Library/Developer/CoreSimulator/Devices")
                                                                ("Yasnippets" . "~/.emacs.d/yasnippets")))
                                                 (action . (("Open" . (lambda (item)
