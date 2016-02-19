@@ -104,6 +104,69 @@
 
 (use-package esup :ensure t)
 
+;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
+(use-package helm
+  :config
+  ;; Switch major modes and toggle minor modes.
+  (use-package helm-source)
+  (use-package helm-mode-manager :ensure t)
+  (use-package imenu-anywhere :ensure t)
+  (use-package helm-ag :ensure t)
+  (use-package fontawesome :ensure t)
+  (use-package helm-buffers
+    :config
+    (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
+                                              '(picture-mode artist-mode)))
+    (setq helm-buffer-max-length 40))
+  (use-package helm-files)
+  (use-package helm-grep)
+  (use-package helm-org)
+  (use-package helm-swoop :ensure t
+    :bind (("M-C-s" . helm-multi-swoop-all)
+           ("M-i" . helm-swoop))
+    :commands (helm-swoop))
+  (use-package helm-config)
+  (use-package recentf
+    :init
+    (recentf-mode)
+    :config
+    (setq recentf-max-saved-items 200
+          recentf-max-menu-items 15))
+  (setq helm-net-prefer-curl t)
+  (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (setq helm-quick-update t)  ; do not display invisible candidates
+  (setq helm-idle-delay 0.01) ; be idle for this many seconds, before updating in delayed sources.
+  (setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (setq helm-ff-search-library-in-sexp t)
+  (setq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (setq helm-split-window-in-side-p t)
+  (setq helm-candidate-number-limit 200)
+  (setq helm-ff-skip-boring-files t)
+  (setq helm-boring-file-regexp-list
+        '("\\.git$" "\\.hg$"
+          "\\.svn$" "\\.CVS$"
+          "\\._darcs$" "\\.la$"
+          "\\.o$" "\\.i$"))
+  (setq helm-ff-file-name-history-use-recentf t)
+  (setq ido-use-virtual-buffers t)
+  (setq helm-buffers-fuzzy-matching t)
+  (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
+  (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
+  (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
+  (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
+  (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
+  (bind-key "M-p" #'helm-previous-source helm-map)
+  (bind-key "M-n" #'helm-next-source helm-map)
+  (helm-mode 1)
+  :bind (("C-x C-f" . helm-find-files)
+         ("C-c i" . helm-semantic-or-imenu)
+         ("M-x" . helm-M-x)
+         ("M-y" . helm-show-kill-ring)
+         ("C-h a" . helm-apropos)
+         ("C-h y" . helm-dash-at-point))
+  :commands (helm-buffers-list)
+  :ensure t)
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
@@ -121,7 +184,7 @@
 (use-package ar-helm
   :after helm)
 (use-package ar-helm-objc
-  :after (ar-file ar-helm ar-objc)
+  :after (helm ar-file ar-helm ar-objc)
   :commands (ar/helm-objc-import-update))
 (use-package ar-helm-projectile
   :bind ("<f7>" . ar/helm-projectile-shell-cd))
@@ -427,6 +490,7 @@ Values between 0 - 100."
           ("https://ghuntley.com/feed.xml" blog ghuntley)
           ("http://www.pygopar.com/rss" blog pygopar)
           ("http://planet.emacsen.org/atom.xml" blog emacs)
+          ("http://emacsist.com/rss" blog emacs)
           ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
           ("http://sachachua.com/blog/feed" blog sachachua)
           ("http://blog.roteiv.com/atom.xml" blog vietor)
@@ -549,68 +613,6 @@ Values between 0 - 100."
         (t
          (error "Neither save-place-mode nor toggle-save-place-globally available"))))
 
-(use-package helm
-  :config
-  ;; Switch major modes and toggle minor modes.
-  (use-package helm-source)
-  (use-package helm-mode-manager :ensure t)
-  (use-package imenu-anywhere :ensure t)
-  (use-package helm-ag :ensure t)
-  (use-package fontawesome :ensure t)
-  (use-package helm-buffers
-    :config
-    (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                              '(picture-mode artist-mode)))
-    (setq helm-buffer-max-length 40))
-  (use-package helm-files)
-  (use-package helm-grep)
-  (use-package helm-org)
-  (use-package helm-swoop :ensure t
-    :bind (("M-C-s" . helm-multi-swoop-all)
-           ("M-i" . helm-swoop))
-    :commands (helm-swoop))
-  (use-package helm-config)
-  (use-package recentf
-    :init
-    (recentf-mode)
-    :config
-    (setq recentf-max-saved-items 200
-          recentf-max-menu-items 15))
-  (setq helm-net-prefer-curl t)
-  (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
-  (setq helm-quick-update t)  ; do not display invisible candidates
-  (setq helm-idle-delay 0.01) ; be idle for this many seconds, before updating in delayed sources.
-  (setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
-  (setq helm-ff-search-library-in-sexp t)
-  (setq helm-split-window-default-side 'below) ;; open helm buffer below.
-  (setq helm-split-window-in-side-p t)
-  (setq helm-candidate-number-limit 200)
-  (setq helm-ff-skip-boring-files t)
-  (setq helm-boring-file-regexp-list
-        '("\\.git$" "\\.hg$"
-          "\\.svn$" "\\.CVS$"
-          "\\._darcs$" "\\.la$"
-          "\\.o$" "\\.i$"))
-  (setq helm-ff-file-name-history-use-recentf t)
-  (setq ido-use-virtual-buffers t)
-  (setq helm-buffers-fuzzy-matching t)
-  (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
-  (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
-  (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
-  (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
-  (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
-  (bind-key "M-p" #'helm-previous-source helm-map)
-  (bind-key "M-n" #'helm-next-source helm-map)
-  (helm-mode 1)
-  :bind (("C-x C-f" . helm-find-files)
-         ("C-c i" . helm-semantic-or-imenu)
-         ("M-x" . helm-M-x)
-         ("M-y" . helm-show-kill-ring)
-         ("C-h a" . helm-apropos)
-         ("C-h y" . helm-dash-at-point))
-  :commands (helm-buffers-list)
-  :ensure t)
-
 (use-package helm-dash :ensure t
   :after (go-mode)
   :config
@@ -637,7 +639,6 @@ With argument ARG, do this that many times."
 (bind-key "<C-backspace>" #'ar/backward-delete-subword)
 (bind-key "C-x C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
 
-(bind-key "C-q" #'previous-buffer)
 (bind-key "C-z" #'next-buffer)
 
 ;; Save current position to mark ring when jumping to a different place
