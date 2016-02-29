@@ -8,6 +8,7 @@
 
 (require 'ar-file)
 (require 'ar-helm)
+(require 'ar-helm-text)
 (require 'ar-objc)
 
 (defun ar/helm-objc-import-update ()
@@ -22,6 +23,12 @@
      'string<)
     (lambda (selection)
       (ar/objc-import nil selection))))
+
+(defun ar/helm-objc-insert-relative-file-path ()
+  (interactive)
+  (ar/helm-text-insert-file-path
+   "." "\\*.[hm]" (lambda (path)
+                    (string-remove-prefix "./" path))))
 
 (provide 'ar-helm-objc)
 
