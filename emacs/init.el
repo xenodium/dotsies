@@ -1064,6 +1064,13 @@ With a prefix ARG open line above the current line."
              (join-line))))
         (t (call-interactively 'join-line))))
 
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+
+(use-package ace-mc :ensure t)
+
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window))
@@ -1502,7 +1509,7 @@ Argument LEN Length."
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
   (setq-local compile-command
-       "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+              "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (local-set-key (kbd "<f7>")
                  #'ar/xc:build)
   (local-set-key (kbd "<f8>")
