@@ -89,6 +89,8 @@
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
+(define-abbrev-table 'gfm-mode-abbrev-table '())
+
 (define-abbrev-table 'ggtags-global-mode-abbrev-table '())
 
 (define-abbrev-table 'ggtags-view-search-history-mode-abbrev-table '())
@@ -111,6 +113,7 @@
     ("exsits" "exists" nil 0)
     ("flights" "flight" nil 0)
     ("funcitonality" "functionality" nil 0)
+    ("impementation" "implementation" nil 0)
     ("injeciton" "injection" nil 0)
     ("interesgt" "interest" nil 0)
     ("liverpool" "liverpool" nil 0)
@@ -147,6 +150,8 @@
 (define-abbrev-table 'helm-ag-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-major-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-moccur-mode-abbrev-table '())
 
@@ -221,6 +226,8 @@
 (define-abbrev-table 'makefile-makepp-mode-abbrev-table '())
 
 (define-abbrev-table 'makefile-mode-abbrev-table '())
+
+(define-abbrev-table 'markdown-mode-abbrev-table '())
 
 (define-abbrev-table 'message-mode-abbrev-table '())
 
