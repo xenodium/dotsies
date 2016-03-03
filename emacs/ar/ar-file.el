@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'ar-string)
+(require 'files)
 (require 'simple)
 
 (defun ar/file-file-p (path)
@@ -136,22 +137,15 @@
   (unless (equal "/" path)
     (file-name-directory (directory-file-name path))))
 
-(defun ar/file-find-upwards (path filename)
-  "Search upwards from PATH for a file named FILENAME."
-  (let ((file (concat path filename))
-        (parent (ar/file-parent-directory (expand-file-name path))))
-    (if (file-exists-p file)
-        file
-      (when parent
-        (ar/file-find-upwards parent filename)))))
-
 ;; TODO: Consider using locate-dominating-file instead.
 (defun ar/file-open-closest (filename)
   "Open the closest FILENAME in current or parent dirs (handy for finding Makefiles)."
-  (let ((closest-file-path (ar/file-find-upwards (buffer-file-name)
-                                                 filename)))
-    (when closest-file-path
-      (message closest-file-path)
+  (let* ((closest-dir-path (locate-dominating-file  (buffer-file-name)
+                                                    filename))
+         (closest-file-path (concat (file-name-as-directory closest-dir-path)
+                                    filename)))
+    ;;(assert closest-dir-path nil "No %s found" filename)
+    (when closest-dir-path
       (switch-to-buffer (find-file-noselect closest-file-path)))
     closest-file-path))
 
