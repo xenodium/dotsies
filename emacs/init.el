@@ -167,6 +167,8 @@
   :commands (helm-buffers-list)
   :ensure t)
 
+(use-package enlive :ensure t)
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
@@ -352,8 +354,6 @@ Values between 0 - 100."
 (use-package macrostep :ensure t)
 
 (use-package async :ensure t :demand)
-
-(use-package enlive :ensure t)
 
 (use-package dired
   :after (discover fullframe)
@@ -1112,10 +1112,13 @@ Repeated invocations toggle between the two most recently open buffers."
   "Called when entering `swift-mode'."
   (setq-local company-backends '(company-sourcekit)))
 
-(use-package swift-mode :ensure t
-  :after company-sourcekit
-  :config
-  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+;; Broken at the moment:
+;; Symbol's value as variable is void: flycheck-swift-sdk-path
+;; (use-package swift-mode :ensure t
+;;   :init (defvar flycheck-swift-sdk-path)
+;;   :after company-sourcekit flycheck
+;;   :config
+;;   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
 
 (use-package company :ensure t
   :config
