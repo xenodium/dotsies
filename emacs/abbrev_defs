@@ -87,6 +87,8 @@
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
+(define-abbrev-table 'gfm-mode-abbrev-table '())
+
 (define-abbrev-table 'ggtags-global-mode-abbrev-table '())
 
 (define-abbrev-table 'ggtags-view-search-history-mode-abbrev-table '())
@@ -123,11 +125,14 @@
     ("toomorrow" "tomorrow" nil 0)
     ("tracel" "travel" nil 0)
     ("trying" "trying" nil 3)
+    ("typocal" "typical" nil 0)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 5)
     ("wrning" "warning" nil 0)
    ))
+
+(define-abbrev-table 'gnus-group-mode-abbrev-table '())
 
 (define-abbrev-table 'go-mode-abbrev-table '())
 
@@ -216,6 +221,8 @@
 (define-abbrev-table 'makefile-makepp-mode-abbrev-table '())
 
 (define-abbrev-table 'makefile-mode-abbrev-table '())
+
+(define-abbrev-table 'markdown-mode-abbrev-table '())
 
 (define-abbrev-table 'message-mode-abbrev-table '())
 
