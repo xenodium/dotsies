@@ -184,13 +184,14 @@ Version 2015-02-07."
   (let ((sort-fold-case t))
     (call-interactively #'sort-lines)))
 
-(defun ar/buffer-sort-current-block ()
-  "Select and sort current block."
-  (interactive)
+(defun ar/buffer-sort-current-block (case-insesitive)
+  "Select and sort current block.  With prefix CASE-INSESITIVE is activated."
+  (interactive "P")
   ;; Why is save-excursion not working?
   (let ((saved-point (point)))
     (ar/buffer-select-current-block)
-    (ar/buffer-sort-lines-ignore-case)
+    (let ((sort-fold-case case-insesitive))
+      (call-interactively #'sort-lines))
     (goto-char saved-point)))
 
 (defun ar/buffer-first-match-beginning (&optional re)

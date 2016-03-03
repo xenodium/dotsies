@@ -39,6 +39,8 @@
 
 (define-abbrev-table 'change-log-mode-abbrev-table '())
 
+(define-abbrev-table 'checkdoc-output-mode-abbrev-table '())
+
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
 (define-abbrev-table 'completion-list-mode-abbrev-table '())
@@ -95,11 +97,13 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("accross" "across" nil 0)
     ("apologised" "apologized" nil 0)
     ("breadcrumbs" "crumbs" nil 0)
     ("cambredge" "cambridge" nil 0)
     ("capibilities" "capabilities" nil 0)
     ("chekckout" "checkout" nil 0)
+    ("collitions" "collisions" nil 1)
     ("cunction" "function" nil 0)
     ("deserialising" "deserializing" nil 0)
     ("displaed" "displayed" nil 4)
@@ -109,9 +113,11 @@
     ("exsits" "exists" nil 0)
     ("flights" "flight" nil 0)
     ("funcitonality" "functionality" nil 0)
+    ("impementation" "implementation" nil 0)
+    ("injeciton" "injection" nil 0)
     ("interesgt" "interest" nil 0)
     ("liverpool" "liverpool" nil 0)
-    ("make" "make" nil 2)
+    ("make" "make" nil 3)
     ("nattural" "natural" nil 0)
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
@@ -128,7 +134,7 @@
     ("typocal" "typical" nil 0)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
-    ("updating" "updating" nil 5)
+    ("updating" "updating" nil 7)
     ("wrning" "warning" nil 0)
    ))
 
@@ -147,6 +153,8 @@
 (define-abbrev-table 'helm-ag-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-major-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-moccur-mode-abbrev-table '())
 
