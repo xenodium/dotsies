@@ -1481,10 +1481,10 @@ Argument LEN Length."
 
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
-  (add-hook 'before-save-hook
-            #'ar/clang-format-buffer
-            nil
-            'make-it-local)
+  ;; (add-hook 'before-save-hook
+  ;;           #'ar/clang-format-buffer
+  ;;           nil
+  ;;           'make-it-local)
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
