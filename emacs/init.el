@@ -1064,6 +1064,13 @@ With a prefix ARG open line above the current line."
              (join-line))))
         (t (call-interactively 'join-line))))
 
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+
+(use-package ace-mc :ensure t)
+
 (use-package ace-window :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window))
@@ -1474,10 +1481,10 @@ Argument LEN Length."
 
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
-  (add-hook 'before-save-hook
-            #'ar/clang-format-buffer
-            nil
-            'make-it-local)
+  ;; (add-hook 'before-save-hook
+  ;;           #'ar/clang-format-buffer
+  ;;           nil
+  ;;           'make-it-local)
   (objc-font-lock-mode)
   (helm-dash-activate-docset "iOS")
   (set-fill-column 100)
@@ -1502,7 +1509,7 @@ Argument LEN Length."
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
   (setq-local compile-command
-       "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+              "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
   (local-set-key (kbd "<f7>")
                  #'ar/xc:build)
   (local-set-key (kbd "<f8>")
@@ -2094,18 +2101,19 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   ;; TODO: Ensure proselint is installed.
   ;; From http://unconj.ca/blog/linting-prose-in-emacs.html
-  (flycheck-define-checker proselint
-    "A linter for prose."
-    :command ("proselint" source-inplace)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": "
-              (id (one-or-more (not (any " "))))
-              (message) line-end))
-    :modes (gfm-mode
-            markdown-mode
-            org-mode
-            text-mode))
-  (add-to-list 'flycheck-checkers 'proselint)
+  ;; Disabling. Lots of locks in org mode.
+  ;; (flycheck-define-checker proselint
+  ;;   "A linter for prose."
+  ;;   :command ("proselint" source-inplace)
+  ;;   :error-patterns
+  ;;   ((warning line-start (file-name) ":" line ":" column ": "
+  ;;             (id (one-or-more (not (any " "))))
+  ;;             (message) line-end))
+  ;;   :modes (gfm-mode
+  ;;           markdown-mode
+  ;;           org-mode
+  ;;           text-mode))
+  ;;(add-to-list 'flycheck-checkers 'proselint)
   ;; Override default flycheck triggers
   (setq flycheck-check-syntax-automatically
         '(save idle-change mode-enabled)
@@ -2233,11 +2241,13 @@ _v_ariable       _u_ser-option
 (bind-key "C-h h" #'hydra-apropos/body)
 
 (defhydra hydra-goto-line (:pre (progn
-                                  (global-git-gutter-mode -1)
+                                  ;; Disabling. Slow on large files.
+                                  ;; (global-git-gutter-mode -1)
                                   (linum-mode 1))
                            :post (progn
-                                   (linum-mode -1)
-                                   (global-git-gutter-mode +1))
+                                   ;; Disabling. Slow on large files.
+                                   ;; (global-git-gutter-mode +1)
+                                   (linum-mode -1))
                            :color blue)
   "goto"
   ("g" goto-line "line")
