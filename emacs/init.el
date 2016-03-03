@@ -2241,11 +2241,13 @@ _v_ariable       _u_ser-option
 (bind-key "C-h h" #'hydra-apropos/body)
 
 (defhydra hydra-goto-line (:pre (progn
-                                  (global-git-gutter-mode -1)
+                                  ;; Disabling. Slow on large files.
+                                  ;; (global-git-gutter-mode -1)
                                   (linum-mode 1))
                            :post (progn
-                                   (linum-mode -1)
-                                   (global-git-gutter-mode +1))
+                                   ;; Disabling. Slow on large files.
+                                   ;; (global-git-gutter-mode +1)
+                                   (linum-mode -1))
                            :color blue)
   "goto"
   ("g" goto-line "line")
