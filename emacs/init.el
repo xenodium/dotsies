@@ -183,6 +183,7 @@
 (use-package ar-dired)
 (use-package ar-file
   :after (ar-string simple))
+(use-package ar-alist)
 (use-package ar-helm
   :after helm)
 (use-package ar-helm-objc
