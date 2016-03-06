@@ -131,11 +131,14 @@
     ("toomorrow" "tomorrow" nil 0)
     ("tracel" "travel" nil 0)
     ("trying" "trying" nil 3)
+    ("typocal" "typical" nil 0)
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
     ("wrning" "warning" nil 0)
    ))
+
+(define-abbrev-table 'gnus-group-mode-abbrev-table '())
 
 (define-abbrev-table 'go-mode-abbrev-table '())
 
