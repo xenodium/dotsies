@@ -931,7 +931,6 @@ Argument PROMPT to check for additional prompt."
                                            try-expand-dabbrev-all-buffers
                                            try-expand-dabbrev-from-kill
                                            try-complete-file-name-partially
-                                           try-complete-file-nameac
                                            try-expand-all-abbrevs
                                            try-expand-list
                                            try-expand-line)))
