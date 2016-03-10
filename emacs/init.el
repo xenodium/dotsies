@@ -386,6 +386,12 @@ Values between 0 - 100."
   ;; Hide dired details by default.
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 
+(use-package peep-dired
+  :ensure t
+  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+  :bind (:map dired-mode-map
+              ("P" . peep-dired)))
+
 (use-package dired-subtree :ensure t
   :after dired
   :config
