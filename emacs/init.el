@@ -242,6 +242,15 @@
 (use-package ar-yas
   :after yasnippet)
 
+(use-package interaction-log :ensure t
+  :config
+  (interaction-log-mode +1)
+  (global-set-key
+   (kbd "C-h j")
+   (lambda ()
+     (interactive)
+     (display-buffer ilog-buffer-name))))
+
 (use-package abbrev
   :after ar-file
   :config
