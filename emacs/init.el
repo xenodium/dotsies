@@ -2575,11 +2575,19 @@ _y_outube
     (comint-truncate-buffer)))
 
 ;; Wonderful weather forecast.
-(use-package sunshine :ensure t)
-(when (window-system)
-  (setq sunshine-show-icons t))
-(setq sunshine-units 'metric)
-(setq sunshine-location "London, GB")
+;; Disabling (needs login now).
+;; (use-package sunshine :ensure t
+;;   :config
+;; (when (window-system)
+;;   (setq sunshine-show-icons t))
+;; (setq sunshine-units 'metric)
+;; (setq sunshine-location "London, GB"))
+
+;; Weather forecast (no login/account needed).
+(use-package wttrin :ensure t
+  :config
+  (setq wttrin-default-cities '("London" "Boston"))
+  (defalias 'ar/weather 'wttrin))
 
 ;; From https://github.com/daschwa/emacs.d
 (defadvice kill-region (before slick-cut activate compile)
