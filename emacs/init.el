@@ -1774,9 +1774,17 @@ Argument LEN Length."
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
   )
 
+;; This is a hack. Let's see how it goes.
+(defun ar/shell-directory-tracker (str)
+  "Overrides `shell-directory-tracker behavior.  Ignore STR and call `dirs instead."
+  (dirs))
+
 (use-package shell
   :commands shell-mode
   :init
+  (advice-add 'shell-directory-tracker
+              :override
+              'ar/shell-directory-tracker)
   (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
 
 (defun ar/term-mode-hook-function ()
