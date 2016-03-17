@@ -98,8 +98,6 @@ export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; histor
 ### Bash History ### end
 
 ### Aliases ### start
-alias vim="emacsclient -t"
-alias vi="emacsclient -t"
 alias es="emacs --daemon"
 alias e="emacsclient -t"
 alias ec="emacsclient -n"
