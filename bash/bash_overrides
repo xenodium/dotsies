@@ -24,9 +24,10 @@ export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
 export NVM_DIR=~/.nvm
 # TODO: Add linux support.
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  source $(brew --prefix nvm)/nvm.sh
-fi
+# TODO: Re-enable.
+# if [[ "$OSTYPE" == "darwin"* ]]; then
+#   source $(brew --prefix nvm)/nvm.sh
+# fi
 
 ### nvm setup ### end
 
