@@ -695,7 +695,14 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package ediff
   :config
   (setq ediff-window-setup-function #'ediff-setup-windows-plain)
-  (setq ediff-split-window-function #'split-window-horizontally))
+  (setq ediff-split-window-function #'split-window-horizontally)
+  ;; Expand org files when ediffing.
+  (add-hook 'ediff-prepare-buffer-hook
+            (lambda ()
+              (eq major-mode 'org-mode)
+              (visible-mode 1)  ; default 0
+              (setq truncate-lines nil)  ; no `org-startup-truncated' in hook
+              (setq org-hide-leading-stars t))))
 
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
