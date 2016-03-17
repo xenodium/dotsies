@@ -1782,9 +1782,9 @@ Argument LEN Length."
 (use-package shell
   :commands shell-mode
   :init
-  (advice-add 'shell-directory-tracker
-              :override
-              'ar/shell-directory-tracker)
+  ;; (advice-add 'shell-directory-tracker
+  ;;             :override
+  ;;             'ar/shell-directory-tracker)
   (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
 
 (defun ar/term-mode-hook-function ()
