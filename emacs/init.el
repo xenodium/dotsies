@@ -242,6 +242,15 @@
 (use-package ar-yas
   :after yasnippet)
 
+(use-package interaction-log :ensure t
+  :config
+  (interaction-log-mode +1)
+  (global-set-key
+   (kbd "C-h j")
+   (lambda ()
+     (interactive)
+     (display-buffer ilog-buffer-name))))
+
 (use-package abbrev
   :after ar-file
   :config
@@ -376,6 +385,12 @@ Values between 0 - 100."
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+
+(use-package peep-dired
+  :ensure t
+  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+  :bind (:map dired-mode-map
+              ("P" . peep-dired)))
 
 (use-package dired-subtree :ensure t
   :after dired
