@@ -1153,7 +1153,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company :ensure t
   :config
-  (setq company-idle-delay 0.2)
+  (setq company-dabbrev-ignore-case nil)
+  (setq company-dabbrev-code-ignore-case nil)
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0)
   (setq company-show-numbers t)
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
