@@ -946,9 +946,18 @@ Argument PROMPT to check for additional prompt."
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
+(defun ar/hippie-expand-advice-fun (orig-fun &rest r)
+  "Disable `case-fold-search' in ORIG-FUN and R."
+  (let ((case-fold-search nil))
+    (apply orig-fun r)))
+
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand)
   :config
+  ;; Make hippie expand respect case sensitivity.
+  (advice-add 'hippie-expand
+              :around
+              'ar/hippie-expand-advice-fun)
   (setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                            try-expand-dabbrev-visible
                                            try-expand-dabbrev-all-buffers
