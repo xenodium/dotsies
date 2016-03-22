@@ -1460,6 +1460,7 @@ already narrowed."
 
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
+  (bind-key "RET" 'comment-indent-new-line emacs-lisp-mode-map)
   (helm-dash-activate-docset "Emacs Lisp")
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
