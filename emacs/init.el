@@ -946,9 +946,18 @@ Argument PROMPT to check for additional prompt."
         (find-file file))
     (message "Current buffer does not have an associated file.")))
 
+(defun ar/hippie-expand-advice-fun (orig-fun &rest r)
+  "Disable `case-fold-search' in ORIG-FUN and R."
+  (let ((case-fold-search nil))
+    (apply orig-fun r)))
+
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand)
   :config
+  ;; Make hippie expand respect case sensitivity.
+  (advice-add 'hippie-expand
+              :around
+              'ar/hippie-expand-advice-fun)
   (setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                            try-expand-dabbrev-visible
                                            try-expand-dabbrev-all-buffers
@@ -1144,7 +1153,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company :ensure t
   :config
-  (setq company-idle-delay 0.2)
+  (setq company-dabbrev-ignore-case nil)
+  (setq company-dabbrev-code-ignore-case nil)
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0)
   (setq company-show-numbers t)
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
@@ -1448,6 +1460,7 @@ already narrowed."
 
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
+  (bind-key "RET" 'comment-indent-new-line emacs-lisp-mode-map)
   (helm-dash-activate-docset "Emacs Lisp")
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
@@ -1547,13 +1560,16 @@ Argument LEN Length."
   ;; ProductCopyright: 1983-2014 Apple Inc.
   ;; ProductName: iPhone OS
   ;; ProductVersion: 7.1
-  (setq-local compile-command
-              "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  (local-set-key (kbd "<f7>")
-                 #'ar/xc:build)
-  (local-set-key (kbd "<f8>")
-                 #'ar/xc:run)
-  (key-chord-define (current-local-map) ";;" "\C-e;"))
+
+  ;; Disabling, to remember last compile command.
+  ;; (setq-local compile-command
+  ;;             "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
+  ;; (local-set-key (kbd "<f7>")
+  ;;                #'ar/xc:build)
+  ;; (local-set-key (kbd "<f8>")
+  ;;                #'ar/xc:run)
+  ;; (key-chord-define (current-local-map) ";;" "\C-e;")
+  )
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
