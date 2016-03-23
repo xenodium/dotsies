@@ -1706,6 +1706,8 @@ Argument LEN Length."
   ;; Workaround to use centered-cursor-mode in --nw.
   (defvar mouse-wheel-mode nil))
 
+(use-package focus :ensure t)
+
 (defun ar/company-fci-workaround ()
   "Enable a workaround to disable fci while company-completing."
   (defvar-local company-fci-mode-on-p nil
@@ -1728,6 +1730,7 @@ Argument LEN Length."
             t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
+  (prettify-symbols-mode +1)
   (highlight-symbol-mode +1)
   (highlight-symbol-nav-mode +1)
   (setq show-trailing-whitespace t)
