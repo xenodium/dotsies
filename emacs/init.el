@@ -1162,6 +1162,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq company-tooltip-align-annotations t)
   (global-company-mode))
 
+(use-package company-shell :ensure t)
+
 (use-package company-sourcekit :ensure t)
 
 (use-package company-quickhelp :ensure t
@@ -1805,7 +1807,13 @@ Argument LEN Length."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  )
+  (setq company-backends '(company-shell
+                           (company-dabbrev-code
+                            company-gtags
+                            company-etags
+                            company-keywords)
+                           company-files
+                           company-dabbrev)))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
