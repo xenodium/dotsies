@@ -1517,6 +1517,20 @@ Argument LEN Length."
 ;;    helm-xcdoc-command-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil")
 ;;    helm-xcdoc-document-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.iOS.docset")))
 
+(defun ar/clang-format-toggle-automatic ()
+  "Toggle automatic clang formatting on save."
+  (interactive)
+  (if (member #'ar/clang-format-buffer
+              before-save-hook)
+      (remove-hook #'before-save-hook
+                   #'ar/clang-format-buffer
+                   t)
+    (add-hook 'before-save-hook
+              #'ar/clang-format-buffer
+              nil
+              'make-it-local))
+  (print before-save-hook))
+
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
   ;; (add-hook 'before-save-hook
