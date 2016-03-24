@@ -169,6 +169,9 @@
 
 (use-package enlive :ensure t)
 
+(use-package smartparens :ensure t
+  (add-hook 'prog-mode-hook #'smartparens-strict-mode))
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
