@@ -170,6 +170,7 @@
 (use-package enlive :ensure t)
 
 (use-package smartparens :ensure t
+  :config
   (add-hook 'prog-mode-hook #'smartparens-strict-mode))
 
 (use-package dabbrev
@@ -1236,7 +1237,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Relies on manual installation (ie. make emaXcode).
 ;; Enable auto-complete to use emaXcode while generating snippets.
 ;;(use-package auto-complete
-; :ensure t)
+                                        ; :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
@@ -2252,9 +2253,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Return an alphanumeric string from clipboard or PROMPT."
   (let* ((clipboard (current-kill 0))
          (alpha-num-string (if (ar/string-alpha-numeric-p clipboard)
-                     clipboard
-                   (read-string (format "%s: "
-                                        prompt)))))
+                               clipboard
+                             (read-string (format "%s: "
+                                                  prompt)))))
     alpha-num-string))
 
 (use-package hydra :ensure t)
@@ -2321,11 +2322,11 @@ _v_ariable       _u_ser-option
                                   ;; Disabling. Slow on large files.
                                   ;; (global-git-gutter-mode -1)
                                   (linum-mode 1))
-                           :post (progn
-                                   ;; Disabling. Slow on large files.
-                                   ;; (global-git-gutter-mode +1)
-                                   (linum-mode -1))
-                           :color blue)
+                                :post (progn
+                                        ;; Disabling. Slow on large files.
+                                        ;; (global-git-gutter-mode +1)
+                                        (linum-mode -1))
+                                :color blue)
   "goto"
   ("g" goto-line "line")
   ("c" goto-char "char")
