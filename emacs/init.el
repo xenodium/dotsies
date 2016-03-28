@@ -416,8 +416,6 @@ Values between 0 - 100."
     :bind ("C-x g" . magit-status)
     :defer 2
     :config
-    ;;  Revert visited buffers silently when pullling, merging, etc.
-    (setq magit-revert-buffers 'silent)
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (setq magit-push-always-verify nil)
@@ -564,8 +562,11 @@ Values between 0 - 100."
 (use-package hungry-delete :ensure t
   :config (global-hungry-delete-mode))
 
-(global-font-lock-mode)
-(global-auto-revert-mode)
+(use-package font-core :config
+  (global-font-lock-mode))
+
+(use-package autorevert :config
+  (global-auto-revert-mode))
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
