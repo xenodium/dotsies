@@ -1183,6 +1183,11 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-emoji :ensure t)
 
+(use-package rtags :ensure t
+  :config
+  (setq rtags-path "~/stuff/active/code/rtags/bin")
+  (setq rtags-use-helm t))
+
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
 ;; (require 'rtags)
