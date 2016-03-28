@@ -1544,43 +1544,23 @@ Argument LEN Length."
 
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
-  ;; (add-hook 'before-save-hook
-  ;;           #'ar/clang-format-buffer
-  ;;           nil
-  ;;           'make-it-local)
-  (objc-font-lock-mode)
-  (helm-dash-activate-docset "iOS")
-  (set-fill-column 100)
-  ;; NOTE: Disabling while trying irony out
-  ;; (setq-local company-backends
-  ;;      ;; List with multiple back-ends for mutual inclusion.
-  ;;      '(( ;;company-ycmd
-  ;;         company-yasnippet
-  ;;         company-gtags
-  ;;         company-dabbrev-code
-  ;;         company-files)))
-  ;;(ycmd-mode)
-
-  ;; List targets with xcodebuild -list
-  ;; List SDKS with xcodebuild -sdk -version, for example:
-  ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
-  ;; SDKVersion: 7.1
-  ;; Path: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
-  ;; PlatformPath: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
-  ;; ProductBuildVersion: 11D167
-  ;; ProductCopyright: 1983-2014 Apple Inc.
-  ;; ProductName: iPhone OS
-  ;; ProductVersion: 7.1
-
-  ;; Disabling, to remember last compile command.
-  ;; (setq-local compile-command
-  ;;             "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  ;; (local-set-key (kbd "<f7>")
-  ;;                #'ar/xc:build)
-  ;; (local-set-key (kbd "<f8>")
-  ;;                #'ar/xc:run)
-  ;; (key-chord-define (current-local-map) ";;" "\C-e;")
-  )
+  ;; Hook is run twice. Avoid:
+  ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16759
+  (unless (boundp 'objc-mode-hook-did-run)
+    (ar/clang-format-toggle-automatic)
+    (objc-font-lock-mode)
+    (helm-dash-activate-docset "iOS")
+    (set-fill-column 100)
+    ;; NOTE: Disabling while trying irony out
+    ;; (setq-local company-backends
+    ;;      ;; List with multiple back-ends for mutual inclusion.
+    ;;      '(( ;;company-ycmd
+    ;;         company-yasnippet
+    ;;         company-gtags
+    ;;         company-dabbrev-code
+    ;;         company-files)))
+    ;;(ycmd-mode)
+    (setq-local objc-mode-hook-did-run t)))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
