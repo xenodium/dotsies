@@ -1769,6 +1769,7 @@ Argument LEN Length."
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
   (setq-local markdown-indent-on-enter nil)
+  (set-fill-column 80)
   (local-set-key (kbd "RET")
                  #'electric-newline-and-maybe-indent))
 
