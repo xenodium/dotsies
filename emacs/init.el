@@ -170,6 +170,7 @@
 (use-package enlive :ensure t)
 
 (use-package smartparens :ensure t
+  :config
   (add-hook 'prog-mode-hook #'smartparens-strict-mode))
 
 (use-package dabbrev
@@ -415,8 +416,6 @@ Values between 0 - 100."
     :bind ("C-x g" . magit-status)
     :defer 2
     :config
-    ;;  Revert visited buffers silently when pullling, merging, etc.
-    (setq magit-revert-buffers 'silent)
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (setq magit-push-always-verify nil)
@@ -563,8 +562,11 @@ Values between 0 - 100."
 (use-package hungry-delete :ensure t
   :config (global-hungry-delete-mode))
 
-(global-font-lock-mode)
-(global-auto-revert-mode)
+(use-package font-core :config
+  (global-font-lock-mode))
+
+(use-package autorevert :config
+  (global-auto-revert-mode))
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
@@ -1182,6 +1184,11 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-emoji :ensure t)
 
+(use-package rtags :ensure t
+  :config
+  (setq rtags-path "~/stuff/active/code/rtags/bin")
+  (setq rtags-use-helm t))
+
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
 ;; (require 'rtags)
@@ -1236,7 +1243,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Relies on manual installation (ie. make emaXcode).
 ;; Enable auto-complete to use emaXcode while generating snippets.
 ;;(use-package auto-complete
-; :ensure t)
+                                        ; :ensure t)
 ;;(load "~/.emacs.d/downloads/emaXcode/emaXcode.el")
 ;;(require 'emaXcode)
 
@@ -1538,43 +1545,23 @@ Argument LEN Length."
 
 (defun ar/objc-mode-hook-function ()
   "Called when entering `objc-mode'."
-  ;; (add-hook 'before-save-hook
-  ;;           #'ar/clang-format-buffer
-  ;;           nil
-  ;;           'make-it-local)
-  (objc-font-lock-mode)
-  (helm-dash-activate-docset "iOS")
-  (set-fill-column 100)
-  ;; NOTE: Disabling while trying irony out
-  ;; (setq-local company-backends
-  ;;      ;; List with multiple back-ends for mutual inclusion.
-  ;;      '(( ;;company-ycmd
-  ;;         company-yasnippet
-  ;;         company-gtags
-  ;;         company-dabbrev-code
-  ;;         company-files)))
-  ;;(ycmd-mode)
-
-  ;; List targets with xcodebuild -list
-  ;; List SDKS with xcodebuild -sdk -version, for example:
-  ;; iPhoneSimulator7.1.sdk - Simulator - iOS 7.1 (iphonesimulator7.1)
-  ;; SDKVersion: 7.1
-  ;; Path: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk
-  ;; PlatformPath: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform
-  ;; ProductBuildVersion: 11D167
-  ;; ProductCopyright: 1983-2014 Apple Inc.
-  ;; ProductName: iPhone OS
-  ;; ProductVersion: 7.1
-
-  ;; Disabling, to remember last compile command.
-  ;; (setq-local compile-command
-  ;;             "xcodebuild -sdk iphonesimulator7.1 -target MyTarget")
-  ;; (local-set-key (kbd "<f7>")
-  ;;                #'ar/xc:build)
-  ;; (local-set-key (kbd "<f8>")
-  ;;                #'ar/xc:run)
-  ;; (key-chord-define (current-local-map) ";;" "\C-e;")
-  )
+  ;; Hook is run twice. Avoid:
+  ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16759
+  (unless (boundp 'objc-mode-hook-did-run)
+    (ar/clang-format-toggle-automatic)
+    (objc-font-lock-mode)
+    (helm-dash-activate-docset "iOS")
+    (set-fill-column 100)
+    ;; NOTE: Disabling while trying irony out
+    ;; (setq-local company-backends
+    ;;      ;; List with multiple back-ends for mutual inclusion.
+    ;;      '(( ;;company-ycmd
+    ;;         company-yasnippet
+    ;;         company-gtags
+    ;;         company-dabbrev-code
+    ;;         company-files)))
+    ;;(ycmd-mode)
+    (setq-local objc-mode-hook-did-run t)))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (defun ar/java-mode-hook-function ()
@@ -2253,9 +2240,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   "Return an alphanumeric string from clipboard or PROMPT."
   (let* ((clipboard (current-kill 0))
          (alpha-num-string (if (ar/string-alpha-numeric-p clipboard)
-                     clipboard
-                   (read-string (format "%s: "
-                                        prompt)))))
+                               clipboard
+                             (read-string (format "%s: "
+                                                  prompt)))))
     alpha-num-string))
 
 (use-package hydra :ensure t)
@@ -2322,11 +2309,11 @@ _v_ariable       _u_ser-option
                                   ;; Disabling. Slow on large files.
                                   ;; (global-git-gutter-mode -1)
                                   (linum-mode 1))
-                           :post (progn
-                                   ;; Disabling. Slow on large files.
-                                   ;; (global-git-gutter-mode +1)
-                                   (linum-mode -1))
-                           :color blue)
+                                :post (progn
+                                        ;; Disabling. Slow on large files.
+                                        ;; (global-git-gutter-mode +1)
+                                        (linum-mode -1))
+                                :color blue)
   "goto"
   ("g" goto-line "line")
   ("c" goto-char "char")
