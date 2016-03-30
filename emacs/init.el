@@ -715,8 +715,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package ggtags :ensure t)
 (use-package helm-gtags
   :ensure t
-  :bind ("M-." . helm-gtags-dwim))
-(helm-gtags-mode 1)
+  :config
+  (helm-gtags-mode 1))
 
 (use-package projectile-sift :ensure t
   :config
