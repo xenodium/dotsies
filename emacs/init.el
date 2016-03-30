@@ -594,8 +594,11 @@ Values between 0 - 100."
 (use-package font-core :config
   (global-font-lock-mode))
 
-(use-package autorevert :config
-  (global-auto-revert-mode))
+(use-package autorevert
+  ;; Disabling while observing git performace on large repo.
+  ;; :config
+  ;; (global-auto-revert-mode)
+  )
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
