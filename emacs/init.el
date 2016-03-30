@@ -461,8 +461,8 @@ Values between 0 - 100."
     (fullframe paradox-list-packages paradox-quit-and-close))
   (use-package magit :ensure t
     :bind ("C-x g" . magit-status)
-    :defer 2
     :config
+    (setq magit-revert-buffers nil)  ;; Disabling. Too slow on large repos.
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (setq magit-push-always-verify nil)
