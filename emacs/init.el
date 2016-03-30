@@ -176,43 +176,29 @@
   (require 'smartparens-python)
   (smartparens-global-strict-mode))
 
-(defun ar/contextual-delete-backward ()
-  "Play nice with hungry-delete-mode and smartparens-strict-mode.
-Based on:
-https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
-  (interactive)
-  (cond
-   ((and (not (use-region-p))
-         (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
-         (boundp 'hungry-delete-mode)
-         hungry-delete-mode)
-    (hungry-delete-backward-impl))
-   ((and (boundp 'smartparens-strict-mode)
-         smartparens-strict-mode)
-    (sp-backward-delete-char))
-   (t
-    (delete-backward-char 1))))
+(defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
+  (if (and (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-backward)
+    (apply orig-fun r)))
 
-(global-set-key (kbd "<backspace>") #'ar/contextual-delete-backward)
+(advice-add 'sp-backward-delete-char
+            :around
+            'ar/sp-backward-delete-char-advice-fun)
 
-(defun ar/contextual-delete-forward ()
-  "Play nice with hungry-delete-mode and smartparens-strict-mode.
-Based on:
-https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
-  (interactive)
-  (cond
-   ((and (not (use-region-p))
-         (looking-at "[[:space:]\n]\\{2,\\}")
-         (boundp 'hungry-delete-mode)
-         hungry-delete-mode)
-    (hungry-delete-forward-impl))
-   ((and (boundp 'smartparens-strict-mode)
-         smartparens-strict-mode)
-    (sp-delete-char))
-   (t
-    (delete-char 1))))
+(defun ar/sp-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-forward' in ORIG-FUN and R."
+  (if (and (looking-at "[[:space:]\n]\\{2,\\}")
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-forward)
+    (apply orig-fun r)))
 
-(global-set-key (kbd "C-d") #'ar/contextual-delete-forward)
+(advice-add 'sp-delete-char
+            :around
+            'ar/sp-delete-char-advice-fun)
 
 (use-package dabbrev
   :config
