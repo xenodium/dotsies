@@ -1222,6 +1222,45 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq rtags-path "~/stuff/active/code/rtags/bin")
   (setq rtags-use-helm t))
 
+;; Needed for endlessparentheses's hack.
+(use-package cider :ensure t)
+
+;; From http://endlessparentheses.com/eval-result-overlays-in-emacs-lisp.html
+(defun endless/eval-overlay (value point)
+  (cider--make-result-overlay (format "%S" value)
+    :where point
+    :duration 'command)
+  ;; Preserve the return value.
+  value)
+
+(advice-add 'eval-region :around
+            (lambda (f beg end &rest r)
+              (endless/eval-overlay
+               (apply f beg end r)
+               end)))
+
+(advice-add 'edebug-eval-defun :around
+            (lambda (f &rest r)
+              (endless/eval-overlay
+               (apply f r)
+               (point))))
+
+(advice-add 'pp-eval-expression :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-last-sexp :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-defun :filter-return
+            (lambda (r)
+              (endless/eval-overlay
+               r
+               (save-excursion
+                 (end-of-defun)
+                 (point)))))
+
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
 ;; (require 'rtags)
