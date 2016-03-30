@@ -190,11 +190,8 @@ https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
    ((and (boundp 'smartparens-strict-mode)
          smartparens-strict-mode)
     (sp-backward-delete-char))
-   ((and (boundp 'subword-mode)
-         subword-mode)
-    (subword-backward-kill 1))
    (t
-    (backward-kill-word 1))))
+    (delete-backward-char 1))))
 
 (global-set-key (kbd "<backspace>") #'ar/contextual-delete-backward)
 
@@ -212,11 +209,8 @@ https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
    ((and (boundp 'smartparens-strict-mode)
          smartparens-strict-mode)
     (sp-delete-char))
-   ((and (boundp 'subword-mode)
-         subword-mode)
-    (subword-kill 1))
    (t
-    (kill-word 1))))
+    (delete-char 1))))
 
 (global-set-key (kbd "C-d") #'ar/contextual-delete-forward)
 
