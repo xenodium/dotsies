@@ -171,7 +171,54 @@
 
 (use-package smartparens :ensure t
   :config
-  (add-hook 'prog-mode-hook #'smartparens-strict-mode))
+  (require 'smartparens-config)
+  (require 'smartparens-html)
+  (require 'smartparens-python)
+  (smartparens-global-strict-mode))
+
+(defun ar/contextual-delete-backward ()
+  "Play nice with hungry-delete-mode and smartparens-strict-mode.
+Based on:
+https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
+  (interactive)
+  (cond
+   ((and (not (use-region-p))
+         (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+         (boundp 'hungry-delete-mode)
+         hungry-delete-mode)
+    (hungry-delete-backward-impl))
+   ((and (boundp 'smartparens-strict-mode)
+         smartparens-strict-mode)
+    (sp-backward-kill-word 1))
+   ((and (boundp 'subword-mode)
+         subword-mode)
+    (subword-backward-kill 1))
+   (t
+    (backward-kill-word 1))))
+
+(global-set-key (kbd "<backspace>") #'ar/contextual-delete-backward)
+
+(defun ar/contextual-delete-forward ()
+  "Play nice with hungry-delete-mode and smartparens-strict-mode.
+Based on:
+https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
+  (interactive)
+  (cond
+   ((and (not (use-region-p))
+         (looking-at "[[:space:]\n]\\{2,\\}")
+         (boundp 'hungry-delete-mode)
+         hungry-delete-mode)
+    (hungry-delete-forward-impl))
+   ((and (boundp 'smartparens-strict-mode)
+         smartparens-strict-mode)
+    (sp-kill-hybrid-sexp 1))
+   ((and (boundp 'subword-mode)
+         subword-mode)
+    (subword-kill 1))
+   (t
+    (kill-word 1))))
+
+(global-set-key (kbd "C-d") #'ar/contextual-delete-forward)
 
 (use-package dabbrev
   :config
