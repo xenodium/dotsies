@@ -295,6 +295,8 @@ https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
          ("C-c r" . set-rectangular-region-anchor)))
 (use-package ar-yas
   :after yasnippet)
+(use-package ar-magit
+  :after magit)
 
 (use-package interaction-log :ensure t
   :config
