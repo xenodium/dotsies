@@ -965,7 +965,8 @@ Argument PROMPT to check for additional prompt."
 (use-package git-link :ensure t)
 
 (use-package vc
-  :commands (vc-pull)
+  :config
+  (setq vc-follow-symlinks t)
   :bind ("C-x v f" . vc-pull))
 
 ;; Use vc-ediff as default.
