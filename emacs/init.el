@@ -176,43 +176,29 @@
   (require 'smartparens-python)
   (smartparens-global-strict-mode))
 
-(defun ar/contextual-delete-backward ()
-  "Play nice with hungry-delete-mode and smartparens-strict-mode.
-Based on:
-https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
-  (interactive)
-  (cond
-   ((and (not (use-region-p))
-         (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
-         (boundp 'hungry-delete-mode)
-         hungry-delete-mode)
-    (hungry-delete-backward-impl))
-   ((and (boundp 'smartparens-strict-mode)
-         smartparens-strict-mode)
-    (sp-backward-delete-char))
-   (t
-    (delete-backward-char 1))))
+(defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
+  (if (and (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-backward)
+    (apply orig-fun r)))
 
-(global-set-key (kbd "<backspace>") #'ar/contextual-delete-backward)
+(advice-add 'sp-backward-delete-char
+            :around
+            'ar/sp-backward-delete-char-advice-fun)
 
-(defun ar/contextual-delete-forward ()
-  "Play nice with hungry-delete-mode and smartparens-strict-mode.
-Based on:
-https://ensime.github.io/editors/emacs/hacks/#hungry--contextual-backspace"
-  (interactive)
-  (cond
-   ((and (not (use-region-p))
-         (looking-at "[[:space:]\n]\\{2,\\}")
-         (boundp 'hungry-delete-mode)
-         hungry-delete-mode)
-    (hungry-delete-forward-impl))
-   ((and (boundp 'smartparens-strict-mode)
-         smartparens-strict-mode)
-    (sp-delete-char))
-   (t
-    (delete-char 1))))
+(defun ar/sp-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-forward' in ORIG-FUN and R."
+  (if (and (looking-at "[[:space:]\n]\\{2,\\}")
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-forward)
+    (apply orig-fun r)))
 
-(global-set-key (kbd "C-d") #'ar/contextual-delete-forward)
+(advice-add 'sp-delete-char
+            :around
+            'ar/sp-delete-char-advice-fun)
 
 (use-package dabbrev
   :config
@@ -608,8 +594,11 @@ Values between 0 - 100."
 (use-package font-core :config
   (global-font-lock-mode))
 
-(use-package autorevert :config
-  (global-auto-revert-mode))
+(use-package autorevert
+  ;; Disabling while observing git performace on large repo.
+  ;; :config
+  ;; (global-auto-revert-mode)
+  )
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
@@ -729,8 +718,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package ggtags :ensure t)
 (use-package helm-gtags
   :ensure t
-  :bind ("M-." . helm-gtags-dwim))
-(helm-gtags-mode 1)
+  :config
+  (helm-gtags-mode 1))
 
 (use-package projectile-sift :ensure t
   :config
@@ -1236,6 +1225,45 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (setq rtags-path "~/stuff/active/code/rtags/bin")
   (setq rtags-use-helm t))
+
+;; Needed for endlessparentheses's hack.
+(use-package cider :ensure t)
+
+;; From http://endlessparentheses.com/eval-result-overlays-in-emacs-lisp.html
+(defun endless/eval-overlay (value point)
+  (cider--make-result-overlay (format "%S" value)
+    :where point
+    :duration 'command)
+  ;; Preserve the return value.
+  value)
+
+(advice-add 'eval-region :around
+            (lambda (f beg end &rest r)
+              (endless/eval-overlay
+               (apply f beg end r)
+               end)))
+
+(advice-add 'edebug-eval-defun :around
+            (lambda (f &rest r)
+              (endless/eval-overlay
+               (apply f r)
+               (point))))
+
+(advice-add 'pp-eval-expression :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-last-sexp :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-defun :filter-return
+            (lambda (r)
+              (endless/eval-overlay
+               r
+               (save-excursion
+                 (end-of-defun)
+                 (point)))))
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
