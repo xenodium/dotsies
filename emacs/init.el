@@ -171,7 +171,34 @@
 
 (use-package smartparens :ensure t
   :config
-  (add-hook 'prog-mode-hook #'smartparens-strict-mode))
+  (require 'smartparens-config)
+  (require 'smartparens-html)
+  (require 'smartparens-python)
+  (smartparens-global-strict-mode))
+
+(defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
+  (if (and (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-backward)
+    (apply orig-fun r)))
+
+(advice-add 'sp-backward-delete-char
+            :around
+            'ar/sp-backward-delete-char-advice-fun)
+
+(defun ar/sp-delete-char-advice-fun (orig-fun &rest r)
+  "Play nice with `hungry-delete-forward' in ORIG-FUN and R."
+  (if (and (looking-at "[[:space:]\n]\\{2,\\}")
+           (boundp 'hungry-delete-mode)
+           hungry-delete-mode)
+      (call-interactively 'hungry-delete-forward)
+    (apply orig-fun r)))
+
+(advice-add 'sp-delete-char
+            :around
+            'ar/sp-delete-char-advice-fun)
 
 (use-package dabbrev
   :config
@@ -248,6 +275,8 @@
          ("C-c r" . set-rectangular-region-anchor)))
 (use-package ar-yas
   :after yasnippet)
+(use-package ar-magit
+  :after magit)
 
 (use-package interaction-log :ensure t
   :config
@@ -414,8 +443,8 @@ Values between 0 - 100."
     (fullframe paradox-list-packages paradox-quit-and-close))
   (use-package magit :ensure t
     :bind ("C-x g" . magit-status)
-    :defer 2
     :config
+    (setq magit-revert-buffers nil)  ;; Disabling. Too slow on large repos.
     (setq magit-status-buffer-switch-function #'switch-to-buffer)
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (setq magit-push-always-verify nil)
@@ -565,8 +594,11 @@ Values between 0 - 100."
 (use-package font-core :config
   (global-font-lock-mode))
 
-(use-package autorevert :config
-  (global-auto-revert-mode))
+(use-package autorevert
+  ;; Disabling while observing git performace on large repo.
+  ;; :config
+  ;; (global-auto-revert-mode)
+  )
 
 ;; Auto refresh dired.
 ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
@@ -686,8 +718,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package ggtags :ensure t)
 (use-package helm-gtags
   :ensure t
-  :bind ("M-." . helm-gtags-dwim))
-(helm-gtags-mode 1)
+  :config
+  (helm-gtags-mode 1))
 
 (use-package projectile-sift :ensure t
   :config
@@ -1185,9 +1217,52 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-emoji :ensure t)
 
 (use-package rtags :ensure t
+  :bind
+  (:map
+   objc-mode-map
+   ("M-." . rtags-find-symbol-at-point))
   :config
   (setq rtags-path "~/stuff/active/code/rtags/bin")
   (setq rtags-use-helm t))
+
+;; Needed for endlessparentheses's hack.
+(use-package cider :ensure t)
+
+;; From http://endlessparentheses.com/eval-result-overlays-in-emacs-lisp.html
+(defun endless/eval-overlay (value point)
+  (cider--make-result-overlay (format "%S" value)
+    :where point
+    :duration 'command)
+  ;; Preserve the return value.
+  value)
+
+(advice-add 'eval-region :around
+            (lambda (f beg end &rest r)
+              (endless/eval-overlay
+               (apply f beg end r)
+               end)))
+
+(advice-add 'edebug-eval-defun :around
+            (lambda (f &rest r)
+              (endless/eval-overlay
+               (apply f r)
+               (point))))
+
+(advice-add 'pp-eval-expression :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-last-sexp :filter-return
+            (lambda (r)
+              (endless/eval-overlay r (point))))
+
+(advice-add 'eval-defun :filter-return
+            (lambda (r)
+              (endless/eval-overlay
+               r
+               (save-excursion
+                 (end-of-defun)
+                 (point)))))
 
 ;; (add-to-list 'load-path
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
@@ -1756,6 +1831,7 @@ Argument LEN Length."
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
   (setq-local markdown-indent-on-enter nil)
+  (set-fill-column 80)
   (local-set-key (kbd "RET")
                  #'electric-newline-and-maybe-indent))
 
