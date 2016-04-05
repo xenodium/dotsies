@@ -127,11 +127,10 @@
     :commands (helm-swoop))
   (use-package helm-config)
   (use-package recentf
-    :init
-    (recentf-mode)
     :config
     (setq recentf-max-saved-items 200
-          recentf-max-menu-items 15))
+          recentf-max-menu-items 15)
+    (recentf-mode))
   (setq helm-net-prefer-curl t)
   (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (setq helm-quick-update t)  ; do not display invisible candidates
