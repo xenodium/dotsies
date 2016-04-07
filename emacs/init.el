@@ -1286,7 +1286,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package irony :ensure t
   :config
   (add-hook 'objc-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  (add-hook 'irony-mode-hook (lambda ()
+                               ;; Irony can be slow on large compilation databases.
+                               ;; Experimenting with delay here, since it's most annoying
+                               ;; when opening files (UI blocks for 5 seconds).
+                               (run-with-idle-timer 120 nil 'irony-cdb-autosetup-compile-options))))
 
 (use-package company-irony :ensure t
   :config
