@@ -1290,7 +1290,15 @@ Repeated invocations toggle between the two most recently open buffers."
                                ;; Irony can be slow on large compilation databases.
                                ;; Experimenting with delay here, since it's most annoying
                                ;; when opening files (UI blocks for 5 seconds).
-                               (run-with-idle-timer 120 nil 'irony-cdb-autosetup-compile-options))))
+                               (setq-local ar/irony-cdb-sutosetup-timer
+                                           (run-with-idle-timer 3 nil
+                                                                (lambda ()
+                                                                  (irony-cdb-autosetup-compile-options)
+                                                                  (message "irony setup for %s" (buffer-name)))))
+                               (add-hook 'kill-buffer-hook
+                                         (lambda ()
+                                           (cancel-timer ar/irony-cdb-sutosetup-timer))
+                                         t t))))
 
 (use-package company-irony :ensure t
   :config
