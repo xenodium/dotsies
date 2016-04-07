@@ -66,6 +66,10 @@
 
 (require 'use-package)
 
+(use-package async :ensure t :demand
+  :config
+  (async-bytecomp-package-mode 1))
+
 (use-package molokai-theme :ensure t
   :config
   ;; Set default cursor color.
@@ -394,8 +398,6 @@ Values between 0 - 100."
 
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
-
-(use-package async :ensure t :demand)
 
 (use-package dired
   :after (discover fullframe)
