@@ -173,11 +173,12 @@
 (use-package enlive :ensure t)
 
 (use-package smartparens :ensure t
+  :demand
   :config
   (require 'smartparens-config)
   (require 'smartparens-html)
   (require 'smartparens-python)
-  (smartparens-global-strict-mode)
+  (smartparens-global-strict-mode +1)
   :bind
   (:map prog-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
