@@ -174,7 +174,11 @@
   (require 'smartparens-config)
   (require 'smartparens-html)
   (require 'smartparens-python)
-  (smartparens-global-strict-mode))
+  (smartparens-global-strict-mode)
+  :bind
+  (:map prog-mode-map
+        ("C-c <right>" . sp-forward-slurp-sexp)
+        ("C-c <left>" . sp-backward-slurp-sexp)))
 
 (defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
   "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
@@ -432,6 +436,10 @@ Values between 0 - 100."
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
+(use-package with-editor :ensure t
+  :config
+  (add-hook 'shell-mode-hook  'with-editor-export-editor))
+
 (use-package fullframe :ensure t
   :commands (fullframe)
   :config
@@ -597,6 +605,7 @@ Values between 0 - 100."
 (use-package autorevert
   ;; Disabling while observing git performace on large repo.
   ;; :config
+  ;; Disabling because #auto-revert-vc-slowdown
   ;; (global-auto-revert-mode)
   )
 
@@ -1223,8 +1232,17 @@ Repeated invocations toggle between the two most recently open buffers."
    objc-mode-map
    ("M-." . rtags-find-symbol-at-point))
   :config
+  ;; Work in progress.
+  ;; (use-package flycheck-rtags)
   (setq rtags-path "~/stuff/active/code/rtags/bin")
   (setq rtags-use-helm t))
+
+;; Work in progress.
+;; (defun ar/flycheck-rtags-setup ()
+;;   (interactive)
+;;   (flycheck-select-checker 'rtags)
+;;   (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+;;   (setq-local flycheck-check-syntax-automatically nil))
 
 ;; Needed for endlessparentheses's hack.
 (use-package cider :ensure t)
@@ -1695,6 +1713,8 @@ Argument LEN Length."
   (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
+(use-package protobuf-mode :ensure t)
+
 (use-package dart-mode :ensure t)
 
 (use-package json-mode :ensure t)
@@ -1874,12 +1894,11 @@ Argument LEN Length."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (setq company-backends '(company-shell
+  (setq company-backends '(company-files
                            (company-dabbrev-code
                             company-gtags
                             company-etags
                             company-keywords)
-                           company-files
                            company-dabbrev)))
 
 ;; This is a hack. Let's see how it goes.
@@ -2035,7 +2054,6 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
-  :init (winner-mode 1)
   :config
   (defun ar/dwim-key-esc ()
     "Do what I mean when pressing ESC."
@@ -2050,9 +2068,9 @@ With a prefix argument N, (un)comment that many sexps."
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  :bind (("<escape>" . ar/dwim-key-esc)
-         ("C-c <right>" . winner-redo)
-         ("C-c <left>" . winner-undo)))
+  (setq winner-dont-bind-my-keys t)
+  (winner-mode 1)
+  :bind (("<escape>" . ar/dwim-key-esc)))
 
 (use-package helm-descbinds :ensure
   :bind (("C-h b" . helm-descbinds)
