@@ -172,6 +172,13 @@
 
 (use-package enlive :ensure t)
 
+;; Disabling while trying out smartparens.
+;; ;; Automatically closes brackets.
+;; (electric-pair-mode)
+;; ;; Additional electric pairs.
+;; (setq electric-pair-pairs '((?\{ . ?\})
+;;                             (?\< . ?\>)))
+
 (use-package smartparens :ensure t
   :demand
   :config
@@ -831,12 +838,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Override selection with new text.
 (delete-selection-mode)
 
-;; Automatically closes brackets.
-(electric-pair-mode)
-;; Additional electric pairs.
-(setq electric-pair-pairs '((?\{ . ?\})
-                            (?\< . ?\>)))
-(electric-indent-mode)
+(use-package electric
+  :config
+  (electric-indent-mode))
 
 ;; Highlight matching parenthesis.
 (use-package paren :ensure t
