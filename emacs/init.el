@@ -1323,7 +1323,8 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;                              (add-hook 'kill-buffer-hook
   ;;                                        (lambda ()
   ;;                                          (cancel-timer ar/irony-cdb-sutosetup-timer))
-  ;;                                        t t))))
+  ;;                                        t t)))
+  )
 
 (use-package company-irony :ensure t
   :config
