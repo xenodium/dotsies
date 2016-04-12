@@ -1390,7 +1390,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
-  (ar/org-src-color-blocks-dark)
   (flyspell-mode)
   (org-bullets-mode 1)
   (yas-minor-mode 1)
