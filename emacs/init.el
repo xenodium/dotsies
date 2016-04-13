@@ -1309,8 +1309,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; cmake -DCMAKE_PREFIX_PATH=/Users/your-user-name/homebrew/opt/llvm -DCMAKE_INSTALL_PREFIX\=/Users/your-user-name/.emacs.d/irony/ /Users/your-user-name/.emacs.d/elpa/irony-20160106.1223/server && cmake --build . --use-stderr --config Release --target install
 (use-package irony :ensure t
   :config
-  (add-hook 'objc-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;; Disabling. Too slow on large projects.
+  ;; (add-hook 'objc-mode-hook 'irony-mode)
   ;; (add-hook 'irony-mode-hook (lambda ()
   ;;                              ;; Irony can be slow on large compilation databases.
   ;;                              ;; Experimenting with delay here, since it's most annoying
@@ -1430,7 +1430,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
-  (ar/org-src-color-blocks-dark)
   (flyspell-mode)
   (org-bullets-mode 1)
   (yas-minor-mode 1)
