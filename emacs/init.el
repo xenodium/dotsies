@@ -334,7 +334,31 @@
         "The current date."
         (format-time-string "%h %d"))
       (spaceline-toggle-time-on)
-      (spaceline-emacs-theme 'date 'time))))
+      (spaceline-emacs-theme 'date 'time)
+      (setq powerline-default-separator 'slant)
+      ;; Playing with powerline theme. If things break, delete block.
+      ;; Start
+      (set-face-attribute 'spaceline-highlight-face nil
+                          :background "#db3236")
+      (set-face-attribute 'mode-line nil
+                          :background "#00A1F1")
+      (set-face-attribute 'mode-line-buffer-id nil
+                          :background nil
+                          :foreground "#FFFFFF")
+      (set-face-attribute 'powerline-active1 nil
+                          :background "#f4c20d"
+                          :foreground "#696969")
+      (set-face-attribute 'powerline-active2 nil
+                          :background "#3cba54")
+      (set-face-attribute 'powerline-inactive1 nil
+                          :background nil
+                          :foreground "#FFFFFF")
+      (set-face-attribute 'powerline-inactive2 nil
+                          :background nil)
+      (set-face-attribute 'mode-line-inactive nil
+                          :background nil)
+      ;; End
+      )))
 
 (use-package tramp
   :config
