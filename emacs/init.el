@@ -347,7 +347,7 @@
                           :foreground "#FFFFFF")
       (set-face-attribute 'powerline-active1 nil
                           :background "#f4c20d"
-                          :foreground "#696969")
+                          :foreground "navy")
       (set-face-attribute 'powerline-active2 nil
                           :background "#3cba54")
       (set-face-attribute 'powerline-inactive1 nil
