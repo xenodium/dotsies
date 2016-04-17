@@ -338,6 +338,9 @@
       (setq powerline-default-separator 'slant)
       ;; Playing with powerline theme. If things break, delete block.
       ;; Start
+      (set-face-attribute 'helm-candidate-number nil
+                          :foreground "#f4c20d"
+                          :background nil)
       (set-face-attribute 'spaceline-highlight-face nil
                           :background "#db3236")
       (set-face-attribute 'mode-line nil
@@ -351,12 +354,12 @@
       (set-face-attribute 'powerline-active2 nil
                           :background "#3cba54")
       (set-face-attribute 'powerline-inactive1 nil
-                          :background nil
+                          :background "#00A1F1"
                           :foreground "#FFFFFF")
       (set-face-attribute 'powerline-inactive2 nil
-                          :background nil)
+                          :background "#00A1F1")
       (set-face-attribute 'mode-line-inactive nil
-                          :background nil)
+                          :background "#00A1F1")
       ;; End
       )))
 
