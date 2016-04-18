@@ -187,7 +187,7 @@
   (require 'smartparens-python)
   (smartparens-global-strict-mode +1)
   :bind
-  (:map prog-mode-map
+  (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
         ("C-c <left>" . sp-backward-slurp-sexp)))
 
@@ -2097,6 +2097,8 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
+  :init
+  (setq winner-dont-bind-my-keys t)
   :config
   (defun ar/dwim-key-esc ()
     "Do what I mean when pressing ESC."
@@ -2111,7 +2113,6 @@ With a prefix argument N, (un)comment that many sexps."
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  (setq winner-dont-bind-my-keys t)
   (winner-mode 1)
   :bind (("<escape>" . ar/dwim-key-esc)))
 
