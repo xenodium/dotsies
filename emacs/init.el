@@ -189,7 +189,7 @@
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
-        ("C-c <left>" . sp-backward-slurp-sexp)))
+        ("C-c <left>" . sp-forward-barf-sexp)))
 
 (defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
   "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
@@ -338,6 +338,9 @@
       (setq powerline-default-separator 'slant)
       ;; Playing with powerline theme. If things break, delete block.
       ;; Start
+      (set-face-attribute 'helm-candidate-number nil
+                          :foreground "#f4c20d"
+                          :background nil)
       (set-face-attribute 'spaceline-highlight-face nil
                           :background "#db3236")
       (set-face-attribute 'mode-line nil
@@ -351,12 +354,12 @@
       (set-face-attribute 'powerline-active2 nil
                           :background "#3cba54")
       (set-face-attribute 'powerline-inactive1 nil
-                          :background nil
+                          :background "#00A1F1"
                           :foreground "#FFFFFF")
       (set-face-attribute 'powerline-inactive2 nil
-                          :background nil)
+                          :background "#00A1F1")
       (set-face-attribute 'mode-line-inactive nil
-                          :background nil)
+                          :background "#00A1F1")
       ;; End
       )))
 
@@ -469,9 +472,15 @@ Values between 0 - 100."
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
+(defun ar/use-emacs-for-shell-editor ()
+  "Workaround to avoid using `with-editor-export-editor' in Find buffers.
+Breaks `find-dired' otherwise."
+  (unless (string-match-p "Find" (buffer-name))
+    (with-editor-export-editor)))
+
 (use-package with-editor :ensure t
   :config
-  (add-hook 'shell-mode-hook  'with-editor-export-editor))
+  (add-hook 'shell-mode-hook 'ar/use-emacs-for-shell-editor))
 
 (use-package fullframe :ensure t
   :commands (fullframe)
