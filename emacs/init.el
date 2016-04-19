@@ -892,7 +892,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
-                      :foreground "#FA009A")
+                      :foreground "yellow")
   (setq highlight-symbol-idle-delay 0)
   (setq highlight-symbol-on-navigation-p t))
 
@@ -1524,6 +1524,8 @@ already narrowed."
         (t (narrow-to-defun))))
 
 (bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
+
+(use-package niceify-info :ensure t)
 
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
