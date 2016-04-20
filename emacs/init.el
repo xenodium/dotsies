@@ -283,8 +283,9 @@
 (use-package ar-ox-html
   :after (org ox-html ar-file)
   :config
-  (bind-key [f6] #'ar/ox-html-export)
-  (ar/ox-html-setup))
+  (ar/ox-html-setup)
+  :bind (:map org-mode-map
+              ([f6] . ar/ox-html-export)))
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
@@ -1264,6 +1265,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (bind-key "<backtab>" #'company-complete))
 
 (use-package company-emoji :ensure t)
+
+(use-package objc-mode
+  :bind (:map objc-mode-map
+              ([f6] . recompile)))
 
 (use-package rtags :ensure t
   :bind
