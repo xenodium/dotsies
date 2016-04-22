@@ -1278,8 +1278,15 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   ;; Work in progress.
   ;; (use-package flycheck-rtags)
+  (setq rtags-autostart-diagnostics t) ;; For company support.
+  (setq rtags-completions-enabled t) ;; For company support.
   (setq rtags-path "~/stuff/active/code/rtags/bin")
-  (setq rtags-use-helm t))
+  (setq rtags-use-helm t)
+  ;; TODO: Change to subtle colors.
+  (set-face-attribute 'rtags-warnline nil
+                      :background nil)
+  (set-face-attribute 'rtags-errline nil
+                      :background nil))
 
 ;; Work in progress.
 ;; (defun ar/flycheck-rtags-setup ()
@@ -1365,10 +1372,12 @@ Repeated invocations toggle between the two most recently open buffers."
   )
 
 (use-package company-irony :ensure t
-  :config
-  (add-hook 'objc-mode-hook (lambda ()
-                              (setq-local company-backends '((company-irony)))))
-  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
+  ;; :config
+  ;; Disabling irony. Slow in large projects.
+  ;; (add-hook 'objc-mode-hook (lambda ()
+  ;;                             (setq-local company-backends '((company-irony)))))
+  ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  )
 
 (use-package helm-c-yasnippet :ensure t)
 
@@ -1705,6 +1714,7 @@ Argument LEN Length."
     (objc-font-lock-mode)
     (helm-dash-activate-docset "iOS")
     (set-fill-column 100)
+    (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
     ;; (setq-local company-backends
     ;;      ;; List with multiple back-ends for mutual inclusion.
