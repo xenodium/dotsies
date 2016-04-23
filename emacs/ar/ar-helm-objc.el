@@ -19,6 +19,7 @@
     (sort
      (delete-dups (mapcar #'file-name-nondirectory
                           (ar/file-find "\\*.h"
+                                        nil
                                         "~/stuff/active")))
      'string<)
     (lambda (selection)
