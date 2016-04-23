@@ -283,8 +283,9 @@
 (use-package ar-ox-html
   :after (org ox-html ar-file)
   :config
-  (bind-key [f6] #'ar/ox-html-export)
-  (ar/ox-html-setup))
+  (ar/ox-html-setup)
+  :bind (:map org-mode-map
+              ([f6] . ar/ox-html-export)))
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
@@ -779,7 +780,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (setq projectile-enable-caching nil)
+  (setq projectile-enable-caching t)
   ;; C-u magit-status presents list of repositories.
   (setq magit-repo-dirs (mapcar (lambda (dir)
                                   (substring dir 0 -1))
@@ -892,7 +893,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
-                      :foreground "#FA009A")
+                      :foreground "yellow")
   (setq highlight-symbol-idle-delay 0)
   (setq highlight-symbol-on-navigation-p t))
 
@@ -1265,6 +1266,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-emoji :ensure t)
 
+(use-package objc-mode
+  :bind (:map objc-mode-map
+              ([f6] . recompile)))
+
 (use-package rtags :ensure t
   :bind
   (:map
@@ -1273,8 +1278,15 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   ;; Work in progress.
   ;; (use-package flycheck-rtags)
+  (setq rtags-autostart-diagnostics t) ;; For company support.
+  (setq rtags-completions-enabled t) ;; For company support.
   (setq rtags-path "~/stuff/active/code/rtags/bin")
-  (setq rtags-use-helm t))
+  (setq rtags-use-helm t)
+  ;; TODO: Change to subtle colors.
+  (set-face-attribute 'rtags-warnline nil
+                      :background nil)
+  (set-face-attribute 'rtags-errline nil
+                      :background nil))
 
 ;; Work in progress.
 ;; (defun ar/flycheck-rtags-setup ()
@@ -1360,10 +1372,12 @@ Repeated invocations toggle between the two most recently open buffers."
   )
 
 (use-package company-irony :ensure t
-  :config
-  (add-hook 'objc-mode-hook (lambda ()
-                              (setq-local company-backends '((company-irony)))))
-  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
+  ;; :config
+  ;; Disabling irony. Slow in large projects.
+  ;; (add-hook 'objc-mode-hook (lambda ()
+  ;;                             (setq-local company-backends '((company-irony)))))
+  ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  )
 
 (use-package helm-c-yasnippet :ensure t)
 
@@ -1524,6 +1538,8 @@ already narrowed."
         (t (narrow-to-defun))))
 
 (bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
+
+(use-package niceify-info :ensure t)
 
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
@@ -1698,6 +1714,7 @@ Argument LEN Length."
     (objc-font-lock-mode)
     (helm-dash-activate-docset "iOS")
     (set-fill-column 100)
+    (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
     ;; (setq-local company-backends
     ;;      ;; List with multiple back-ends for mutual inclusion.
@@ -2106,6 +2123,8 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
+  :init
+  (setq winner-dont-bind-my-keys t)
   :config
   (defun ar/dwim-key-esc ()
     "Do what I mean when pressing ESC."
@@ -2120,7 +2139,6 @@ With a prefix argument N, (un)comment that many sexps."
         (append winner-boring-buffers '("*helm M-x*"
                                         "helm mini*"
                                         "*helm projectile*")))
-  (setq winner-dont-bind-my-keys t)
   (winner-mode 1)
   :bind (("<escape>" . ar/dwim-key-esc)))
 
