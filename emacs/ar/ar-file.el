@@ -95,8 +95,8 @@
                     (or (string-match-p "\\(\\.JPG\\|\\.jpg\\|\\.PNG\\|\\.png\\|\\.GIF\\|\\.gif\\)" path)
                         (file-directory-p path)))))
 
-(defun ar/file-find (filename-pattern &rest search-paths)
-  "Find file with FILENAME-PATTERN and SEARCH-PATHS."
+(defun ar/file-find (filename-pattern mod-function &rest search-paths)
+  "Find file with FILENAME-PATTERN, map MOD-FUNCTION to results, look in SEARCH-PATHS."
   (assert filename-pattern nil "Missing FILENAME-PATTERN")
   (assert search-paths nil "Missing SEARCH-PATHS")
   (let* ((search-paths-string (mapconcat 'expand-file-name
@@ -104,8 +104,12 @@
                                          " "))
          (find-command (format "find %s -iname %s"
                                search-paths-string
-                               filename-pattern)))
-    (split-string (shell-command-to-string find-command) "\n" t)))
+                               filename-pattern))
+         (results (split-string (shell-command-to-string find-command) "\n" t)))
+    (if mod-function
+        (mapcar mod-function
+                results)
+      results)))
 
 (defun ar/file-grep (regexp filename-pattern &rest search-paths)
   "Grep for REGEXP and narrow to FILENAME-PATTERN and SEARCH-PATHS."
@@ -180,7 +184,7 @@ Append `ar/file-build-file-names' to search for other file names."
                                (push path values)
                                (puthash key values files-hash-table))))))
     (mapc record-function
-          (ar/file-find "\\*" default-directory))
+          (ar/file-find "\\*" nil default-directory))
     (maphash (lambda (key paths)
                (when (> (length paths) 1)
                  (mapc (lambda (path)
