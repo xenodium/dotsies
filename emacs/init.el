@@ -310,6 +310,11 @@
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
 
+(use-package nyan-mode :ensure t
+  :config
+  (when (window-system)
+    (nyan-mode +1)))
+
 (defun ar/setup-graphical-fringe ()
   "Setup up the fringe (graphical display only)."
   (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
