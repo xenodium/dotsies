@@ -111,6 +111,7 @@
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :config
+  (use-package helm-imenu)
   ;; Switch major modes and toggle minor modes.
   (use-package helm-source)
   (use-package helm-mode-manager :ensure t)
@@ -169,6 +170,14 @@
          ("C-h y" . helm-dash-at-point))
   :commands (helm-buffers-list)
   :ensure t)
+
+;; (use-package wgrep-ag :ensure t)
+
+;; (use-package wgrep-helm :ensure t
+;;   :config
+;;   (require 'wgrep-helm)
+;;   (require 'wgrep-ag)
+;;   (require 'wgrep))
 
 (use-package enlive :ensure t)
 
@@ -862,6 +871,8 @@ Optional argument NON-RECURSIVE to shallow-search."
                          (get-buffer-window buffer t)))
         (t
          (next-error)
+         (when (equal major-mode 'objc-mode)
+          (next-error))
          (message "Compilation exited abnormally: %s" string))))
 
 ;; Automatically hide successful builds window.
