@@ -49,6 +49,8 @@ The file is taken from a start directory set by `ar/move-file-here-start-dir' an
     (rename-file start-file-full end-file)
     (message "moved %s to %s" start-file-full end-file)))
 
+(defalias 'ar/move-file-to-current-directory 'ar/move-file-here)
+
 ;;(read-file-name "Move selected file to " "~/Downloads/" nil t)
 
 (provide 'ar-move-file-here)
