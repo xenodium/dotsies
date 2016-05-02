@@ -256,7 +256,8 @@
   :after helm)
 (use-package ar-helm-hotspots-config
   :after (ar-dired ar-helm-org ar-org helm-buffers)
-  :bind ("C-x b" . ar/helm-hotspots))
+  :bind (("C-x C-b" . ar/helm-hotspots)
+         ("C-x b" . ar/helm-hotspots)))
 (use-package ar-image
   :after (ar-buffer ar-string)
   :commands (ar/image-open-html-for-current-dir))
@@ -2760,6 +2761,7 @@ _y_outube
   (setq org-src-tab-acts-natively t)
   ;; Prevent inadvertently editing invisible areas in Org.
   (setq org-catch-invisible-edits 'error)
+  (setq org-cycle-separator-lines 2)
   (setq org-image-actual-width t)
   (setq org-hide-emphasis-markers t)
   ;; All Org leading stars become invisible.
