@@ -962,8 +962,13 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Disabling while I try beacon-mode instead.
 ;;(use-package hl-line :ensure t)
 
+;; Momentarily highlights cursor on scrolling events.
 (use-package beacon :ensure t
   :config (beacon-mode))
+
+;; Highlights yanked/pasted text until next operation.
+(use-package volatile-highlights :ensure t
+  :config (volatile-highlights-mode t))
 
 ;; Disable backup.
 ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
