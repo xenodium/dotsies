@@ -716,8 +716,9 @@ Breaks `find-dired' otherwise."
 ;;                 #'ar/prefilled-swiper)
 
 ;; Alert me when moving cursor inefficiently.
-(use-package annoying-arrows-mode :ensure t
-  :config (global-annoying-arrows-mode))
+;; #slow
+;; (use-package annoying-arrows-mode :ensure t
+;;   :config (global-annoying-arrows-mode))
 
 ;; Remember point/place for each file.
 (use-package saveplace :defer t
@@ -1833,8 +1834,9 @@ Argument LEN Length."
   :after ar-auto-correct
   :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
 
-(use-package fill-column-indicator :ensure t
-  :commands (turn-on-fci-mode))
+;; #slow
+;; (use-package fill-column-indicator :ensure t
+;;   :commands (turn-on-fci-mode))
 
 (defun ar/web-mode-hook-function ()
   "Called when entering `js2-mode'."
