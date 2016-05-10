@@ -57,6 +57,10 @@
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil :height 180)
 
+;; I've inadvertedly exited Emacs far too many times.
+;; Ask for confirmation.
+(setq confirm-kill-emacs 'yes-or-no-p)
+
 (require 'ar-package)
 (ar/package-initialize)
 
