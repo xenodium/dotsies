@@ -1942,8 +1942,9 @@ Argument LEN Length."
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
   (semantic-mode 1)
-  (turn-on-fci-mode)
-  (ar/company-fci-workaround)
+  ;; #slow
+  ;; (turn-on-fci-mode)
+  ;; (ar/company-fci-workaround)
   (yas-minor-mode 1))
 
 (defun ar/markdown-mode-hook-function ()
