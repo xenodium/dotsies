@@ -1838,6 +1838,11 @@ Argument LEN Length."
   :after ar-auto-correct
   :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
 
+;; Maybe helps with #slow flyspell in org mode.
+(use-package flyspell-lazy :ensure t
+  :after flyspell
+  :config (flyspell-lazy-mode 1))
+
 ;; #slow
 ;; (use-package fill-column-indicator :ensure t
 ;;   :commands (turn-on-fci-mode))
