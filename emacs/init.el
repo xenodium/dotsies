@@ -1230,9 +1230,13 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(use-package avy :ensure t)
 (use-package key-chord :ensure t)
-(key-chord-define-global "jj" #'avy-goto-char-2)
+
+(use-package avy :ensure t
+  :after key-chord
+  :config
+  (key-chord-define-global "jj" #'avy-goto-char-2)
+  :bind (("M-s" . avy-goto-word-1)))
 
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
 (defun ar/switch-to-previous-buffer ()
