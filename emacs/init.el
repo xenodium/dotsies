@@ -74,33 +74,34 @@
   :config
   (async-bytecomp-package-mode 1))
 
-(use-package molokai-theme :ensure t
-  :config
-  ;; Set default cursor color.
-  (setq default-frame-alist
-        '((cursor-color . "#FA009A")))
+(use-package danneskjold-theme :ensure t)
+;; (use-package molokai-theme :ensure t)
 
-  (set-face-attribute 'isearch nil
-                      :foreground "dim gray"
-                      :background "yellow")
-  (set-face-attribute 'lazy-highlight nil
-                      :foreground "yellow"
-                      :background "dim gray")
-  (set-face-attribute 'highlight nil
-                      :background "default"
-                      :foreground "blue"
-                      :underline t)
-  (set-face-attribute 'region nil
-                      :background "#FA009A"
-                      :foreground "default"))
+(if (member "Source Code Pro" (font-family-list))
+    (set-face-attribute 'default nil :font "Source Code Pro")
+  (message "Warning: Source Code Pro font not found"))
 
-;; Playing around with dracula-theme.
-;; (use-package dracula-theme :ensure t
-;;   :config
-;;   (custom-theme-set-faces
-;;    'dracula
-;;    '(default
-;;      ((t (:background "black"))))))
+(defun ar/set-font ()
+  (interactive)
+  (set-face-attribute 'default nil :font (completing-read "Select font:"(font-family-list))))
+
+;; Additional theme overrides
+;; Set default cursor color.
+(add-to-list 'default-frame-alist
+             '(cursor-color . "#FA009A"))
+(set-face-attribute 'isearch nil
+                    :foreground "dim gray"
+                    :background "yellow")
+(set-face-attribute 'lazy-highlight nil
+                    :foreground "yellow"
+                    :background "dim gray")
+(set-face-attribute 'highlight nil
+                    :background "default"
+                    :foreground "blue"
+                    :underline t)
+(set-face-attribute 'region nil
+                    :background "#FA009A"
+                    :foreground "default")
 
 ;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter :ensure t
