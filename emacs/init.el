@@ -77,13 +77,18 @@
 (use-package danneskjold-theme :ensure t)
 ;; (use-package molokai-theme :ensure t)
 
-(if (member "Source Code Pro" (font-family-list))
-    (set-face-attribute 'default nil :font "Source Code Pro")
-  (message "Warning: Source Code Pro font not found"))
+(defun ar/set-font (font-name)
+  "Set font with FONT-NAME."
+  (if (member font-name (font-family-list))
+      (set-face-attribute 'default nil :font font-name)
+    (message "Warning: '%s' font not found" font-name)))
 
-(defun ar/set-font ()
+(defun ar/pick-font ()
   (interactive)
-  (set-face-attribute 'default nil :font (completing-read "Select font:"(font-family-list))))
+  (ar/set-font (completing-read "Select font:"
+                                (font-family-list))))
+
+(ar/set-font "Source Code Pro")
 
 ;; Additional theme overrides
 ;; Set default cursor color.
