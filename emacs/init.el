@@ -181,13 +181,8 @@
   :commands (helm-buffers-list)
   :ensure t)
 
-;; (use-package wgrep-ag :ensure t)
-
-;; (use-package wgrep-helm :ensure t
-;;   :config
-;;   (require 'wgrep-helm)
-;;   (require 'wgrep-ag)
-;;   (require 'wgrep))
+;; Logs commands in a separate buffer. Handy for screenscasts.
+(use-package command-log-mode :ensure t)
 
 (use-package enlive :ensure t)
 
