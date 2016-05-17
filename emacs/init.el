@@ -1580,7 +1580,7 @@ already narrowed."
   "Called when entering `python-mode'."
   (setq python-indent-offset 2)
   ;; Ensure we have an inferior Python process running.
-  (run-python nil)
+  (run-python "/usr/bin/python -i")
   (anaconda-mode)
   (eldoc-mode +1)
   ;; FIXME python-docstring-mode currently broken
