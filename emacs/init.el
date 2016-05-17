@@ -1576,16 +1576,27 @@ already narrowed."
 ;; Enable searching info via info-lookup-symbol (ie. C-h S).
 (use-package pydoc-info :ensure t)
 
+(use-package elpy :ensure t
+  :config
+  (elpy-enable))
+
+;; Disabled anaconda in favor of elpy.
+;; (defun ar/python-mode-hook-function-anaconda ()
+;;   "Called when entering `python-mode'."
+;;   (setq python-indent-offset 2)
+;;   ;; Ensure we have an inferior Python process running.
+;;   (run-python "/usr/bin/python -i")
+;;   (anaconda-mode)
+;;   (eldoc-mode +1)
+;;   ;; FIXME python-docstring-mode currently broken
+;;   ;; (python-docstring-mode +1)
+;;   (setq-local company-backends '(company-anaconda))
+;;   (py-yapf-enable-on-save))
+
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (setq python-indent-offset 2)
-  ;; Ensure we have an inferior Python process running.
-  (run-python "/usr/bin/python -i")
-  (anaconda-mode)
-  (eldoc-mode +1)
-  ;; FIXME python-docstring-mode currently broken
-  ;; (python-docstring-mode +1)
-  (setq-local company-backends '(company-anaconda))
+  (python-docstring-mode +1)
   (py-yapf-enable-on-save))
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
 
