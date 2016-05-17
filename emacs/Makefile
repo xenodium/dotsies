@@ -10,6 +10,9 @@ init:
 	curl https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el -o ~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el || echo "No internet connection... skipping exec-path-from-shell.el install."
 	make -C ar
 
+pylint:
+	cp -i python/pylintrc ~/.pylintrc
+
 global:
 	cp -i global/.globalrc ~/
 
