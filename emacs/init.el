@@ -1584,6 +1584,8 @@ already narrowed."
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (setq python-indent-offset 2)
+  ;; Ensure we have an inferior Python process running.
+  (run-python nil)
   (anaconda-mode)
   (eldoc-mode +1)
   ;; FIXME python-docstring-mode currently broken
