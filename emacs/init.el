@@ -94,6 +94,8 @@
 ;; Set default cursor color.
 (add-to-list 'default-frame-alist
              '(cursor-color . "#FA009A"))
+(set-face-attribute 'fringe nil
+                    :background nil)
 (set-face-attribute 'isearch nil
                     :foreground "dim gray"
                     :background "yellow")
@@ -330,10 +332,6 @@
   (when (window-system)
     (nyan-mode +1)))
 
-(defun ar/setup-graphical-fringe ()
-  "Setup up the fringe (graphical display only)."
-  (custom-set-faces '(fringe ((t (:background "#1B1D1E"))))))
-
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
   (use-package spaceline :ensure t
@@ -409,8 +407,7 @@ Values between 0 - 100."
   (when (window-system)
     (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
-    (ar/setup-graphical-mode-line)
-    (ar/setup-graphical-fringe)))
+    (ar/setup-graphical-mode-line)))
 (ar/setup-graphical-display)
 
 ;; Tip of the day.
