@@ -54,9 +54,6 @@
                         'vertical-border
                         (make-glyph-code ?|))
 
-;; Set font face height. Value is 1/10pt.
-(set-face-attribute 'default nil :height 180)
-
 ;; I've inadvertedly exited Emacs far too many times.
 ;; Ask for confirmation.
 (setq confirm-kill-emacs 'yes-or-no-p)
@@ -94,6 +91,12 @@
 ;; Set default cursor color.
 (add-to-list 'default-frame-alist
              '(cursor-color . "#FA009A"))
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil
+                    :height 180
+                    :foreground "#dcdcdc")
+(set-face-attribute 'objc-font-lock-function-name nil
+                    :foreground "#dcdcdc")
 (set-face-attribute 'fringe nil
                     :background nil)
 (set-face-attribute 'isearch nil
@@ -388,6 +391,7 @@
   ;; Control Path too long error
   ;; TMPDIR variable is really large
   ;; http://lists.macosforge.org/pipermail/macports-tickets/2011-June/084295.html
+  (setq tramp-verbose 10)
   (setenv "TMPDIR" "/tmp")
   (setq tramp-default-method "ssh"))
 
@@ -1778,6 +1782,8 @@ Argument LEN Length."
   (set-fill-column 100))
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
+
+(use-package immortal-scratch :ensure t)
 
 (use-package tldr :ensure t)
 
