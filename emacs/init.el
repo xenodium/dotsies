@@ -771,6 +771,9 @@ With argument ARG, do this that many times."
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
+;; Calendar client.
+(use-package calfw :ensure t)
+
 (defun ar/helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default.
 Optional argument NON-RECURSIVE to shallow-search."
