@@ -95,8 +95,6 @@
 (set-face-attribute 'default nil
                     :height 180
                     :foreground "#dcdcdc")
-(set-face-attribute 'objc-font-lock-function-name nil
-                    :foreground "#dcdcdc")
 (set-face-attribute 'fringe nil
                     :background nil)
 (set-face-attribute 'isearch nil
@@ -883,7 +881,7 @@ Optional argument NON-RECURSIVE to shallow-search."
         (t
          (next-error)
          (when (equal major-mode 'objc-mode)
-          (next-error))
+           (next-error))
          (message "Compilation exited abnormally: %s" string))))
 
 ;; Automatically hide successful builds window.
@@ -1606,7 +1604,10 @@ already narrowed."
 
 (use-package objc-font-lock
   :ensure t
-  :init (setq objc-font-lock-background-face nil))
+  :init
+  (setq objc-font-lock-background-face nil)
+  :config
+  (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc"))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
