@@ -356,32 +356,34 @@
       (spaceline-toggle-time-on)
       (spaceline-emacs-theme 'date 'time)
       (setq powerline-default-separator 'slant)
-      ;; Playing with powerline theme. If things break, delete block.
-      ;; Start
       (set-face-attribute 'helm-candidate-number nil
                           :foreground "#f4c20d"
                           :background nil)
       (set-face-attribute 'spaceline-highlight-face nil
                           :background "#db3236")
       (set-face-attribute 'mode-line nil
-                          :background "#00A1F1")
+                          :background "#00A1F1"
+                          :box nil)
       (set-face-attribute 'mode-line-buffer-id nil
                           :background nil
                           :foreground "#FFFFFF")
       (set-face-attribute 'powerline-active1 nil
                           :background "#f4c20d"
-                          :foreground "navy")
+                          :foreground "navy"
+                          :box nil)
       (set-face-attribute 'powerline-active2 nil
-                          :background "#3cba54")
+                          :background "#3cba54"
+                          :box nil)
       (set-face-attribute 'powerline-inactive1 nil
                           :background "#00A1F1"
-                          :foreground "#FFFFFF")
+                          :foreground "#FFFFFF"
+                          :box nil)
       (set-face-attribute 'powerline-inactive2 nil
-                          :background "#00A1F1")
+                          :background "#00A1F1"
+                          :box nil)
       (set-face-attribute 'mode-line-inactive nil
-                          :background "#00A1F1")
-      ;; End
-      )))
+                          :background "#00A1F1"
+                          :box nil))))
 
 (use-package tramp
   :config
