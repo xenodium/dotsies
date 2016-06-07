@@ -311,6 +311,7 @@
   :after yasnippet)
 (use-package ar-magit
   :after magit)
+(use-package last-change-jump)
 
 (use-package interaction-log :ensure t
   :config
@@ -1507,9 +1508,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
-  (add-hook 'after-change-functions
-            #'ar/after-prog-mode-text-change
-            t t)
   (toggle-truncate-lines 0)
   (setq show-trailing-whitespace t)
   (set-fill-column 1000)
@@ -1710,25 +1708,6 @@ already narrowed."
 
 ;; Super handy for highlighting bookmarks.
 (use-package bookmark+ :ensure t)
-
-(defun ar/save-point-to-register ()
-  "Save point to register."
-  (interactive)
-  (point-to-register 9999))
-
-(defun ar/jump-to-saved-point-register ()
-  "Jumps cursor to register 9999's value."
-  (interactive)
-  (jump-to-register 9999))
-(bind-key "C-c `" #'ar/jump-to-saved-point-register)
-
-(defun ar/after-prog-mode-text-change (beg end len)
-  "Execute for all text modifications in `prog-mode'.
-Argument BEG beginning.
-Argument END end.
-Argument LEN Length."
-  ;; Saving point enables jumping back to last change at any time.
-  (ar/save-point-to-register))
 
 (defun ar/clang-format-buffer ()
   "Clang format current buffer."
@@ -1956,9 +1935,6 @@ Argument LEN Length."
                                                  (when company-fci-mode-on-p (fci-mode 1)))))
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
-  (add-hook 'after-change-functions
-            #'ar/after-prog-mode-text-change
-            t t)
   (let ((m prog-mode-map))
     (define-key m [f6] #'recompile))
   (prettify-symbols-mode +1)
