@@ -311,7 +311,9 @@
   :after yasnippet)
 (use-package ar-magit
   :after magit)
-(use-package last-change-jump)
+(use-package last-change-jump
+  :config
+  (global-last-change-jump-mode))
 
 (use-package interaction-log :ensure t
   :config
