@@ -14,7 +14,6 @@
   "Jump to the last change made across all buffers.
 Can only be used after enabling `global-last-change-jump-mode'"
   :lighter " jump last"
-  :global t
   (if last-change-jump-mode
       (add-hook 'after-change-functions #'last-change-jump--text-change t)
     (remove-hook 'after-change-functions #'last-change-jump--text-change)
