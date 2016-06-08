@@ -312,8 +312,10 @@
 (use-package ar-magit
   :after magit)
 (use-package last-change-jump
+  :demand ;; No lazy loading. We want global mode started ASAP.
   :config
-  (global-last-change-jump-mode))
+  (global-last-change-jump-mode +1)
+  :bind ("C-c `" . last-change-jump))
 
 (use-package interaction-log :ensure t
   :config
