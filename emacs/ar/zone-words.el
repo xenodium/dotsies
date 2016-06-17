@@ -20,7 +20,7 @@
   '((((class color) (background light))
      :foreground "DarkGrey" :weight bold :height 2.0 :inherit variable-pitch)
     (((class color) (background dark))
-     :foreground "darkgoldenrod3" :weight bold :height 2.0 :inherit variable-pitch)
+     :foreground "white" :weight bold :height 2.5 :inherit variable-pitch)
     (t :height 1.5 :weight bold :inherit variable-pitch))
   "Face for title" :group 'zone-words)
 
@@ -33,6 +33,7 @@
 (defun zone-words ()
   "Display words to describe your emotions while you zone out."
   (delete-other-windows)
+  (setq mode-line-format nil)
   (zone-fill-out-screen (window-width) (window-height))
   ;; (delete-region (point-min) (point-max))
   (while (not (input-pending-p))
@@ -82,7 +83,10 @@
   (if (functionp zone-words--word-lookup-func)
       (funcall zone-words--word-lookup-func)
     (let* ((word (zone-words-dictionary-lookup-emotion))
-           (definition (shell-command-to-string (format "wn %s -over" word))))
+           (definition (if (locate-file "wn" exec-path)
+                           (shell-command-to-string (format "wn %s -over" word))
+                         "\n\nFor the definition, you need wordnet installed  on your machine.\n\nInstall with:\n\nbrew install wordnet (Mac OS)\n\napt-get install wordnet (Linux)")
+             ))
       (cons word definition))))
 
 (defun zone-words--insert-vertical-space (n)
