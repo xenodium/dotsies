@@ -35,7 +35,6 @@
   (delete-other-windows)
   (setq mode-line-format nil)
   (zone-fill-out-screen (window-width) (window-height))
-  ;; (delete-region (point-min) (point-max))
   (while (not (input-pending-p))
     (delete-region (point-min) (point-max))
     (goto-char (point-min))
@@ -82,7 +81,7 @@
   "Look up a term and return a cons with term and definition."
   (if (functionp zone-words--word-lookup-func)
       (funcall zone-words--word-lookup-func)
-    (let* ((word (zone-words-dictionary-lookup-emotion))
+    (let* ((word (zone-words-emotions-dictionary-lookup-emotion))
            (definition (if (locate-file "wn" exec-path)
                            (shell-command-to-string (format "wn %s -over" word))
                          "\n\nFor the definition, you need wordnet installed  on your machine.\n\nInstall with:\n\nbrew install wordnet (Mac OS)\n\napt-get install wordnet (Linux)")
