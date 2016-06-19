@@ -71,12 +71,7 @@
   :config
   (async-bytecomp-package-mode 1))
 
-(use-package danneskjold-theme :ensure t
-  :config
-  ;; Overriding faces not properly displayed in exported org files.
-  (set-face-attribute 'font-lock-function-name-face nil :foreground "#dcdcdc")
-  (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc"))
-
+(use-package danneskjold-theme :ensure t)
 ;; (use-package molokai-theme :ensure t)
 
 (defun ar/set-font (font-name)
@@ -1613,7 +1608,10 @@ already narrowed."
 
 (use-package objc-font-lock
   :ensure t
-  :init
+  :config
+  ;; Overriding faces not properly displayed in exported org files.
+  (set-face-attribute 'font-lock-function-name-face nil :foreground "#dcdcdc")
+  (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc")
   (setq objc-font-lock-background-face nil))
 
 (use-package dummy-h-mode :ensure t)
