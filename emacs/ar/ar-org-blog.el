@@ -9,6 +9,8 @@
 (require 'ar-file)
 (require 'ar-org)
 (require 'ar-process)
+(require 'org-element)
+(require 'outline)
 
 (defun ar/org-blog-insert-image ()
   "Insert an image into the current headline, creating a subdirectory with CUSTOM_ID."
