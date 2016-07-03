@@ -42,16 +42,63 @@
          (image-dir-path (file-name-directory image-file-path))
          (image-file-name (file-name-nondirectory image-file-path))
          (default-percentage "10"))
-  (mkdir (concat image-dir-path "/original") t)
-  (copy-file image-file-path (concat image-dir-path "/original/" image-file-name))
-  (unless (eq 0 (ar/process-call "mogrify"
-                                 "-resize"
-                                 (format "%s%%"
-                                         (read-string (format "Default %% (%s): "
-                                                              default-percentage)
-                                                      nil nil default-percentage))
-                                 image-file-path))
-    (error "Unable to resize image"))))
+    (mkdir (concat image-dir-path "/original") t)
+    (copy-file image-file-path (concat image-dir-path "/original/" image-file-name))
+    (unless (eq 0 (ar/process-call "mogrify"
+                                   "-resize"
+                                   (format "%s%%"
+                                           (read-string (format "Default %% (%s): "
+                                                                default-percentage)
+                                                        nil nil default-percentage))
+                                   image-file-path))
+      (error "Unable to resize image"))))
+
+(defun ar/org-blog-links-map (buffer category-fun link-fun)
+  (with-current-buffer buffer
+    (save-excursion
+      (save-restriction
+        (outline-hide-sublevels 1)
+        (org-element-map (org-element-parse-buffer 'greater-element t) 'headline
+          (lambda (headline)
+            (goto-char (org-element-property :begin headline))
+            (show-entry)
+            (narrow-to-region (org-element-property :begin headline)
+                              (org-element-property :end headline))
+            (org-element-map (org-element-parse-buffer) 'link
+              (lambda (link)
+                (when (string-equal (org-element-property :type link) "http")
+                  (let* ((link-description-begin
+                          (org-element-property :contents-begin link))
+                         (link-description-end
+                          (org-element-property :contents-end link))
+                         (link-description
+                          (and link-description-begin
+                               link-description-end
+                               (buffer-substring-no-properties link-description-begin
+                                                               link-description-end))))
+                    (funcall link-fun link-description (org-element-property :raw-link link))))
+                nil))
+            (funcall category-fun (org-element-property :title headline))
+            nil))))))
+
+(defun ar/org-blog-bookmarks ()
+  (interactive)
+  (let ((helm-sources '())
+        (candidates '()))
+    (ar/org-blog-links-map (find-file-noselect "~/stuff/active/blog/index.org")
+                           (lambda (headline)
+                             (push (helm-build-sync-source (replace-regexp-in-string "\\[.*\\]" "" headline)
+                                     :candidates candidates
+                                     :resume 'noresume
+                                     :action (lambda (url)
+                                               (browse-url url)))
+                                   helm-sources)
+                             (setq candidates '()))
+                           (lambda (description url)
+                             (push (cons description
+                                         url)
+                                   candidates)))
+    (helm :sources helm-sources)))
 
 (provide 'ar-org-blog)
 
