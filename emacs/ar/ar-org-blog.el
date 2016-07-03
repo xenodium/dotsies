@@ -78,7 +78,11 @@
                                link-description-end
                                (buffer-substring-no-properties link-description-begin
                                                                link-description-end))))
-                    (funcall link-fun link-description (org-element-property :raw-link link))))
+                    (funcall link-fun
+                             ;; Default to url when no description.
+                             (or link-description
+                                 (org-element-property :raw-link link))
+                             (org-element-property :raw-link link))))
                 nil))
             (funcall category-fun (org-element-property :title headline))
             nil))))))
