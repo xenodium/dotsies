@@ -538,19 +538,25 @@ Breaks `find-dired' otherwise."
            zone-pgm-drip
            zone-pgm-martini-swan-dive]))
 
-  ;; Locomotives zone.
-  (use-package zone-sl :ensure t
+  (use-package zone-words
     :after zone
     :config
-    (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
+    (setq zone-programs
+          [zone-words]))
+
+  ;; ;; Locomotives zone.
+  ;; (use-package zone-sl :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
 
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
 
-  (use-package zone-rainbow :ensure t
-    :after zone
-    :config
-    (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+  ;; (use-package zone-rainbow :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
 
   (use-package zone-select :ensure t
     :after zone)
