@@ -2370,7 +2370,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
 
-(use-package highlight2clipboard :ensure t)
+(unless (ar/linux-p)
+  ;; No linux support.
+  (use-package highlight2clipboard :ensure t))
 
 (use-package writegood-mode :ensure t)
 
