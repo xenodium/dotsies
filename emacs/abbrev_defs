@@ -1,6 +1,8 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'Custom-mode-abbrev-table '())
+
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
@@ -83,6 +85,8 @@
 
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
+(define-abbrev-table 'elpy-refactor-mode-abbrev-table '())
+
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
@@ -119,6 +123,7 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("accomodation" "accommodation" nil 0)
     ("accross" "across" nil 1)
     ("apologised" "apologized" nil 0)
     ("breadcrumbs" "crumbs" nil 0)
@@ -172,6 +177,8 @@
 (define-abbrev-table 'godoc-mode-abbrev-table '())
 
 (define-abbrev-table 'golint-mode-abbrev-table '())
+
+(define-abbrev-table 'google-maps-static-mode-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
@@ -234,6 +241,8 @@
 (define-abbrev-table 'magit-reflog-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-refs-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-repolist-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-revision-mode-abbrev-table '())
 
@@ -310,6 +319,18 @@
    ))
 
 (define-abbrev-table 'restclient-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-dependency-tree-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-diagnostics-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-preprocess-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-references-tree-mode-abbrev-table '())
+
+(define-abbrev-table 'rtags-taglist-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
