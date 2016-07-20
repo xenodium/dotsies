@@ -1681,6 +1681,9 @@ already narrowed."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
+;; Edit Emacs variables/state inline.
+(use-package refine :ensure t)
+
 ;; Evaluate line on the fly and overlay result.
 (use-package litable :ensure t)
 
