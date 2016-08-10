@@ -1503,6 +1503,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org :ensure t :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
+(use-package org-cliplink :ensure t)
+
 (use-package ob
   :config
   (setq org-export-babel-evaluate nil)
