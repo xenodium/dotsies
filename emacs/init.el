@@ -1253,13 +1253,11 @@ Repeated invocations toggle between the two most recently open buffers."
   "Called when entering `swift-mode'."
   (setq-local company-backends '(company-sourcekit)))
 
-;; Broken at the moment:
-;; Symbol's value as variable is void: flycheck-swift-sdk-path
-;; (use-package swift-mode :ensure t
-;;   :init (defvar flycheck-swift-sdk-path)
-;;   :after company-sourcekit flycheck
-;;   :config
-;;   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+(use-package swift-mode :ensure t
+  :init (defvar flycheck-swift-sdk-path)
+  :after company-sourcekit flycheck
+  :config
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
 
 (use-package company :ensure t
   :config
