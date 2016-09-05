@@ -31,10 +31,9 @@
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
 ;; We do this early on as we assert binaries are installed throughout
 ;; init.
-(eval-after-load
-    "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"
-  '(progn (require 'exec-path-from-shell)
-          (exec-path-from-shell-initialize)))
+(load-file (expand-file-name "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"))
+(require 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
@@ -1249,15 +1248,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-(defun ar/swift-mode-hook-function ()
-  "Called when entering `swift-mode'."
-  (setq-local company-backends '(company-sourcekit)))
+;; Disabling on Emacs 25 for the time being.
+;; 
+;; (defun ar/swift-mode-hook-function ()
+;;   "Called when entering `swift-mode'."
+;;   (setq-local company-backends '(company-sourcekit)))
 
-(use-package swift-mode :ensure t
-  :init (defvar flycheck-swift-sdk-path)
-  :after company-sourcekit flycheck
-  :config
-  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+;; (use-package swift-mode :ensure t
+;;   :init (defvar flycheck-swift-sdk-path)
+;;   :after company-sourcekit flycheck
+;;   :config
+;;   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
 
 (use-package company :ensure t
   :config
