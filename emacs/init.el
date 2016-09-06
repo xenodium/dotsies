@@ -1626,7 +1626,7 @@ already narrowed."
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
-;; go get -u code.google.com/p/rog-go/exp/cmd/godef
+;; go get -u github.com/rogpeppe/godef
 ;; go get -u code.google.com/p/go.tools/cmd/goimports
 ;; Useful info at:
 ;; From http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
