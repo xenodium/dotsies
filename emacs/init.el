@@ -1768,6 +1768,33 @@ already narrowed."
 
 (use-package nodejs-repl :ensure t)
 
+(use-package jade :ensure t)
+
+(defun ar/setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (setq company-backends '(company-tide
+                           (company-dabbrev-code
+                            company-gtags
+                            company-etags
+                            company-keywords)
+                           company-files
+                           company-dabbrev))
+  (company-mode +1))
+
+(use-package tide :ensure t
+  :after web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'js2-mode-hook #'ar/setup-tide-mode)
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (ar/setup-tide-mode)))))
+
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
   (requirejs-mode)
