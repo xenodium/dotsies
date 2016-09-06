@@ -31,10 +31,9 @@
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
 ;; We do this early on as we assert binaries are installed throughout
 ;; init.
-(eval-after-load
-    "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"
-  '(progn (require 'exec-path-from-shell)
-          (exec-path-from-shell-initialize)))
+(load-file (expand-file-name "~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el"))
+(require 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
@@ -538,19 +537,25 @@ Breaks `find-dired' otherwise."
            zone-pgm-drip
            zone-pgm-martini-swan-dive]))
 
-  ;; Locomotives zone.
-  (use-package zone-sl :ensure t
+  (use-package zone-words
     :after zone
     :config
-    (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
+    (setq zone-programs
+          [zone-words]))
+
+  ;; ;; Locomotives zone.
+  ;; (use-package zone-sl :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
 
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
 
-  (use-package zone-rainbow :ensure t
-    :after zone
-    :config
-    (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+  ;; (use-package zone-rainbow :ensure t
+  ;;   :after zone
+  ;;   :config
+  ;;   (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
 
   (use-package zone-select :ensure t
     :after zone)
@@ -1111,36 +1116,12 @@ Argument PROMPT to check for additional prompt."
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
 (setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
-;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-12
-(defun ar/smarter-move-beginning-of-line (arg)
-  "Move point back to indentation of beginning of line.
-
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line.
-
-If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
-  (setq arg (or arg 1))
-
-  ;; Move lines first
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
-
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
+(use-package crux
+  :ensure
+  :bind (("C-a" . crux-move-beginning-of-line)))
 
 ;; Removing accidental use. Don't need compose-mail (yet anyway).
 (global-unset-key (kbd "C-x m"))
-
-;; remap C-a to `smarter-move-beginning-of-line'
-(global-set-key [remap move-beginning-of-line]
-                'ar/smarter-move-beginning-of-line)
 
 ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
 (defun ar/vsplit-last-buffer ()
@@ -1267,12 +1248,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-(defun ar/swift-mode-hook-function ()
-  "Called when entering `swift-mode'."
-  (setq-local company-backends '(company-sourcekit)))
+;; Disabling on Emacs 25 for the time being.
+;; 
+;; (defun ar/swift-mode-hook-function ()
+;;   "Called when entering `swift-mode'."
+;;   (setq-local company-backends '(company-sourcekit)))
 
-;; Broken at the moment:
-;; Symbol's value as variable is void: flycheck-swift-sdk-path
 ;; (use-package swift-mode :ensure t
 ;;   :init (defvar flycheck-swift-sdk-path)
 ;;   :after company-sourcekit flycheck
@@ -1523,6 +1504,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org :ensure t :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
 
+(use-package org-cliplink :ensure t)
+
 (use-package ob
   :config
   (setq org-export-babel-evaluate nil)
@@ -1608,10 +1591,11 @@ already narrowed."
 
 (use-package objc-font-lock
   :ensure t
-  :init
-  (setq objc-font-lock-background-face nil)
   :config
-  (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc"))
+  ;; Overriding faces not properly displayed in exported org files.
+  (set-face-attribute 'font-lock-function-name-face nil :foreground "#dcdcdc")
+  (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc")
+  (setq objc-font-lock-background-face nil))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -1673,6 +1657,9 @@ already narrowed."
 
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
+
+;; Edit Emacs variables/state inline.
+(use-package refine :ensure t)
 
 ;; Evaluate line on the fly and overlay result.
 (use-package litable :ensure t)
@@ -2363,7 +2350,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
 
-(use-package highlight2clipboard :ensure t)
+(unless (ar/linux-p)
+  ;; No linux support.
+  (use-package highlight2clipboard :ensure t))
 
 (use-package writegood-mode :ensure t)
 

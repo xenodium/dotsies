@@ -43,8 +43,8 @@ Can only be used after enabling `global-last-change-jump-mode'"
          (eq (current-buffer) (window-buffer (selected-window)))
          ;; Is change in a buffer other than a minibuffer?
          (not (minibufferp (current-buffer)))
-         ;; Is a programming language or plain text buffer?
-         (derived-mode-p 'prog-mode 'text-mode))
+         ;; Is a programming language, plain text, or interpreter buffer?
+         (derived-mode-p 'prog-mode 'text-mode 'comint-mode))
     (setq last-change-jump--last-change-marker (copy-marker (point)))))
 
 (provide 'last-change-jump)
