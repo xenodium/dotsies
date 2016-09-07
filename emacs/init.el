@@ -310,6 +310,8 @@
   :after yasnippet)
 (use-package ar-magit
   :after magit)
+(use-package ar-typescript)
+
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
   :config
@@ -1776,6 +1778,8 @@ already narrowed."
   (flycheck-mode +1)
   (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
+  (add-hook 'after-save-hook (lambda ()
+                               (ar/typescript-format-buffer)) nil t)
   (setq company-backends '(company-tide
                            (company-dabbrev-code
                             company-gtags
