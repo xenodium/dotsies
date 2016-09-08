@@ -693,7 +693,14 @@ Breaks `find-dired' otherwise."
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
-(setq auto-revert-check-vc-info t)
+;; Setting to nil on Emacs 25 for now.
+;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
+;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
+(setq auto-revert-check-vc-info nil)
+;; Setting to nil on Emacs 25 for now.
+;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
+;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
+(setq vc-handled-backends nil)
 
 (use-package expand-region :ensure t
   :bind ("C-c w" . er/expand-region))
