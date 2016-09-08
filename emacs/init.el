@@ -310,6 +310,8 @@
   :after yasnippet)
 (use-package ar-magit
   :after magit)
+(use-package ar-typescript)
+
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
   :config
@@ -691,7 +693,14 @@ Breaks `find-dired' otherwise."
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
-(setq auto-revert-check-vc-info t)
+;; Setting to nil on Emacs 25 for now.
+;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
+;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
+(setq auto-revert-check-vc-info nil)
+;; Setting to nil on Emacs 25 for now.
+;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
+;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
+(setq vc-handled-backends nil)
 
 (use-package expand-region :ensure t
   :bind ("C-c w" . er/expand-region))
@@ -1767,6 +1776,35 @@ already narrowed."
 (use-package emmet-mode :ensure t)
 
 (use-package nodejs-repl :ensure t)
+
+(use-package jade :ensure t)
+
+(defun ar/setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (add-hook 'after-save-hook (lambda ()
+                               (ar/typescript-format-buffer)) nil t)
+  (setq company-backends '(company-tide
+                           (company-dabbrev-code
+                            company-gtags
+                            company-etags
+                            company-keywords)
+                           company-files
+                           company-dabbrev))
+  (company-mode +1))
+
+(use-package tide :ensure t
+  :after web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'js2-mode-hook #'ar/setup-tide-mode)
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (ar/setup-tide-mode)))))
 
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."

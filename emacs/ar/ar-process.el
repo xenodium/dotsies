@@ -27,8 +27,7 @@
   "Assert BINARY-NAME is in PATH.  Show INSTALL-MESSAGE for instructions."
   (assert (ar/process-binary-installed-p binary-name) nil (concat (format "%s not found. "
                                                                           binary-name)
-                                                                  install-message))
-  (message "%s installed" binary-name))
+                                                                  install-message)))
 
 (provide 'ar-process)
 
