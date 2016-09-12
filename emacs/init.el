@@ -345,6 +345,10 @@
     :config
     (use-package spaceline-config
       :config
+      (when (ar/osx-p)
+        ;; OS X color glitches workaround.
+        ;; https://github.com/syl20bnr/spacemacs/issues/4426
+        (setq ns-use-srgb-colorspace nil))
       (spaceline-toggle-minor-modes-off)
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
@@ -389,7 +393,8 @@
                           :box nil)
       (set-face-attribute 'mode-line-inactive nil
                           :background "#00A1F1"
-                          :box nil))))
+                          :box nil)
+      (spaceline-compile))))
 
 (use-package tramp
   :config
