@@ -345,7 +345,14 @@
   (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
 
 (use-package all-the-icons :ensure t
-  :after fontawesome)
+  :config
+  (ar/font-assert-installed "dev-icons" "Install ttf from https://github.com/domtronn/all-the-icons.el/tree/master/fonts")
+  (ar/font-assert-installed "file-icons" "Install ttf from https://github.com/domtronn/all-the-icons.el/tree/master/fonts")
+  (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io.")
+  (ar/font-assert-installed "octicons" "Install ttf from https://octicons.github.com.")
+  (ar/font-assert-installed "Weather Icons" "Install ttf from https://erikflowers.github.io/weather-icons.")
+  (ar/font-assert-installed "font-mfizz" "Install ttf from https://github.com/fizzed/font-mfizz/blob/master/dist.")
+  (ar/font-assert-installed "icomoon" "Install ttf from https://github.com/vorillaz/devicons/tree/master/fonts."))
 
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
