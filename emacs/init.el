@@ -1250,7 +1250,10 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(use-package key-chord :ensure t)
+(use-package key-chord :ensure t
+  :config
+  (key-chord-define-global "BB" #'other-window)
+  (key-chord-mode +1))
 
 (use-package avy :ensure t
   :after key-chord
@@ -1264,10 +1267,7 @@ With a prefix ARG open line above the current line."
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
 (key-chord-define-global "JJ" #'ar/switch-to-previous-buffer)
-(key-chord-define-global "BB" #'other-window)
-(key-chord-mode +1)
 
 ;; Promising background process runner.
 (use-package bpr :ensure t)
@@ -2475,6 +2475,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ;; http://www.mostlymaths.net/2016/09/more-emacs-configuration-tweaks.html
   (global-unset-key (kbd "M-<down-mouse-1>"))
   (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
+
+(use-package origami :ensure t
+  :after key-chord
+  :config
+  (key-chord-define-global "QQ" #'origami-toggle-all-nodes)
+  (key-chord-define-global "qq" #'origami-toggle-node)
+  (global-origami-mode))
 
 (use-package phi-search :ensure t)
 (use-package phi-search-mc :ensure t
