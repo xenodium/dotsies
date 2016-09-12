@@ -2469,7 +2469,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
-         ("M-@" . mc/unmark-previous-like-this)))
+         ("M-@" . mc/unmark-previous-like-this))
+  :config
+  ;; Use mouse for multiple cursor selection.
+  ;; http://www.mostlymaths.net/2016/09/more-emacs-configuration-tweaks.html
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
 
 (use-package phi-search :ensure t)
 (use-package phi-search-mc :ensure t
