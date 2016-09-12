@@ -143,11 +143,6 @@
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
   (use-package helm-config)
-  (use-package recentf
-    :config
-    (setq recentf-max-saved-items 200
-          recentf-max-menu-items 15)
-    (recentf-mode))
   (setq helm-net-prefer-curl t)
   (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (setq helm-quick-update t)  ; do not display invisible candidates
@@ -1118,13 +1113,22 @@ Argument PROMPT to check for additional prompt."
 (setq require-final-newline t)
 
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-(setq savehist-file "~/.emacs.d/savehist")
-(savehist-mode +1)
-(setq savehist-save-minibuffer-history +1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
+(use-package savehist
+  :config
+  (setq savehist-file "~/.emacs.d/savehist")
+  (savehist-mode +1)
+  (setq savehist-save-minibuffer-history +1)
+  (setq history-length 1000)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring)))
+
+(use-package recentf
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 50)
+  (recentf-mode))
 
 ;; Don't let the cursor go into minibuffer prompt.
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
