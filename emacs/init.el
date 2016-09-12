@@ -129,7 +129,6 @@
   (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t)
-  (use-package fontawesome :ensure t)
   (use-package helm-buffers
     :config
     (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
@@ -311,6 +310,7 @@
 (use-package ar-magit
   :after magit)
 (use-package ar-typescript)
+(use-package ar-font)
 
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
@@ -339,6 +339,14 @@
   (when (window-system)
     (nyan-mode +1)))
 
+(use-package fontawesome :ensure t
+  :after ar/font-assert-installed
+  :config
+  (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
+
+(use-package all-the-icons :ensure t
+  :after fontawesome)
+
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
   (use-package spaceline :ensure t
@@ -352,7 +360,7 @@
       (spaceline-toggle-minor-modes-off)
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
-      (setq powerline-default-separator 'rounded)
+      (setq powerline-default-separator 'slant)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment line-column
         "The current line and column numbers."
