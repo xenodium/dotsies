@@ -2485,17 +2485,15 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (setq save-interprogram-paste-before-kill t)
 
 (use-package multiple-cursors :ensure t
+  :init
+  (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-like-this-dwim)
          ("C-c n" . mc/mark-more-like-this-extended)
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
-         ("M-@" . mc/unmark-previous-like-this))
-  :config
-  ;; Use mouse for multiple cursor selection.
-  ;; http://www.mostlymaths.net/2016/09/more-emacs-configuration-tweaks.html
-  (global-unset-key (kbd "M-<down-mouse-1>"))
-  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
+         ("M-@" . mc/unmark-previous-like-this)
+         ("M-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package origami :ensure t
   :after key-chord
