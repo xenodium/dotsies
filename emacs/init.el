@@ -2515,8 +2515,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                                                   prompt)))))
     alpha-num-string))
 
-(use-package hydra :ensure t)
-(setq hydra-is-helpful t)
+(use-package hydra :ensure t
+  :config (setq hydra-is-helpful t))
 
 ;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro :ensure t)
