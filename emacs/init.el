@@ -57,6 +57,9 @@
 ;; Ask for confirmation.
 (setq confirm-kill-emacs 'yes-or-no-p)
 
+;; No need to keep duplicates in prompt history.
+(seqt history-delete-duplicates t)
+
 (require 'ar-package)
 (ar/package-initialize)
 
