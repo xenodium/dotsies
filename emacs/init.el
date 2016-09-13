@@ -801,6 +801,14 @@ Breaks `find-dired' otherwise."
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
+(defun ar/helm-ag ()
+  "Helm-ag search remembering last location."
+  (interactive)
+  (defvar ar/default-search-locaction nil)
+  (setq ar/default-search-locaction
+        (read-directory-name "search in: " ar/default-search-locaction nil t))
+  (helm-do-ag ar/default-search-locaction))
+
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
@@ -2630,7 +2638,7 @@ Open: _p_oint _e_xternally
 
 (defhydra hydra-search (:color blue)
   "search"
-  ("d" helm-do-ag "search directory")
+  ("d" ar/helm-ag "search directory")
   ("r" ar/projectile-helm-ag "search repository")
   ("f" ar/find-dired-current-dir "find file")
   ("a" ar/find-all-dired-current-dir "find all files")
