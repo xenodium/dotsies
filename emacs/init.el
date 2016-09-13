@@ -57,6 +57,9 @@
 ;; Ask for confirmation.
 (setq confirm-kill-emacs 'yes-or-no-p)
 
+;; No need to keep duplicates in prompt history.
+(setq history-delete-duplicates t)
+
 (require 'ar-package)
 (ar/package-initialize)
 
@@ -128,8 +131,13 @@
   (use-package helm-source)
   (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
-  (use-package helm-ag :ensure t)
-  (use-package fontawesome :ensure t)
+  (use-package helm-ag :ensure t
+    :config
+    ;; Pick your favorite searcher
+    ;; (setq helm-ag-base-command "pt -e --nocolor --nogroup")
+    ;; (setq helm-ag-base-command "ack --nocolor --nogroup")
+    ;; (setq helm-ag-base-command "sift --no-color -n")
+    (setq helm-ag-base-command "ag --nocolor --nogroup"))
   (use-package helm-buffers
     :config
     (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
@@ -306,6 +314,7 @@
 (use-package ar-magit
   :after magit)
 (use-package ar-typescript)
+(use-package ar-font)
 
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
@@ -334,6 +343,21 @@
   (when (window-system)
     (nyan-mode +1)))
 
+(use-package fontawesome :ensure t
+  :after ar/font-assert-installed
+  :config
+  (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
+
+(use-package all-the-icons :ensure t
+  :config
+  (ar/font-assert-installed "dev-icons" "Install ttf from https://github.com/domtronn/all-the-icons.el/tree/master/fonts")
+  (ar/font-assert-installed "file-icons" "Install ttf from https://github.com/domtronn/all-the-icons.el/tree/master/fonts")
+  (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io.")
+  (ar/font-assert-installed "octicons" "Install ttf from https://octicons.github.com.")
+  (ar/font-assert-installed "Weather Icons" "Install ttf from https://erikflowers.github.io/weather-icons.")
+  (ar/font-assert-installed "font-mfizz" "Install ttf from https://github.com/fizzed/font-mfizz/blob/master/dist.")
+  (ar/font-assert-installed "icomoon" "Install ttf from https://github.com/vorillaz/devicons/tree/master/fonts."))
+
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
   (use-package spaceline :ensure t
@@ -347,7 +371,7 @@
       (spaceline-toggle-minor-modes-off)
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
-      (setq powerline-default-separator 'rounded)
+      (setq powerline-default-separator 'slant)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment line-column
         "The current line and column numbers."
@@ -771,6 +795,14 @@ Breaks `find-dired' otherwise."
   "Search current repo/project using ag."
   (interactive)
   (helm-do-ag (projectile-project-root)))
+
+(defun ar/helm-ag ()
+  "Helm-ag search remembering last location."
+  (interactive)
+  (defvar ar/default-search-locaction nil)
+  (setq ar/default-search-locaction
+        (read-directory-name "search in: " ar/default-search-locaction nil t))
+  (helm-do-ag ar/default-search-locaction))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
@@ -1239,7 +1271,10 @@ With a prefix ARG open line above the current line."
 (use-package windsize :ensure t)
 (windsize-default-keybindings)
 
-(use-package key-chord :ensure t)
+(use-package key-chord :ensure t
+  :config
+  (key-chord-define-global "BB" #'other-window)
+  (key-chord-mode +1))
 
 (use-package avy :ensure t
   :after key-chord
@@ -1253,10 +1288,7 @@ With a prefix ARG open line above the current line."
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
 (key-chord-define-global "JJ" #'ar/switch-to-previous-buffer)
-(key-chord-define-global "BB" #'other-window)
-(key-chord-mode +1)
 
 ;; Promising background process runner.
 (use-package bpr :ensure t)
@@ -2458,7 +2490,19 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
-         ("M-@" . mc/unmark-previous-like-this)))
+         ("M-@" . mc/unmark-previous-like-this))
+  :config
+  ;; Use mouse for multiple cursor selection.
+  ;; http://www.mostlymaths.net/2016/09/more-emacs-configuration-tweaks.html
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
+
+(use-package origami :ensure t
+  :after key-chord
+  :config
+  (key-chord-define-global "QQ" #'origami-toggle-all-nodes)
+  (key-chord-define-global "qq" #'origami-toggle-node)
+  (global-origami-mode))
 
 (use-package phi-search :ensure t)
 (use-package phi-search-mc :ensure t
@@ -2486,8 +2530,8 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                                                   prompt)))))
     alpha-num-string))
 
-(use-package hydra :ensure t)
-(setq hydra-is-helpful t)
+(use-package hydra :ensure t
+  :config (setq hydra-is-helpful t))
 
 ;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro :ensure t)
@@ -2598,7 +2642,7 @@ Open: _p_oint _e_xternally
 
 (defhydra hydra-search (:color blue)
   "search"
-  ("d" helm-do-ag "search directory")
+  ("d" ar/helm-ag "search directory")
   ("r" ar/projectile-helm-ag "search repository")
   ("f" ar/find-dired-current-dir "find file")
   ("a" ar/find-all-dired-current-dir "find all files")
