@@ -2499,7 +2499,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :after key-chord
   :config
   (key-chord-define-global "QQ" #'origami-toggle-all-nodes)
-  (key-chord-define-global "qq" #'origami-toggle-node)
+  (key-chord-define-global "qq" #'origami-recursively-toggle-node)
   (global-origami-mode))
 
 (use-package phi-search :ensure t)
