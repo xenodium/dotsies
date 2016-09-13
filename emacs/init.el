@@ -128,7 +128,13 @@
   (use-package helm-source)
   (use-package helm-mode-manager :ensure t)
   (use-package imenu-anywhere :ensure t)
-  (use-package helm-ag :ensure t)
+  (use-package helm-ag :ensure t
+    :config
+    ;; Pick your favorite searcher
+    ;; (setq helm-ag-base-command "pt -e --nocolor --nogroup")
+    ;; (setq helm-ag-base-command "ack --nocolor --nogroup")
+    ;; (setq helm-ag-base-command "sift --no-color -n")
+    (setq helm-ag-base-command "ag --nocolor --nogroup"))
   (use-package helm-buffers
     :config
     (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
