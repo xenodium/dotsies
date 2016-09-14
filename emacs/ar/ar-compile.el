@@ -8,7 +8,7 @@
 
 (require 'compile)
 
-(defun ar/compile-completed ()
+(defun ar/compile-completing ()
   "Compile with completing options."
   (interactive)
   (compile (completing-read "Compile command: " compile-history)))
