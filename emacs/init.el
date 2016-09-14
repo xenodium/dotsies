@@ -151,11 +151,6 @@
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
   (use-package helm-config)
-  (use-package recentf
-    :config
-    (setq recentf-max-saved-items 200
-          recentf-max-menu-items 15)
-    (recentf-mode))
   (setq helm-net-prefer-curl t)
   (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (setq helm-quick-update t)  ; do not display invisible candidates
@@ -320,6 +315,7 @@
   :after magit)
 (use-package ar-typescript)
 (use-package ar-font)
+(use-package ar-compile)
 
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
@@ -1143,13 +1139,22 @@ Argument PROMPT to check for additional prompt."
 (setq require-final-newline t)
 
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-(setq savehist-file "~/.emacs.d/savehist")
-(savehist-mode +1)
-(setq savehist-save-minibuffer-history +1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
+(use-package savehist
+  :config
+  (setq savehist-file "~/.emacs.d/savehist")
+  (savehist-mode +1)
+  (setq savehist-save-minibuffer-history +1)
+  (setq history-length 1000)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring)))
+
+(use-package recentf
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 50)
+  (recentf-mode))
 
 ;; Don't let the cursor go into minibuffer prompt.
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
@@ -2474,23 +2479,21 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (setq save-interprogram-paste-before-kill t)
 
 (use-package multiple-cursors :ensure t
+  :init
+  (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-like-this-dwim)
          ("C-c n" . mc/mark-more-like-this-extended)
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
-         ("M-@" . mc/unmark-previous-like-this))
-  :config
-  ;; Use mouse for multiple cursor selection.
-  ;; http://www.mostlymaths.net/2016/09/more-emacs-configuration-tweaks.html
-  (global-unset-key (kbd "M-<down-mouse-1>"))
-  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
+         ("M-@" . mc/unmark-previous-like-this)
+         ("M-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package origami :ensure t
   :after key-chord
   :config
   (key-chord-define-global "QQ" #'origami-toggle-all-nodes)
-  (key-chord-define-global "qq" #'origami-toggle-node)
+  (key-chord-define-global "qq" #'origami-recursively-toggle-node)
   (global-origami-mode))
 
 (use-package phi-search :ensure t)
