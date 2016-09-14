@@ -1112,14 +1112,7 @@ Argument PROMPT to check for additional prompt."
                                 ("Europe/London" "London")
                                 ("America/Los_Angeles" "Los Angeles")))
 
-;; From http://wenshanren.org/?p=298#more-298
-(defun ar/edit-current-file-as-root ()
-  "Edit the file that is associated with the current buffer as root."
-  (interactive)
-  (if (buffer-file-name)
-      (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
-        (find-file file))
-    (message "Current buffer does not have an associated file.")))
+(use-package sudo-edit :ensure t)
 
 (defun ar/hippie-expand-advice-fun (orig-fun &rest r)
   "Disable `case-fold-search' in ORIG-FUN and R."
