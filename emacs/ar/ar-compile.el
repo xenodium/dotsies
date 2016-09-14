@@ -11,7 +11,9 @@
 (defun ar/compile-completing ()
   "Compile with completing options."
   (interactive)
-  (compile (completing-read "Compile command: " compile-history)))
+  (let ((compile-command (completing-read "Compile command: " compile-history)))
+    (compile compile-command)
+    (add-to-list 'compile-history compile-command)))
 
 (provide 'ar-compile)
 
