@@ -315,6 +315,7 @@
   :after magit)
 (use-package ar-typescript)
 (use-package ar-font)
+(use-package ar-compile)
 
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
