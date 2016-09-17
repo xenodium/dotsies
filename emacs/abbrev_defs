@@ -85,6 +85,8 @@
 
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
+(define-abbrev-table 'elisp-byte-code-mode-abbrev-table '())
+
 (define-abbrev-table 'elpy-refactor-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
@@ -102,6 +104,8 @@
 (define-abbrev-table 'esup-mode-abbrev-table '())
 
 (define-abbrev-table 'eww-bookmark-mode-abbrev-table '())
+
+(define-abbrev-table 'eww-buffers-mode-abbrev-table '())
 
 (define-abbrev-table 'eww-history-mode-abbrev-table '())
 
@@ -129,6 +133,7 @@
     ("breadcrumbs" "crumbs" nil 0)
     ("cambredge" "cambridge" nil 0)
     ("capibilities" "capabilities" nil 0)
+    ("certifcation" "certification" nil 0)
     ("chekckout" "checkout" nil 0)
     ("collitions" "collisions" nil 1)
     ("componetns" "components" nil 0)
@@ -146,8 +151,9 @@
     ("impementation" "implementation" nil 0)
     ("injeciton" "injection" nil 0)
     ("interesgt" "interest" nil 0)
+    ("investement" "investment" nil 0)
     ("liverpool" "liverpool" nil 0)
-    ("make" "make" nil 4)
+    ("make" "make" nil 6)
     ("nattural" "natural" nil 0)
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
@@ -165,6 +171,7 @@
     ("update" "update" nil 1)
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
+    ("upfront" "front" nil 0)
     ("wrning" "warning" nil 0)
    ))
 
@@ -206,9 +213,17 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
+(define-abbrev-table 'jade-debugger-locals-mode-abbrev-table '())
+
+(define-abbrev-table 'jade-inspector-mode-abbrev-table '())
+
+(define-abbrev-table 'jade-repl-mode-abbrev-table '())
+
 (define-abbrev-table 'java-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'js-jsx-mode-abbrev-table '())
 
 (define-abbrev-table 'js-mode-abbrev-table '())
 
@@ -318,6 +333,8 @@
   '(
    ))
 
+(define-abbrev-table 'refine-mode-abbrev-table '())
+
 (define-abbrev-table 'restclient-mode-abbrev-table '())
 
 (define-abbrev-table 'rtags-dependency-tree-mode-abbrev-table '())
@@ -331,6 +348,8 @@
 (define-abbrev-table 'rtags-references-tree-mode-abbrev-table '())
 
 (define-abbrev-table 'rtags-taglist-mode-abbrev-table '())
+
+(define-abbrev-table 'scss-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
@@ -366,9 +385,13 @@
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 
+(define-abbrev-table 'tide-references-mode-abbrev-table '())
+
 (define-abbrev-table 'tldr-mode-abbrev-table '())
 
 (define-abbrev-table 'twittering-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'typescript-mode-abbrev-table '())
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
 
@@ -377,6 +400,8 @@
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-hg-log-view-mode-abbrev-table '())
 
@@ -387,6 +412,8 @@
 (define-abbrev-table 'web-mode-abbrev-table '())
 
 (define-abbrev-table 'wordnut-mode-abbrev-table '())
+
+(define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
 
 (define-abbrev-table 'zone-select-mode-abbrev-table '())
 
