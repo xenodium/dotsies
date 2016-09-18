@@ -638,7 +638,12 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (setq elfeed-feeds
-        '(("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
+        '(("https://swiftweekly.github.io" blog Swift-key-brief)
+          ("https://www.natashatherobot.com" blog Natasha-The-Robot)
+          ("https://hacks.mozilla.org/feed" blog Mozilla)
+          ("http://swiftnews.curated.co" blog Curated)
+          ("http://akkartik.name/feeds.xml" blog Kartik Agaram)
+          ("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
           ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
           ("http://emacsredux.com/atom.xml" blog emacs-redux)
           ("https://ghuntley.com/feed.xml" blog ghuntley)
