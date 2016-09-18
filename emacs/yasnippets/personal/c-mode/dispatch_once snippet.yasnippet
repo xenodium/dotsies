@@ -1,0 +1,7 @@
+#name : GCD: Dispatch Once
+#key : dispatch_once snippet
+# --
+static dispatch_once_t onceToken;
+dispatch_once(&onceToken, ^{
+    ${1:code to be executed once}
+});

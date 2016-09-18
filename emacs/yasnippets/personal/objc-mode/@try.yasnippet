@@ -1,0 +1,12 @@
+#name : Objective-C Try-Catch-Finally Block
+#key : @try
+# --
+@try {
+    ${1:Code that can potentially throw an exception}
+}
+@catch (NSException *exception) {
+    ${2:Handle an exception thrown in the @try block}
+}
+@finally {
+    ${3:Code that gets executed whether or not an exception is thrown}
+}

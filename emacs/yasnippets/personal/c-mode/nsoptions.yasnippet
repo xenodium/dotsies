@@ -1,0 +1,8 @@
+#name : Enumerated Type Declaration (NS_OPTIONS)
+#key : nsoptions
+# --
+typedef NS_OPTIONS(NSUInteger, ${1:MyEnum}) {
+    ${2:MyEnumValueA} = 1 << 0,
+    ${3:MyEnumValueB} = 1 << 1,
+    ${4:MyEnumValueC} = 1 << 2,
+};

@@ -1,0 +1,7 @@
+#name : Objective-C KVO: Values affecting key
+#key : keyPathsForValuesAffecting
+# --
++ (NSSet *)keyPathsForValuesAffecting${1:DependentKey}
+{
+    return [NSSet setWithObjects:@"${2:keyPath}", nil];
+}

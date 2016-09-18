@@ -1,0 +1,7 @@
+#name : Objective-C -debugDescription Method
+#key : debugDescription
+# --
+- (NSString *)debugDescription
+{
+return [NSString stringWithFormat:@"<%@: %p> ${1:additional format string}", [self class], self, ${2:additional arguments}];
+}

@@ -1,0 +1,11 @@
+#name : Objective-C KVO: Observe Value For Keypath
+#key : observeValueForKeyPath
+# --
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == ${1:context}) {
+        ${2:code to be executed upon observing keypath}
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
