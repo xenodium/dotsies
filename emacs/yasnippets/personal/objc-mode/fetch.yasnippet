@@ -1,0 +1,19 @@
+#name : Core Data Fetch
+#key : fetch
+# --
+NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+NSEntityDescription *entity = [NSEntityDescription entityForName:@"${1:Entity name}" inManagedObjectContext:${2:context}];
+[fetchRequest setEntity:entity];
+// Specify criteria for filtering which objects to fetch
+NSPredicate *predicate = [NSPredicate predicateWithFormat:@"${3:format string}", ${4:arguments}];
+[fetchRequest setPredicate:predicate];
+// Specify how the fetched objects should be sorted
+NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"${5:key}"
+ascending:YES];
+[fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+
+NSError *error = nil;
+NSArray *fetchedObjects = [${6:context} executeFetchRequest:fetchRequest error:&error];
+if (fetchedObjects == nil) {
+    ${7:Error handling code}
+}
