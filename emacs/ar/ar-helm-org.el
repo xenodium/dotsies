@@ -86,6 +86,16 @@
   (org-show-subtree)
   (recenter-top-bottom 3))
 
+(defun ar/helm-org-insert-clipboard-bookmark ()
+  "Insert a bookmark link from clipboard."
+  (interactive)
+  (assert (string-match-p "^http" (current-kill 0)) nil "Not URL in clipboard")
+  (org-cliplink-retrieve-title
+   (current-kill 0)
+   (lambda (url default-description)
+     (insert (format "%s." (ar/org-build-link url
+                                              (read-string "Description: " default-description)))))))
+
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
   (interactive)
