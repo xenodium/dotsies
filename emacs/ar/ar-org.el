@@ -167,13 +167,9 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
             (read-string "URL: "))
           (read-string "Description: ")))
 
-(defun ar/org-build-link ()
-  "Build an org link, prompting for url and description."
-  (format "[[%s][%s]]"
-          (if (string-match-p "^http" (current-kill 0))
-              (current-kill 0)
-            (read-string "URL: "))
-          (read-string "Description: ")))
+(defun ar/org-build-link (url default-description)
+  "Build an org link with URL and DEFAULT-DESCRIPTION."
+  (format "[[%s][%s]]" url description.))
 
 (defun ar/org-blog-custom-id-from-title (title)
   "Create an org CUSTOM_ID from a TITLE."

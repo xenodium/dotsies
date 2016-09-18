@@ -11,6 +11,7 @@
 (require 'helm)
 (require 'helm-org)
 (require 'org)
+(require 'org-cliplink)
 
 (defvar ar/helm-org-source-my-todos
   `((name . "TODOS")
@@ -88,18 +89,24 @@
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
   (interactive)
-  (helm :sources `(((name . "Blog bookmarks")
-                    (candidates . ar/helm-org--blog-bookmark-candidates)
-                    (action . (lambda (candidate)
-                                (helm-org-goto-marker candidate)
-                                (org-show-subtree)
-                                (org-end-of-meta-data t)
-                                (org-insert-heading)
-                                (insert (format "%s." ,(ar/org-build-link)))
-                                (org-sort-list nil ?a)
-                                (ar/update-blog-timestamp-at-point)
-                                (hide-other)
-                                (save-buffer)))))))
+  (org-cliplink-retrieve-title
+   (if (string-match-p "^http" (current-kill 0))
+       (current-kill 0)
+     (read-string "URL: "))
+   (lambda (url default-description)
+     (helm :sources `(((name . "Blog bookmarks")
+                       (candidates . ar/helm-org--blog-bookmark-candidates)
+                       (action . (lambda (candidate)
+                                   (helm-org-goto-marker candidate)
+                                   (org-show-subtree)
+                                   (org-end-of-meta-data t)
+                                   (org-insert-heading)
+                                   (insert (format "%s." ,(ar/org-build-link url
+                                                                             (read-string "Description: " default-description))))
+                                   (org-sort-list nil ?a)
+                                   (ar/update-blog-timestamp-at-point)
+                                   (hide-other)
+                                   (save-buffer)))))))))
 
 (defun ar/helm-org-format-candidates (helm-candidates)
   "Format and sort HELM-CANDIDATES.  For each candidate:
