@@ -145,7 +145,8 @@
     (setq helm-buffer-max-length 40))
   (use-package helm-files)
   (use-package helm-grep)
-  (use-package helm-org)
+  (use-package helm-org
+    :after org-cliplink)
   (use-package helm-swoop :ensure t
     :bind (("M-C-s" . helm-multi-swoop-all)
            ("M-i" . helm-swoop))
