@@ -552,6 +552,8 @@ Values between 0 - 100."
     (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
+  (use-package magit-rockstar :ensure t)
+
   ;; A screensaver of sorts
   (use-package zone
     :config
