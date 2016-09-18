@@ -526,15 +526,7 @@ Values between 0 - 100."
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
-(defun ar/use-emacs-for-shell-editor ()
-  "Workaround to avoid using `with-editor-export-editor' in Find buffers.
-Breaks `find-dired' otherwise."
-  (unless (string-match-p "Find" (buffer-name))
-    (with-editor-export-editor)))
-
-(use-package with-editor :ensure t
-  :config
-  (add-hook 'shell-mode-hook 'ar/use-emacs-for-shell-editor))
+(use-package with-editor :ensure t)
 
 (use-package fullframe :ensure t
   :commands (fullframe)
