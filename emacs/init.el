@@ -651,10 +651,14 @@ Values between 0 - 100."
           ("https://news.ycombinator.com/rss" news hackernews)
           ("http://reddit.com/r/emacs/.rss" social reddit)
           ("http://dangrover.com/feed.xml" blog dangrover))))
+
 (use-package elfeed-goodies :ensure t :after elfeed
   :config
   (setq elfeed-goodies/entry-pane-position 'bottom)
   (elfeed-goodies/setup))
+
+;; Suggests elisp methods based on inputs and outputs.
+(use-package suggest :ensure t)
 
 ;; Start off with elfeed.
 
