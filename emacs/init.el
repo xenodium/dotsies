@@ -471,6 +471,8 @@ Values between 0 - 100."
   :commands (py-yapf-enable-on-save)
   :config (setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
+(use-package helm-codesearch :ensure t)
+
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
