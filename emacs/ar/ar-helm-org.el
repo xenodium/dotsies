@@ -12,8 +12,6 @@
 (require 'helm-org)
 (require 'org)
 
-(defvar ar/helm-org-bookmark-link-in-process nil)
-
 (defvar ar/helm-org-source-my-todos
   `((name . "TODOS")
     (candidates . ar/helm-org-todo-candidates)
@@ -59,16 +57,6 @@
                                  (copy-marker (point))))))
           child-headings)))))
 
-(defun ar/helm-org-save-bookmark-link-in-process ()
-  "Prompt and save a bookmark link in process."
-  (setq ar/helm-org-bookmark-link-in-process (ar/org-build-link)))
-
-(defun ar/helm-org-retrieve-bookmark-link-in-process ()
-  "Get bookmark link in process."
-  (let ((bookmark-link-in-process ar/helm-org-bookmark-link-in-process))
-    (setq ar/helm-org-bookmark-link-in-process nil)
-    bookmark-link-in-process))
-
 (defun ar/helm-org-add-backlog-link ()
   "Add a bookmark to blog."
   (interactive)
@@ -100,16 +88,14 @@
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
   (interactive)
-  (ar/helm-org-save-bookmark-link-in-process)
-  (helm :sources '(((name . "Blog bookmarks")
+  (helm :sources `(((name . "Blog bookmarks")
                     (candidates . ar/helm-org--blog-bookmark-candidates)
                     (action . (lambda (candidate)
                                 (helm-org-goto-marker candidate)
                                 (org-show-subtree)
                                 (org-end-of-meta-data t)
                                 (org-insert-heading)
-                                (insert (format "%s."
-                                                (ar/helm-org-retrieve-bookmark-link-in-process)))
+                                (insert (format "%s." ,(ar/org-build-link)))
                                 (org-sort-list nil ?a)
                                 (ar/update-blog-timestamp-at-point)
                                 (hide-other)
