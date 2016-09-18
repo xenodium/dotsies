@@ -640,7 +640,10 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (setq elfeed-feeds
-        '(("https://swiftweekly.github.io" blog Swift-key-brief)
+        '(("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
+          ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
+          ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
+          ("https://swiftweekly.github.io" blog Swift-key-brief)
           ("https://www.natashatherobot.com" blog Natasha-The-Robot)
           ("https://hacks.mozilla.org/feed" blog Mozilla)
           ("http://swiftnews.curated.co" blog Curated)
