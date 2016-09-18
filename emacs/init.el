@@ -473,6 +473,9 @@ Values between 0 - 100."
 
 (use-package helm-codesearch :ensure t)
 
+;; Stucture and Interpretation of Computer Progams in info format.
+(use-package sicp :ensure t)
+
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
