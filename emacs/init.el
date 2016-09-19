@@ -531,7 +531,9 @@ Values between 0 - 100."
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
-(use-package with-editor :ensure t)
+(use-package with-editor :ensure t
+  :config
+  (add-hook 'shell-mode-hook  'with-editor-export-editor))
 
 (use-package fullframe :ensure t
   :commands (fullframe)
