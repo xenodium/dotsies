@@ -963,7 +963,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (setq-default indent-tabs-mode nil)
 
 ;; Override selection with new text.
-(delete-selection-mode)
+(delete-selection-mode +1)
 
 (use-package electric
   :config
