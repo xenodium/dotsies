@@ -1268,6 +1268,9 @@ With a prefix ARG open line above the current line."
   :config
   (add-hook 'dired-initial-position-hook 'dired-k))
 
+;; Useful for diffing directories.
+(use-package ztree :ensure t)
+
 (use-package ace-mc :ensure t)
 
 (use-package ace-window :ensure t
