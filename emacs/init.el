@@ -1262,6 +1262,12 @@ With a prefix ARG open line above the current line."
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
 
+;; Add git state highlighting to dired (a la K for zsh).
+(use-package dired-k
+  :ensure t
+  :config
+  (add-hook 'dired-initial-position-hook 'dired-k))
+
 (use-package ace-mc :ensure t)
 
 (use-package ace-window :ensure t
