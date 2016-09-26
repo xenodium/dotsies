@@ -1852,9 +1852,14 @@ already narrowed."
               (when (string-equal "tsx" (file-name-extension buffer-file-name))
                 (ar/setup-tide-mode)))))
 
+(use-package company-flow :ensure t)
+
+(use-package flycheck-flow :ensure t)
+
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
-  (requirejs-mode)
+  ;; Enable for requirejs.
+  ;; (requirejs-mode)
   (js2-imenu-extras-setup)
   (setq-local js2-basic-offset 2)
   (setq company-tooltip-align-annotations t)
