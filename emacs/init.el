@@ -808,13 +808,15 @@ Values between 0 - 100."
   (interactive)
   (helm-do-ag (projectile-project-root)))
 
-(defun ar/helm-ag ()
-  "Helm-ag search remembering last location."
-  (interactive)
-  (defvar ar/default-search-locaction nil)
-  (setq ar/default-search-locaction
-        (read-directory-name "search in: " ar/default-search-locaction nil t))
-  (helm-do-ag ar/default-search-locaction))
+(defun ar/helm-ag (arg)
+  "Helm-ag search remembering last location.  With ARG, forget the last location."
+  (interactive "P")
+  (defvar ar/helm-ag--default-locaction nil)
+  (setq ar/helm-ag--default-locaction
+        (read-directory-name "search in: " (if arg
+                                               default-directory
+                                             ar/helm-ag--default-locaction) nil t))
+  (helm-do-ag ar/helm-ag--default-locaction))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
@@ -1259,6 +1261,15 @@ With a prefix ARG open line above the current line."
   :ensure t
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
+
+;; Add git state highlighting to dired (a la K for zsh).
+(use-package dired-k
+  :ensure t
+  :config
+  (add-hook 'dired-initial-position-hook 'dired-k))
+
+;; Useful for diffing directories.
+(use-package ztree :ensure t)
 
 (use-package ace-mc :ensure t)
 
