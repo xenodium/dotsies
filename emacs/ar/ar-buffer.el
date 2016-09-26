@@ -120,17 +120,20 @@ region if active."
                         (ar/process-call ,program (buffer-file-name))
                         (revert-buffer nil t))))
 
-(defun ar/buffer-re-string-match-list (re)
+(defun ar/buffer-re-string-match-list (re &optional match-fn)
+  "Return a list with strings matching RE, optionally using MATCH-FN to extract match (useful to extract groups)."
   (save-excursion
     (goto-char 0)
     (let ((results '()))
       (while (search-forward-regexp re nil t)
-        (add-to-list 'results (match-string-no-properties 0)))
+        (add-to-list 'results (if match-fn
+                                  (funcall match-fn)
+                                (match-string-no-properties 0))))
       (when (> (length results) 0)
         results))))
 
 (defun ar/buffer-string-match-p (re)
-  "Return t if RE matches current buffer. nil otherwise."
+  "Return t if RE matches current buffer.  nil otherwise."
   (goto-char 0)
   (re-search-forward re nil t))
 
