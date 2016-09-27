@@ -1867,6 +1867,8 @@ already narrowed."
 
 (use-package flycheck-flow :ensure t)
 
+(use-package jscs :ensure t)
+
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
   ;; Enable for requirejs.
@@ -2063,14 +2065,14 @@ already narrowed."
 ;; Select help window by default.
 (setq help-window-select t)
 
-;; No need to confirm killing buffers.
-(global-set-key [(control x) (k)]
-                #'kill-this-buffer)
-
 (use-package comint
   :config
   ;; Ensure shell prompts are read-only.
   (setq comint-prompt-read-only t))
+
+(use-package menu-bar
+  ;; No need to confirm killing buffers.
+  :bind ("C-x k" . kill-this-buffer))
 
 (use-package shell-pop :ensure t
   :init
