@@ -69,6 +69,8 @@
 
 (require 'use-package)
 
+(use-package validate :ensure t)
+
 (use-package async :ensure t :demand
   :config
   (async-bytecomp-package-mode 1))
@@ -123,8 +125,12 @@
 
 (use-package esup :ensure t)
 
+(use-package ido)
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
+  :demand
+  :ensure t
   :config
   (use-package helm-imenu)
   ;; Switch major modes and toggle minor modes.
@@ -134,15 +140,16 @@
   (use-package helm-ag :ensure t
     :config
     ;; Pick your favorite searcher
-    ;; (setq helm-ag-base-command "pt -e --nocolor --nogroup")
-    ;; (setq helm-ag-base-command "ack --nocolor --nogroup")
-    ;; (setq helm-ag-base-command "sift --no-color -n")
-    (setq helm-ag-base-command "ag --nocolor --nogroup"))
+    ;; (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup")
+    ;; (validate-setq helm-ag-base-command "ack --nocolor --nogroup")
+    ;; (validate-setq helm-ag-base-command "sift --no-color -n")
+    (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
   (use-package helm-buffers
+    :after ido
     :config
-    (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                              '(picture-mode artist-mode)))
-    (setq helm-buffer-max-length 40))
+    (validate-setq helm-buffer-max-length 40)
+    (validate-setq ido-use-virtual-buffers t)
+    (validate-setq helm-buffers-fuzzy-matching t))
   (use-package helm-files)
   (use-package helm-grep)
   (use-package helm-org
@@ -152,24 +159,20 @@
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
   (use-package helm-config)
-  (setq helm-net-prefer-curl t)
-  (setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
-  (setq helm-quick-update t)  ; do not display invisible candidates
-  (setq helm-idle-delay 0.01) ; be idle for this many seconds, before updating in delayed sources.
-  (setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
-  (setq helm-ff-search-library-in-sexp t)
-  (setq helm-split-window-default-side 'below) ;; open helm buffer below.
-  (setq helm-split-window-in-side-p t)
-  (setq helm-candidate-number-limit 200)
-  (setq helm-ff-skip-boring-files t)
+  (validate-setq helm-net-prefer-curl t)
+  (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (validate-setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (validate-setq helm-ff-search-library-in-sexp t)
+  (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (validate-setq helm-split-window-in-side-p t)
+  (validate-setq helm-candidate-number-limit 200)
+  (validate-setq helm-ff-skip-boring-files t)
   (setq helm-boring-file-regexp-list
         '("\\.git$" "\\.hg$"
           "\\.svn$" "\\.CVS$"
           "\\._darcs$" "\\.la$"
           "\\.o$" "\\.i$"))
-  (setq helm-ff-file-name-history-use-recentf t)
-  (setq ido-use-virtual-buffers t)
-  (setq helm-buffers-fuzzy-matching t)
+  (validate-setq helm-ff-file-name-history-use-recentf t) 
   (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
   (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
   (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
@@ -183,9 +186,7 @@
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
          ("C-h a" . helm-apropos)
-         ("C-h y" . helm-dash-at-point))
-  :commands (helm-buffers-list)
-  :ensure t)
+         ("C-h y" . helm-dash-at-point)))
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
@@ -196,7 +197,7 @@
 ;; ;; Automatically closes brackets.
 ;; (electric-pair-mode)
 ;; ;; Additional electric pairs.
-;; (setq electric-pair-pairs '((?\{ . ?\})
+;; (validate-setq electric-pair-pairs '((?\{ . ?\})
 ;;                             (?\< . ?\>)))
 
 (use-package smartparens :ensure t
@@ -238,7 +239,7 @@
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
-  (setq dabbrev-case-fold-search nil))
+  (validate-setq dabbrev-case-fold-search nil))
 (use-package ar-auto-correct
   :after (abbrev ispell))
 
@@ -336,8 +337,8 @@
 (use-package abbrev
   :after ar-file
   :config
-  (setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
-  (setq save-abbrevs 'silently)
+  (validate-setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
+  (validate-setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
 
 (use-package nyan-mode :ensure t
@@ -369,12 +370,12 @@
       (when (ar/osx-p)
         ;; OS X color glitches workaround.
         ;; https://github.com/syl20bnr/spacemacs/issues/4426
-        (setq ns-use-srgb-colorspace nil))
+        (validate-setq ns-use-srgb-colorspace nil))
       (spaceline-toggle-minor-modes-off)
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
-      (setq powerline-default-separator 'slant)
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+      (validate-setq powerline-default-separator 'slant)
+      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment line-column
         "The current line and column numbers."
         "l:%l c:%2c")
@@ -386,7 +387,7 @@
         (format-time-string "%h %d"))
       (spaceline-toggle-time-on)
       (spaceline-emacs-theme 'date 'time)
-      (setq powerline-default-separator 'slant)
+      (validate-setq powerline-default-separator 'slant)
       (set-face-attribute 'helm-candidate-number nil
                           :foreground "#f4c20d"
                           :background nil)
@@ -423,9 +424,9 @@
   ;; Control Path too long error
   ;; TMPDIR variable is really large
   ;; http://lists.macosforge.org/pipermail/macports-tickets/2011-June/084295.html
-  (setq tramp-verbose 10)
+  (validate-setq tramp-verbose 10)
   (setenv "TMPDIR" "/tmp")
-  (setq tramp-default-method "ssh"))
+  (validate-setq tramp-default-method "ssh"))
 
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
 (defun ar/set-current-frame-alpha-channel (focused-alpha
@@ -441,7 +442,7 @@ Values between 0 - 100."
 (defun ar/setup-graphical-display ()
   "Setup graphical display."
   (when (window-system)
-    (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
+    (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     (toggle-frame-fullscreen)
     (ar/setup-graphical-mode-line)))
 (ar/setup-graphical-display)
@@ -469,7 +470,7 @@ Values between 0 - 100."
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save)
-  :config (setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
+  :config (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-codesearch :ensure t)
 
@@ -509,11 +510,11 @@ Values between 0 - 100."
                   (find-alternate-file "..")) dired-mode-map)
   (fullframe dired quit-window)
   ;; Try to guess the target directory for operations.
-  (setq dired-dwim-target t)
+  (validate-setq dired-dwim-target t)
   ;; Enable since disabled by default.
   (put 'dired-find-alternate-file 'disabled nil)
   ;; Automatically refresh dired buffers when contents changes.
-  (setq dired-auto-revert-buffer t)
+  (validate-setq dired-auto-revert-buffer t)
 
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
@@ -547,11 +548,8 @@ Values between 0 - 100."
   (use-package magit :ensure t
     :bind ("C-x g" . magit-status)
     :config
-    (setq magit-revert-buffers nil)  ;; Disabling. Too slow on large repos.
-    (setq magit-status-buffer-switch-function #'switch-to-buffer)
+    (validate-setq magit-revert-buffers nil)  ;; Disabling. Too slow on large repos.
     (add-to-list 'magit-no-confirm 'stage-all-changes)
-    (setq magit-push-always-verify nil)
-    (setq magit-last-seen-setup-instructions "2.1.0")
     (fullframe magit-status magit-mode-quit-window))
 
   (use-package magit-rockstar :ensure t)
@@ -560,23 +558,23 @@ Values between 0 - 100."
   (use-package zone
     :config
     (zone-when-idle 120)
-    (setq zone-programs
-          [zone-pgm-whack-chars
-           zone-pgm-rotate
-           zone-pgm-drip
-           zone-pgm-martini-swan-dive]))
+    (validate-setq zone-programs
+                   [zone-pgm-whack-chars
+                    zone-pgm-rotate
+                    zone-pgm-drip
+                    zone-pgm-martini-swan-dive]))
 
   (use-package zone-words
     :after zone
     :config
-    (setq zone-programs
-          [zone-words]))
+    (validate-setq zone-programs
+                   [zone-words]))
 
   ;; ;; Locomotives zone.
   ;; (use-package zone-sl :ensure t
   ;;   :after zone
   ;;   :config
-  ;;   (setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
+  ;;   (validate-setq zone-programs (vconcat [zone-pgm-sl] zone-programs)))
 
   ;; A fireplace? Yeah, I know...
   (use-package fireplace :ensure t)
@@ -584,7 +582,7 @@ Values between 0 - 100."
   ;; (use-package zone-rainbow :ensure t
   ;;   :after zone
   ;;   :config
-  ;;   (setq zone-programs (vconcat [zone-rainbow] zone-programs)))
+  ;;   (validate-setq zone-programs (vconcat [zone-rainbow] zone-programs)))
 
   (use-package zone-select :ensure t
     :after zone)
@@ -594,7 +592,7 @@ Values between 0 - 100."
   ;;   :after zone
   ;;   :config
   ;;   (when (window-system)
-  ;;     (setq zone-programs (vconcat [zone-nyan] zone-programs))))
+  ;;     (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
@@ -613,7 +611,7 @@ Values between 0 - 100."
 ;;   (use-package smart-mode-line :ensure t)
 ;;   ;; Disabling, to try out dark theme.
 ;;   ;;  (use-package smart-mode-line-powerline-theme :ensure t)
-;;   (setq sml/theme 'dark
+;;   (validate-setq sml/theme 'dark
 ;;         sml/mule-info nil
 ;;         sml/show-remote nil
 ;;         sml/name-width '(20 . 40)
@@ -627,11 +625,11 @@ Values between 0 - 100."
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
   (interactive)
-  (setq display-time-24hr-format t)
-  (setq display-time-day-and-date t)
+  (validate-setq display-time-24hr-format t)
+  (validate-setq display-time-day-and-date t)
   (display-time) ; Align the time to right
-  (setq global-mode-string (remove 'display-time-string global-mode-string))
-  (setq mode-line-end-spaces
+  (validate-setq global-mode-string (remove 'display-time-string global-mode-string))
+  (validate-setq mode-line-end-spaces
         (list (propertize " " 'display '(space :align-to (- right 17)))
               'display-time-string)))
 
@@ -641,7 +639,7 @@ Values between 0 - 100."
 
 (use-package elfeed :ensure t
   :config
-  (setq elfeed-feeds
+  (validate-setq elfeed-feeds
         '(("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
           ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
           ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
@@ -663,7 +661,7 @@ Values between 0 - 100."
 
 (use-package elfeed-goodies :ensure t :after elfeed
   :config
-  (setq elfeed-goodies/entry-pane-position 'bottom)
+  (validate-setq elfeed-goodies/entry-pane-position 'bottom)
   (elfeed-goodies/setup))
 
 ;; Suggests elisp methods based on inputs and outputs.
@@ -750,19 +748,19 @@ Values between 0 - 100."
   :config
   ;; TODO: Figure out why face foreground isn't displayed.
   (set-face-attribute 'easy-escape-face nil :foreground "red")
-  (setq easy-escape-character ?⑊))
+  (validate-setq easy-escape-character ?⑊))
 
 (use-package yasnippet :ensure t
   :config
-  (setq yas-indent-line 'fixed)
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/yasnippets/personal"
-          "~/.emacs.d/yasnippets/yasnippet-snippets"))
+  (validate-setq yas-indent-line 'fixed)
+  (validate-setq yas-snippet-dirs
+                 '("~/.emacs.d/yasnippets/personal"
+                   "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
 
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
-;; (setq swiper-completion-method 'ivy)
+;; (validate-setq swiper-completion-method 'ivy)
 
 ;; (defun ar/prefilled-swiper ()
 ;;   "Pre-fill swiper input with region."
@@ -783,25 +781,19 @@ Values between 0 - 100."
 
 ;; Remember point/place for each file.
 (use-package saveplace :defer t
-  :init
+  :config
   (setq-default save-place t)
-  (setq save-place-file (expand-file-name ".places"
-                                          user-emacs-directory))
-  ;; Different functions available across Emacs versions.
-  (cond ((fboundp 'save-place-mode)
-         (save-place-mode))
-        ((fboundp 'toggle-save-place-globally)
-         (toggle-save-place-globally))
-        (t
-         (error "Neither save-place-mode nor toggle-save-place-globally available"))))
+  (validate-setq save-place-file (expand-file-name ".places"
+                                                   user-emacs-directory))
+  (save-place-mode))
 
 (use-package helm-dash :ensure t
   :after (go-mode)
   :config
   ;; View documentation in external browser.
-  ;; (setq helm-dash-browser-func #'browse-url)
+  ;; (validate-setq helm-dash-browser-func #'browse-url)
   ;; View documentation in ewww.
-  (setq helm-dash-browser-func #'eww))
+  (validate-setq helm-dash-browser-func #'eww))
 
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
@@ -812,7 +804,7 @@ Values between 0 - 100."
   "Helm-ag search remembering last location.  With ARG, forget the last location."
   (interactive "P")
   (defvar ar/helm-ag--default-locaction nil)
-  (setq ar/helm-ag--default-locaction
+  (validate-setq ar/helm-ag--default-locaction
         (read-directory-name "search in: " (if arg
                                                default-directory
                                              ar/helm-ag--default-locaction) nil t))
@@ -870,16 +862,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (setq projectile-enable-caching t)
-  ;; C-u magit-status presents list of repositories.
-  (setq magit-repo-dirs (mapcar (lambda (dir)
-                                  (substring dir 0 -1))
-                                ;; Disables "required at runtime" warning for cl package.
-                                (with-no-warnings
-                                  (remove-if-not (lambda (project)
-                                                   (file-directory-p (concat project "/.git/")))
-                                                 (projectile-relevant-known-projects))))
-        magit-repo-dirs-depth 1))
+  (validate-setq projectile-enable-caching t))
 (projectile-global-mode)
 
 ;; Best way (so far) to search for files in repo.
@@ -889,15 +872,15 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package ediff
   :config
-  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
-  (setq ediff-split-window-function #'split-window-horizontally)
+  (validate-setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (validate-setq ediff-split-window-function #'split-window-horizontally)
   ;; Expand org files when ediffing.
   (add-hook 'ediff-prepare-buffer-hook
             (lambda ()
               (eq major-mode 'org-mode)
               (visible-mode 1)  ; default 0
-              (setq truncate-lines nil)  ; no `org-startup-truncated' in hook
-              (setq org-hide-leading-stars t))))
+              (validate-setq truncate-lines nil)  ; no `org-startup-truncated' in hook
+              (validate-setq org-hide-leading-stars t))))
 
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
@@ -929,10 +912,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package whitespace
   :config
   ;; When nil, fill-column is used instead.
-  (setq whitespace-line-column nil)
+  (validate-setq whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines
   ;; longer than fill-column, and trailing blanks.
-  (setq whitespace-style '(face empty tabs lines-tail trailing))
+  (validate-setq whitespace-style '(face empty tabs lines-tail trailing))
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
                       :background "default")
@@ -973,10 +956,10 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (show-paren-mode 1)
   ;; Without this matching parens aren't highlighted in region.
-  (setq show-paren-priority -50)
-  (setq show-paren-delay 0)
+  (validate-setq show-paren-priority -50)
+  (validate-setq show-paren-delay 0)
   ;; Highlight entire bracket expression.
-  (setq show-paren-style 'expression)
+  (validate-setq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
                       :background "default"
                       :foreground "#FA009A"))
@@ -986,8 +969,8 @@ Optional argument NON-RECURSIVE to shallow-search."
   (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
                       :foreground "yellow")
-  (setq highlight-symbol-idle-delay 0)
-  (setq highlight-symbol-on-navigation-p t))
+  (validate-setq highlight-symbol-idle-delay 0)
+  (validate-setq highlight-symbol-on-navigation-p t))
 
 ;; Disabling in favor of highlight-symbol.
 ;; Automatically highlight all instances of thing at point.
@@ -1001,7 +984,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Partially use path in buffer name.
 (use-package uniquify
   :config
-  (setq uniquify-buffer-name-style 'forward))
+  (validate-setq uniquify-buffer-name-style 'forward))
 
 ;; Enabling subword mode (ie. navigate cameCase)
 ;; From http://www.emacswiki.org/emacs/CamelCase
@@ -1014,7 +997,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (set-face-attribute 'linum nil
                       :background "#1B1D1E")
-  (setq linum-format "%4d "))
+  (validate-setq linum-format "%4d "))
 
 (use-package git-gutter
   :ensure t
@@ -1101,7 +1084,7 @@ Argument PROMPT to check for additional prompt."
 
 (use-package vc
   :config
-  (setq vc-follow-symlinks t)
+  (validate-setq vc-follow-symlinks t)
   :bind ("C-x v f" . vc-pull))
 
 ;; Use vc-ediff as default.
@@ -1135,7 +1118,7 @@ Argument PROMPT to check for additional prompt."
   (advice-add 'hippie-expand
               :around
               'ar/hippie-expand-advice-fun)
-  (setq hippie-expand-try-functions-list '(try-expand-dabbrev
+  (validate-setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                            try-expand-dabbrev-visible
                                            try-expand-dabbrev-all-buffers
                                            try-expand-dabbrev-from-kill
@@ -1154,18 +1137,18 @@ Argument PROMPT to check for additional prompt."
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
   :config
-  (setq savehist-file "~/.emacs.d/savehist")
+  (validate-setq savehist-file "~/.emacs.d/savehist")
   (savehist-mode +1)
-  (setq savehist-save-minibuffer-history +1)
-  (setq history-length 1000)
-  (setq savehist-additional-variables
-        '(kill-ring
-          search-ring
-          regexp-search-ring)))
+  (validate-setq savehist-save-minibuffer-history t)
+  (validate-setq history-length 1000)
+  (validate-setq savehist-additional-variables
+                 '(kill-ring
+                   search-ring
+                   regexp-search-ring)))
 
 (use-package recentf
   :config
-  (setq recentf-max-saved-items 200
+  (validate-setq recentf-max-saved-items 200
         recentf-max-menu-items 50)
   (recentf-mode))
 
@@ -1274,9 +1257,9 @@ With a prefix ARG open line above the current line."
 (use-package ace-mc :ensure t)
 
 (use-package ace-window :ensure t
-  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   :bind (("C-x o" . ace-window))
   :config
+  (validate-setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;; Use larger characters for ace window shortcuts.
   ;; From http://oremacs.com/2015/02/27/ace-window-leading-char
   (custom-set-faces
@@ -1328,13 +1311,17 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company :ensure t
   :config
-  (setq company-dabbrev-ignore-case nil)
-  (setq company-dabbrev-code-ignore-case nil)
-  (setq company-dabbrev-downcase nil)
-  (setq company-idle-delay 0)
-  (setq company-show-numbers t)
-  (setq company-minimum-prefix-length 2)
-  (setq company-tooltip-align-annotations t)
+  (use-package company-dabbrev
+    :config
+    (validate-setq company-dabbrev-downcase nil)
+    (validate-setq company-dabbrev-ignore-case nil))
+  (use-package company-dabbrev-code
+    :config
+    (validate-setq company-dabbrev-code-ignore-case nil))
+  (validate-setq company-idle-delay 0)
+  (validate-setq company-show-numbers t)
+  (validate-setq company-minimum-prefix-length 2)
+  (validate-setq company-tooltip-align-annotations t)
   (global-company-mode))
 
 (use-package company-shell :ensure t)
@@ -1348,7 +1335,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-c-headers :ensure t
   :config
   ;; TODO: Set in mode hook.
-  ;; (setq company-backends (delete 'company-semantic company-backends))
+  ;; (validate-setq company-backends (delete 'company-semantic company-backends))
   ;; (add-to-list 'company-backends 'company-c-headers)
   (bind-key "<backtab>" #'company-complete))
 
@@ -1366,10 +1353,10 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   ;; Work in progress.
   ;; (use-package flycheck-rtags)
-  (setq rtags-autostart-diagnostics t) ;; For company support.
-  (setq rtags-completions-enabled t) ;; For company support.
-  (setq rtags-path "~/stuff/active/code/rtags/bin")
-  (setq rtags-use-helm t)
+  (validate-setq rtags-autostart-diagnostics t) ;; For company support.
+  (validate-setq rtags-completions-enabled t) ;; For company support.
+  (validate-setq rtags-path "~/stuff/active/code/rtags/bin")
+  (validate-setq rtags-use-helm t)
   ;; TODO: Change to subtle colors.
   (set-face-attribute 'rtags-warnline nil
                       :background nil)
@@ -1426,11 +1413,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;              (concat (getenv "HOME") "/.emacs.d/downloads/rtags/src"))
 ;; (require 'rtags)
 ;; (require 'company-rtags)
-;; (setq rtags-path
+;; (validate-setq rtags-path
 ;;       (concat (getenv "HOME") "/.emacs.d/downloads/rtags/bin"))
-;; (setq company-backends (delete 'company-clang company-backends))
-;; (setq company-rtags-begin-after-member-access t)
-;; (setq rtags-completions-enabled t)
+;; (validate-setq company-backends (delete 'company-clang company-backends))
+;; (validate-setq company-rtags-begin-after-member-access t)
+;; (validate-setq rtags-completions-enabled t)
 ;; (add-to-list 'company-backends 'company-rtags)
 ;; (rtags-diagnostics)
 
@@ -1543,9 +1530,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (use-package company-ycmd
 ;; :ensure t)
 ;;
-;; (setq ycmd-server-command (list "python"
+;; (validate-setq ycmd-server-command (list "python"
 ;;                                 (expand-file-name "~/.emacs.d/downloads/ycmd/ycmd")))
-;; (setq ycmd--log-enabled t)
+;; (validate-setq ycmd--log-enabled t)
 
 ;; Consider elpy mode instead. See https://github.com/daschwa/emacs.d
 ;; Consider company jedi. See https://github.com/syohex/emacs-company-jedi
@@ -1560,21 +1547,18 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
   (toggle-truncate-lines 0)
-  (setq show-trailing-whitespace t)
+  (validate-setq show-trailing-whitespace t)
   (set-fill-column 1000)
   (flyspell-mode)
   (org-bullets-mode 1)
   (yas-minor-mode 1)
   (org-display-inline-images))
 
-(use-package org :ensure t :config
-  (add-hook 'org-mode-hook #'ar/org-mode-hook-function))
-
 (use-package org-cliplink :ensure t)
 
 (use-package ob
   :config
-  (setq org-export-babel-evaluate nil)
+  (validate-setq org-export-babel-evaluate nil)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -1638,7 +1622,7 @@ already narrowed."
 ;; Disabled anaconda in favor of elpy.
 ;; (defun ar/python-mode-hook-function-anaconda ()
 ;;   "Called when entering `python-mode'."
-;;   (setq python-indent-offset 2)
+;;   (validate-setq python-indent-offset 2)
 ;;   ;; Ensure we have an inferior Python process running.
 ;;   (run-python "/usr/bin/python -i")
 ;;   (anaconda-mode)
@@ -1650,7 +1634,7 @@ already narrowed."
 
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
-  (setq python-indent-offset 2)
+  (validate-setq python-indent-offset 2)
   (python-docstring-mode +1)
   (py-yapf-enable-on-save))
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
@@ -1661,7 +1645,7 @@ already narrowed."
   ;; Overriding faces not properly displayed in exported org files.
   (set-face-attribute 'font-lock-function-name-face nil :foreground "#dcdcdc")
   (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc")
-  (setq objc-font-lock-background-face nil))
+  (validate-setq objc-font-lock-background-face nil))
 
 (use-package dummy-h-mode :ensure t)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
@@ -1688,7 +1672,7 @@ already narrowed."
   (setq-local company-backends '(company-go))
   (company-mode)
   (go-eldoc-setup)
-  (setq tab-width 2 indent-tabs-mode 1)
+  (validate-setq tab-width 2 indent-tabs-mode 1)
   (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package company-go :ensure t
@@ -1775,7 +1759,7 @@ already narrowed."
 ;; Disabled. Figure out the right helm-xcdoc-document-path.
 ;; (use-package helm-xcdoc :ensure t
 ;;   :config
-;;   (setq
+;;   (validate-setq
 ;;    helm-xcdoc-command-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil")
 ;;    helm-xcdoc-document-path (ar/file-assert-file-exists "/Applications/Xcode.app/Contents/Developer/Documentation/DocSets/com.apple.adc.documentation.iOS.docset")))
 
@@ -1820,7 +1804,7 @@ already narrowed."
   (bind-key [f6] java-mode-map)
   ;; 2-char indent for java.
   (defvar c-basic-offset)
-  (setq c-basic-offset 2)
+  (validate-setq c-basic-offset 2)
   (set-fill-column 100))
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
@@ -1840,11 +1824,11 @@ already narrowed."
   (interactive)
   (tide-setup)
   (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
   (add-hook 'after-save-hook (lambda ()
                                (ar/typescript-format-buffer)) nil t)
-  (setq company-backends '(company-tide
+  (validate-setq company-backends '(company-tide
                            (company-dabbrev-code
                             company-gtags
                             company-etags
@@ -1875,15 +1859,15 @@ already narrowed."
   ;; (requirejs-mode)
   (js2-imenu-extras-setup)
   (setq-local js2-basic-offset 2)
-  (setq company-tooltip-align-annotations t)
-  (setq company-tern-meta-as-single-line t)
-  (setq company-backends '(company-tern
-                           (company-dabbrev-code
-                            company-gtags
-                            company-etags
-                            company-keywords)
-                           company-files
-                           company-dabbrev))
+  (validate-setq company-tooltip-align-annotations t)
+  (validate-setq company-tern-meta-as-single-line t)
+  (validate-setq company-backends '(company-tern
+                                    (company-dabbrev-code
+                                     company-gtags
+                                     company-etags
+                                     company-keywords)
+                                    company-files
+                                    company-dabbrev))
   (tern-mode 1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
@@ -1966,7 +1950,7 @@ already narrowed."
 ;; Work in progress.
 (use-package web-mode :ensure t
   :config
-  (setq web-mode-code-indent-offset 2)
+  (validate-setq web-mode-code-indent-offset 2)
   (defadvice web-mode-highlight-part (around tweak-jsx activate)
     (if (equal web-mode-content-type "jsx")
         (let ((web-mode-enable-part-face nil))
@@ -1983,7 +1967,7 @@ already narrowed."
 
 (use-package company-tern :ensure t
   :config
-  (setq company-tern-meta-as-single-line t))
+  (validate-setq company-tern-meta-as-single-line t))
 
 (defun ar/js-mode-hook-function ()
   "Called when entering `js-mode'."
@@ -2018,7 +2002,7 @@ already narrowed."
   ;; Disable fci if needed.
   (add-hook 'company-completion-started-hook (lambda (&rest ignore)
                                                (when (boundp 'fci-mode)
-                                                 (setq company-fci-mode-on-p fci-mode)
+                                                 (validate-setq company-fci-mode-on-p fci-mode)
                                                  (when fci-mode (fci-mode -1)))))
   ;; Re-enable fci if needed.
   (add-hook 'company-completion-finished-hook (lambda (&rest ignore)
@@ -2033,7 +2017,7 @@ already narrowed."
   (prettify-symbols-mode +1)
   (highlight-symbol-mode +1)
   (highlight-symbol-nav-mode +1)
-  (setq show-trailing-whitespace t)
+  (validate-setq show-trailing-whitespace t)
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
   (flyspell-prog-mode)
@@ -2068,24 +2052,24 @@ already narrowed."
 (use-package comint
   :config
   ;; Ensure shell prompts are read-only.
-  (setq comint-prompt-read-only t))
+  (validate-setq comint-prompt-read-only t))
 
 (use-package menu-bar
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
 
 (use-package shell-pop :ensure t
-  :init
+  :config
   ;; Customize shell-pop.
-  (setq shell-pop-term-shell "/bin/bash")
+  (validate-setq shell-pop-term-shell "/bin/bash")
   ;; Trying shell out. Disabling ansi-term for now.
-  ;; (setq shell-pop-shell-type '("ansi-term"
+  ;; (validate-setq shell-pop-shell-type '("ansi-term"
   ;;                              "terminal"
   ;;                              (lambda
   ;;                                nil (ansi-term shell-pop-term-shell))))
-  (setq shell-pop-window-position "full")
+  (validate-setq shell-pop-window-position "full")
   ;; Do not auto cd to working directory.
-  (setq shell-pop-autocd-to-working-dir nil)
+  (validate-setq shell-pop-autocd-to-working-dir nil)
   :bind (([f5] . shell-pop)))
 
 (defun ar/shell-mode-hook-function ()
@@ -2093,7 +2077,7 @@ already narrowed."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (setq company-backends '(company-files
+  (validate-setq company-backends '(company-files
                            (company-dabbrev-code
                             company-gtags
                             company-etags
@@ -2131,7 +2115,7 @@ already narrowed."
                   (re-search-backward comment-start-skip
                                       (line-beginning-position)
                                       t))
-                (setq p (point-marker))
+                (validate-setq p (point-marker))
                 (comment-forward (point-max))
                 (point-marker)))
          (beg (save-excursion
@@ -2154,7 +2138,7 @@ already narrowed."
       (while (and (ignore-errors (backward-up-list) t)
                   (>= (point) beg))
         (skip-chars-backward (rx (syntax expression-prefix)))
-        (setq p (point-marker)))
+        (validate-setq p (point-marker)))
       ;; Re-comment everything before it. 
       (ignore-errors
         (comment-region beg p))
@@ -2210,7 +2194,7 @@ With a prefix argument N, (un)comment that many sexps."
   (let ((start (line-beginning-position))
         (end (line-end-position)))
     (when (region-active-p)
-      (setq start (save-excursion
+      (validate-setq start (save-excursion
                     (goto-char (region-beginning))
                     (beginning-of-line)
                     (point))
@@ -2253,9 +2237,8 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;; Quickly undo pop-ups or other window configurations.
 (use-package winner :ensure t
-  :init
-  (setq winner-dont-bind-my-keys t)
   :config
+  (validate-setq winner-dont-bind-my-keys t)
   (defun ar/dwim-key-esc ()
     "Do what I mean when pressing ESC."
     (interactive)
@@ -2265,10 +2248,10 @@ With a prefix argument N, (un)comment that many sexps."
            (term-send-raw-meta))
           (t
            (winner-undo))))
-  (setq winner-boring-buffers
-        (append winner-boring-buffers '("*helm M-x*"
-                                        "helm mini*"
-                                        "*helm projectile*")))
+  (validate-setq winner-boring-buffers
+                 (append winner-boring-buffers '("*helm M-x*"
+                                                 "helm mini*"
+                                                 "*helm projectile*")))
   (winner-mode 1)
   :bind (("<escape>" . ar/dwim-key-esc)))
 
@@ -2325,7 +2308,7 @@ With a prefix argument N, (un)comment that many sexps."
           (url))
       (while (re-search-forward goto-address-url-regexp
                                 nil t)
-        (setq url
+        (validate-setq url
               (buffer-substring-no-properties (match-beginning 0)
                                               (match-end 0)))
         (add-to-list 'helm-candidates
@@ -2368,7 +2351,7 @@ With a prefix argument N, (un)comment that many sexps."
 ;;  Disabling. Trial without it.
 ;; (desktop-save-mode 1)
 ;;  Number of buffers to restore immediately.
-;; (setq desktop-restore-eager 10)
+;; (validate-setq desktop-restore-eager 10)
 
 (defun ar/desktop-save ()
   "Write the desktop save file to ~/.emacs.d."
@@ -2419,13 +2402,13 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (let ((ξpath (if (use-region-p)
                    (buffer-substring-no-properties (region-beginning) (region-end))
                  (let (p0 p1 p2)
-                   (setq p0 (point))
+                   (validate-setq p0 (point))
                    ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
                    (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
-                   (setq p1 (point))
+                   (validate-setq p1 (point))
                    (goto-char p0)
                    (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
-                   (setq p2 (point))
+                   (validate-setq p2 (point))
                    (goto-char p0)
                    (buffer-substring-no-properties p1 p2)))))
     (if (string-match-p "\\`https?://" ξpath)
@@ -2476,14 +2459,15 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ;;           text-mode))
   ;;(add-to-list 'flycheck-checkers 'proselint)
   ;; Override default flycheck triggers
-  (setq flycheck-check-syntax-automatically
-        '(save idle-change mode-enabled)
-        flycheck-idle-change-delay 0.8)
+  (validate-setq flycheck-check-syntax-automatically
+                 '(save idle-change mode-enabled)
+                 flycheck-idle-change-delay 0.8)
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
-(use-package flycheck-tip :ensure t
+(use-package flycheck-pos-tip :ensure t
+  :after flycheck
   :config
-  (flycheck-tip-use-timer 'verbose))
+  (flycheck-pos-tip-mode))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (setq cc-other-file-alist
@@ -2510,7 +2494,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package multiple-cursors :ensure t
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
-  :bind (("C-c a" . mc/mark-all-like-this-dwim)
+  :bind (("C-c a" . mc/mark-all-like-this)
          ("C-c n" . mc/mark-more-like-this-extended)
          ("M-1" . mc/mark-next-like-this)
          ("M-!" . mc/unmark-next-like-this)
@@ -2552,7 +2536,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
     alpha-num-string))
 
 (use-package hydra :ensure t
-  :config (setq hydra-is-helpful t))
+  :config (validate-setq hydra-is-helpful t))
 
 ;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro :ensure t)
@@ -2814,7 +2798,7 @@ _y_outube
   (defadvice save-buffers-kill-emacs
       (around no-query-kill-emacs activate)
     "Prevent \"Active processes exist\" query on exit."
-    (flet ((process-list ())) ad-do-it))
+    (fliet ((process-list ())) ad-do-it))
   :commands (flet))
 
 (use-package define-word :ensure t
@@ -2861,8 +2845,8 @@ _y_outube
 
 (use-package org
   :ensure t
-  :defer t
-  :init
+  :config
+  (add-hook 'org-mode-hook #'ar/org-mode-hook-function) 
   (setq org-todo-keywords
         '((sequence
            "TODO"
@@ -2875,28 +2859,28 @@ _y_outube
           ("OBSOLETE" . (:foreground "blue" :weight bold))
           ("CANCELLED" . (:foreground "gray" :weight bold))))
   (setq org-refile-targets '((nil :regexp . "Week of")))
-  (setq org-ellipsis "⤵")
-  (setq org-fontify-emphasized-text +1)
+  (validate-setq org-ellipsis "⤵")
+  (validate-setq org-fontify-emphasized-text t)
   ;; Fontify code in code blocks.
-  (setq org-src-fontify-natively t)
+  (validate-setq org-src-fontify-natively t)
   ;; When exporting anything, do not insert in kill ring.
-  (setq org-export-copy-to-kill-ring nil)
+  (validate-setq org-export-copy-to-kill-ring nil)
   ;; Display images inline when running in GUI.
-  (setq org-startup-with-inline-images (display-graphic-p))
-  (setq org-src-tab-acts-natively t)
+  (validate-setq org-startup-with-inline-images (display-graphic-p))
+  (validate-setq org-src-tab-acts-natively t)
   ;; Prevent inadvertently editing invisible areas in Org.
-  (setq org-catch-invisible-edits 'error)
-  (setq org-cycle-separator-lines 2)
-  (setq org-image-actual-width t)
-  (setq org-hide-emphasis-markers t)
+  (validate-setq org-catch-invisible-edits 'error)
+  (validate-setq org-cycle-separator-lines 2)
+  (validate-setq org-image-actual-width t)
+  (validate-setq org-hide-emphasis-markers t)
   ;; All Org leading stars become invisible.
-  (setq org-hide-leading-stars t)
+  (validate-setq org-hide-leading-stars t)
   ;; Skip Org's odd indentation levels (1, 3, ...).
-  (setq org-odd-levels-only t)
+  (validate-setq org-odd-levels-only t)
   ;; Disable auto isearch within org-goto.
-  (setq org-goto-auto-isearch nil)
+  (validate-setq org-goto-auto-isearch nil)
   ;; Enable RET to follow Org links.
-  (setq org-return-follows-link t))
+  (validate-setq org-return-follows-link t))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
@@ -2932,8 +2916,8 @@ _y_outube
 
 (use-package org-bullets :ensure t
   :config
-  (setq org-bullets-bullet-list
-        '("◉" "◎" "⚫" "○" "►" "◇")))
+  (validate-setq org-bullets-bullet-list
+                 '("◉" "◎" "⚫" "○" "►" "◇")))
 
 ;; From http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/
 (defun ar/comint-clear-buffer ()
@@ -2947,14 +2931,14 @@ _y_outube
 ;; (use-package sunshine :ensure t
 ;;   :config
 ;; (when (window-system)
-;;   (setq sunshine-show-icons t))
-;; (setq sunshine-units 'metric)
-;; (setq sunshine-location "London, GB"))
+;;   (validate-setq sunshine-show-icons t))
+;; (validate-setq sunshine-units 'metric)
+;; (validate-setq sunshine-location "London, GB"))
 
 ;; Weather forecast (no login/account needed).
 (use-package wttrin :ensure t
   :config
-  (setq wttrin-default-cities '("London" "Boston"))
+  (setq wttrin-default-cities (list "London" "Boston"))
   (defalias 'ar/weather 'wttrin))
 
 ;; From https://github.com/daschwa/emacs.d
@@ -3016,9 +3000,9 @@ line instead."
   :config
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
-  (setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
+  (validate-setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (cond ((ar/osx-p)
-         (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
+         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/8018/plantuml.8018.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
         (t
          (message "Warning: Could not find plantuml.8018.jar")
@@ -3026,7 +3010,7 @@ line instead."
 
 ;; Avoid native dialogs when running graphical.
 (when (boundp 'use-dialog-box)
-  (setq use-dialog-box nil))
+  (validate-setq use-dialog-box nil))
 
 (use-package server
   :defer 2
