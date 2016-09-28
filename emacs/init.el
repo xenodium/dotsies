@@ -443,7 +443,9 @@ Values between 0 - 100."
   "Setup graphical display."
   (when (window-system)
     (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
-    (toggle-frame-fullscreen)
+    ;; Set full screen.
+    (modify-frame-parameters
+     nil '((fullscreen . fullboth) (fullscreen-restore maximized fullheight fullwidth)))
     (ar/setup-graphical-mode-line)))
 (ar/setup-graphical-display)
 
