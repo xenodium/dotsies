@@ -1855,8 +1855,6 @@ already narrowed."
 
 (use-package flycheck-flow :ensure t)
 
-(use-package jscs :ensure t)
-
 (defun ar/js2-mode-hook-function ()
   "Called when entering `js2-mode'."
   ;; Enable for requirejs.
