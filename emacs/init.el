@@ -2069,7 +2069,7 @@ already narrowed."
   ;;                              "terminal"
   ;;                              (lambda
   ;;                                nil (ansi-term shell-pop-term-shell))))
-  (validate-setq shell-pop-window-position "full")
+  (setq shell-pop-window-position "full")
   ;; Do not auto cd to working directory.
   (validate-setq shell-pop-autocd-to-working-dir nil)
   :bind (([f5] . shell-pop)))
