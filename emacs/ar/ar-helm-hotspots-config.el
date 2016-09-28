@@ -35,23 +35,15 @@
                                               (action . (("Open" . (lambda (url)
                                                                      (browse-url url)))))))
 
-(defun ar/helm-hotspots-config--blog-candidates ()
-  "Gets helm candidates for my blog."
-  (ar/helm-org-candidates "~/stuff/active/blog/index.org"
-                          "^\\* \\["))
-
-(defvar ar/helm-hotspots-config--blog-source '((name . "Blog")
-                                               (candidates . ar/helm-hotspots-config--blog-candidates)
+(defvar ar/helm-hotspots-config--blog-source `((name . "Blog")
+                                               (candidates . ,(ar/helm-org-candidates "~/stuff/active/blog/index.org"
+                                                                                      "^\\* \\["))
                                                (action . (lambda (candidate)
                                                            (ar/helm-org-goto-marker candidate)))))
 
-(defun ar/helm-hotspots-config--private-candidates ()
-  "Gets helm candidates for my blog."
-  (ar/helm-org-candidates "~/stuff/active/non-public/private.org"
-                          "^\\* \\["))
-
-(defvar ar/helm-hotspots-config--private-source '((name . "Private")
-                                                  (candidates . ar/helm-hotspots-config--private-candidates)
+(defvar ar/helm-hotspots-config--private-source `((name . "Private")
+                                                  (candidates . ,(ar/helm-org-candidates "~/stuff/active/non-public/private.org"
+                                                                                         "^\\* \\["))
                                                   (action . (lambda (candidate)
                                                               (ar/helm-org-goto-marker candidate)))))
 
