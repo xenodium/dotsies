@@ -1173,9 +1173,11 @@ Argument PROMPT to check for additional prompt."
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
 (setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
-(use-package crux
-  :ensure
-  :bind (("C-a" . crux-move-beginning-of-line)))
+;; Smarter move to beginning/end of line.
+(use-package mwim
+  :ensure t
+  :bind (("C-a" . mwim-beginning-of-code-or-line)
+         ("C-e" . mwim-end-of-code-or-line)))
 
 ;; Removing accidental use. Don't need compose-mail (yet anyway).
 (global-unset-key (kbd "C-x m"))
