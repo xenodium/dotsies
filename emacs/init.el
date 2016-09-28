@@ -632,8 +632,8 @@ Values between 0 - 100."
   (display-time) ; Align the time to right
   (validate-setq global-mode-string (remove 'display-time-string global-mode-string))
   (validate-setq mode-line-end-spaces
-        (list (propertize " " 'display '(space :align-to (- right 17)))
-              'display-time-string)))
+                 (list (propertize " " 'display '(space :align-to (- right 17)))
+                       'display-time-string)))
 
 ;; Ensure window is maximized.
 (use-package maxframe :ensure t)
@@ -642,24 +642,24 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-        '(("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
-          ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
-          ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
-          ("https://swiftweekly.github.io/feed.xml" blog Swift-key-brief)
-          ("https://hacks.mozilla.org/feed" blog Mozilla)
-          ("http://swiftnews.curated.co/issues.rss" blog Shift-News-Curated)
-          ("http://akkartik.name/feeds.xml" blog Kartik-Agaram)
-          ("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
-          ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
-          ("http://emacsredux.com/atom.xml" blog emacs-redux)
-          ("https://ghuntley.com/feed.xml" blog ghuntley)
-          ("http://planet.emacsen.org/atom.xml" blog emacs)
-          ("http://emacsist.com/rss" blog emacs)
-          ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
-          ("http://sachachua.com/blog/feed" blog sachachua)
-          ("https://news.ycombinator.com/rss" news hackernews)
-          ("http://reddit.com/r/emacs/.rss" social reddit)
-          ("http://dangrover.com/feed.xml" blog dangrover))))
+                 '(("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
+                   ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
+                   ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
+                   ("https://swiftweekly.github.io/feed.xml" blog Swift-key-brief)
+                   ("https://hacks.mozilla.org/feed" blog Mozilla)
+                   ("http://swiftnews.curated.co/issues.rss" blog Shift-News-Curated)
+                   ("http://akkartik.name/feeds.xml" blog Kartik-Agaram)
+                   ("http://feeds.feedburner.com/japaneseruleof7" blog japanese-rule-of-7)
+                   ("http://rubyronin.com/wp-feed.php" blog the-ruby-ronin)
+                   ("http://emacsredux.com/atom.xml" blog emacs-redux)
+                   ("https://ghuntley.com/feed.xml" blog ghuntley)
+                   ("http://planet.emacsen.org/atom.xml" blog emacs)
+                   ("http://emacsist.com/rss" blog emacs)
+                   ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
+                   ("http://sachachua.com/blog/feed" blog sachachua)
+                   ("https://news.ycombinator.com/rss" news hackernews)
+                   ("http://reddit.com/r/emacs/.rss" social reddit)
+                   ("http://dangrover.com/feed.xml" blog dangrover))))
 
 (use-package elfeed-goodies :ensure t :after elfeed
   :config
@@ -807,9 +807,9 @@ Values between 0 - 100."
   (interactive "P")
   (defvar ar/helm-ag--default-locaction nil)
   (validate-setq ar/helm-ag--default-locaction
-        (read-directory-name "search in: " (if arg
-                                               default-directory
-                                             ar/helm-ag--default-locaction) nil t))
+                 (read-directory-name "search in: " (if arg
+                                                        default-directory
+                                                      ar/helm-ag--default-locaction) nil t))
   (helm-do-ag ar/helm-ag--default-locaction))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
@@ -1121,13 +1121,13 @@ Argument PROMPT to check for additional prompt."
               :around
               'ar/hippie-expand-advice-fun)
   (validate-setq hippie-expand-try-functions-list '(try-expand-dabbrev
-                                           try-expand-dabbrev-visible
-                                           try-expand-dabbrev-all-buffers
-                                           try-expand-dabbrev-from-kill
-                                           try-complete-file-name-partially
-                                           try-expand-all-abbrevs
-                                           try-expand-list
-                                           try-expand-line)))
+                                                    try-expand-dabbrev-visible
+                                                    try-expand-dabbrev-all-buffers
+                                                    try-expand-dabbrev-from-kill
+                                                    try-complete-file-name-partially
+                                                    try-expand-all-abbrevs
+                                                    try-expand-list
+                                                    try-expand-line)))
 
 ;; Thank you Sacha Chua.
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
@@ -1151,7 +1151,7 @@ Argument PROMPT to check for additional prompt."
 (use-package recentf
   :config
   (validate-setq recentf-max-saved-items 200
-        recentf-max-menu-items 50)
+                 recentf-max-menu-items 50)
   (recentf-mode))
 
 ;; Don't let the cursor go into minibuffer prompt.
@@ -1833,12 +1833,12 @@ already narrowed."
   (add-hook 'after-save-hook (lambda ()
                                (ar/typescript-format-buffer)) nil t)
   (validate-setq company-backends '(company-tide
-                           (company-dabbrev-code
-                            company-gtags
-                            company-etags
-                            company-keywords)
-                           company-files
-                           company-dabbrev))
+                                    (company-dabbrev-code
+                                     company-gtags
+                                     company-etags
+                                     company-keywords)
+                                    company-files
+                                    company-dabbrev))
   (company-mode +1))
 
 (use-package tide :ensure t
@@ -2080,11 +2080,11 @@ already narrowed."
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
   (validate-setq company-backends '(company-files
-                           (company-dabbrev-code
-                            company-gtags
-                            company-etags
-                            company-keywords)
-                           company-dabbrev)))
+                                    (company-dabbrev-code
+                                     company-gtags
+                                     company-etags
+                                     company-keywords)
+                                    company-dabbrev)))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
@@ -2197,13 +2197,13 @@ With a prefix argument N, (un)comment that many sexps."
         (end (line-end-position)))
     (when (region-active-p)
       (validate-setq start (save-excursion
-                    (goto-char (region-beginning))
-                    (beginning-of-line)
-                    (point))
-            end (save-excursion
-                  (goto-char (region-end))
-                  (end-of-line)
-                  (point))))
+                             (goto-char (region-beginning))
+                             (beginning-of-line)
+                             (point))
+                     end (save-excursion
+                           (goto-char (region-end))
+                           (end-of-line)
+                           (point))))
     (comment-or-uncomment-region start end)))
 (bind-key "M-;" #'ar/comment-dwim)
 
@@ -2311,8 +2311,8 @@ With a prefix argument N, (un)comment that many sexps."
       (while (re-search-forward goto-address-url-regexp
                                 nil t)
         (validate-setq url
-              (buffer-substring-no-properties (match-beginning 0)
-                                              (match-end 0)))
+                       (buffer-substring-no-properties (match-beginning 0)
+                                                       (match-end 0)))
         (add-to-list 'helm-candidates
                      (cons url
                            url)))
