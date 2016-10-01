@@ -155,6 +155,7 @@
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 6)
     ("nattural" "natural" nil 0)
+    ("overriden" "overridden" nil 0)
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
@@ -168,7 +169,7 @@
     ("tracel" "travel" nil 0)
     ("trying" "trying" nil 3)
     ("typocal" "typical" nil 0)
-    ("update" "update" nil 1)
+    ("update" "update" nil 2)
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
     ("upfront" "front" nil 0)
@@ -368,6 +369,8 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'suggest-mode-abbrev-table '())
 
 (define-abbrev-table 'sunshine-mode-abbrev-table '())
 
