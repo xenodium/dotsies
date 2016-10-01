@@ -2799,8 +2799,8 @@ _y_outube
   (defadvice save-buffers-kill-emacs
       (around no-query-kill-emacs activate)
     "Prevent \"Active processes exist\" query on exit."
-    (flet ((process-list ())) ad-do-it))
-  :commands (flet))
+    (cl-letf (((symbol-function #'process-list) (lambda ())))
+      ad-do-it)))
 
 (use-package define-word :ensure t
   :commands (define-word-at-point define-word))
