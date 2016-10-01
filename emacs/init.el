@@ -670,6 +670,9 @@ Values between 0 - 100."
 ;; Suggests elisp methods based on inputs and outputs.
 (use-package suggest :ensure t)
 
+;; Semantic code search for emacs lisp.
+(use-package elisp-refs :ensure t)
+
 ;; Start off with elfeed.
 
 (use-package bind-key :ensure t)
