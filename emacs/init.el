@@ -1682,7 +1682,7 @@ already narrowed."
   (setq-local company-backends '(company-go))
   (company-mode)
   (go-eldoc-setup)
-  (validate-setq tab-width 2 indent-tabs-mode 1)
+  (validate-setq tab-width 2 indent-tabs-mode t)
   (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package company-go :ensure t
