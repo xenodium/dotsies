@@ -20,8 +20,11 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
-;; Increase memory threshold for garbage collection.
-(setq gc-cons-threshold 20000000)
+;; Put off GC until 500MB of allocation or 5s of idle time.
+(setq gc-cons-threshold (* 511 1024 1024))
+(setq gc-cons-percentage 0.5)
+(run-with-idle-timer 5 t #'garbage-collect)
+(setq garbage-collection-messages t)
 
 ;; From https://github.com/daschwa/emacs.d
 ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
