@@ -2503,7 +2503,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 ;; Ensure clipboard makes it into kill ring even if killing other text.
 (setq save-interprogram-paste-before-kill t)
 
+(use-package region-bindings-mode :ensure
+  :config
+  (region-bindings-mode-enable))
+
 (use-package multiple-cursors :ensure t
+  :after region-bindings-mode
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-like-this)
@@ -2512,7 +2517,21 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
          ("M-!" . mc/unmark-next-like-this)
          ("M-2" . mc/mark-previous-like-this)
          ("M-@" . mc/unmark-previous-like-this)
-         ("M-<mouse-1>" . mc/add-cursor-on-click)))
+         ("M-<mouse-1>" . mc/add-cursor-on-click))
+  :bind (:map region-bindings-mode-map
+              ("a" . mc/mark-all-like-this)
+              ("p" . mc/mark-previous-like-this)
+              ("n" . mc/mark-next-like-this)
+              ("P" . mc/unmark-previous-like-this)
+              ("N" . mc/unmark-next-like-this)
+              ("[" . mc/cycle-backward)
+              ("]" . mc/cycle-forward)
+              ("m" . mc/mark-more-like-this-extended)
+              ("h" . mc-hide-unmatched-lines-mode)
+              ("\\" . mc/vertical-align-with-space)
+              ("#" . mc/insert-numbers) ; use num prefix to set the starting number
+              ("^" . mc/edit-beginnings-of-lines)
+              ("$" . mc/edit-ends-of-lines)))
 
 (use-package origami :ensure t
   :after key-chord
