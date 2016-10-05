@@ -175,7 +175,7 @@
           "\\.svn$" "\\.CVS$"
           "\\._darcs$" "\\.la$"
           "\\.o$" "\\.i$"))
-  (validate-setq helm-ff-file-name-history-use-recentf t) 
+  (validate-setq helm-ff-file-name-history-use-recentf t)
   (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
   (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
   (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
