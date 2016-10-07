@@ -2525,8 +2525,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
               ("n" . mc/mark-next-like-this)
               ("P" . mc/unmark-previous-like-this)
               ("N" . mc/unmark-next-like-this)
-              ("[" . mc/cycle-backward)
-              ("]" . mc/cycle-forward)
               ("m" . mc/mark-more-like-this-extended)
               ("h" . mc-hide-unmatched-lines-mode)
               ("\\" . mc/vertical-align-with-space)
