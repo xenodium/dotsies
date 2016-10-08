@@ -11,7 +11,7 @@
 (require 'ar-org)
 (require 'helm-buffers)
 
-(defun ar/helm-hotspots-config--local-source ()
+(defvar ar/helm-hotspots-config--local-source
   '((name . "Local")
     (candidates . (("Active" . ar/dired-split-active-to-active)
                    ("Blog" . "~/stuff/active/blog/index.org")
@@ -29,7 +29,7 @@
                                (funcall item)
                              (ar/org-open-file-special-path item))))))))
 
-(defun ar/helm-hotspots-config--web-source ()
+(defvar ar/helm-hotspots-config--web-source
   '((name . "Web")
     (candidates . (("Github" . "https://github.com/xenodium")
                    ("Pinboard" . "https://www.pinterest.com/alvaro1192/wheretogo")
@@ -37,19 +37,19 @@
     (action . (("Open" . (lambda (url)
                            (browse-url url)))))))
 
-(defun ar/helm-hotspots-config--blog-source ()
+(defvar ar/helm-hotspots-config--blog-source
   `((name . "Blog")
     (candidates . ,(ar/helm-org-candidates "~/stuff/active/blog/index.org"
                                            "^\\* \\["))
     (action . (lambda (candidate)
                 (ar/helm-org-goto-marker candidate)))))
 
-(defun ar/helm-hotspots-config--private-source
-    `((name . "Private")
-      (candidates . ,(ar/helm-org-candidates "~/stuff/active/non-public/private.org"
-                                             "^\\* \\["))
-      (action . (lambda (candidate)
-                  (ar/helm-org-goto-marker candidate)))))
+(defvar ar/helm-hotspots-config--private-source
+  `((name . "Private")
+    (candidates . ,(ar/helm-org-candidates "~/stuff/active/non-public/private.org"
+                                           "^\\* \\["))
+    (action . (lambda (candidate)
+                (ar/helm-org-goto-marker candidate)))))
 ;; Append with:
 ;; (ar/alist-append-to-value ar/helm-hotspots-config--web-source
 ;;                           'candidates
