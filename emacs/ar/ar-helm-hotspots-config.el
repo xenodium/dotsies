@@ -55,19 +55,21 @@
 ;;                           'candidates
 ;;                           '("Google Play" . "https://play.google.com/music/listen?u=my@gmail.com"))
 
+(defvar ar/helm-hotspots-config--sources '(helm-source-buffers-list
+                                           ar/helm-hotspots-config--local-source
+                                           ar/helm-hotspots-config--web-source
+                                           ar/helm-hotspots-config--blog-source
+                                           ar/helm-hotspots-config--private-source
+                                           helm-source-ido-virtual-buffers
+                                           helm-source-buffer-not-found))
+
 (defun ar/helm-hotspots ()
   "Show my hotspots."
   (interactive)
   (unless helm-source-buffers-list
     (setq helm-source-buffers-list
           (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources '(helm-source-buffers-list
-                   ar/helm-hotspots-config--local-source
-                   ar/helm-hotspots-config--web-source
-                   ar/helm-hotspots-config--blog-source
-                   ar/helm-hotspots-config--private-source
-                   helm-source-ido-virtual-buffers
-                   helm-source-buffer-not-found)
+  (helm :sources ar/helm-hotspots-config--sources
         :buffer "*helm buffers*"
         :keymap helm-buffer-map
         :truncate-lines t))
