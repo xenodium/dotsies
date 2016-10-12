@@ -38,6 +38,15 @@
   (ar/git-pull-repo-at-path "~/stuff/active/blog")
   (ar/git-pull-repo-at-path "~/stuff/active/non-public"))
 
+(defun ar/git-current-branch ()
+  "Get the current git branch."
+  (let ((branch-name
+         (nth 0 (split-string (shell-command-to-string
+                               (format "cd %s && git branch | sed -n -e 's/^\\* \\(.*\\)/\\1/p'"
+                                       (file-name-directory (buffer-file-name))))))))
+    (assert (length branch-name) nil "Branch not found")
+    branch-name))
+
 (provide 'ar-git)
 
 ;;; ar-git.el ends here
