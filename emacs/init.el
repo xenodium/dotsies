@@ -2990,19 +2990,27 @@ line instead."
      (message "Copied line")
      (list (line-beginning-position) (line-beginning-position 2)))))
 
-;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
-(defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
-  "Enable isearch to start with current selection."
-  (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-      (progn
-        (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
-        (deactivate-mark)
-        ad-do-it
-        (if (not forward)
-            (isearch-repeat-backward)
-          (goto-char (mark))
-          (isearch-repeat-forward)))
-    ad-do-it))
+(use-package char-fold)
+
+(use-package isearch
+  :after char-fold
+  :preface
+  (provide 'isearch)
+  :config
+  (setq search-default-mode #'char-fold-to-regexp)
+  ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
+  (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+    "Enable isearch to start with current selection."
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (progn
+          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+          (deactivate-mark)
+          ad-do-it
+          (if (not forward)
+              (isearch-repeat-backward)
+            (goto-char (mark))
+            (isearch-repeat-forward)))
+      ad-do-it)))
 
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
