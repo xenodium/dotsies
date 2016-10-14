@@ -505,7 +505,7 @@ Values between 0 - 100."
 (use-package macrostep :ensure t)
 
 (use-package dired
-  :after (discover fullframe)
+  :after (discover fullframe helm)
   :commands dired-mode
   :config
   ;; Adding h to switches to use units in size.
@@ -526,7 +526,12 @@ Values between 0 - 100."
 
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  :bind (:map dired-mode-map
+              ("j" . dired-next-line)
+              ("k" . dired-previous-line)
+              ("f" . helm-find-files)
+              ("i" . dired-hide-details-mode)))
 
 (use-package peep-dired
   :ensure t
