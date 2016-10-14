@@ -508,6 +508,8 @@ Values between 0 - 100."
   :after (discover fullframe)
   :commands dired-mode
   :config
+  ;; Adding h to switches to use units in size.
+  (validate-setq dired-listing-switches "-alh")
   ;; Use RET instead of "a" in dired.
   (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
   ;; Use ^ for moving to parent dir.
