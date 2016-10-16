@@ -1677,6 +1677,8 @@ already narrowed."
 
 (use-package go-snippets :ensure t)
 
+(use-package godoctor :ensure t)
+
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
 ;; go get -u github.com/nsf/gocode
