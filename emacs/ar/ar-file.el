@@ -210,6 +210,11 @@ Append `ar/file-build-file-names' to search for other file names."
   (assert (file-exists-p file-path) nil (format "File not found: %s" file-path))
   file-path)
 
+(defun ar/file-find-alternate-parent-dir ()
+  "Open parent "
+  (interactive)
+  (find-alternate-file ".."))
+
 (provide 'ar-file)
 
 ;;; ar-file.el ends here
