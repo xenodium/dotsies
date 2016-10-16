@@ -92,6 +92,9 @@
   (ar/set-font (completing-read "Select font:"
                                 (font-family-list))))
 
+;; Always use a box cursor.
+(setq-default cursor-type 'box)
+
 (ar/set-font "Source Code Pro")
 
 ;; Additional theme overrides
