@@ -31,6 +31,18 @@
   (ar/dired-split-directories "~/stuff/active"
                               "~/stuff/active"))
 
+(defun ar/dired-get-size ()
+  "Show total for selected files."
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (with-temp-buffer
+      (apply 'call-process "/usr/bin/du" nil t nil "-csh" files)
+      (message
+       "Total size: %s"
+       (progn
+         (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
+         (match-string 1))))))
+
 (provide 'ar-dired)
 
 ;;; ar-dired.el ends here

@@ -513,12 +513,6 @@ Values between 0 - 100."
   :config
   ;; Adding h to switches to use units in size.
   (validate-setq dired-listing-switches "-alh")
-  ;; Use RET instead of "a" in dired.
-  (bind-key "RET" #'dired-find-alternate-file dired-mode-map)
-  ;; Use ^ for moving to parent dir.
-  (bind-key "^" (lambda ()
-                  (interactive)
-                  (find-alternate-file "..")) dired-mode-map)
   (fullframe dired quit-window)
   ;; Try to guess the target directory for operations.
   (validate-setq dired-dwim-target t)
@@ -526,10 +520,16 @@ Values between 0 - 100."
   (put 'dired-find-alternate-file 'disabled nil)
   ;; Automatically refresh dired buffers when contents changes.
   (validate-setq dired-auto-revert-buffer t)
-
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  :bind (:map dired-mode-map
+              ;; Go to parent directory.
+              ("^" . ar/file-find-alternate-parent-dir)
+              ("RET" . dired-find-alternate-file)
+              ("P" . peep-dired)
+              ("f" . helm-find-files)
+              ("i" . dired-hide-details-mode)))
 
 (use-package peep-dired
   :ensure t
