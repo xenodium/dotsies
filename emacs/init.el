@@ -2079,6 +2079,15 @@ already narrowed."
   :bind ("C-x k" . kill-this-buffer))
 
 (use-package shell-pop :ensure t
+  :preface
+  (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
+    "Shell pop with arg to cd to working dir. Else use existing location."
+    (interactive "P")
+    ;; shell-pop-autocd-to-working-dir is defined in shell-pop.el.
+    ;; Using lexical binding to override.
+    (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
+        (shell-pop-out)
+      (shell-pop-up shell-pop-last-shell-buffer-index)))
   :config
   ;; Customize shell-pop.
   (validate-setq shell-pop-term-shell "/bin/bash")
@@ -2087,10 +2096,8 @@ already narrowed."
   ;;                              "terminal"
   ;;                              (lambda
   ;;                                nil (ansi-term shell-pop-term-shell))))
-  (setq shell-pop-window-position "full")
-  ;; Do not auto cd to working directory.
-  (validate-setq shell-pop-autocd-to-working-dir nil)
-  :bind (([f5] . shell-pop)))
+  (validate-setq shell-pop-window-position "full")
+  :bind (([f5] . ar/shell-pop)))
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
