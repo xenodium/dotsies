@@ -1732,6 +1732,8 @@ already narrowed."
 ;; M-. elisp navigation.
 (use-package elisp-slime-nav :ensure t)
 
+(use-package package-lint :ensure t)
+
 ;; Edit Emacs variables/state inline.
 (use-package refine :ensure t)
 
@@ -2081,7 +2083,7 @@ already narrowed."
   :bind ("C-x k" . kill-this-buffer))
 
 (use-package shell-pop :ensure t
-  :preface
+  :config
   (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
     "Shell pop with arg to cd to working dir. Else use existing location."
     (interactive "P")
@@ -2090,7 +2092,6 @@ already narrowed."
     (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
         (shell-pop-out)
       (shell-pop-up shell-pop-last-shell-buffer-index)))
-  :config
   ;; Customize shell-pop.
   (validate-setq shell-pop-term-shell "/bin/bash")
   ;; Trying shell out. Disabling ansi-term for now.
