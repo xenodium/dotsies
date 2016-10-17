@@ -1320,7 +1320,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package clang-format :ensure t)
 
 ;; Disabling on Emacs 25 for the time being.
-;; 
+;;
 ;; (defun ar/swift-mode-hook-function ()
 ;;   "Called when entering `swift-mode'."
 ;;   (setq-local company-backends '(company-sourcekit)))
@@ -2174,7 +2174,7 @@ already narrowed."
                   (>= (point) beg))
         (skip-chars-backward (rx (syntax expression-prefix)))
         (validate-setq p (point-marker)))
-      ;; Re-comment everything before it. 
+      ;; Re-comment everything before it.
       (ignore-errors
         (comment-region beg p))
       ;; And everything after it.
@@ -2898,7 +2898,7 @@ _y_outube
 (use-package org
   :ensure t
   :config
-  (add-hook 'org-mode-hook #'ar/org-mode-hook-function) 
+  (add-hook 'org-mode-hook #'ar/org-mode-hook-function)
   (setq org-todo-keywords
         '((sequence
            "TODO"
