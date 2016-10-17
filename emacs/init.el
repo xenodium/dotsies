@@ -2995,7 +2995,7 @@ line instead."
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-beginning-position 2)))))
+     (list (line-beginning-position) (line-end-position)))))
 
 ;; From https://github.com/daschwa/emacs.d
 (defadvice kill-ring-save (before slick-copy activate compile)
@@ -3005,7 +3005,18 @@ line instead."
    (if mark-active
        (list (region-beginning) (region-end))
      (message "Copied line")
-     (list (line-beginning-position) (line-beginning-position 2)))))
+     (list (line-beginning-position) (line-end-position)))))
+
+(defun ar/yank-line-below ()
+  "Yank to link below."
+  (interactive)
+  (move-end-of-line nil)
+  (newline)
+  (yank))
+
+(use-package simple
+  :config
+  :bind (("M-C-y" . ar/yank-line-below)))
 
 (use-package char-fold)
 
