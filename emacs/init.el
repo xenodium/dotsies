@@ -1583,6 +1583,16 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package org-cliplink :ensure t)
 
+;;   __ _      _     _
+;;  / _(_)__ _| |___| |_
+;; |  _| / _` | / -_)  _|
+;; |_| |_\__, |_\___|\__|
+;;       |___/
+;; Install on Mac with: brew install figlet. 
+(use-package figlet :ensure t
+  :config
+  (validate-setq figlet-default-font "small"))
+
 (use-package ob
   :config
   (validate-setq org-export-babel-evaluate nil)
