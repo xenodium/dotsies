@@ -507,6 +507,10 @@ Values between 0 - 100."
 ;; Peak into macros by expanding them inline.
 (use-package macrostep :ensure t)
 
+(defun ar/dired-mark-all ()
+  (interactive)
+  (dired-mark-files-regexp ""))
+
 (use-package dired
   :after (discover fullframe helm)
   :commands dired-mode
@@ -531,7 +535,8 @@ Values between 0 - 100."
               ("RET" . dired-find-alternate-file)
               ("P" . peep-dired)
               ("f" . helm-find-files)
-              ("i" . dired-hide-details-mode)))
+              ("i" . dired-hide-details-mode)
+              ("M" . ar/dired-mark-all)))
 
 (use-package peep-dired
   :ensure t
@@ -1260,7 +1265,7 @@ With a prefix ARG open line above the current line."
 (use-package dired-narrow
   :ensure t
   :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
+              ("/" . dired-narrow-fuzzy)))
 
 ;; Add git state highlighting to dired (a la K for zsh).
 (use-package dired-k
