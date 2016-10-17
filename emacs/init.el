@@ -1344,7 +1344,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq company-show-numbers t)
   (validate-setq company-minimum-prefix-length 2)
   (validate-setq company-tooltip-align-annotations t)
-  (global-company-mode))
+  (global-company-mode)
+  :bind
+  (:map company-active-map
+        ("C-M-/" . company-filter-candidates)))
 
 (use-package company-shell :ensure t)
 
