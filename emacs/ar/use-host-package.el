@@ -41,9 +41,7 @@
                                         use-host-package-install-cmd
                                         (shell-quote-argument host-package-name))))))
     (message "Installing %s..." host-package-name)
-    (assert (= 0 (call-process-shell-command (format "%s %s"
-                                                     use-host-package-install-cmd
-                                                     (shell-quote-argument host-package-name))
+    (assert (= 0 (call-process-shell-command install-command
                                              nil (use-host-package--install-buffer)))
             nil (format "Unable to install %s" host-package-name))
     (message "Installed %s" host-package-name)))
