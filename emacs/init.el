@@ -3022,7 +3022,7 @@ line instead."
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position)))))
+     (list (line-beginning-position) (line-beginning-position 2)))))
 
 ;; From https://github.com/daschwa/emacs.d
 (defadvice kill-ring-save (before slick-copy activate compile)
