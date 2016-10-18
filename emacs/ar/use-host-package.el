@@ -55,10 +55,9 @@
          (executable-find host-package-name))))
 
 (defun use-host-package--install-buffer ()
-  (let ((install-buffer-name "*use-host-package install*"))
-    (with-current-buffer install-buffer-name
-      (erase-buffer)
-      (get-buffer install-buffer-name))))
+  (with-current-buffer (get-buffer-create "*use-host-package install*")
+    (erase-buffer)
+    (current-buffer)))
 
 (ert-deftest use-host-package--installed-p-test ()
   (should (use-host-package--installed-p "ls"))
