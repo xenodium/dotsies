@@ -246,6 +246,7 @@
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (validate-setq dabbrev-case-fold-search nil))
+
 (use-package ar-auto-correct
   :after (abbrev ispell))
 
@@ -324,6 +325,13 @@
 (use-package ar-typescript)
 (use-package ar-font)
 (use-package ar-compile)
+
+(use-package use-host-package
+  :config
+  (validate-setq use-host-package-install-cmd
+                 (if (ar/osx-p)
+                     "brew install"
+                   "apt-get install")))
 
 (use-package last-change-jump
   :demand ;; No lazy loading. We want global mode started ASAP.
@@ -1586,14 +1594,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package org-cliplink :ensure t)
 
+;; To print ASCII art from text like:
 ;;   __ _      _     _
 ;;  / _(_)__ _| |___| |_
 ;; |  _| / _` | / -_)  _|
 ;; |_| |_\__, |_\___|\__|
 ;;       |___/
-;; Install on Mac with: brew install figlet. 
 (use-package figlet :ensure t
   :config
+  (use-host-package :name "figlet")
   (validate-setq figlet-default-font "small"))
 
 (use-package ob
