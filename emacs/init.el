@@ -3015,14 +3015,25 @@ _y_outube
   (setq wttrin-default-cities (list "London" "Boston"))
   (defalias 'ar/weather 'wttrin))
 
-;; From https://github.com/daschwa/emacs.d
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single
-line instead."
-  (interactive
-   (if mark-active
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-beginning-position 2)))))
+(defun ar/kill-region-advice-fun (orig-fun &rest r)
+  "Advice function around `kill-region' (ORIG-FUN and R)."
+  (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
+          mark-active)
+      (apply orig-fun r)
+    ;; Kill entire line.
+    (let ((offset (- (point)
+                     (line-beginning-position))))
+      (apply orig-fun (list (line-beginning-position)
+                            (line-end-position)
+                            nil))
+      (delete-char 1)
+      (forward-char (min offset
+                         (- (line-end-position)
+                            (line-beginning-position)))))))
+
+(advice-add 'kill-region
+            :around
+            'ar/kill-region-advice-fun)
 
 ;; From https://github.com/daschwa/emacs.d
 (defadvice kill-ring-save (before slick-copy activate compile)
@@ -3035,11 +3046,12 @@ line instead."
      (list (line-beginning-position) (line-end-position)))))
 
 (defun ar/yank-line-below ()
-  "Yank to link below."
+  "Yank to line below."
   (interactive)
-  (move-end-of-line nil)
-  (newline)
-  (yank))
+  (save-excursion
+    (move-end-of-line nil)
+    (newline)
+    (yank)))
 
 (use-package simple
   :config
