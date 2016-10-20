@@ -1603,7 +1603,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package figlet :ensure t
   :config
   (use-host-package :name "figlet")
-  (validate-setq figlet-default-font "small"))
+  (validate-setq figlet-default-font "small")
+  (validate-setq figlet-options (list "-w 160")))
 
 (use-package ob
   :config
