@@ -3021,7 +3021,8 @@ _y_outube
           mark-active)
       (apply orig-fun r)
     ;; Kill entire line.
-    (let ((offset (- (point)
+    (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
+          (offset (- (point)
                      (line-beginning-position))))
       (apply orig-fun (list (line-beginning-position)
                             (line-end-position)
