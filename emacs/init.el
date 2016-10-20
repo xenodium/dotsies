@@ -459,8 +459,7 @@ Values between 0 - 100."
   (when (window-system)
     (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
     ;; Set full screen.
-    (modify-frame-parameters
-     nil '((fullscreen . fullboth) (fullscreen-restore maximized fullheight fullwidth)))
+    (set-frame-parameter nil 'fullscreen 'fullboth)
     (ar/setup-graphical-mode-line)))
 (ar/setup-graphical-display)
 
