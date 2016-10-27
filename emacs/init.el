@@ -1705,6 +1705,8 @@ already narrowed."
 
 (use-package gotest :ensure t)
 
+(use-package go-rename :ensure t)
+
 (use-package go-snippets :ensure t)
 
 (use-package godoctor :ensure t)
