@@ -38,6 +38,13 @@
 (require 'exec-path-from-shell)
 (exec-path-from-shell-initialize)
 
+(defun ar/append-exec-path ()
+  "Browse to a directory and add its path to `exec-path'."
+  (interactive)
+  (setq exec-path
+        (append (list (read-directory-name "Add to PATH: ")) exec-path))
+  (print exec-path))
+
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
 
