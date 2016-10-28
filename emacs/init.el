@@ -584,17 +584,17 @@ Values between 0 - 100."
   (use-package zone
     :config
     (zone-when-idle 120)
-    (validate-setq zone-programs
-                   [zone-pgm-whack-chars
-                    zone-pgm-rotate
-                    zone-pgm-drip
-                    zone-pgm-martini-swan-dive]))
+    ;; (validate-setq zone-programs
+    ;;                [zone-pgm-whack-chars
+    ;;                 zone-pgm-rotate
+    ;;                 zone-pgm-drip
+    ;;                 zone-pgm-martini-swan-dive])
+    (validate-setq zone-programs []))
 
   (use-package zone-words
     :after zone
     :config
-    (validate-setq zone-programs
-                   [zone-words]))
+    (validate-setq zone-programs (vconcat [zone-nyan] zone-programs)))
 
   ;; ;; Locomotives zone.
   ;; (use-package zone-sl :ensure t
@@ -614,11 +614,11 @@ Values between 0 - 100."
     :after zone)
 
   ;; A Nyan zone. Well, just because.
-  ;; (use-package zone-nyan :ensure t
-  ;;   :after zone
-  ;;   :config
-  ;;   (when (window-system)
-  ;;     (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
+  (use-package zone-nyan :ensure t
+    :after zone
+    :config
+    (when (window-system)
+      (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
@@ -1257,7 +1257,14 @@ With a prefix ARG open line above the current line."
       (move-end-of-line nil)
       (newline-and-indent))))
 
-(bind-key "C-o" #'ar/smart-open-line)
+(defun ar/open-line ()
+  "Insert an empty line after current line.  Keep existing position."
+  (interactive)
+  (save-mark-and-excursion
+   (end-of-line)
+   (newline)))
+
+(bind-key "C-o" #'ar/open-line)
 
 ;; From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
 (defun ar/join-line-or-lines-in-region ()
