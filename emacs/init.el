@@ -762,14 +762,10 @@ Values between 0 - 100."
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
-;; Setting to nil on Emacs 25 for now.
 ;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
 ;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
-(setq auto-revert-check-vc-info nil)
-;; Setting to nil on Emacs 25 for now.
-;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
-;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
-(setq vc-handled-backends nil)
+(setq auto-revert-check-vc-info t)
+(setq vc-handled-backends '(Git))
 
 (use-package expand-region :ensure t
   :bind ("C-c w" . er/expand-region))
@@ -1053,7 +1049,9 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Highlights current line.
 ;; Disabling while I try beacon-mode instead.
-;;(use-package hl-line :ensure t)
+(use-package hl-line :ensure t
+  :config
+  (global-hl-line-mode t))
 
 ;; Momentarily highlights cursor on scrolling events.
 (use-package beacon :ensure t
@@ -1719,17 +1717,21 @@ already narrowed."
 
 (use-package gotest :ensure t)
 
+;; go get -u golang.org/x/tools/cmd/gorename
 (use-package go-rename :ensure t)
 
-(use-package go-snippets :ensure t)
+(use-package go-snippets :ensure t
+  :config
+  (go-snippets-initialize))
 
 (use-package godoctor :ensure t)
 
 (use-package go-mode :ensure t)
 ;; Requires gocode daemon. Install with:
+;; go get -u golang.org/x/tools/cmd/...
 ;; go get -u github.com/nsf/gocode
 ;; go get -u github.com/rogpeppe/godef
-;; go get -u code.google.com/p/go.tools/cmd/goimports
+;; go get -u golang.org/x/tools/cmd/goimports
 ;; Useful info at:
 ;; From http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
 ;; From http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
@@ -1737,6 +1739,7 @@ already narrowed."
 (defun ar/go-mode-hook-function ()
   "Called when entering `go-mode'."
   (helm-dash-activate-docset "Go")
+  (setq gofmt-command "goimports")
   (setq-local company-backends '(company-go))
   (company-mode)
   (go-eldoc-setup)
@@ -1747,6 +1750,7 @@ already narrowed."
   :config
   (add-hook 'go-mode-hook #'ar/go-mode-hook-function))
 
+;; go get -u github.com/golang/lint/golint
 (use-package golint :ensure t)
 
 ;; From http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss
