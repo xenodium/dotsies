@@ -1729,7 +1729,10 @@ already narrowed."
 
 (use-package godoctor :ensure t)
 
-(use-package go-mode :ensure t)
+(use-package go-mode :ensure t
+  :bind
+  (:map go-mode-map
+        ("M-." . godef-jump)))
 ;; Requires gocode daemon. Install with:
 ;; go get -u golang.org/x/tools/cmd/...
 ;; go get -u github.com/nsf/gocode
