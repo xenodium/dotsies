@@ -1003,7 +1003,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
                       :foreground "yellow")
-  (validate-setq highlight-symbol-idle-delay 0)
+  (validate-setq highlight-symbol-idle-delay 0.2)
   (validate-setq highlight-symbol-on-navigation-p t))
 
 ;; Disabling in favor of highlight-symbol.
