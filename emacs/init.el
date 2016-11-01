@@ -604,7 +604,7 @@ Values between 0 - 100."
   (use-package zone-words
     :after zone
     :config
-    (validate-setq zone-programs (vconcat [zone-nyan] zone-programs)))
+    (validate-setq zone-programs (vconcat [zone-words] zone-programs)))
 
   ;; ;; Locomotives zone.
   ;; (use-package zone-sl :ensure t
