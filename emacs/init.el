@@ -310,6 +310,7 @@
 (use-package ar-ping)
 (use-package ar-shell
   :after (cl comint))
+(use-package ar-sudo)
 (use-package ar-url
   :after (ar-buffer ar-input enlive goto-addr)
   :commands (ar/url-view-links-at))
