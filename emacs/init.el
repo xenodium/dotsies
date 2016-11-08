@@ -223,6 +223,9 @@
   (require 'smartparens-html)
   (require 'smartparens-python)
   (smartparens-global-strict-mode +1)
+  ;; I prefer keeping C-w to DWIM kill, provided by
+  ;; `ar/kill-region-advice-fun'. Removing remap.
+  (define-key smartparens-strict-mode-map [remap kill-region] nil)
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
