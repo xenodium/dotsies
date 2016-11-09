@@ -229,7 +229,8 @@
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
-        ("C-c <left>" . sp-forward-barf-sexp)))
+        ("C-c <left>" . sp-forward-barf-sexp)
+        ("C-l" . sp-rewrap-sexp)))
 
 (defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
   "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
