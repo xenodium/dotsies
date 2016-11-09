@@ -226,6 +226,18 @@
   ;; I prefer keeping C-w to DWIM kill, provided by
   ;; `ar/kill-region-advice-fun'. Removing remap.
   (define-key smartparens-strict-mode-map [remap kill-region] nil)
+
+  (defun ar/smartparens-wrap-square-bracket (arg)
+    "[] equivalent of `paredit-wrap-round'."
+    (interactive "P")
+    (save-excursion
+      (unless (sp-point-in-symbol)
+        (sp-previous-sexp))
+      (sp-wrap-with-pair "["))
+    (insert " "))
+
+  (define-key smartparens-mode-map (kbd "M-[") #'ar/smartparens-wrap-square-bracket)
+
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
