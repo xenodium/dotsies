@@ -232,7 +232,7 @@
     (interactive "P")
     (save-excursion
       (unless (sp-point-in-symbol)
-        (sp-previous-sexp))
+        (backward-char))
       (sp-wrap-with-pair "["))
     (insert " "))
 
