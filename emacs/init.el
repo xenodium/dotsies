@@ -1927,6 +1927,8 @@ already narrowed."
 
 (use-package nodejs-repl :ensure t)
 
+(use-package js-import :ensure t)
+
 (use-package jade :ensure t)
 
 (defun ar/setup-tide-mode ()
