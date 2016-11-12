@@ -7,7 +7,6 @@
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
-(when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
@@ -1820,6 +1819,19 @@ already narrowed."
     (dolist (hook-function hook-functions)
       (add-hook hook hook-function))))
 
+;; Display informaiton about function or variable in minibuffer.
+(use-package eldoc
+  :after pos-tip
+  :config
+  ;; https://www.topbug.net/blog/2016/11/03/emacs-display-function-or-variable-information-near-point-cursor
+  (defun ar/eldoc-display-message (format-string &rest args)
+    "Display eldoc message near point as well as minibuffer."
+    (when format-string
+      (pos-tip-show (apply 'format format-string args))
+      (funcall 'eldoc-minibuffer-message format-string args)))
+
+  (validate-setq eldoc-message-function #'ar/eldoc-display-message))
+
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (bind-key "RET" 'comment-indent-new-line emacs-lisp-mode-map)
@@ -2564,6 +2576,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                  '(save idle-change mode-enabled)
                  flycheck-idle-change-delay 0.8)
   (add-hook 'after-init-hook #'global-flycheck-mode))
+
+(use-package pos-tip :ensure t
+  :config
+  (when (fboundp 'tooltip-mode) (tooltip-mode 1)))
 
 (use-package flycheck-pos-tip :ensure t
   :after flycheck
