@@ -1155,12 +1155,12 @@ Argument PROMPT to check for additional prompt."
 
 (setq css-indent-offset 2)
 
-(use-package markdown-mode+ :ensure t)
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(use-package markdown-mode :ensure t
+  :mode (("\\.text\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode)))
+(use-package markdown-mode+ :ensure t
+  :after markdown-mode)
 
 (setq display-time-world-list '(("Europe/Paris" "Paris")
                                 ("Europe/London" "London")
@@ -1749,8 +1749,8 @@ already narrowed."
   (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc")
   (validate-setq objc-font-lock-background-face nil))
 
-(use-package dummy-h-mode :ensure t)
-(add-to-list 'auto-mode-alist '("\\.h\\'" . dummy-h-mode))
+(use-package dummy-h-mode :ensure t
+  :mode(("\\.h\\'" . dummy-h-mode)))
 
 (use-package go-eldoc :ensure t
   :commands go-eldoc-setup)
@@ -1978,12 +1978,12 @@ already narrowed."
 (use-package tide :ensure t
   :after web-mode
   :config
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook 'js2-mode-hook #'ar/setup-tide-mode)
   (add-hook 'web-mode-hook
             (lambda ()
               (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                (ar/setup-tide-mode)))))
+                (ar/setup-tide-mode))))
+  :mode (("\\.tsx\\'" . web-mode)))
 
 (use-package company-flow :ensure t)
 
@@ -2018,9 +2018,9 @@ already narrowed."
 (use-package requirejs :ensure t)
 
 (use-package rjsx-mode :ensure t
+  :mode (("\\.js\\'" . rjsx-mode)
+         ("\\.jsx\\'" . rjsx-mode))
   :config
-  (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 ;; Disabling in favor of rjsx-mode.
