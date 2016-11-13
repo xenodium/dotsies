@@ -196,12 +196,22 @@
   (bind-key "M-p" #'helm-previous-source helm-map)
   (bind-key "M-n" #'helm-next-source helm-map)
   (helm-mode 1)
+
+  (defun ar/helm-keyboard-quit-dwim (&optional arg)
+    "First time clear miniuffer. Quit thereafter."
+    (interactive "P")
+    (if (> (length (minibuffer-contents)) 0)
+        (call-interactively 'helm-delete-minibuffer-contents)
+      (helm-keyboard-quit)))
+
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
          ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
          ("C-h a" . helm-apropos)
-         ("C-h y" . helm-dash-at-point)))
+         ("C-h y" . helm-dash-at-point)
+         :map helm-map
+         ("C-g" . ar/helm-keyboard-quit-dwim)))
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
@@ -1208,6 +1218,17 @@ Argument PROMPT to check for additional prompt."
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
 (setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
+;; Not ready for consumption.
+;; (defun ar/minibuffer-keyboard-quit-dwim (&optional arg)
+;;   (interactive "P")
+;;   (if (eq (window-buffer (minibuffer-window))
+;;           (current-buffer))
+;;       (if (len (minibuffer-contents))
+;;           (delete-minibuffer-contents)
+;;         (keyboard-quit))
+;;     (keyboard-quit)))
+;; (define-key minibuffer-local-map (kbd "C-g") #'ar/minibuffer-keyboard-quit-dwim)
+
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t
@@ -1819,7 +1840,7 @@ already narrowed."
     (dolist (hook-function hook-functions)
       (add-hook hook hook-function))))
 
-;; Display informaiton about function or variable in minibuffer.
+;; Display information about function or variable in minibuffer.
 (use-package eldoc
   :after pos-tip
   :config
