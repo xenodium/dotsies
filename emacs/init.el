@@ -1918,7 +1918,13 @@ already narrowed."
 
 (add-hook 'java-mode-hook #'ar/java-mode-hook-function)
 
-(use-package immortal-scratch :ensure t)
+(use-package immortal-scratch :ensure t
+  :config
+  (immortal-scratch-mode))
+
+(use-package persistent-scratch :ensure t
+  :config
+  (persistent-scratch-setup-default))
 
 (use-package tldr :ensure t)
 
