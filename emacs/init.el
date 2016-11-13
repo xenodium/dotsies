@@ -1990,16 +1990,23 @@ already narrowed."
 
 (use-package requirejs :ensure t)
 
-(use-package js2-mode :ensure t
-  :after requirejs-emacs
-  ;; Enable for node
-  ;; :interpreter "node"
+(use-package rjsx-mode :ensure t
   :config
-  ;; Enable for node
-  ;; (ar/process-assert-binary-installed "node")
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
+  (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
+
+;; Disabling in favor of rjsx-mode.
+;; (use-package js2-mode :ensure t
+;;   :after requirejs-emacs
+;;   ;; Enable for node
+;;   ;; :interpreter "node"
+;;   :config
+;;   ;; Enable for node
+;;   ;; (ar/process-assert-binary-installed "node")
+;;   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
+;;   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 (use-package protobuf-mode :ensure t)
 
