@@ -2025,14 +2025,14 @@ already narrowed."
 
 ;; Disabling in favor of rjsx-mode.
 ;; (use-package js2-mode :ensure t
+;;   :mode (("\\.js\\'" . js2-mode)
+;;         ("\\.jsx\\'" . js2-mode))
 ;;   :after requirejs-emacs
 ;;   ;; Enable for node
 ;;   ;; :interpreter "node"
 ;;   :config
 ;;   ;; Enable for node
 ;;   ;; (ar/process-assert-binary-installed "node")
-;;   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
 ;;   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
 (use-package protobuf-mode :ensure t)
