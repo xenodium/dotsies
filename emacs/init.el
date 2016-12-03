@@ -247,6 +247,9 @@
 
   (define-key smartparens-mode-map (kbd "M-[") #'ar/smartparens-wrap-square-bracket)
 
+  ;; Add to minibuffer also.
+  (add-hook 'minibuffer-setup-hook 'smartparens-mode)
+
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
