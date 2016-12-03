@@ -147,11 +147,11 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            color: #3A4145;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
-           font-size: 1.2em;
+           font-size: 1.2rem;
            font-style: normal;
            font-weight: 300;
            letter-spacing: 0.01rem;
-           line-height: 1.5;
+           line-height: 1.5em;
            text-rendering: optimizelegibility;
          }
 
