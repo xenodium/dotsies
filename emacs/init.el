@@ -1847,11 +1847,13 @@ already narrowed."
 (use-package eldoc
   :after pos-tip
   :config
+  (validate-setq eldoc-idle-delay 0.2)
   ;; https://www.topbug.net/blog/2016/11/03/emacs-display-function-or-variable-information-near-point-cursor
   (defun ar/eldoc-display-message (format-string &rest args)
     "Display eldoc message near point as well as minibuffer."
     (when format-string
-      (pos-tip-show (apply 'format format-string args))
+      ;; Disabling for now. It slows down scrolling while flashing empty pos tip.
+      ;; (pos-tip-show (apply 'format format-string args))
       (funcall 'eldoc-minibuffer-message format-string args)))
 
   (validate-setq eldoc-message-function #'ar/eldoc-display-message))
