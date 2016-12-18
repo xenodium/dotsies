@@ -154,11 +154,14 @@
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t
     :config
-    ;; Pick your favorite searcher
-    ;; (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup")
-    ;; (validate-setq helm-ag-base-command "ack --nocolor --nogroup")
-    ;; (validate-setq helm-ag-base-command "sift --no-color -n")
-    (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
+    (cond ((executable-find "rg")
+           (validate-setq helm-ag-base-command "rg --vimgrep --no-heading"))
+          ((executable-find "pt")
+           (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup"))
+          ((executable-find "ag")
+           (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
+          (t
+           (validate-setq helm-ag-base-command "ack --nocolor --nogroup"))))
   (use-package helm-buffers
     :after ido
     :config
