@@ -1878,7 +1878,10 @@ already narrowed."
                                   ielm-mode-hook))
 
 ;; Super handy for highlighting bookmarks.
-(use-package bookmark+ :ensure t)
+(use-package bookmark+ :ensure t
+  :init
+  ;; Need to define to fix break in latest bookmark+.
+  (defvar bmkp-replace-EWW-keys-flag nil))
 
 (defun ar/clang-format-buffer ()
   "Clang format current buffer."
