@@ -154,11 +154,14 @@
   (use-package imenu-anywhere :ensure t)
   (use-package helm-ag :ensure t
     :config
-    ;; Pick your favorite searcher
-    ;; (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup")
-    ;; (validate-setq helm-ag-base-command "ack --nocolor --nogroup")
-    ;; (validate-setq helm-ag-base-command "sift --no-color -n")
-    (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
+    (cond ((executable-find "rg")
+           (validate-setq helm-ag-base-command "rg --vimgrep --no-heading"))
+          ((executable-find "pt")
+           (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup"))
+          ((executable-find "ag")
+           (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
+          (t
+           (validate-setq helm-ag-base-command "ack --nocolor --nogroup"))))
   (use-package helm-buffers
     :after ido
     :config
@@ -246,6 +249,9 @@
     (insert " "))
 
   (define-key smartparens-mode-map (kbd "M-[") #'ar/smartparens-wrap-square-bracket)
+
+  ;; Add to minibuffer also.
+  (add-hook 'minibuffer-setup-hook 'smartparens-mode)
 
   :bind
   (:map smartparens-strict-mode-map
@@ -1844,11 +1850,13 @@ already narrowed."
 (use-package eldoc
   :after pos-tip
   :config
+  (validate-setq eldoc-idle-delay 0.2)
   ;; https://www.topbug.net/blog/2016/11/03/emacs-display-function-or-variable-information-near-point-cursor
   (defun ar/eldoc-display-message (format-string &rest args)
     "Display eldoc message near point as well as minibuffer."
     (when format-string
-      (pos-tip-show (apply 'format format-string args))
+      ;; Disabling for now. It slows down scrolling while flashing empty pos tip.
+      ;; (pos-tip-show (apply 'format format-string args))
       (funcall 'eldoc-minibuffer-message format-string args)))
 
   (validate-setq eldoc-message-function #'ar/eldoc-display-message))
