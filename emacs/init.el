@@ -2971,7 +2971,6 @@ _y_outube
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
-(add-hook 'find-file-hook #'ar/try-smerge t)
 
 (use-package cl
   :init
