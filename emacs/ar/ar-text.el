@@ -27,6 +27,15 @@
            start (1+ start)))
       (capitalize-word -1))))
 
+;; From https://www.emacswiki.org/emacs/IncrementNumber
+(defun ar/increment-number-at-point ()
+  "Increment number at point."
+  (interactive)
+  (skip-chars-backward "0-9")
+  (or (looking-at "[0-9]+")
+      (error "No number at point"))
+  (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
 (defun ar/text-upcase-word-toggle ()
   "Toggle word case at point."
   (interactive)
