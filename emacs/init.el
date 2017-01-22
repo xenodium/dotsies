@@ -382,6 +382,9 @@
   (global-last-change-jump-mode +1)
   :bind ("C-c `" . last-change-jump))
 
+;; underscore -> UPCASE -> CamelCase conversion of names
+(use-package string-inflection :ensure t)
+
 (use-package interaction-log :ensure t
   :config
   (interaction-log-mode +1)
