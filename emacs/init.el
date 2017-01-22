@@ -2688,6 +2688,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (global-origami-mode))
 
 (use-package phi-search :ensure t)
+(use-package phi-rectangle :ensure t)
 (use-package phi-search-mc :ensure t
   :config
   (phi-search-mc/setup-keys))
