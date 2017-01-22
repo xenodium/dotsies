@@ -1964,7 +1964,7 @@ already narrowed."
 (use-package emmet-mode :ensure t)
 
 (use-package nodejs-repl :ensure t)
-
+(use-package js-comint :ensure t)
 (use-package js-import :ensure t)
 
 (use-package jade :ensure t)
