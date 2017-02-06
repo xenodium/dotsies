@@ -2240,12 +2240,8 @@ already narrowed."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (validate-setq company-backends '(company-files
-                                    (company-dabbrev-code
-                                     company-gtags
-                                     company-etags
-                                     company-keywords)
-                                    company-dabbrev)))
+  (validate-setq company-backends '((company-files
+                                     company-shell))))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
