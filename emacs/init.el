@@ -489,6 +489,9 @@
   (setenv "TMPDIR" "/tmp")
   (validate-setq tramp-default-method "ssh"))
 
+(use-package helm-tramp :ensure t)
+(defalias 'ar/exit-tramp 'tramp-cleanup-all-buffers)
+
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
 (defun ar/set-current-frame-alpha-channel (focused-alpha
                                            unfocused-alpha)
