@@ -2967,7 +2967,6 @@ _y_outube
 (defun ar/smerge-mode-hook-function ()
   "Called when entering smerge mode."
   (hydra-smerge/body))
-(add-hook 'smerge-mode-hook #'ar/smerge-mode-hook-function)
 
 (defun ar/try-smerge ()
   "Activate smerge on conflicts."
