@@ -1445,23 +1445,24 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (:map objc-mode-map
               ([f6] . recompile)))
 
-(use-package rtags :ensure t
-  :bind
-  (:map
-   objc-mode-map
-   ("M-." . rtags-find-symbol-at-point))
-  :config
-  ;; Work in progress.
-  ;; (use-package flycheck-rtags)
-  (validate-setq rtags-autostart-diagnostics t) ;; For company support.
-  (validate-setq rtags-completions-enabled t) ;; For company support.
-  (validate-setq rtags-path "~/stuff/active/code/rtags/bin")
-  (validate-setq rtags-use-helm t)
-  ;; TODO: Change to subtle colors.
-  (set-face-attribute 'rtags-warnline nil
-                      :background nil)
-  (set-face-attribute 'rtags-errline nil
-                      :background nil))
+;; Disabling rtags
+;; (use-package rtags :ensure t
+;;   :bind
+;;   (:map
+;;    objc-mode-map
+;;    ("M-." . rtags-find-symbol-at-point))
+;;   :config
+;;   ;; Work in progress.
+;;   ;; (use-package flycheck-rtags)
+;;   (validate-setq rtags-autostart-diagnostics t) ;; For company support.
+;;   (validate-setq rtags-completions-enabled t) ;; For company support.
+;;   (validate-setq rtags-path "~/stuff/active/code/rtags/bin")
+;;   (validate-setq rtags-use-helm t)
+;;   ;; TODO: Change to subtle colors.
+;;   (set-face-attribute 'rtags-warnline nil
+;;                       :background nil)
+;;   (set-face-attribute 'rtags-errline nil
+;;                       :background nil))
 
 ;; Work in progress.
 ;; (defun ar/flycheck-rtags-setup ()
