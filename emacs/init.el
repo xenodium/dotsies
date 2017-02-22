@@ -398,7 +398,7 @@
 (use-package abbrev
   :after ar-file
   :config
-  (validate-setq abbrev-file-name (ar/file-assert-file-exists "~/stuff/active/code/dots/emacs/abbrev_defs"))
+  (validate-setq abbrev-file-name "~/stuff/active/code/dots/emacs/abbrev_defs")
   (validate-setq save-abbrevs 'silently)
   (setq-default abbrev-mode t))
 
@@ -1647,6 +1647,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package python-docstring :ensure t
   :commands (python-docstring-mode))
+
+;; View, browse, rotate, manipulate images with picpocket.
+(use-package picpocket :ensure t)
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
