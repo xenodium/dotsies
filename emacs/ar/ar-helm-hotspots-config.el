@@ -58,18 +58,27 @@
 (defvar ar/helm-hotspots-config--sources '(helm-source-buffers-list
                                            ar/helm-hotspots-config--local-source
                                            ar/helm-hotspots-config--web-source
-                                           ar/helm-hotspots-config--blog-source
-                                           ar/helm-hotspots-config--private-source
                                            helm-source-ido-virtual-buffers
                                            helm-source-buffer-not-found))
 
-(defun ar/helm-hotspots ()
+(defvar ar/helm-hotspots-config--advanced-sources '(helm-source-buffers-list
+                                                    ar/helm-hotspots-config--local-source
+                                                    ar/helm-hotspots-config--web-source
+                                                    ar/helm-hotspots-config--blog-source
+                                                    ar/helm-hotspots-config--private-source
+                                                    helm-source-ido-virtual-buffers
+                                                    helm-source-buffer-not-found))
+
+(defun ar/helm-hotspots (p)
   "Show my hotspots."
-  (interactive)
+  (interactive "P")
   (unless helm-source-buffers-list
     (setq helm-source-buffers-list
           (helm-make-source "Buffers" 'helm-source-buffers)))
-  (helm :sources ar/helm-hotspots-config--sources
+  (helm :sources (cond (p
+                        ar/helm-hotspots-config--advanced-sources)
+                       (t
+                        ar/helm-hotspots-config--sources))
         :buffer "*helm buffers*"
         :keymap helm-buffer-map
         :truncate-lines t))
