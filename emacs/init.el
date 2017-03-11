@@ -806,7 +806,9 @@ Values between 0 - 100."
 ;; Need it for mode-line-format to stay up to date.
 ;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
 ;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
-(setq auto-revert-check-vc-info t)
+
+;; Disabling auto-revert-check-vc-info. Been slow.
+;; (setq auto-revert-check-vc-info nil)
 (setq vc-handled-backends '(Git))
 
 (use-package expand-region :ensure t
