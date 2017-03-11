@@ -87,6 +87,8 @@
 
 (define-abbrev-table 'elisp-byte-code-mode-abbrev-table '())
 
+(define-abbrev-table 'elisp-refs-mode-abbrev-table '())
+
 (define-abbrev-table 'elpy-refactor-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
@@ -99,6 +101,10 @@
 
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
 
+(define-abbrev-table 'ert-results-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-simple-view-mode-abbrev-table '())
+
 (define-abbrev-table 'eshell-mode-abbrev-table '())
 
 (define-abbrev-table 'esup-mode-abbrev-table '())
@@ -110,6 +116,8 @@
 (define-abbrev-table 'eww-history-mode-abbrev-table '())
 
 (define-abbrev-table 'eww-mode-abbrev-table '())
+
+(define-abbrev-table 'finder-mode-abbrev-table '())
 
 (define-abbrev-table 'fireplace-mode-abbrev-table '())
 
@@ -127,7 +135,7 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("accomodation" "accommodation" nil 0)
+    ("accomodation" "accommodation" nil 1)
     ("accross" "across" nil 1)
     ("apologised" "apologized" nil 0)
     ("breadcrumbs" "crumbs" nil 0)
@@ -212,7 +220,11 @@
 
 (define-abbrev-table 'image-dired-thumbnail-mode-abbrev-table '())
 
+(define-abbrev-table 'inferior-js-mode-abbrev-table '())
+
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
+
+(define-abbrev-table 'jade-debugger-frames-mode-abbrev-table '())
 
 (define-abbrev-table 'jade-debugger-locals-mode-abbrev-table '())
 
@@ -358,7 +370,10 @@
 
 (define-abbrev-table 'sh-mode-abbrev-table '())
 
-(define-abbrev-table 'shell-mode-abbrev-table '())
+(define-abbrev-table 'shell-mode-abbrev-table
+  '(
+    ("sshl" "ssh blah" nil 5)
+   ))
 
 (define-abbrev-table 'sift-search-mode-abbrev-table '())
 
@@ -387,6 +402,8 @@
 (define-abbrev-table 'term-mode-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
+
+(define-abbrev-table 'tide-project-errors-mode-abbrev-table '())
 
 (define-abbrev-table 'tide-references-mode-abbrev-table '())
 
@@ -419,4 +436,6 @@
 (define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
 
 (define-abbrev-table 'zone-select-mode-abbrev-table '())
+
+(define-abbrev-table 'ztree-mode-abbrev-table '())
 
