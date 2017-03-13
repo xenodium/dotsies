@@ -1696,8 +1696,8 @@ Repeated invocations toggle between the two most recently open buffers."
      (sqlite . t))))
 
 ;; Plan London Underground journeys.
-(use-package org-tfl :ensure t
-  :after org)
+;; (use-package org-tfl :ensure t
+;;   :after org)
 
 (use-package ox-html)
 
