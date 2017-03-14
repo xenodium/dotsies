@@ -2265,7 +2265,10 @@ already narrowed."
   ;; (advice-add 'shell-directory-tracker
   ;;             :override
   ;;             'ar/shell-directory-tracker)
-  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
+  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function)
+  :bind
+  (:map smartparens-strict-mode-map
+        ("SPC" . comint-magic-space)))
 
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
