@@ -58,7 +58,9 @@
 (defvar ar/helm-hotspots-config--sources '(helm-source-buffers-list
                                            ar/helm-hotspots-config--local-source
                                            ar/helm-hotspots-config--web-source
-                                           helm-source-ido-virtual-buffers
+                                           helm-source-recentf
+                                           helm-source-files-in-current-dir
+                                           helm-source-file-cache
                                            helm-source-buffer-not-found))
 
 (defvar ar/helm-hotspots-config--advanced-sources '(helm-source-buffers-list
