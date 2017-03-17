@@ -168,6 +168,8 @@
     :config
     (validate-setq helm-buffer-max-length 40)
     (validate-setq ido-use-virtual-buffers t)
+    ;; Remote checking is slow. Disable.
+    (validate-setq helm-buffer-skip-remote-checking t)
     (validate-setq helm-buffers-fuzzy-matching t))
   (use-package helm-files)
   (use-package helm-grep)
