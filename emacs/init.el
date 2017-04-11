@@ -2380,6 +2380,13 @@ With a prefix argument N, (un)comment that many sexps."
     (comment-or-uncomment-region start end)))
 (bind-key "M-;" #'ar/comment-dwim)
 
+(defun ar/comment-dwim-next-line ()
+  "Like `ar/comment-dwim', but also move to next line."
+  (interactive)
+  (call-interactively #'ar/comment-dwim)
+  (next-line))
+(bind-key "C-M-;" #'ar/comment-dwim-next-line)
+
 (defun ar/new-file-with-snippet (name extension mode snippet-name &optional interactive-snippet-p)
   "Create file with NAME, EXTENSION, MODE, SNIPPET-NAME, and optional INTERACTIVE-SNIPPET-P."
   (find-file (format "%s%s" name extension))
