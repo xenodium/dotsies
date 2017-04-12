@@ -271,6 +271,40 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
      ((t (:foreground "#008ED1" :background nil))))
    '(which-func ((t (:foreground "green"))))))
 
+;; http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/?utm_source=feedburner&utm_medium=twitter&utm_campaign=Feed:+TheKitchinResearchGroup+(The+Kitchin+Research+Group)
+(defun ar/org-return ()
+  "Add new list or headline "
+  (interactive)
+  (cond
+   ((org-in-item-p)
+    (if (org-element-property :contents-begin (org-element-context))
+        (org-insert-heading)
+      (beginning-of-line)
+      (setf (buffer-substring
+             (line-beginning-position) (line-end-position)) "")
+      (org-return)))
+   ((org-at-heading-p)
+    (if (not (string= "" (org-element-property :title (org-element-context))))
+        (progn (org-end-of-meta-data)
+               (org-insert-heading))
+      (beginning-of-line)
+      (setf (buffer-substring
+             (line-beginning-position) (line-end-position)) "")))
+   ((org-at-table-p)
+    (if (-any?
+         (lambda (x) (not (string= "" x)))
+         (nth
+          (- (org-table-current-dline) 1)
+          (org-table-to-lisp)))
+        (org-return)
+      ;; empty row
+      (beginning-of-line)
+      (setf (buffer-substring
+             (line-beginning-position) (line-end-position)) "")
+      (org-return)))
+   (t
+    (org-return))))
+
 (provide 'ar-org)
 
 ;;; ar-org.el ends here
