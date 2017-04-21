@@ -609,6 +609,14 @@ Values between 0 - 100."
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
+(defun ar/join-previous-sexp ()
+  (interactive)
+  (save-excursion
+    (call-interactively #'backward-sexp)
+    (call-interactively #'hungry-delete-backward)))
+
+(bind-key "<C-M-backspace>" #'ar/join-previous-sexp)
+
 (use-package with-editor :ensure t
   :config
   (add-hook 'shell-mode-hook  'with-editor-export-editor))
@@ -940,8 +948,8 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package projectile :ensure t
   :config
-  (validate-setq projectile-enable-caching t))
-(projectile-global-mode)
+  (validate-setq projectile-enable-caching t)
+  (projectile-global-mode))
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
