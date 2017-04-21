@@ -319,6 +319,7 @@
 (use-package ar-helm-url
   :after helm)
 (use-package ar-helm-hotspots-config
+  :demand
   :after (ar-dired ar-helm-org ar-org helm-buffers)
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
