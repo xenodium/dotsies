@@ -86,6 +86,7 @@
 
 (use-package async :ensure t :demand
   :config
+  (dired-async-mode 1)
   (async-bytecomp-package-mode 1))
 
 (use-package danneskjold-theme :ensure t)
