@@ -1769,6 +1769,7 @@ already narrowed."
 (defun ar/python-mode-hook-function ()
   "Called when entering `python-mode'."
   (validate-setq python-indent-offset 2)
+  (validate-setq python-indent-guess-indent-offset nil)
   (python-docstring-mode +1)
   (py-yapf-enable-on-save))
 (add-hook 'python-mode-hook #'ar/python-mode-hook-function)
