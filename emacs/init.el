@@ -1678,6 +1678,14 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package org-cliplink :ensure t)
 
+(use-package org-crypt
+  :config
+  (org-crypt-use-before-save-magic)
+  (setq org-crypt-disable-auto-save nil)
+  (setq org-tags-exclude-from-inheritance (quote ("crypt")))
+  ;;  Set to nil to use symmetric encryption.
+  (setq org-crypt-key nil))
+
 ;; To print ASCII art from text like:
 ;;   __ _      _     _
 ;;  / _(_)__ _| |___| |_
