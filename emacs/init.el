@@ -3114,9 +3114,7 @@ _y_outube
   ;; Disable auto isearch within org-goto.
   (validate-setq org-goto-auto-isearch nil)
   ;; Enable RET to follow Org links.
-  (validate-setq org-return-follows-link t)
-  :bind (:map org-mode-map
-              ("<return>" . ar/org-return)))
+  (validate-setq org-return-follows-link t))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
