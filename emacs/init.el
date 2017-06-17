@@ -3082,11 +3082,13 @@ _y_outube
   (setq org-todo-keywords
         '((sequence
            "TODO"
+           "STARTED"
            "DONE"
            "OBSOLETE"
            "CANCELLED")))
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "red" :weight bold))
+          ("STARTED" . (:foreground "yellow" :weight bold))
           ("DONE" . (:foreground "green" :weight bold))
           ("OBSOLETE" . (:foreground "blue" :weight bold))
           ("CANCELLED" . (:foreground "gray" :weight bold))))
