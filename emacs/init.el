@@ -220,6 +220,17 @@
          :map helm-map
          ("C-g" . ar/helm-keyboard-quit-dwim)))
 
+;; From https://gitlab.com/to1ne/temacco/commit/eb2ba7fe4d03c7c9540c595b213a18ba950b3b20
+;; "brew install sqlparse" gives you sqlformat.
+(defun ar/format-sql ()
+  "Format the SQL in region using the sqlformat tool.
+  If no region is active, the whole file is formatted."
+  (interactive)
+  (let ((start (if (region-active-p) (region-beginning) (point-min)))
+        (end (if (region-active-p) (region-end) (point-max))))
+    (shell-command-on-region start end "sqlformat -r -" nil t)))
+
+
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
 
