@@ -2015,14 +2015,21 @@ already narrowed."
 
 (use-package jade :ensure t)
 
+(use-package prettier-js :ensure t
+  :config
+  (validate-setq prettier-js-args
+                 '(
+                   "--trailing-comma" "all"
+                   "--bracket-spacing" "false"
+                   )))
+
 (defun ar/setup-tide-mode ()
   (interactive)
   (tide-setup)
   (flycheck-mode +1)
   (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
-  (add-hook 'after-save-hook (lambda ()
-                               (ar/typescript-format-buffer)) nil t)
+  (prettier-js-mode +1)
   (validate-setq company-backends '(company-tide
                                     (company-dabbrev-code
                                      company-gtags
