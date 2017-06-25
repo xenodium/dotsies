@@ -2258,6 +2258,9 @@ already narrowed."
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
 
+;; Looks up commands/topics on cheat.sh.
+(use-package cheat-sh :ensure t)
+
 (use-package shell-pop :ensure t
   :config
   (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
