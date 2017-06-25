@@ -2020,7 +2020,6 @@ already narrowed."
   (validate-setq prettier-js-args
                  '(
                    "--trailing-comma" "all"
-                   "--bracket-spacing" "false"
                    )))
 
 (defun ar/setup-tide-mode ()
