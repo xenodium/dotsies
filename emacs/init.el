@@ -825,6 +825,10 @@ Values between 0 - 100."
 (setq vc-handled-backends nil)
 
 (use-package expand-region :ensure t
+  :config
+  ;; Workaround fixing expand-region:
+  ;; https://github.com/magnars/expand-region.el/issues/220
+  (validate-setq shift-select-mode nil)
   :bind ("C-c w" . er/expand-region))
 
 ;; Visual feedback for query-replace, replace, and multiple cursors.
