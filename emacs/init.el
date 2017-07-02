@@ -220,6 +220,17 @@
          :map helm-map
          ("C-g" . ar/helm-keyboard-quit-dwim)))
 
+;; From https://gitlab.com/to1ne/temacco/commit/eb2ba7fe4d03c7c9540c595b213a18ba950b3b20
+;; "brew install sqlparse" gives you sqlformat.
+(defun ar/format-sql ()
+  "Format the SQL in region using the sqlformat tool.
+  If no region is active, the whole file is formatted."
+  (interactive)
+  (let ((start (if (region-active-p) (region-beginning) (point-min)))
+        (end (if (region-active-p) (region-end) (point-max))))
+    (shell-command-on-region start end "sqlformat -r -" nil t)))
+
+
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
 
@@ -2008,14 +2019,20 @@ already narrowed."
 
 (use-package jade :ensure t)
 
+(use-package prettier-js :ensure t
+  :config
+  (validate-setq prettier-js-args
+                 '(
+                   "--trailing-comma" "all"
+                   )))
+
 (defun ar/setup-tide-mode ()
   (interactive)
   (tide-setup)
   (flycheck-mode +1)
   (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
-  (add-hook 'after-save-hook (lambda ()
-                               (ar/typescript-format-buffer)) nil t)
+  (prettier-js-mode +1)
   (validate-setq company-backends '(company-tide
                                     (company-dabbrev-code
                                      company-gtags
@@ -2250,6 +2267,9 @@ already narrowed."
 (use-package menu-bar
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
+
+;; Looks up commands/topics on cheat.sh.
+(use-package cheat-sh :ensure t)
 
 (use-package shell-pop :ensure t
   :config
@@ -3075,11 +3095,13 @@ _y_outube
   (setq org-todo-keywords
         '((sequence
            "TODO"
+           "STARTED"
            "DONE"
            "OBSOLETE"
            "CANCELLED")))
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "red" :weight bold))
+          ("STARTED" . (:foreground "yellow" :weight bold))
           ("DONE" . (:foreground "green" :weight bold))
           ("OBSOLETE" . (:foreground "blue" :weight bold))
           ("CANCELLED" . (:foreground "gray" :weight bold))))
@@ -3105,9 +3127,7 @@ _y_outube
   ;; Disable auto isearch within org-goto.
   (validate-setq org-goto-auto-isearch nil)
   ;; Enable RET to follow Org links.
-  (validate-setq org-return-follows-link t)
-  :bind (:map org-mode-map
-              ("<return>" . ar/org-return)))
+  (validate-setq org-return-follows-link t))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
