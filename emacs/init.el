@@ -2013,6 +2013,15 @@ already narrowed."
     (setq-local objc-mode-hook-did-run t)))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
+(use-package dumb-jump :ensure t
+  :bind (:map objc-mode-map
+              ("M-." . dumb-jump-go)))
+
+(use-package popup :ensure
+  :bind (:map popup-menu-keymap
+              ("M-n" . popup-next)
+              ("M-p" . popup-previous)))
+
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
   (bind-key [f6] java-mode-map)
