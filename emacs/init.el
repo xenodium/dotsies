@@ -836,6 +836,10 @@ Values between 0 - 100."
 (setq vc-handled-backends nil)
 
 (use-package expand-region :ensure t
+  :config
+  ;; Workaround fixing expand-region:
+  ;; https://github.com/magnars/expand-region.el/issues/220
+  (validate-setq shift-select-mode nil)
   :bind ("C-c w" . er/expand-region))
 
 ;; Visual feedback for query-replace, replace, and multiple cursors.
@@ -908,6 +912,29 @@ Values between 0 - 100."
                                                         default-directory
                                                       ar/helm-ag--default-locaction) nil t))
   (helm-do-ag ar/helm-ag--default-locaction))
+
+(defun ar/helm-ag-insert (arg)
+  ;; Helm-ag and insert match.
+  (interactive "P")
+  (let* ((actions (helm-make-actions
+                   "Yadda"
+                   (lambda (candidate)
+                     ;; Candidate text looks as follows: \"path:line:match\"
+                     (let* ((path (nth 0 (split-string candidate ":")))
+                            (line (nth 1 (split-string candidate ":")))
+                            (match (s-replace (format "%s:%s:" path line) "" candidate)))
+                       (insert match)))))
+         (helm-source-do-ag (helm-build-async-source "The Silver Searcher"
+                              :init 'helm-ag--do-ag-set-command
+                              :candidates-process 'helm-ag--do-ag-candidate-process
+                              :persistent-action  'helm-ag--persistent-action
+                              :action actions
+                              :nohighlight t
+                              :requires-pattern 3
+                              :candidate-number-limit 9999
+                              :keymap helm-do-ag-map
+                              :follow (and helm-follow-mode-persistent 1))))
+    (call-interactively #'ar/helm-ag)))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
@@ -1986,6 +2013,15 @@ already narrowed."
     (setq-local objc-mode-hook-did-run t)))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
+(use-package dumb-jump :ensure t
+  :bind (:map objc-mode-map
+              ("M-." . dumb-jump-go)))
+
+(use-package popup :ensure
+  :bind (:map popup-menu-keymap
+              ("M-n" . popup-next)
+              ("M-p" . popup-previous)))
+
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
   (bind-key [f6] java-mode-map)
@@ -2894,6 +2930,7 @@ Open: _p_oint _e_xternally
   ("r" ar/projectile-helm-ag "search repository")
   ("f" ar/find-dired-current-dir "find file")
   ("a" ar/find-all-dired-current-dir "find all files")
+  ("i" ar/helm-ag-insert "insert match")
   ("q" nil "quit"))
 (bind-key "C-c s" #'hydra-search/body)
 
