@@ -1116,14 +1116,14 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package git-messenger :ensure t)
 
 ;; Highlights current line.
-;; Disabling while I try beacon-mode instead.
 (use-package hl-line :ensure t
   :config
   (global-hl-line-mode t))
 
 ;; Momentarily highlights cursor on scrolling events.
-(use-package beacon :ensure t
-  :config (beacon-mode))
+;; Disabling. Not needed when using hl-line.
+;; (use-package beacon :ensure t
+;;   :config (beacon-mode))
 
 ;; Highlights yanked/pasted text until next operation.
 (use-package volatile-highlights :ensure t
