@@ -1715,6 +1715,16 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
+(defun ar/org-mark-done ()
+  "Mark current item as DONE and refile."
+  (interactive)
+  (save-excursion
+    (org-todo "DONE")
+    (end-of-line)
+    (insert " ")
+    (org-insert-time-stamp (current-time))
+    (org-refile)))
+
 (use-package org-cliplink :ensure t)
 
 (use-package org-crypt
@@ -3139,7 +3149,8 @@ _y_outube
           ("DONE" . (:foreground "green" :weight bold))
           ("OBSOLETE" . (:foreground "blue" :weight bold))
           ("CANCELLED" . (:foreground "gray" :weight bold))))
-  (setq org-refile-targets '((nil :regexp . "Week of")))
+  (setq org-refile-targets '((nil :regexp . "Week of")
+                             (nil :regexp . "RESOLVED")))
   (validate-setq org-ellipsis "⤵")
   (validate-setq org-fontify-emphasized-text t)
   ;; Fontify code in code blocks.
