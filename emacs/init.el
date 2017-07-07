@@ -916,13 +916,12 @@ Values between 0 - 100."
   ;; Helm-ag and insert match.
   (interactive "P")
   (let* ((actions (helm-make-actions
-                   "Yadda"
+                   "Insert"
                    (lambda (candidate)
-                     ;; Candidate text looks as follows: \"path:line:match\"
-                     (let* ((path (nth 0 (split-string candidate ":")))
-                            (line (nth 1 (split-string candidate ":")))
-                            (match (s-replace (format "%s:%s:" path line) "" candidate)))
-                       (insert match)))))
+                     ;; Drop file:line:column. For example:
+                     ;; arc_hostlink.c:13:2:#include <linux/fs.h>
+                     ;; => #include <linux/fs.h>
+                     (insert (replace-regexp-in-string "^[^ ]*:" "" candidate)))))
          (helm-source-do-ag (helm-build-async-source "The Silver Searcher"
                               :init 'helm-ag--do-ag-set-command
                               :candidates-process 'helm-ag--do-ag-candidate-process
