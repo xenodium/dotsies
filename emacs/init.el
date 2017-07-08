@@ -149,21 +149,15 @@
   :demand
   :ensure t
   :config
-  (validate-setq helm-net-prefer-curl t)
   (validate-setq helm-follow-mode-persistent t)
   (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (validate-setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
-  (validate-setq helm-ff-search-library-in-sexp t)
   (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
   (validate-setq helm-split-window-in-side-p t)
   (validate-setq helm-candidate-number-limit 200)
-  (validate-setq helm-ff-skip-boring-files t)
-  (setq helm-boring-file-regexp-list
-        '("\\.git$" "\\.hg$"
-          "\\.svn$" "\\.CVS$"
-          "\\._darcs$" "\\.la$"
-          "\\.o$" "\\.i$"))
-  (validate-setq helm-ff-file-name-history-use-recentf t)
+  (use-package helm-net
+    :config
+    (validate-setq helm-net-prefer-curl t))
   (use-package helm-imenu)
   ;; Switch major modes and toggle minor modes.
   (use-package helm-source)
@@ -187,8 +181,21 @@
     ;; Remote checking is slow. Disable.
     (validate-setq helm-buffer-skip-remote-checking t)
     (validate-setq helm-buffers-fuzzy-matching t))
-  (use-package helm-files)
-  (use-package helm-grep)
+  (use-package helm-files
+    :config
+    (validate-setq helm-ff-file-name-history-use-recentf t)
+    (validate-setq helm-ff-search-library-in-sexp t)
+    (validate-setq helm-ff-skip-boring-files t)
+    (setq helm-boring-file-regexp-list
+          '("\\.git$" "\\.hg$"
+            "\\.svn$" "\\.CVS$"
+            "\\._darcs$" "\\.la$"
+            "\\.o$" "\\.i$")))
+  (use-package helm-grep
+    :bind (:map helm-grep-mode-map
+                ("<return>" . helm-grep-mode-jump-other-window)
+                ("n" . helm-grep-mode-jump-other-window-forward)
+                ("p" . helm-grep-mode-jump-other-window-backward)))
   (use-package helm-org
     :after org-cliplink)
   (use-package helm-swoop :ensure t
@@ -196,13 +203,6 @@
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
   (use-package helm-config)
-  (bind-key "<return>" #'helm-grep-mode-jump-other-window helm-grep-mode-map)
-  (bind-key "n" #'helm-grep-mode-jump-other-window-forward helm-grep-mode-map)
-  (bind-key "p" #'helm-grep-mode-jump-other-window-backward helm-grep-mode-map)
-  (bind-key "C-i" #'helm-execute-persistent-action helm-map) ; make TAB works in terminal
-  (bind-key "C-z" #'helm-select-action helm-map) ; list actions using C-z
-  (bind-key "M-p" #'helm-previous-source helm-map)
-  (bind-key "M-n" #'helm-next-source helm-map)
   (helm-mode 1)
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
@@ -219,6 +219,10 @@
          ("C-h a" . helm-apropos)
          ("C-h y" . helm-dash-at-point)
          :map helm-map
+         ("C-i" . helm-execute-persistent-action) ; make TAB works in terminal
+         ("C-z" . helm-select-action) ; list actions using C-z
+         ("M-p" . helm-previous-source)
+         ("M-n" . helm-next-source)
          ("C-g" . ar/helm-keyboard-quit-dwim)))
 
 ;; From https://gitlab.com/to1ne/temacco/commit/eb2ba7fe4d03c7c9540c595b213a18ba950b3b20
