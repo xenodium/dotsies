@@ -194,11 +194,11 @@
     (validate-setq helm-ff-file-name-history-use-recentf t)
     (validate-setq helm-ff-search-library-in-sexp t)
     (validate-setq helm-ff-skip-boring-files t)
-    (validate-setq helm-boring-file-regexp-list
-                   '("\\.git$" "\\.hg$"
-                     "\\.svn$" "\\.CVS$"
-                     "\\._darcs$" "\\.la$"
-                     "\\.o$" "\\.i$")))
+    (mapc (lambda (regexp)
+            (add-to-list 'helm-boring-file-regexp-list
+                         regexp))
+          '("\\.DS_Store$" "\\.git" "\\.hg" "\\.svn" "\\.CVS"
+            "\\._darcss" "\\.la" "\\.o" "\\.i")))
 
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
