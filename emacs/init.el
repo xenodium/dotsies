@@ -155,14 +155,20 @@
   (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
   (validate-setq helm-split-window-in-side-p t)
   (validate-setq helm-candidate-number-limit 200)
+
   (use-package helm-net
     :config
     (validate-setq helm-net-prefer-curl t))
+
   (use-package helm-imenu)
+
   ;; Switch major modes and toggle minor modes.
   (use-package helm-source)
+
   (use-package helm-mode-manager :ensure t)
+
   (use-package imenu-anywhere :ensure t)
+
   (use-package helm-ag :ensure t
     :config
     (cond ((executable-find "rg")
@@ -173,6 +179,7 @@
            (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
           (t
            (validate-setq helm-ag-base-command "ack --nocolor --nogroup"))))
+
   (use-package helm-buffers
     :after ido
     :config
@@ -181,28 +188,34 @@
     ;; Remote checking is slow. Disable.
     (validate-setq helm-buffer-skip-remote-checking t)
     (validate-setq helm-buffers-fuzzy-matching t))
+
   (use-package helm-files
     :config
     (validate-setq helm-ff-file-name-history-use-recentf t)
     (validate-setq helm-ff-search-library-in-sexp t)
     (validate-setq helm-ff-skip-boring-files t)
-    (setq helm-boring-file-regexp-list
-          '("\\.git$" "\\.hg$"
-            "\\.svn$" "\\.CVS$"
-            "\\._darcs$" "\\.la$"
-            "\\.o$" "\\.i$")))
+    (validate-setq helm-boring-file-regexp-list
+                   '("\\.git$" "\\.hg$"
+                     "\\.svn$" "\\.CVS$"
+                     "\\._darcs$" "\\.la$"
+                     "\\.o$" "\\.i$")))
+
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
                 ("<return>" . helm-grep-mode-jump-other-window)
                 ("n" . helm-grep-mode-jump-other-window-forward)
                 ("p" . helm-grep-mode-jump-other-window-backward)))
+
   (use-package helm-org
     :after org-cliplink)
+
   (use-package helm-swoop :ensure t
     :bind (("M-C-s" . helm-multi-swoop-all)
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
+
   (use-package helm-config)
+
   (helm-mode 1)
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
