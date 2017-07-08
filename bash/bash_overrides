@@ -18,6 +18,10 @@ fi
 
 export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
+readonly YARN_BIN_PATH=`yarn global bin` || ""
+
+export PATH=$PATH:$YARN_BIN_PATH
+
 ### Environment variables ### end
 
 ### nvm setup (Node Version Manager) ### start
