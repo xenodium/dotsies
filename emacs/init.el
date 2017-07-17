@@ -89,7 +89,11 @@
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1))
 
-(use-package danneskjold-theme :ensure t)
+(use-package base16-theme :ensure t
+  :config
+  (load-theme 'base16-default-dark t))
+
+;; (use-package danneskjold-theme :ensure t)
 ;; (use-package molokai-theme :ensure t)
 
 (defun ar/set-font (font-name)
