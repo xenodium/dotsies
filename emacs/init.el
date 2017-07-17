@@ -2238,6 +2238,10 @@ already narrowed."
   :config
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
 
+(use-package highlight-quoted :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'highlight-quoted-mode))
+
 (use-package centered-cursor-mode :ensure t
   :pin melpa
   :init
@@ -3077,6 +3081,10 @@ _y_outube
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
+
+(use-package stripe-buffer :ensure t
+  :config
+  (add-hook 'dired-mode-hook #'turn-on-stripe-buffer-mode))
 
 (use-package cl
   :init
