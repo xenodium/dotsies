@@ -91,7 +91,7 @@
 
 (use-package base16-theme :ensure t
   :config
-  (load-theme 'base16-default-dark t))
+  (load-theme 'base16-atelier-heath t))
 
 ;; (use-package danneskjold-theme :ensure t)
 ;; (use-package molokai-theme :ensure t)
@@ -153,7 +153,6 @@
   :demand
   :ensure t
   :config
-  (validate-setq helm-follow-mode-persistent t)
   (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (validate-setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
   (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
@@ -953,7 +952,7 @@ Values between 0 - 100."
                               :requires-pattern 3
                               :candidate-number-limit 9999
                               :keymap helm-do-ag-map
-                              :follow (and helm-follow-mode-persistent 1))))
+                              :follow nil)))
     (call-interactively #'ar/helm-ag)))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
