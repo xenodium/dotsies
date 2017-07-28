@@ -141,31 +141,44 @@
   (unless (equal "/" path)
     (file-name-directory (directory-file-name path))))
 
-;; TODO: Consider using locate-dominating-file instead.
-(defun ar/file-open-closest (filename)
-  "Open the closest FILENAME in current or parent dirs (handy for finding Makefiles)."
-  (let* ((closest-dir-path (locate-dominating-file  (buffer-file-name)
-                                                    filename))
-         (closest-file-path (concat (file-name-as-directory closest-dir-path)
-                                    filename)))
-    ;;(assert closest-dir-path nil "No %s found" filename)
-    (when closest-dir-path
-      (switch-to-buffer (find-file-noselect closest-file-path)))
-    closest-file-path))
+(defun ar/file-either-closest (start-fname &rest fnames)
+  "Return the closest file, start at START-FNAME and go to parent dir until finding filename in FNAMES."
+  (let ((dpath-found)
+        (fpath))
+    (-each-while
+        fnames (lambda (fname)
+                 ;; Continue while no path found.
+                 (not dpath-found))
+      (lambda (fname)
+        (setq dpath-found
+              (locate-dominating-file start-fname fname))
+        (when dpath-found
+          (setq fpath (concat (file-name-as-directory dpath-found)
+                              fname)))))
+    fpath))
+
+(defun ar/file-build-rule-names (str)
+  (mapcar (lambda (match)
+            (nth 1 match))
+          ;; match: name = "rulename"
+          (s-match-strings-all "name *= *\"\\(.*\\)\""
+                               str)))
+
+(defun ar/file-open-either-closest (start-fname &rest fnames)
+  "Open the closest file, start at START-FNAME and go to parent dir until finding filename in FNAMES."
+  (let ((closest-fname (apply #'ar/file-either-closest start-fname fnames)))
+    (assert closest-fname nil "No %s found" fnames)
+    (switch-to-buffer (find-file-noselect closest-fname))
+    closest-fname))
 
 (defvar ar/file-build-file-names '("Makefile" "SConstruct" "BUILD"))
 
-(defun ar/file-open-build-file ()
+(defun ar/file-open-closest-build-file ()
   "Open the closest build file in current or parent directory.
 For example: Makefile, SConstruct, BUILD, etc.
 Append `ar/file-build-file-names' to search for other file names."
   (interactive)
-  (catch 'found
-    (mapc (lambda (filename)
-            (when (ar/file-open-closest filename)
-              (throw 'found t)))
-          ar/file-build-file-names)
-    (error "No build file found")))
+  (apply #'ar/file-open-either-closest (buffer-file-name) ar/file-build-file-names))
 
 (defun ar/file-find-duplicate-filenames ()
   "Find files recursively which have the same name."
@@ -211,7 +224,7 @@ Append `ar/file-build-file-names' to search for other file names."
   file-path)
 
 (defun ar/file-find-alternate-parent-dir ()
-  "Open parent "
+  "Open parent dir."
   (interactive)
   (find-alternate-file ".."))
 
