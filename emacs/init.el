@@ -2078,7 +2078,7 @@ already narrowed."
 (use-package js-comint :ensure t)
 (use-package js-import :ensure t)
 
-(use-package jade :ensure t)
+(use-package indium :ensure t)
 
 (use-package prettier-js :ensure t
   :config
