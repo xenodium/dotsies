@@ -2754,6 +2754,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                  flycheck-idle-change-delay 0.8)
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
+(use-package flycheck-inline
+  :ensure t
+  :config
+  (flycheck-inline-enable))
+
 (use-package pos-tip :ensure t
   :config
   (when (fboundp 'tooltip-mode) (tooltip-mode 1)))
