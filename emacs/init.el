@@ -2932,7 +2932,7 @@ _v_ariable       _u_ser-option
   ("o" ff-find-other-file "other")
   ("e" ar/platform-open-in-external-app "externally")
   ("u" ar/open-file-at-point "url at point")
-  ("b" ar/file-open-build-file "build file")
+  ("b" ar/file-open-closest-build-file "build file")
   ("q" nil "cancel"))
 
 (defhydra hydra-open (:color blue)
@@ -2950,7 +2950,7 @@ Open: _p_oint _e_xternally
   ("o" ff-find-other-file "other")
   ("e" ar/platform-open-in-external-app "externally")
   ("u" ar/open-file-at-point "url at point")
-  ("b" ar/file-open-build-file "build file")
+  ("b" ar/file-open-closest-build-file "build file")
   ("q" nil "cancel"))
 
 (defun ar/hydra-open-dwim ()
