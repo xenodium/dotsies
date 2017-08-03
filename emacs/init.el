@@ -89,6 +89,10 @@
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1))
 
+(use-package beginend :ensure t
+  :config
+  (beginend-global-mode))
+
 (use-package base16-theme :ensure t
   :config
   (load-theme 'base16-atelier-heath t))
