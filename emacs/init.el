@@ -476,47 +476,49 @@
       (spaceline-toggle-minor-modes-off)
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
-      (validate-setq powerline-default-separator 'slant)
-      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      (spaceline-define-segment line-column
-        "The current line and column numbers."
-        "l:%l c:%2c")
+      (spaceline-toggle-buffer-position-off)
+      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) 
       (spaceline-define-segment time
         "The current time."
         (format-time-string "%H:%M"))
       (spaceline-define-segment date
         "The current date."
         (format-time-string "%h %d"))
-      (spaceline-toggle-time-on)
-      (spaceline-emacs-theme 'date 'time)
-      (validate-setq powerline-default-separator 'slant)
+      (spaceline-define-segment padding
+        "Padding at end of line."
+        "  ")
+      (spaceline-spacemacs-theme 'date 'time 'padding)
+      (validate-setq powerline-default-separator 'arrow)
       (set-face-attribute 'helm-candidate-number nil
-                          :foreground "#f4c20d"
+                          :foreground nil
                           :background nil)
       (set-face-attribute 'spaceline-highlight-face nil
-                          :background "#db3236")
+                          :foreground "#525086"
+                          :background nil)
       (set-face-attribute 'mode-line nil
-                          :background "#00A1F1"
+                          :background nil
+                          :foreground nil
                           :box nil)
       (set-face-attribute 'mode-line-buffer-id nil
                           :background nil
-                          :foreground "#FFFFFF")
+                          :foreground nil)
       (set-face-attribute 'powerline-active1 nil
-                          :background "#f4c20d"
-                          :foreground "navy"
+                          :background "#6c6c6c"
+                          :foreground "#ffffff"
                           :box nil)
       (set-face-attribute 'powerline-active2 nil
-                          :background "#3cba54"
+                          :background nil
+                          :foreground "#ffffff"
                           :box nil)
       (set-face-attribute 'powerline-inactive1 nil
-                          :background "#00A1F1"
-                          :foreground "#FFFFFF"
+                          :background nil
+                          :foreground nil
                           :box nil)
       (set-face-attribute 'powerline-inactive2 nil
-                          :background "#00A1F1"
+                          :background nil
                           :box nil)
       (set-face-attribute 'mode-line-inactive nil
-                          :background "#00A1F1"
+                          :background nil
                           :box nil)
       (spaceline-compile))))
 
