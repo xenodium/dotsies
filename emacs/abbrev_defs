@@ -51,6 +51,8 @@
 
 (define-abbrev-table 'cider-inspector-mode-abbrev-table '())
 
+(define-abbrev-table 'cider-repl-history-mode-abbrev-table '())
+
 (define-abbrev-table 'cider-repl-mode-abbrev-table '())
 
 (define-abbrev-table 'cider-stacktrace-mode-abbrev-table '())
@@ -144,6 +146,7 @@
     ("certifcation" "certification" nil 0)
     ("chekckout" "checkout" nil 0)
     ("collitions" "collisions" nil 1)
+    ("comapred" "compared" nil 0)
     ("componetns" "components" nil 0)
     ("cunction" "function" nil 0)
     ("decoratgor" "decorator" nil 0)
@@ -175,7 +178,7 @@
     ("thiz" "this" nil 0)
     ("toomorrow" "tomorrow" nil 0)
     ("tracel" "travel" nil 0)
-    ("trying" "trying" nil 3)
+    ("trying" "trying" nil 4)
     ("typocal" "typical" nil 0)
     ("update" "update" nil 2)
     ("updated" "updated" nil 1)
@@ -220,6 +223,14 @@
 
 (define-abbrev-table 'image-dired-thumbnail-mode-abbrev-table '())
 
+(define-abbrev-table 'indium-debugger-frames-mode-abbrev-table '())
+
+(define-abbrev-table 'indium-debugger-locals-mode-abbrev-table '())
+
+(define-abbrev-table 'indium-inspector-mode-abbrev-table '())
+
+(define-abbrev-table 'indium-repl-mode-abbrev-table '())
+
 (define-abbrev-table 'inferior-js-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
@@ -235,6 +246,8 @@
 (define-abbrev-table 'java-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'js-comint-mode-abbrev-table '())
 
 (define-abbrev-table 'js-jsx-mode-abbrev-table '())
 
@@ -329,6 +342,14 @@
 (define-abbrev-table 'paradox-commit-list-mode-abbrev-table '())
 
 (define-abbrev-table 'paradox-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'picpocket-base-mode-abbrev-table '())
+
+(define-abbrev-table 'picpocket-db-mode-abbrev-table '())
+
+(define-abbrev-table 'picpocket-mode-abbrev-table '())
+
+(define-abbrev-table 'picpocket-undo-mode-abbrev-table '())
 
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
