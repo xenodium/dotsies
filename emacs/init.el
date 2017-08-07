@@ -3200,7 +3200,7 @@ _y_outube
   ;; Prevent inadvertently editing invisible areas in Org.
   (validate-setq org-catch-invisible-edits 'error)
   (validate-setq org-cycle-separator-lines 2)
-  (validate-setq org-image-actual-width t)
+  (validate-setq org-image-actual-width nil)
   (validate-setq org-hide-emphasis-markers t)
   ;; All Org leading stars become invisible.
   (validate-setq org-hide-leading-stars t)
