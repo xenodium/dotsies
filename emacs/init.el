@@ -411,13 +411,17 @@
 (use-package ar-compile)
 
 (use-package company-grep)
+(use-package company-rfiles)
+
+(defun ar/bazel-mode-hook-fun ()
+  (setq-local company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
+  (setq-local company-grep-grep-format-string "^\\s*\"//.*%s")
+  (setq-local company-backends '((company-rfiles company-grep))))
+
 (use-package bazel-mode
   :after company-grep
   :config
-  (add-hook 'bazel-mode-hook (lambda ()
-                               (setq-local company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
-                               (setq-local company-grep-grep-format-string "^\\s*\"//.*%s")
-                               (setq-local company-backends '((company-grep company-files))))))
+  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun))
 
 (use-package use-host-package
   :config
@@ -2052,7 +2056,7 @@ already narrowed."
     (set-fill-column 100)
     (setq-local company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
     (setq-local company-grep-grep-format-string "^#import\\s*\".*%s")
-    (setq-local company-backends '((company-grep company-files)))
+    (setq-local company-backends '((company-grep company-files company-yasnippet company-keywords)))
     ;; (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
     ;; (setq-local company-backends
@@ -2385,7 +2389,7 @@ already narrowed."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (validate-setq company-backends '((company-files
+  (validate-setq company-backends '((company-rfiles
                                      company-shell))))
 
 ;; This is a hack. Let's see how it goes.
