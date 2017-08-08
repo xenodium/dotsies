@@ -412,6 +412,7 @@
 
 (use-package company-grep)
 (use-package company-rfiles)
+(use-package company-bash-history)
 
 (defun ar/bazel-mode-hook-fun ()
   (setq-local company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
@@ -2390,7 +2391,8 @@ already narrowed."
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
   (validate-setq company-backends '((company-rfiles
-                                     company-shell))))
+                                     company-shell
+                                     company-bash-history))))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
