@@ -410,6 +410,15 @@
 (use-package ar-font)
 (use-package ar-compile)
 
+(use-package company-grep)
+(use-package bazel-mode
+  :after company-grep
+  :config
+  (add-hook 'bazel-mode-hook (lambda ()
+                               (setq-local company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
+                               (setq-local company-grep-grep-format-string "^\\s*\"//.*%s")
+                               (setq-local company-backends '((company-grep company-files))))))
+
 (use-package use-host-package
   :config
   (validate-setq use-host-package-install-cmd
@@ -1500,6 +1509,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (:map company-active-map
         ("C-M-/" . company-filter-candidates)))
 
+(use-package helm-company :ensure t)
+
 (use-package company-shell :ensure t)
 
 ;; Better shell TAP completion.
@@ -1521,6 +1532,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (bind-key "<backtab>" #'company-complete))
 
 (use-package company-emoji :ensure t)
+
+(use-package emojify :ensure t
+  :config
+  (global-emojify-mode +1))
 
 (use-package objc-mode
   :bind (:map objc-mode-map
@@ -2035,7 +2050,10 @@ already narrowed."
     (objc-font-lock-mode)
     (helm-dash-activate-docset "iOS")
     (set-fill-column 100)
-    (setq-local company-backends '((company-rtags)))
+    (setq-local company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
+    (setq-local company-grep-grep-format-string "^#import\\s*\".*%s")
+    (setq-local company-backends '((company-grep company-files)))
+    ;; (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
     ;; (setq-local company-backends
     ;;      ;; List with multiple back-ends for mutual inclusion.
