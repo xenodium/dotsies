@@ -414,10 +414,27 @@
 (use-package company-rfiles)
 (use-package company-bash-history)
 
+(defun my-completion (completion)
+  (when (looking-at-p "\"")
+    (forward-char)
+    (insert ",")))
+
 (defun ar/bazel-mode-hook-fun ()
-  (setq-local company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
-  (setq-local company-grep-grep-format-string "^\\s*\"//.*%s")
-  (setq-local company-backends '((company-rfiles company-grep))))
+  (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
+  (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
+  (validate-setq company-backends '((company-rfiles company-grep)))
+  (validate-setq company-grep-grep-trigger "\"//")
+  (validate-setq company-grep-grep-cleanup-fun (lambda (items)
+                                                 (mapcar (lambda (item)
+                                                           (ar/string-match item "\"//\\(.*\\)\"" 1))
+                                                         items)))
+  (validate-setq company-grep-grep-completion-fun (lambda ()
+                                                    (when (looking-at-p "\"")
+                                                      (forward-char)
+                                                      (insert ","))))
+  (validate-setq company-backends '((company-grep)))
+
+  )
 
 (use-package bazel-mode
   :after company-grep
@@ -2055,9 +2072,17 @@ already narrowed."
     (objc-font-lock-mode)
     (helm-dash-activate-docset "iOS")
     (set-fill-column 100)
-    (setq-local company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
-    (setq-local company-grep-grep-format-string "^#import\\s*\".*%s")
-    (setq-local company-backends '((company-grep company-files company-yasnippet company-keywords)))
+
+    (validate-setq company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
+    (validate-setq company-grep-grep-format-string "^#import\\s*\".*%s")
+    (validate-setq company-grep-grep-trigger "import \"")
+    (validate-setq company-grep-grep-cleanup-fun (lambda (items)
+                                                   (mapcar (lambda (item)
+                                                             (ar/string-match item "import +\"\\(.*\\)\"" 1))
+                                                           items)))
+    ;; (validate-setq company-backends '((company-grep company-files company-yasnippet company-keywords company-clang)))
+    (validate-setq company-backends '((company-grep)))
+
     ;; (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
     ;; (setq-local company-backends
@@ -2385,14 +2410,26 @@ already narrowed."
   (validate-setq shell-pop-window-position "full")
   :bind (([f5] . ar/shell-pop)))
 
+(setq company-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
+(setq company-clang-arguments
+      `(
+        "-isysroot" "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
+        "-I" "/usr/include/c++/4.2.1"
+        "-target" "arm64-apple-darwin"
+        ;; "-target" "x86_64-apple-darwin"
+        "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/google3"
+        "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/READONLY/google3"
+        "-I" "/usr/local/lib/ocaml/"))
+(setq flycheck-c/c++-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
+
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (validate-setq company-backends '((company-rfiles
-                                     company-shell
-                                     company-bash-history))))
+  (validate-setq company-backends '((company-bash-history
+                                     company-rfiles
+                                     company-shell))))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
