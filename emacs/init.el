@@ -422,7 +422,6 @@
 (defun ar/bazel-mode-hook-fun ()
   (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
   (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
-  (validate-setq company-backends '((company-rfiles company-grep)))
   (validate-setq company-grep-grep-trigger "\"//")
   (validate-setq company-grep-grep-cleanup-fun (lambda (items)
                                                  (mapcar (lambda (item)
@@ -432,14 +431,15 @@
                                                     (when (looking-at-p "\"")
                                                       (forward-char)
                                                       (insert ","))))
-  (validate-setq company-backends '((company-grep)))
-
-  )
+  (setq-local company-backends '((company-rfiles company-grep))))
 
 (use-package bazel-mode
   :after company-grep
   :config
-  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun))
+  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun)
+  :bind (:map bazel-mode-map
+              ;; Overriding `python-indent-dedent-line-backspace'
+              ("<backtab>" . company-complete)))
 
 (use-package use-host-package
   :config
@@ -1528,6 +1528,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq company-tooltip-align-annotations t)
   (global-company-mode)
   :bind
+  (:map global-map
+        ("<backtab>" . company-complete))
   (:map company-active-map
         ("C-M-/" . company-filter-candidates)))
 
@@ -1546,12 +1548,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (company-quickhelp-mode +1))
 
-(use-package company-c-headers :ensure t
-  :config
-  ;; TODO: Set in mode hook.
-  ;; (validate-setq company-backends (delete 'company-semantic company-backends))
-  ;; (add-to-list 'company-backends 'company-c-headers)
-  (bind-key "<backtab>" #'company-complete))
+(use-package company-c-headers :ensure t)
 
 (use-package company-emoji :ensure t)
 
@@ -1634,7 +1631,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (require 'company-rtags)
 ;; (validate-setq rtags-path
 ;;       (concat (getenv "HOME") "/.emacs.d/downloads/rtags/bin"))
-;; (validate-setq company-backends (delete 'company-clang company-backends))
+;; (setq-local company-backends (delete 'company-clang company-backends))
 ;; (validate-setq company-rtags-begin-after-member-access t)
 ;; (validate-setq rtags-completions-enabled t)
 ;; (add-to-list 'company-backends 'company-rtags)
@@ -2080,8 +2077,7 @@ already narrowed."
                                                    (mapcar (lambda (item)
                                                              (ar/string-match item "import +\"\\(.*\\)\"" 1))
                                                            items)))
-    ;; (validate-setq company-backends '((company-grep company-files company-yasnippet company-keywords company-clang)))
-    (validate-setq company-backends '((company-grep)))
+    (setq-local company-backends '((company-grep company-files company-yasnippet company-keywords company-clang)))
 
     ;; (setq-local company-backends '((company-rtags)))
     ;; NOTE: Disabling while trying irony out
@@ -2148,13 +2144,13 @@ already narrowed."
   (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
   (prettier-js-mode +1)
-  (validate-setq company-backends '(company-tide
-                                    (company-dabbrev-code
-                                     company-gtags
-                                     company-etags
-                                     company-keywords)
-                                    company-files
-                                    company-dabbrev))
+  (setq-local company-backends '(company-tide
+                                 (company-dabbrev-code
+                                  company-gtags
+                                  company-etags
+                                  company-keywords)
+                                 company-files
+                                 company-dabbrev))
   (company-mode +1))
 
 (use-package tide :ensure t
@@ -2179,13 +2175,13 @@ already narrowed."
   (setq-local js2-basic-offset 2)
   (validate-setq company-tooltip-align-annotations t)
   (validate-setq company-tern-meta-as-single-line t)
-  (validate-setq company-backends '(company-tern
-                                    (company-dabbrev-code
-                                     company-gtags
-                                     company-etags
-                                     company-keywords)
-                                    company-files
-                                    company-dabbrev))
+  (setq-local company-backends '(company-tern
+                                 (company-dabbrev-code
+                                  company-gtags
+                                  company-etags
+                                  company-keywords)
+                                 company-files
+                                 company-dabbrev))
   (tern-mode 1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
@@ -2427,9 +2423,9 @@ already narrowed."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (validate-setq company-backends '((company-bash-history
-                                     company-rfiles
-                                     company-shell))))
+  (setq-local company-backends '((company-bash-history
+                                  company-rfiles
+                                  company-shell))))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)
