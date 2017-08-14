@@ -46,7 +46,7 @@
       (let ((search-term (car value))
             (trigger-found (cdr value)))
         (when trigger-found
-          (company-grep-value (gnus-string-remove-all-properties search-term))))))
+          (company-grep-value (substring-no-properties search-term 0 (length search-term)))))))
 
 (provide 'company-grep)
 
