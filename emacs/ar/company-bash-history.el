@@ -23,7 +23,7 @@
     (interactive (company-begin-backend 'company-bash-history))
     (prefix (company-grab-symbol))
     (candidates
-     (company-bash-history-value (gnus-string-remove-all-properties (company-grab-symbol))))))
+     (company-bash-history-value (substring-no-properties (company-grab-symbol) 0 (length (company-grab-symbol)))))))
 
 (provide 'company-bash-history)
 
