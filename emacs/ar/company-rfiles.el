@@ -9,10 +9,11 @@
 (require 'cl-lib)
 (require 'company)
 
-(defvar company-rfiles-find-format-string "\*%s\*")
-(defvar company-rfiles-find-flags ". -iname")
+(defvar-local company-rfiles-find-format-string "\*%s\*")
 
-(defun company-rfiles-value (value)
+(defvar-local company-rfiles-find-flags ". -iname")
+
+(defun company-rfiles-find (value)
   (ignore-errors
     (mapcar (lambda (path)
               (string-remove-prefix "./" path))
@@ -27,7 +28,8 @@
     (interactive (company-begin-backend 'company-rfiles))
     (prefix (company-grab-symbol))
     (candidates
-     (company-rfiles-value (gnus-string-remove-all-properties (company-grab-symbol))))))
+     (company-rfiles-find (substring-no-properties
+                           (company-grab-symbol) 0 (length (company-grab-symbol)))))))
 
 (provide 'company-rfiles)
 
