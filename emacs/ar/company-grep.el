@@ -17,6 +17,7 @@
 (defvar company-grep-grep-flags "--nofilename --regexp")
 
 (defun company-grep-value (value)
+  (assert (executable-find company-grep-grep-bin) nil (format "%s not found. Need to install?" company-grep-grep-bin))
   (ignore-errors
     (apply #'process-lines (append (list company-grep-grep-bin)
                                    (split-string company-grep-grep-flags " " t)
