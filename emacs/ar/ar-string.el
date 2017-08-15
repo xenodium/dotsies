@@ -25,6 +25,11 @@
                (match-beginning 0)
                (match-end 0))))
 
+(defun ar/string-match (string regexp &optional num)
+  "Like `string-match' but returns first STRING matching REGEXP and group NUM."
+  (string-match regexp string)
+  (match-string-no-properties (or num 0) string))
+
 (defun ar/string-numeric-p (string)
   "Return t if STRING is an unsigned integer.  nil otherwise."
   (ar/string-match-p "\\`[[:digit:]]+\\'" string))
