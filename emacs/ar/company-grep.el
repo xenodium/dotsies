@@ -10,26 +10,44 @@
 (require 'cl-lib)
 (require 'company)
 
-(defvar company-grep-grep-bin "rg")
+(defvar-local company-grep-grep-bin "rg")
 
-(defvar company-grep-grep-format-string "%s")
+(defvar-local company-grep-grep-format-string "%s")
 
-(defvar company-grep-grep-flags "--nofilename --regexp")
+(defvar-local company-grep-grep-flags "--nofilename --regexp")
+
+(defvar-local company-grep-grep-trigger nil)
+
+(defvar-local company-grep-grep-cleanup-fun #'identity)
+
+(defvar-local company-grep-grep-completion-fun (lambda ()))
 
 (defun company-grep-value (value)
   (assert (executable-find company-grep-grep-bin) nil (format "%s not found. Need to install?" company-grep-grep-bin))
   (ignore-errors
-    (apply #'process-lines (append (list company-grep-grep-bin)
-                                   (split-string company-grep-grep-flags " " t)
-                                   (list (format company-grep-grep-format-string value) (projectile-project-root))))))
+    (funcall company-grep-grep-cleanup-fun
+             (apply #'process-lines (append (list company-grep-grep-bin)
+                                            (split-string company-grep-grep-flags " " t)
+                                            (list (format company-grep-grep-format-string (regexp-quote value)) (projectile-project-root)))))))
 
 (defun company-grep (command &optional arg &rest ignored)
   (interactive (list 'interactive))
   (case command
     (interactive (company-begin-backend 'company-grep))
-    (prefix (company-grab-symbol))
+    (prefix
+     (if company-grep-grep-trigger
+         (company-grab-symbol-cons company-grep-grep-trigger)
+       (company-grab-symbol)))
     (candidates
-     (company-grep-value (gnus-string-remove-all-properties (company-grab-symbol))))))
+     (company-grep-candidates (company-grab-symbol-cons company-grep-grep-trigger)))
+    (post-completion (funcall company-grep-grep-completion-fun))))
+
+(defun company-grep-candidates (value)
+  (if (consp value)
+      (let ((search-term (car value))
+            (trigger-found (cdr value)))
+        (when trigger-found
+          (company-grep-value (substring-no-properties search-term 0 (length search-term)))))))
 
 (provide 'company-grep)
 
