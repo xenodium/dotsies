@@ -72,6 +72,9 @@
 ;; No need to keep duplicates in prompt history.
 (setq history-delete-duplicates t)
 
+(setq user-full-name "Álvaro Ramírez"
+      user-mail-address "")
+
 (require 'ar-package)
 (ar/package-initialize)
 
@@ -811,6 +814,7 @@ Values between 0 - 100."
                    ("https://ghuntley.com/feed.xml" blog ghuntley)
                    ("http://planet.emacsen.org/atom.xml" blog emacs)
                    ("http://emacsist.com/rss" blog emacs)
+                   ("http://blog.davep.org/feed.xml" blog emacs)
                    ;; ("http://planet.gnome.org/rss20.xml" blog gnome)
                    ("http://sachachua.com/blog/feed" blog sachachua)
                    ("https://news.ycombinator.com/rss" news hackernews)
