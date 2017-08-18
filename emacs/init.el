@@ -431,7 +431,7 @@
                                                     (when (looking-at-p "\"")
                                                       (forward-char)
                                                       (insert ","))))
-  (setq-local company-backends '((company-rfiles company-grep))))
+  (setq-local company-backends '((company-grep company-rfiles))))
 
 (use-package bazel-mode
   :after company-grep
