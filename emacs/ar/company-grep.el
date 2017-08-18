@@ -23,6 +23,7 @@
 (defvar-local company-grep-grep-completion-fun (lambda ()))
 
 (defun company-grep-value (value)
+  (assert (executable-find company-grep-grep-bin) nil (format "%s not found. Need to install?" company-grep-grep-bin))
   (ignore-errors
     (funcall company-grep-grep-cleanup-fun
              (apply #'process-lines (append (list company-grep-grep-bin)
