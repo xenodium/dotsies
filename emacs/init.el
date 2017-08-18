@@ -72,6 +72,9 @@
 ;; No need to keep duplicates in prompt history.
 (setq history-delete-duplicates t)
 
+(setq user-full-name "Álvaro Ramírez"
+      user-mail-address "")
+
 (require 'ar-package)
 (ar/package-initialize)
 
