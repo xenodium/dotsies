@@ -8,13 +8,19 @@
 (require 'ar-shell)
 (require 'cl)
 (require 'helm-projectile)
+(require 'esh-mode)
 
 (defun ar/helm-projectile-shell-cd ()
   "Change shell current working directory using helm projectile."
   (interactive)
-  (assert (string-equal mode-name "Shell") nil "Not in Shell mode")
+  (assert (or (string-equal mode-name "EShell")
+              (string-equal mode-name "Shell")) nil "Not in (E)Shell mode")
   (let ((helm-dir-source (copy-tree  helm-source-projectile-directories-list)))
-    (add-to-list 'helm-dir-source '(action . ar/shell-cd))
+    (add-to-list 'helm-dir-source (cons 'action (if (string-equal mode-name "EShell")
+                                                    (lambda (path)
+                                                      (insert (format "cd %s" path))
+                                                      (eshell-send-input))
+                                                    'ar/shell-cd)))
     (add-to-list 'helm-dir-source '(keymap . nil))
     (add-to-list 'helm-dir-source '(header-line . "cd to directory..."))
     (helm :sources helm-dir-source
