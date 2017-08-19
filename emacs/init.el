@@ -412,6 +412,7 @@
 (use-package ar-typescript)
 (use-package ar-font)
 (use-package ar-compile)
+(use-package ar-eshell-config)
 
 (use-package company-grep)
 (use-package company-rfiles)
@@ -2423,15 +2424,27 @@ already narrowed."
         "-I" "/usr/local/lib/ocaml/"))
 (setq flycheck-c/c++-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
 
+(use-package shrink-path
+  :ensure t)
+
+(use-package eshell
+  :config
+  (setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+  (defun ar/eshell-mode-hook-function ()
+    (setq-local global-hl-line-mode nil)
+    (setq-local company-backends '((company-projectile-cd))))
+  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function))
+
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
   (setq-local company-backends '((company-projectile-cd
-                                  company-bash-history
-                                  company-rfiles
-                                  company-shell))))
+                                  ;; company-bash-history
+                                  ;; company-rfiles
+                                  ;; company-shell
+                                  ))))
 
 ;; This is a hack. Let's see how it goes.
 (defun ar/shell-directory-tracker (str)

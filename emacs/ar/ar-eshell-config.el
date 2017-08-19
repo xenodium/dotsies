@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(require 'shrink-path)
+
 (defun ar/eshell-config--prompt-char ()
   "Return shell config character, based on current OX. For example, an  for MacOS."
   (let ((os-char (cond ((ar/osx-p) "")
@@ -15,19 +17,27 @@
                                 "#"
                               "$"))))
 
-(ar/eshell-config--prompt-char)
-
 (defun ar/eshell-config--prompt-function ()
-  (concat
-   (propertize "┌─ " 'face `(:foreground "green"))
-   (propertize (concat (eshell/pwd)) 'face 'comint-highlight-input)
-   (propertize "\n" 'face `(:foreground "green"))
-   (propertize "└─>" 'face `(:foreground "green"))
-   (propertize (format " %s " (ar/eshell-config--prompt-char))
-               'face `(:foreground "green"))
-   ))
+  "Make eshell prompt purrrty."
+  (let ((shrinked-dpath (car (shrink-path-prompt (eshell/pwd))))
+        (dname (cdr (shrink-path-prompt (eshell/pwd)))))
+    (concat "\n┌─ " shrinked-dpath dname "\n"
+            "└─>"
+            (propertize (ar/eshell-config--git-branch-prompt)
+                        'face 'font-lock-function-name-face)
+            " "
+            (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face) 
+            ;; needed for the input text to not have prompt face
+            (propertize " " 'face 'default))))
 
-(setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+(defun ar/eshell-config--git-branch-prompt ()
+  "Git branch prompt."
+  (let ((branch (car (loop for match in (split-string (shell-command-to-string "git branch") "\n")
+                           when (string-match "^\*" match)
+                           collect match))))
+    (if (not (eq branch nil))
+        (concat " [" (substring branch 2)  "]")
+      "")))
 
 (provide 'ar-eshell-config)
 
