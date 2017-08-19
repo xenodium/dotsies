@@ -2427,7 +2427,8 @@ already narrowed."
   ;; Enable company completion on TAB when in shell mode.
   ;; (company-mode)
   ;; (bind-key "TAB" #'company-manual-begin shell-mode-map)
-  (setq-local company-backends '((company-bash-history
+  (setq-local company-backends '((company-projectile-cd
+                                  company-bash-history
                                   company-rfiles
                                   company-shell))))
 
