@@ -11,7 +11,7 @@
 
 (defvar-local company-rfiles-find-format-string "\*%s\*")
 
-(defvar-local company-rfiles-find-flags ". -iname")
+(defvar-local company-rfiles-find-flags ". -type f -iname")
 
 (defun company-rfiles-find (value)
   (ignore-errors
