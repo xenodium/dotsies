@@ -416,6 +416,7 @@
 (use-package company-grep)
 (use-package company-rfiles)
 (use-package company-bash-history)
+(use-package company-projectile-cd)
 
 (defun my-completion (completion)
   (when (looking-at-p "\"")
