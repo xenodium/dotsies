@@ -2433,7 +2433,10 @@ already narrowed."
   (defun ar/eshell-mode-hook-function ()
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd))))
-  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function))
+  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
+  :bind (:map eshell-mode-map
+              ;; Overriding `eshell-previous-matching-input'
+              ("M-r" . helm-eshell-history)))
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
