@@ -226,6 +226,12 @@
 
   (use-package helm-config)
 
+  (use-package helm-eshell
+    :config
+    (add-hook #'eshell-mode-hook
+              (lambda ()
+                (bind-key "M-r" #'helm-eshell-history eshell-mode-map))))
+
   (helm-mode 1)
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
@@ -412,7 +418,10 @@
 (use-package ar-typescript)
 (use-package ar-font)
 (use-package ar-compile)
-(use-package ar-eshell-config)
+(use-package ar-eshell-config
+  :config
+  (ar/eshell-config-setup-aliases)
+  :after eshell)
 
 (use-package company-grep)
 (use-package company-rfiles)
@@ -2429,14 +2438,20 @@ already narrowed."
 
 (use-package eshell
   :config
-  (setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+  (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+  (validate-setq eshell-history-size (* 10 1024))
+  (validate-setq eshell-hist-ignoredups t)
+  (validate-setq eshell-error-if-no-glob t)
+  (validate-setq eshell-glob-case-insensitive t)
+  (validate-setq eshell-scroll-to-bottom-on-input 'all)
+  (validate-setq eshell-list-files-after-cd t)
+
   (defun ar/eshell-mode-hook-function ()
+    (smartparens-strict-mode +1)
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd))))
-  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
-  :bind (:map eshell-mode-map
-              ;; Overriding `eshell-previous-matching-input'
-              ("M-r" . helm-eshell-history)))
+
+  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function))
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
