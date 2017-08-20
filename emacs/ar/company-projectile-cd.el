@@ -32,19 +32,32 @@
 (defun company-projectile-cd--candidates (input)
   "Return candidates for given INPUT."
   (company-projectile-cd--reset-root)
-  (when (and (projectile-project-p) (consp input))
+  (when (consp input)
     (let ((search-term (substring-no-properties
                         (car input) 0 (length (car input))))
           (prefix-found (cdr input)))
       (when prefix-found
-        (-filter (lambda (path)
-                   (string-match-p (regexp-quote
-                                    search-term)
-                                   path))
-                 (-snoc
-                  (projectile-current-project-dirs)
-                  ;; Throw project root in there also.
-                  (projectile-project-root)))))))
+        (if (projectile-project-p)
+            (company-projectile-cd--projectile search-term)
+          (company-projectile-cd--find-fallback search-term))))))
+
+(defun company-projectile-cd--projectile (search-term)
+  (-filter (lambda (path)
+             (string-match-p (regexp-quote
+                              search-term)
+                             path))
+           (-snoc
+            (projectile-current-project-dirs)
+            ;; Throw project root in there also.
+            (projectile-project-root))))
+
+(defun company-projectile-cd--find-fallback (search-term)
+  (ignore-errors
+    (-map (lambda (path)
+            (string-remove-prefix "./" path))
+          (apply #'process-lines
+                 (list "find" "." "-type" "d"  "-maxdepth" "2" "-iname"
+                       (format "\*%s\*" search-term))))))
 
 (defun company-projectile-cd--expand-inserted-path (path)
   "Replace relative PATH insertion with its absolute equivalent if needed."
