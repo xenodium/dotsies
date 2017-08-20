@@ -39,6 +39,15 @@
         (concat " [" (substring branch 2)  "]")
       "")))
 
+(defun eshell/clear ()
+  "Alias to clear (destructive) eshell content."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
+
+(defun  ar/eshell-config-setup-aliases ()
+  (eshell/alias "ec" "find-file $1"))
+
 (provide 'ar-eshell-config)
 
 ;;; ar-eshell-config.el ends here
