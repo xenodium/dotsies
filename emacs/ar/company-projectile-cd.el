@@ -20,14 +20,19 @@
   (case command
     (interactive (company-begin-backend 'company-projectile-cd))
     (prefix
-     (company-grab-symbol-cons company-projectile-cd-prefix
-                               (length company-projectile-cd-prefix)))
+     (company-projectile-cd--prefix))
     (candidates
      (company-projectile-cd--candidates
-      (company-grab-symbol-cons company-projectile-cd-prefix
-                                (length company-projectile-cd-prefix))))
+      (company-projectile-cd--prefix)))
     (post-completion
      (company-projectile-cd--expand-inserted-path arg))))
+
+(defun company-projectile-cd--prefix ()
+  (-some (lambda (p)
+           (let ((prefix (company-grab-symbol-cons p (length p))))
+             (when (consp prefix)
+               prefix)))
+         '("cd " "ls ")))
 
 (defun company-projectile-cd--candidates (input)
   "Return candidates for given INPUT."
