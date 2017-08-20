@@ -2453,6 +2453,10 @@ already narrowed."
 
   (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function))
 
+(use-package eshell-autojump :ensure t
+  :config
+  (eshell-autojump-load))
+
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
   ;; Enable company completion on TAB when in shell mode.
