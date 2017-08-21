@@ -418,10 +418,6 @@
 (use-package ar-typescript)
 (use-package ar-font)
 (use-package ar-compile)
-(use-package ar-eshell-config
-  :config
-  (ar/eshell-config-setup-aliases)
-  :after eshell)
 
 (use-package company-grep)
 (use-package company-rfiles)
@@ -2411,8 +2407,17 @@ already narrowed."
     (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
         (shell-pop-out)
       (shell-pop-up shell-pop-last-shell-buffer-index)))
+
+  (custom-set-variables
+   '(shell-pop-window-position "full")
+   '(shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell shell-pop-term-shell)))))
+
+  (validate-setq shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
+
   ;; Customize shell-pop.
-  (validate-setq shell-pop-term-shell "/bin/bash")
+  ;; Disabling while trying eshell out.
+  ;; (validate-setq shell-pop-term-shell "/bin/bash")
+
   ;; Trying shell out. Disabling ansi-term for now.
   ;; (validate-setq shell-pop-shell-type '("ansi-term"
   ;;                              "terminal"
@@ -2438,7 +2443,11 @@ already narrowed."
 
 (use-package eshell
   :config
-  (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+  (use-package em-hist)
+  (use-package em-glob)
+  (use-package esh-mode)
+  (use-package em-dirs)
+
   (validate-setq eshell-history-size (* 10 1024))
   (validate-setq eshell-hist-ignoredups t)
   (validate-setq eshell-error-if-no-glob t)
@@ -2451,7 +2460,12 @@ already narrowed."
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd))))
 
-  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function))
+  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
+
+  (use-package ar-eshell-config
+    :config
+    (ar/eshell-config-setup-aliases)
+    (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)))
 
 (use-package eshell-autojump :ensure t
   :config
