@@ -7,6 +7,8 @@
 ;;; Code:
 
 (require 'esh-mode)
+(require 'em-alias)
+(require 'em-prompt)
 (require 'shrink-path)
 
 (defun ar/eshell-config--prompt-char ()
