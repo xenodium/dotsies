@@ -1537,6 +1537,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq company-show-numbers t)
   (validate-setq company-minimum-prefix-length 2)
   (validate-setq company-tooltip-align-annotations t)
+
+  ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
+  (add-to-list 'company-begin-commands 'comint-magic-space)
+
   (global-company-mode)
   :bind
   (:map global-map
