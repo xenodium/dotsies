@@ -1112,6 +1112,8 @@ Optional argument NON-RECURSIVE to shallow-search."
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
                       :background "default")
+  ;; Automatically remove whitespace on saving.
+  (add-hook 'before-save-hook 'whitespace-cleanup)
   (global-whitespace-mode))
 
 (defun ar/compile-autoclose (buffer string)
