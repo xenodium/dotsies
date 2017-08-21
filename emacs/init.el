@@ -518,7 +518,7 @@
       (spaceline-toggle-buffer-encoding-off)
       (spaceline-toggle-buffer-encoding-abbrev-off)
       (spaceline-toggle-buffer-position-off)
-      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) 
+      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment time
         "The current time."
         (format-time-string "%H:%M"))
