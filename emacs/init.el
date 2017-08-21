@@ -2467,9 +2467,7 @@ already narrowed."
     (ar/eshell-config-setup-aliases)
     (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)))
 
-(use-package eshell-autojump :ensure t
-  :config
-  (eshell-autojump-load))
+(use-package eshell-autojump :ensure t)
 
 (defun ar/shell-mode-hook-function ()
   "Called when entering shell mode."
