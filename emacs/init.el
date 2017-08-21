@@ -8,6 +8,14 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
 
+;; https://oremacs.com/2015/01/17/setting-up-ediff
+;; Macro  for setting custom variables.
+;; Similar to custom-set-variables, but more like setq.
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set)
+                'set-default)
+            ',variable ,value))
+
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
 (setq inhibit-splash-screen t)
@@ -1065,15 +1073,19 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package ediff
   :config
-  (validate-setq ediff-window-setup-function #'ediff-setup-windows-plain)
-  (validate-setq ediff-split-window-function #'split-window-horizontally)
+  (csetq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (csetq ediff-split-window-function #'split-window-horizontally)
+
+  ;; Automatically highlight first change.
+  (add-hook 'ediff-startup-hook 'ediff-next-difference)
+
   ;; Expand org files when ediffing.
   (add-hook 'ediff-prepare-buffer-hook
             (lambda ()
-              (eq major-mode 'org-mode)
-              (visible-mode 1)  ; default 0
-              (validate-setq truncate-lines nil)  ; no `org-startup-truncated' in hook
-              (validate-setq org-hide-leading-stars t))))
+              (when (eq major-mode 'org-mode)
+                (visible-mode 1)  ; default 0
+                (setq-local truncate-lines nil)  ; no `org-startup-truncated' in hook
+                (setq-local org-hide-leading-stars t)))))
 
 ;; ediff-revision cleanup.
 ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
@@ -1701,9 +1713,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; If eclim is your cup of tea.
 ;; (require 'eclim)
 ;; (global-eclim-mode)
-;; (custom-set-variables
-;;  '(eclim-eclipse-dirs '("~/tools/eclipse"))
-;;  '(eclim-executable "~/tools/eclipse/eclim"))
+;; (csetq eclim-eclipse-dirs '("~/tools/eclipse"))
+;; (csetq eclim-executable "~/tools/eclipse/eclim")
 ;; (require 'eclimd)
 ;; (require 'company-emacs-eclim)
 ;; (company-emacs-eclim-setup)
@@ -2414,9 +2425,8 @@ already narrowed."
         (shell-pop-out)
       (shell-pop-up shell-pop-last-shell-buffer-index)))
 
-  (custom-set-variables
-   '(shell-pop-window-position "full")
-   '(shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell shell-pop-term-shell)))))
+  (csetq shell-pop-window-position "full")
+  (csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell shell-pop-term-shell))))
 
   (validate-setq shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
 
