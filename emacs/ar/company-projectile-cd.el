@@ -61,7 +61,12 @@
     (-map (lambda (path)
             (string-remove-prefix "./" path))
           (apply #'process-lines
-                 (list "find" "." "-type" "d"  "-maxdepth" "2" "-iname"
+                 (list "find" "."
+                       "(" "-type" "d" "-or" "-type" "l" ")"
+                       "-maxdepth" "2"
+                       "-not" "-path" "."
+                       "-not" "-path" "./.*"
+                       "-iname"
                        (format "\*%s\*" search-term))))))
 
 (defun company-projectile-cd--expand-inserted-path (path)
