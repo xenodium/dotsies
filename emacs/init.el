@@ -2124,6 +2124,11 @@ already narrowed."
   :bind (:map objc-mode-map
               ("M-." . dumb-jump-go)))
 
+;; Growl-workalike for Emacs.
+;; (use-package alert :ensure t
+;;   :config
+;;   (csetq alert-default-style 'osx-notifier))
+
 (use-package popup :ensure
   :bind (:map popup-menu-keymap
               ("M-n" . popup-next)
