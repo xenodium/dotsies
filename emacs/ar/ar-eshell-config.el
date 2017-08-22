@@ -29,7 +29,7 @@
             (propertize (ar/eshell-config--git-branch-prompt)
                         'face 'font-lock-function-name-face)
             " "
-            (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face) 
+            (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face)
             ;; needed for the input text to not have prompt face
             (propertize " " 'face 'default))))
 
@@ -47,6 +47,12 @@
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
+
+;; https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
+;; (defun eshell/find (&rest args)
+;;   "Wrapper around the ‘find’ executable and ARGS."
+;;   (let ((cmd (concat "find " (string-join args))))
+;;     (shell-command-to-string cmd)))
 
 (defun  ar/eshell-config-setup-aliases ()
   (eshell/alias "ec" "find-file $1"))
