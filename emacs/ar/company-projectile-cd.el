@@ -12,8 +12,6 @@
 (require 'f)
 (require 'projectile)
 
-(defvar-local company-projectile-cd-prefix "cd ")
-
 (defun company-projectile-cd (command &optional arg &rest ignored)
   "Company shell completion for any projectile path."
   (interactive (list 'interactive))
