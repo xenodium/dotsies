@@ -890,26 +890,31 @@ Values between 0 - 100."
   :config (global-hungry-delete-mode))
 
 (use-package font-core :config
-  (setq jit-lock-stealth-time 10)
+  (csetq jit-lock-stealth-time 10)
   (global-font-lock-mode))
 
 (use-package autorevert
   :config
+  ;; Auto refresh dired.
+  ;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
+  (csetq global-auto-revert-non-file-buffers t)
+  ;; Be quiet about dired refresh.
+  (csetq auto-revert-verbose nil)
   (global-auto-revert-mode))
 
-;; Auto refresh dired.
-;; From http://mixandgo.com/blog/how-i-ve-convinced-emacs-to-dance-with-ruby
-(setq global-auto-revert-non-file-buffers t)
-;; Be quiet about dired refresh.
-(setq auto-revert-verbose nil)
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
 ;; See https://github.com/magit/magit/wiki/magit-update-uncommitted-buffer-hook
 ;; See https://github.com/magit/magit/blob/master/Documentation/magit.org#the-mode-line-information-isnt-always-up-to-date
 
-(setq vc-handled-backends '(Git))
-(setq auto-revert-check-vc-info nil)
+(use-package vc-hooks
+  :config
+  (csetq vc-handled-backends '(Git))
+  (csetq auto-revert-check-vc-info nil)
+  :bind (:map vc-prefix-map
+              ;; Use vc-ediff as default.
+              ("=" . vc-ediff)))
 
 (use-package expand-region :ensure t
   :config
@@ -1141,11 +1146,14 @@ Optional argument NON-RECURSIVE to shallow-search."
            (next-error))
          (message "Compilation exited abnormally: %s" string))))
 
-;; Automatically hide successful builds window.
-(setq compilation-finish-functions #'ar/compile-autoclose)
+(use-package compile
+  :config
+  ;; TODO: Shouldn't this
+  ;; Automatically hide successful builds window.
+  (setq compilation-finish-functions #'ar/compile-autoclose))
 
 ;; Automatically scroll build output.
-(setq compilation-scroll-output t)
+(csetq compilation-scroll-output t)
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -1237,14 +1245,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package volatile-highlights :ensure t
   :config (volatile-highlights-mode t))
 
-;; Disable backup.
-;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
-(setq backup-inhibited t)
-
-;; Disable auto save.
-;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
-(setq auto-save-default nil)
-
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
 
@@ -1296,11 +1296,7 @@ Argument PROMPT to check for additional prompt."
   (validate-setq vc-follow-symlinks t)
   :bind ("C-x v f" . vc-pull))
 
-;; Use vc-ediff as default.
-(eval-after-load "vc-hooks"
-  '(define-key vc-prefix-map "=" #'vc-ediff))
-
-(setq css-indent-offset 2)
+(csetq css-indent-offset 2)
 
 (use-package markdown-mode :ensure t
   :mode (("\\.text\\'" . markdown-mode)
@@ -1309,9 +1305,10 @@ Argument PROMPT to check for additional prompt."
 (use-package markdown-mode+ :ensure t
   :after markdown-mode)
 
-(setq display-time-world-list '(("Europe/Paris" "Paris")
-                                ("Europe/London" "London")
-                                ("America/Los_Angeles" "Los Angeles")))
+(use-package time :config
+  (csetq display-time-world-list '(("Europe/Paris" "Paris")
+                                   ("Europe/London" "London")
+                                   ("America/Los_Angeles" "Los Angeles"))))
 
 (use-package sudo-edit :ensure t)
 
@@ -1340,8 +1337,16 @@ Argument PROMPT to check for additional prompt."
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Ensure files end with newline.
-(setq require-final-newline t)
+(use-package files
+  :config
+  ;; Disable backup.
+  ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
+  (validate-setq backup-inhibited t)
+  ;; Ensure files end with newline.
+  (csetq require-final-newline t)
+  ;; Disable auto save.
+  ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
+  (csetq auto-save-default nil))
 
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
@@ -1363,7 +1368,7 @@ Argument PROMPT to check for additional prompt."
 
 ;; Don't let the cursor go into minibuffer prompt.
 ;; From http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
-(setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+(csetq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
 ;; Not ready for consumption.
 ;; (defun ar/minibuffer-keyboard-quit-dwim (&optional arg)
@@ -1816,10 +1821,10 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package org-crypt
   :config
   (org-crypt-use-before-save-magic)
-  (setq org-crypt-disable-auto-save nil)
-  (setq org-tags-exclude-from-inheritance (quote ("crypt")))
+  (csetq org-crypt-disable-auto-save nil)
+  (csetq org-tags-exclude-from-inheritance (quote ("crypt")))
   ;;  Set to nil to use symmetric encryption.
-  (setq org-crypt-key nil))
+  (csetq org-crypt-key nil))
 
 ;; To print ASCII art from text like:
 ;;   __ _      _     _
@@ -1958,7 +1963,7 @@ already narrowed."
 (defun ar/go-mode-hook-function ()
   "Called when entering `go-mode'."
   (helm-dash-activate-docset "Go")
-  (setq gofmt-command "goimports")
+  (csetq gofmt-command "goimports")
   (setq-local company-backends '(company-go))
   (company-mode)
   (go-eldoc-setup)
@@ -1978,7 +1983,7 @@ already narrowed."
   (let ((p (point)))
     (dotimes (i 10)
       (when (= p (point)) ad-do-it))))
-(setq set-mark-command-repeat-pop t)
+(csetq set-mark-command-repeat-pop t)
 
 (defun ar/split-camel-region ()
   "Splits camelCaseWord to camel case word."
@@ -2269,7 +2274,7 @@ already narrowed."
 ;;(use-package jscs :ensure t)
 
 ;; I prefer sentences to end with one space instead.
-(setq sentence-end-double-space nil)
+(csetq sentence-end-double-space nil)
 
 (use-package flyspell
   :after ar-auto-correct
@@ -2405,7 +2410,7 @@ already narrowed."
                                 '(markdown-mode-hook))
 
 ;; Select help window by default.
-(setq help-window-select t)
+(csetq help-window-select t)
 
 (use-package comint
   :config
@@ -2447,16 +2452,16 @@ already narrowed."
   (validate-setq shell-pop-window-position "full")
   :bind (([f5] . ar/shell-pop)))
 
-(setq company-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
-(setq company-clang-arguments
-      `(
-        "-isysroot" "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
-        "-I" "/usr/include/c++/4.2.1"
-        "-target" "arm64-apple-darwin"
-        ;; "-target" "x86_64-apple-darwin"
-        "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/google3"
-        "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/READONLY/google3"
-        "-I" "/usr/local/lib/ocaml/"))
+(csetq company-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
+(csetq company-clang-arguments
+       `(
+         "-isysroot" "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
+         "-I" "/usr/include/c++/4.2.1"
+         "-target" "arm64-apple-darwin"
+         ;; "-target" "x86_64-apple-darwin"
+         "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/google3"
+         "-I" "/Volumes/CaseSensitive/stuff/active/code/wear-ios/READONLY/google3"
+         "-I" "/usr/local/lib/ocaml/"))
 (setq flycheck-c/c++-clang-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
 
 (use-package shrink-path
@@ -2693,7 +2698,7 @@ With a prefix argument N, (un)comment that many sexps."
   (auto-compile-on-save-mode 1))
 
 ;; Collaborate with clipboard.
-(setq x-select-enable-clipboard t)
+(csetq select-enable-clipboard t)
 ;; More expected region behaviour.
 (transient-mark-mode t)
 
@@ -2906,12 +2911,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (flycheck-pos-tip-mode))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
-(setq cc-other-file-alist
-      `(("\\.cpp$" (".hpp" ".h"))
-        ("\\.h$" (".c" ".cpp" ".m" ".mm"))
-        ("\\.hpp$" (".cpp" ".c"))
-        ("\\.m$" (".h"))
-        ("\\.mm$" (".h"))))
+(csetq cc-other-file-alist
+       `(("\\.cpp$" (".hpp" ".h"))
+         ("\\.h$" (".c" ".cpp" ".m" ".mm"))
+         ("\\.hpp$" (".cpp" ".c"))
+         ("\\.m$" (".h"))
+         ("\\.mm$" (".h"))))
 
 ;; Usually, both `C-x C-m' and `C-x RET' invoke the
 ;; `mule-keymap', but that's a waste of keys. Here we put it
@@ -2925,7 +2930,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   (helm-find t))
 
 ;; Ensure clipboard makes it into kill ring even if killing other text.
-(setq save-interprogram-paste-before-kill t)
+(csetq save-interprogram-paste-before-kill t)
 
 (use-package region-bindings-mode :ensure
   :config
@@ -3304,21 +3309,26 @@ _y_outube
   :ensure t
   :config
   (add-hook 'org-mode-hook #'ar/org-mode-hook-function)
-  (setq org-todo-keywords
-        '((sequence
-           "TODO"
-           "STARTED"
-           "DONE"
-           "OBSOLETE"
-           "CANCELLED")))
-  (setq org-todo-keyword-faces
-        '(("TODO" . (:foreground "red" :weight bold))
-          ("STARTED" . (:foreground "yellow" :weight bold))
-          ("DONE" . (:foreground "green" :weight bold))
-          ("OBSOLETE" . (:foreground "blue" :weight bold))
-          ("CANCELLED" . (:foreground "gray" :weight bold))))
-  (setq org-refile-targets '((nil :regexp . "Week of")
-                             (nil :regexp . "RESOLVED")))
+  (csetq org-todo-keywords
+         '((sequence
+            "TODO"
+            "STARTED"
+            "DONE"
+            "OBSOLETE"
+            "CANCELLED")))
+
+  (use-package org-faces
+    :config
+    (csetq org-todo-keyword-faces
+           '(("TODO" . (:foreground "red" :weight bold))
+             ("STARTED" . (:foreground "yellow" :weight bold))
+             ("DONE" . (:foreground "green" :weight bold))
+             ("OBSOLETE" . (:foreground "blue" :weight bold))
+             ("CANCELLED" . (:foreground "gray" :weight bold)))))
+
+  (csetq org-refile-targets '((:regexp . "Week of")
+                              (:regexp . "RESOLVED")))
+
   (validate-setq org-ellipsis "⤵")
   (validate-setq org-fontify-emphasized-text t)
   ;; Fontify code in code blocks.
@@ -3398,7 +3408,7 @@ _y_outube
 ;; Weather forecast (no login/account needed).
 (use-package wttrin :ensure t
   :config
-  (setq wttrin-default-cities (list "London" "Boston"))
+  (csetq wttrin-default-cities (list "London" "Boston"))
   (defalias 'ar/weather 'wttrin))
 
 (defun ar/kill-region-advice-fun (orig-fun &rest r)
@@ -3451,7 +3461,7 @@ line instead."
   :preface
   (provide 'isearch)
   :config
-  (setq search-default-mode #'char-fold-to-regexp)
+  (csetq search-default-mode #'char-fold-to-regexp)
   ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
   (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
     "Enable isearch to start with current selection."
