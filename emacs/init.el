@@ -1581,6 +1581,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Enhanced help buffers.
 (use-package helpful :ensure t
   :bind
+  ("C-h c" . helpful-command)
   ("C-h f" . helpful-function)
   ("C-h v" . helpful-variable))
 
