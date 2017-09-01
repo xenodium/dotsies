@@ -728,6 +728,8 @@ Values between 0 - 100."
 
   (use-package magit-rockstar :ensure t)
 
+  (use-package rotate :ensure t)
+
   ;; A screensaver of sorts
   (use-package zone
     :config
@@ -1577,6 +1579,13 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package pcmpl-args :ensure t)
 (use-package pcmpl-homebrew :ensure t)
 (use-package pcmpl-git :ensure t)
+
+;; Enhanced help buffers.
+(use-package helpful :ensure t
+  :bind
+  ("C-h c" . helpful-command)
+  ("C-h f" . helpful-function)
+  ("C-h v" . helpful-variable))
 
 (use-package company-sourcekit :ensure t)
 
