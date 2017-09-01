@@ -890,8 +890,10 @@ Values between 0 - 100."
   :config (global-hungry-delete-mode))
 
 (use-package font-core :config
-  (csetq jit-lock-stealth-time 10)
   (global-font-lock-mode))
+
+(use-package jit-lock :config
+  (csetq jit-lock-stealth-time 10))
 
 (use-package autorevert
   :config
