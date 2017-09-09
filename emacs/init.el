@@ -1568,8 +1568,11 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind
   (:map global-map
         ("<backtab>" . company-complete))
+  :bind
   (:map company-active-map
-        ("C-M-/" . company-filter-candidates)))
+        ("C-s" . company-filter-candidates)
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous)))
 
 (use-package helm-company :ensure t)
 
