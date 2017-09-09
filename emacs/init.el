@@ -3005,6 +3005,9 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                                                   prompt)))))
     alpha-num-string))
 
+;; Major mode for reading EPUB documents.
+(use-package nov :ensure t)
+
 (use-package hydra :ensure t
   :config (validate-setq hydra-is-helpful t))
 
