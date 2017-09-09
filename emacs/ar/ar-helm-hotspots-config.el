@@ -10,6 +10,7 @@
 (require 'ar-helm-org)
 (require 'ar-org)
 (require 'helm-buffers)
+(require 'helm-for-files)
 
 (defvar ar/helm-hotspots-config--local-source
   '((name . "Local")
