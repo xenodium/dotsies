@@ -2503,9 +2503,9 @@ already narrowed."
   (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
 
   (use-package ar-eshell-config
-    :config
-    (ar/eshell-config-setup-aliases)
-    (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)))
+    :after validate
+    :after eshell
+    :after shrink-path))
 
 (use-package eshell-autojump :ensure t)
 
