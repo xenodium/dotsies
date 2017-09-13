@@ -108,6 +108,8 @@
 
 (defalias 'eshell/more 'eshell/less)
 
+(validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)
+
 ;; https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
 ;; (defun eshell/find (&rest args)
 ;;   "Wrapper around the ‘find’ executable and ARGS."
