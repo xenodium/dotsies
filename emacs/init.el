@@ -1569,6 +1569,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (:map global-map
         ("<backtab>" . company-complete))
   :bind
+  (:map company-search-map
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous))
+  :bind
   (:map company-active-map
         ("C-s" . company-filter-candidates)
         ("C-n" . company-select-next)
