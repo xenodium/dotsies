@@ -272,6 +272,10 @@
         (end (if (region-active-p) (region-end) (point-max))))
     (shell-command-on-region start end "sqlformat -r -" nil t)))
 
+;; make ELisp regular expressions more readable.
+(use-package easy-escape :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'easy-escape-minor-mode))
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
