@@ -442,6 +442,11 @@
     (insert ",")))
 
 (defun ar/bazel-mode-hook-fun ()
+  ;; Don't run yapf (for phython formatting).
+  (remove-hook #'before-save-hook
+               #'py-yapf-buffer
+               t)
+  (ar/buffer-run-for-saved-file-name "BUILD" "buildifier")
   (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
   (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
   (validate-setq company-grep-grep-trigger "\"//")
@@ -631,7 +636,8 @@ Values between 0 - 100."
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save)
-  :config (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
+  :config
+  (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-codesearch :ensure t)
 
