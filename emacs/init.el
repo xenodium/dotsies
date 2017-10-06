@@ -637,7 +637,8 @@ Values between 0 - 100."
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save)
-  :config (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
+  :config
+  (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-codesearch :ensure t)
 
