@@ -435,6 +435,7 @@
 (use-package company-rfiles)
 (use-package company-bash-history)
 (use-package company-projectile-cd)
+(use-package flycheck-swiftlint)
 
 (defun my-completion (completion)
   (when (looking-at-p "\"")
@@ -442,6 +443,11 @@
     (insert ",")))
 
 (defun ar/bazel-mode-hook-fun ()
+  ;; Disabling py-yapf-buffer (we're not in actual python-mode, but a derived one).
+  (remove-hook #'before-save-hook
+               #'py-yapf-buffer
+               t)
+  (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
   (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
   (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
   (validate-setq company-grep-grep-trigger "\"//")
@@ -1539,17 +1545,33 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-;; Disabling on Emacs 25 for the time being.
-;;
-;; (defun ar/swift-mode-hook-function ()
-;;   "Called when entering `swift-mode'."
-;;   (setq-local company-backends '(company-sourcekit)))
+(defun ar/swift-mode-hook-function ()
+  "Called when entering `swift-mode'."
+  ;; swiftlint autocorrect --path
+  ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
+  (add-to-list 'flycheck-checkers 'swiftlint)
+  (setq-local flycheck-swiftlint-config-file
+              (concat (file-name-as-directory
+                       (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
+                      ".swiftlint.yml")
+              )
+  (defun ar/--after-swift-save ()
+    (call-process "swiftformat" nil "*swiftformat*" t "--indent" "2" buffer-file-name)
+    (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
+                  "--config" flycheck-swiftlint-config-file
+                  "--path" buffer-file-name))
 
-;; (use-package swift-mode :ensure t
-;;   :init (defvar flycheck-swift-sdk-path)
-;;   :after company-sourcekit flycheck
-;;   :config
-;;   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+  ;; (setq sourcekit-project "some/project.xcodeproj")
+  ;; (setq-local company-backends '(company-sourcekit))
+
+  (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
+
+(use-package swift-mode :ensure t
+  :init (defvar flycheck-swift-sdk-path)
+  :after company-sourcekit flycheck
+  :config
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
+  (csetq swift-mode:basic-offset 2))
 
 (use-package company :ensure t
   :config
