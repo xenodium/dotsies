@@ -1898,7 +1898,7 @@ Repeated invocations toggle between the two most recently open buffers."
      (python . t)
      (ruby . t)
      (screen . nil)
-     (sh . t)
+     ;; (sh . t) ;; Not loading in Emacs 26
      (js . t)
      (sql . nil)
      (sqlite . t))))
