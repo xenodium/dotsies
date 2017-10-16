@@ -359,6 +359,7 @@
 (use-package ar-dired)
 (use-package ar-file
   :after (ar-string simple))
+(use-package ar-bazel)
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
