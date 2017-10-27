@@ -238,6 +238,7 @@
     :config
     (add-hook #'eshell-mode-hook
               (lambda ()
+                (bind-key "TAB" #'helm-esh-pcomplete)
                 (bind-key "M-r" #'helm-eshell-history eshell-mode-map))))
 
   (helm-mode 1)
@@ -359,6 +360,7 @@
 (use-package ar-dired)
 (use-package ar-file
   :after (ar-string simple))
+(use-package ar-bazel)
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
@@ -2518,6 +2520,11 @@ already narrowed."
   (use-package em-glob)
   (use-package esh-mode)
   (use-package em-dirs)
+  (use-package em-smart)
+
+  (validate-setq eshell-where-to-jump 'begin)
+  (validate-setq eshell-review-quick-commands nil)
+  (validate-setq eshell-smart-space-goes-to-end t)
 
   (validate-setq eshell-history-size (* 10 1024))
   (validate-setq eshell-hist-ignoredups t)
@@ -2528,6 +2535,7 @@ already narrowed."
 
   (defun ar/eshell-mode-hook-function ()
     (smartparens-strict-mode +1)
+    (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd))))
 
