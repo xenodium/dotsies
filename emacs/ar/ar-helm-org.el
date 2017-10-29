@@ -12,6 +12,7 @@
 (require 'helm-org)
 (require 'org)
 (require 'org-cliplink)
+(require 'org-element)
 
 (defvar ar/helm-org-source-my-todos
   `((name . "TODOS")
