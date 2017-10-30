@@ -235,13 +235,12 @@
   (use-package helm-config)
 
   (use-package helm-eshell
+    :after helm-files
     :config
-    (add-hook #'eshell-mode-hook
-              (lambda ()
-                (bind-key "TAB" #'helm-esh-pcomplete)
-                (bind-key "M-r" #'helm-eshell-history eshell-mode-map))))
+    (defun helm-eshell-mode-hook-func ()
+      (bind-key "M-r" #'helm-eshell-history eshell-mode-map))
 
-  (helm-mode 1)
+    (add-hook #'eshell-mode-hook #'helm-eshell-mode-hook-func))
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
     "First time clear miniuffer. Quit thereafter."
@@ -249,6 +248,8 @@
     (if (> (length (minibuffer-contents)) 0)
         (call-interactively 'helm-delete-minibuffer-contents)
       (helm-keyboard-quit)))
+
+  (helm-mode 1)
 
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
@@ -434,6 +435,7 @@
 (use-package ar-compile)
 
 (use-package company-grep)
+(use-package company-pcomplete)
 (use-package company-rfiles)
 (use-package company-bash-history)
 (use-package company-projectile-cd)
@@ -2537,7 +2539,9 @@ already narrowed."
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd))))
+    (setq-local company-backends '((company-projectile-cd company-pcomplete)))
+    (bind-key "<backtab>" #'company-complete eshell-mode-map)
+    (bind-key "<tab>" #'company-complete eshell-mode-map))
 
   (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
 
