@@ -1613,10 +1613,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-shell :ensure t)
 
-;; Better shell TAP completion.
+;; Smarter shell completion.
 (use-package pcmpl-args :ensure t)
 (use-package pcmpl-homebrew :ensure t)
 (use-package pcmpl-git :ensure t)
+(use-package pcomplete-extension :ensure t)
+(use-package pcmpl-pip :ensure t)
 
 ;; Enhanced help buffers.
 (use-package helpful :ensure t
