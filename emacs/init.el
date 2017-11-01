@@ -3379,6 +3379,20 @@ _y_outube
             path (or desc "")))
      (latex (format "\href{%s}{%s}" path (or desc "video"))))))
 
+(defun ar/org-insert-link-dwim ()
+  "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
+  (interactive)
+  (if (and (string-match-p "^http" (current-kill 0))
+           (region-active-p))
+      (let ((region-content (buffer-substring-no-properties (region-beginning)
+                                                            (region-end))))
+        (delete-region (region-beginning)
+                       (region-end))
+        (insert (format "[[%s][%s]]"
+                        (current-kill 0)
+                        region-content)))
+    (call-interactively 'org-insert-link)))
+
 (use-package org
   :ensure t
   :config
@@ -3424,7 +3438,10 @@ _y_outube
   ;; Disable auto isearch within org-goto.
   (validate-setq org-goto-auto-isearch nil)
   ;; Enable RET to follow Org links.
-  (validate-setq org-return-follows-link t))
+  (validate-setq org-return-follows-link t)
+  :bind
+  (:map org-mode-map
+        ("C-c C-l" . ar/org-insert-link-dwim)))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
