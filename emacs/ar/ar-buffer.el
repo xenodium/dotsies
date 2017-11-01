@@ -205,6 +205,14 @@ Version 2015-02-07."
       (re-search-forward re nil t))
     (match-beginning 0)))
 
+(defun ar/buffer-occurr-insert ()
+  "Search current buffer and insert matching string."
+  (interactive)
+  (insert (completing-read "occurr insert "
+                           (split-string (buffer-substring-no-properties (point-min)
+                                                                         (point-max))
+                                         "\n"))))
+
 (defun ar/buffer-goto-first-match-beginning (re)
   "Go to first match of RE."
   (goto-char (ar/buffer-first-match-beginning re)))
@@ -217,6 +225,18 @@ Version 2015-02-07."
       (while (re-search-forward re nil t)
         (setq end-pos (match-end 0)))
       end-pos)))
+
+(defun ar/buffer-lines-matching (re)
+  "Return lines in buffer matching RE."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((results '()))
+      (while (re-search-forward re nil t)
+        (add-to-list 'results (buffer-substring-no-properties
+                               (line-beginning-position)
+                               (line-end-position))))
+      (when (> (length results) 0)
+        results))))
 
 (defun ar/buffer-groups-of (re)
   "Return a list of any RE consecutive match separated by two or more newlines.
