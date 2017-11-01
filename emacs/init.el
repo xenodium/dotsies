@@ -3513,10 +3513,11 @@ line instead."
 (use-package simple
   :config
   :bind
-  (("M-C-y" . ar/yank-line-below)
-   ("M-j" . ar/join-next-line)
-   ("M-<return>" . ar/smart-open-line-above)
-   ("C-<return>" . ar/smart-open-line)))
+  (:map prog-mode-map
+        ("M-C-y" . ar/yank-line-below)
+        ("M-j" . ar/join-next-line)
+        ("M-<return>" . ar/smart-open-line-above)
+        ("C-<return>" . ar/smart-open-line)))
 
 (use-package char-fold)
 
