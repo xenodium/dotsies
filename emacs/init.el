@@ -235,12 +235,12 @@
   (use-package helm-config)
 
   (use-package helm-eshell
+    :after helm-files
     :config
-    (add-hook #'eshell-mode-hook
-              (lambda ()
-                (bind-key "M-r" #'helm-eshell-history eshell-mode-map))))
+    (defun helm-eshell-mode-hook-func ()
+      (bind-key "M-r" #'helm-eshell-history eshell-mode-map))
 
-  (helm-mode 1)
+    (add-hook #'eshell-mode-hook #'helm-eshell-mode-hook-func))
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
     "First time clear miniuffer. Quit thereafter."
@@ -248,6 +248,8 @@
     (if (> (length (minibuffer-contents)) 0)
         (call-interactively 'helm-delete-minibuffer-contents)
       (helm-keyboard-quit)))
+
+  (helm-mode 1)
 
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
@@ -359,6 +361,7 @@
 (use-package ar-dired)
 (use-package ar-file
   :after (ar-string simple))
+(use-package ar-bazel)
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
@@ -432,9 +435,11 @@
 (use-package ar-compile)
 
 (use-package company-grep)
+(use-package company-pcomplete)
 (use-package company-rfiles)
 (use-package company-bash-history)
 (use-package company-projectile-cd)
+(use-package flycheck-swiftlint)
 
 (defun my-completion (completion)
   (when (looking-at-p "\"")
@@ -442,6 +447,11 @@
     (insert ",")))
 
 (defun ar/bazel-mode-hook-fun ()
+  ;; Disabling py-yapf-buffer (we're not in actual python-mode, but a derived one).
+  (remove-hook #'before-save-hook
+               #'py-yapf-buffer
+               t)
+  (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
   (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
   (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
   (validate-setq company-grep-grep-trigger "\"//")
@@ -631,7 +641,8 @@ Values between 0 - 100."
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
   :commands (py-yapf-enable-on-save)
-  :config (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
+  :config
+  (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
 (use-package helm-codesearch :ensure t)
 
@@ -1539,17 +1550,33 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-;; Disabling on Emacs 25 for the time being.
-;;
-;; (defun ar/swift-mode-hook-function ()
-;;   "Called when entering `swift-mode'."
-;;   (setq-local company-backends '(company-sourcekit)))
+(defun ar/swift-mode-hook-function ()
+  "Called when entering `swift-mode'."
+  ;; swiftlint autocorrect --path
+  ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
+  (add-to-list 'flycheck-checkers 'swiftlint)
+  (setq-local flycheck-swiftlint-config-file
+              (concat (file-name-as-directory
+                       (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
+                      ".swiftlint.yml")
+              )
+  (defun ar/--after-swift-save ()
+    (call-process "swiftformat" nil "*swiftformat*" t "--indent" "2" buffer-file-name)
+    (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
+                  "--config" flycheck-swiftlint-config-file
+                  "--path" buffer-file-name))
 
-;; (use-package swift-mode :ensure t
-;;   :init (defvar flycheck-swift-sdk-path)
-;;   :after company-sourcekit flycheck
-;;   :config
-;;   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function))
+  ;; (setq sourcekit-project "some/project.xcodeproj")
+  ;; (setq-local company-backends '(company-sourcekit))
+
+  (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
+
+(use-package swift-mode :ensure t
+  :init (defvar flycheck-swift-sdk-path)
+  :after company-sourcekit flycheck
+  :config
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
+  (csetq swift-mode:basic-offset 2))
 
 (use-package company :ensure t
   :config
@@ -1586,10 +1613,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-shell :ensure t)
 
-;; Better shell TAP completion.
+;; Smarter shell completion.
 (use-package pcmpl-args :ensure t)
 (use-package pcmpl-homebrew :ensure t)
 (use-package pcmpl-git :ensure t)
+(use-package pcomplete-extension :ensure t)
+(use-package pcmpl-pip :ensure t)
 
 ;; Enhanced help buffers.
 (use-package helpful :ensure t
@@ -1875,7 +1904,7 @@ Repeated invocations toggle between the two most recently open buffers."
      (python . t)
      (ruby . t)
      (screen . nil)
-     (sh . t)
+     ;; (sh . t) ;; Not loading in Emacs 26
      (js . t)
      (sql . nil)
      (sqlite . t))))
@@ -2495,6 +2524,11 @@ already narrowed."
   (use-package em-glob)
   (use-package esh-mode)
   (use-package em-dirs)
+  (use-package em-smart)
+
+  (validate-setq eshell-where-to-jump 'begin)
+  (validate-setq eshell-review-quick-commands nil)
+  (validate-setq eshell-smart-space-goes-to-end t)
 
   (validate-setq eshell-history-size (* 10 1024))
   (validate-setq eshell-hist-ignoredups t)
@@ -2505,8 +2539,11 @@ already narrowed."
 
   (defun ar/eshell-mode-hook-function ()
     (smartparens-strict-mode +1)
+    (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd))))
+    (setq-local company-backends '((company-projectile-cd company-pcomplete)))
+    (bind-key "<backtab>" #'company-complete eshell-mode-map)
+    (bind-key "<tab>" #'company-complete eshell-mode-map))
 
   (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
 
