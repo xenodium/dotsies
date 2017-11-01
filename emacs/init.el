@@ -2302,7 +2302,19 @@ already narrowed."
 ;;   ;; (ar/process-assert-binary-installed "node")
 ;;   (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
 
-(use-package protobuf-mode :ensure t)
+(use-package protobuf-mode :ensure t
+  :config
+  (defun ar/reindex-proto-fields ()
+    "From within a proto message, reindex all proto field tags."
+    (interactive)
+    (save-excursion
+      (save-restriction
+        (narrow-to-defun)
+        (goto-char (point-min))
+        (let ((counter 1))
+          (while (search-forward-regexp "\\(\\(\\(optional\\)\\|\\(required\\)\\).*= *\\)[1-9]+" nil t)
+            (replace-match (format "\\1%d" counter) t nil)
+            (setq counter (+ counter 1))))))))
 
 (use-package dart-mode :ensure t)
 
