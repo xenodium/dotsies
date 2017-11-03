@@ -3414,8 +3414,8 @@ _y_outube
              ("OBSOLETE" . (:foreground "blue" :weight bold))
              ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
-  (csetq org-refile-targets '((:regexp . "Week of")
-                              (:regexp . "RESOLVED")))
+  (csetq org-refile-targets '((nil . (:regexp . "Week of"))
+                              (nil . (:regexp . "RESOLVED"))))
 
   (validate-setq org-ellipsis "⤵")
   (validate-setq org-fontify-emphasized-text t)
