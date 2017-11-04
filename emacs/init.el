@@ -215,8 +215,8 @@
     (mapc (lambda (regexp)
             (add-to-list 'helm-boring-file-regexp-list
                          regexp))
-          '("\\.DS_Store$" "\\.git" "\\.hg" "\\.svn" "\\.CVS"
-            "\\._darcss" "\\.la" "\\.o" "\\.i")))
+          '("\\.DS_Store$" "\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+            "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
 
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
