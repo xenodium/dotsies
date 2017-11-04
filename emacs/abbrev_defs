@@ -7,9 +7,13 @@
 
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
+(define-abbrev-table 'apropos-mode-abbrev-table '())
+
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'bazel-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -73,6 +77,8 @@
 
 (define-abbrev-table 'css-mode-abbrev-table '())
 
+(define-abbrev-table 'dart-popup-mode-abbrev-table '())
+
 (define-abbrev-table 'data-debug-mode-abbrev-table '())
 
 (define-abbrev-table 'debugger-mode-abbrev-table '())
@@ -82,6 +88,8 @@
 (define-abbrev-table 'diary-mode-abbrev-table '())
 
 (define-abbrev-table 'diff-mode-abbrev-table '())
+
+(define-abbrev-table 'display-time-world-mode-abbrev-table '())
 
 (define-abbrev-table 'edebug-eval-mode-abbrev-table '())
 
@@ -96,6 +104,12 @@
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-apropos-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-description-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-list-mode-abbrev-table '())
 
 (define-abbrev-table 'epa-info-mode-abbrev-table '())
 
@@ -124,6 +138,8 @@
 (define-abbrev-table 'fireplace-mode-abbrev-table '())
 
 (define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
+
+(define-abbrev-table 'flymake-diagnostics-buffer-mode-abbrev-table '())
 
 (define-abbrev-table 'ftp-mode-abbrev-table '())
 
@@ -184,6 +200,8 @@
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
     ("upfront" "front" nil 0)
+    ("vaccumed" "vacuumed" nil 0)
+    ("vaccuming" "vacuuming" nil 0)
     ("wrning" "warning" nil 0)
    ))
 
@@ -200,6 +218,8 @@
 (define-abbrev-table 'google-maps-static-mode-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
+
+(define-abbrev-table 'hackernews-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-ag-mode-abbrev-table '())
 
@@ -228,6 +248,8 @@
 (define-abbrev-table 'indium-debugger-locals-mode-abbrev-table '())
 
 (define-abbrev-table 'indium-inspector-mode-abbrev-table '())
+
+(define-abbrev-table 'indium-list-scripts-mode-abbrev-table '())
 
 (define-abbrev-table 'indium-repl-mode-abbrev-table '())
 
@@ -317,6 +339,8 @@
 
 (define-abbrev-table 'nodejs-repl-mode-abbrev-table '())
 
+(define-abbrev-table 'nov-mode-abbrev-table '())
+
 (define-abbrev-table 'nrepl-messages-mode-abbrev-table '())
 
 (define-abbrev-table 'nslookup-mode-abbrev-table '())
@@ -405,6 +429,10 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'sql-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'suggest-mode-abbrev-table '())
 
