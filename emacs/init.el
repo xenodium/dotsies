@@ -215,8 +215,8 @@
     (mapc (lambda (regexp)
             (add-to-list 'helm-boring-file-regexp-list
                          regexp))
-          '("\\.DS_Store$" "\\.git" "\\.hg" "\\.svn" "\\.CVS"
-            "\\._darcss" "\\.la" "\\.o" "\\.i")))
+          '("\\.DS_Store$" "\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+            "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
 
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
@@ -3414,8 +3414,8 @@ _y_outube
              ("OBSOLETE" . (:foreground "blue" :weight bold))
              ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
-  (csetq org-refile-targets '((:regexp . "Week of")
-                              (:regexp . "RESOLVED")))
+  (csetq org-refile-targets '((nil . (:regexp . "Week of"))
+                              (nil . (:regexp . "RESOLVED"))))
 
   (validate-setq org-ellipsis "⤵")
   (validate-setq org-fontify-emphasized-text t)

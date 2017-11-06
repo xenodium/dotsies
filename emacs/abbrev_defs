@@ -139,6 +139,8 @@
 
 (define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
 
+(define-abbrev-table 'flymake-diagnostics-buffer-mode-abbrev-table '())
+
 (define-abbrev-table 'ftp-mode-abbrev-table '())
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
@@ -199,6 +201,8 @@
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
     ("upfront" "front" nil 0)
+    ("vaccumed" "vacuumed" nil 0)
+    ("vaccuming" "vacuuming" nil 0)
     ("wrning" "warning" nil 0)
    ))
 
@@ -245,6 +249,8 @@
 (define-abbrev-table 'indium-debugger-locals-mode-abbrev-table '())
 
 (define-abbrev-table 'indium-inspector-mode-abbrev-table '())
+
+(define-abbrev-table 'indium-list-scripts-mode-abbrev-table '())
 
 (define-abbrev-table 'indium-repl-mode-abbrev-table '())
 
@@ -424,6 +430,10 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'sql-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'suggest-mode-abbrev-table '())
 
