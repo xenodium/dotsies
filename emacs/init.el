@@ -215,8 +215,7 @@
     (mapc (lambda (regexp)
             (add-to-list 'helm-boring-file-regexp-list
                          regexp))
-          '("\\.DS_Store$" "\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-            "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
+          '("\\.DS_Store$" "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
 
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
@@ -1815,6 +1814,8 @@ Repeated invocations toggle between the two most recently open buffers."
      "    end tell \r"
      "end tell \r"
      ))))
+
+(use-package helm-xcdoc :ensure t)
 
 ;;  Note: For ycmd.
 ;;  * No need for global_ycm_extra_conf.py
