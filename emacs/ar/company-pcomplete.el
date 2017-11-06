@@ -10,9 +10,9 @@
 (require 'company)
 (require 'pcomplete)
 
-(defun company-pcomplete--candidates ()
-  "Get candidates for company completion using `pcomplete'."
-  (all-completions "" (pcomplete-completions)))
+(defun company-pcomplete--candidates (prefix)
+  "Get candidates for PREFIX company completion using `pcomplete'."
+  (all-completions prefix (pcomplete-completions)))
 
 (defun company-pcomplete (command &optional arg &rest ignored)
   "Complete using pcomplete. See `company''s COMMAND ARG and IGNORED for details."
@@ -21,7 +21,7 @@
     (interactive (company-begin-backend 'company-pcomplete))
     (prefix (company-grab-symbol))
     (candidates
-     (company-pcomplete--candidates))))
+     (company-pcomplete--candidates arg))))
 
 (provide 'company-pcomplete)
 
