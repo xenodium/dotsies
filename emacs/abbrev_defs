@@ -7,9 +7,13 @@
 
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
+(define-abbrev-table 'apropos-mode-abbrev-table '())
+
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'bazel-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -73,6 +77,8 @@
 
 (define-abbrev-table 'css-mode-abbrev-table '())
 
+(define-abbrev-table 'dart-popup-mode-abbrev-table '())
+
 (define-abbrev-table 'data-debug-mode-abbrev-table '())
 
 (define-abbrev-table 'debugger-mode-abbrev-table '())
@@ -82,6 +88,8 @@
 (define-abbrev-table 'diary-mode-abbrev-table '())
 
 (define-abbrev-table 'diff-mode-abbrev-table '())
+
+(define-abbrev-table 'display-time-world-mode-abbrev-table '())
 
 (define-abbrev-table 'edebug-eval-mode-abbrev-table '())
 
@@ -96,6 +104,12 @@
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-apropos-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-description-mode-abbrev-table '())
+
+(define-abbrev-table 'emojify-list-mode-abbrev-table '())
 
 (define-abbrev-table 'epa-info-mode-abbrev-table '())
 
@@ -170,6 +184,7 @@
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
+    ("proactively" "actively" nil 0)
     ("responsd" "respond" nil 0)
     ("rools" "rolls" nil 0)
     ("saving" "saving" nil 0)
@@ -180,7 +195,7 @@
     ("tracel" "travel" nil 0)
     ("trying" "trying" nil 4)
     ("typocal" "typical" nil 0)
-    ("update" "update" nil 2)
+    ("update" "update" nil 3)
     ("updated" "updated" nil 1)
     ("updating" "updating" nil 7)
     ("upfront" "front" nil 0)
@@ -200,6 +215,8 @@
 (define-abbrev-table 'google-maps-static-mode-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
+
+(define-abbrev-table 'hackernews-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-ag-mode-abbrev-table '())
 
@@ -316,6 +333,8 @@
 (define-abbrev-table 'network-connection-mode-abbrev-table '())
 
 (define-abbrev-table 'nodejs-repl-mode-abbrev-table '())
+
+(define-abbrev-table 'nov-mode-abbrev-table '())
 
 (define-abbrev-table 'nrepl-messages-mode-abbrev-table '())
 
