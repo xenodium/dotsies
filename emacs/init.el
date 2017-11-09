@@ -585,6 +585,9 @@
                           :box nil)
       (spaceline-compile))))
 
+;; Yay mode icons!
+(use-package mode-icons :ensure t)
+
 (use-package tramp
   :config
   ;; Problem with TRAMP mode
