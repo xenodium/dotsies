@@ -586,7 +586,10 @@
       (spaceline-compile))))
 
 ;; Yay mode icons!
-(use-package mode-icons :ensure t)
+(use-package mode-icons :ensure t
+  :config
+  (when (window-system)
+    (mode-icons-mode +1)))
 
 (use-package tramp
   :config
