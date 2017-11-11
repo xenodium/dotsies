@@ -466,6 +466,7 @@
 
 (use-package bazel-mode
   :after company-grep
+  :demand ;; Hook isn't loaded early enough otherwise.
   :config
   (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun)
   :bind (:map bazel-mode-map
@@ -583,6 +584,12 @@
                           :background nil
                           :box nil)
       (spaceline-compile))))
+
+;; Yay mode icons!
+(use-package mode-icons :ensure t
+  :config
+  (when (window-system)
+    (mode-icons-mode +1)))
 
 (use-package tramp
   :config
