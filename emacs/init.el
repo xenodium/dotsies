@@ -1045,7 +1045,17 @@ With argument ARG, do this that many times."
                    (point))))
 (bind-key "M-DEL" #'ar/backward-delete-subword)
 (bind-key "<C-backspace>" #'ar/backward-delete-subword)
-(bind-key "C-x C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+
+(defun ar/duplicate-line ()
+  "Duplicate current line and paste below."
+  (interactive)
+  (let ((line-text (buffer-substring (line-beginning-position)
+                                     (line-end-position))))
+    (end-of-line)
+    (newline)
+    (insert line-text)))
+
+(bind-key "C-x C-d" #'ar/duplicate-line)
 
 (bind-key "C-z" #'next-buffer)
 
