@@ -2571,7 +2571,7 @@ already narrowed."
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd company-pcomplete)))
+    (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
     (bind-key "<backtab>" #'company-complete eshell-mode-map)
     (bind-key "<tab>" #'company-complete eshell-mode-map))
 
