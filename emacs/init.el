@@ -1856,6 +1856,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun ar/org-mode-hook-function ()
   "Called when entering org mode."
+  (setq-local company-backends '((company-yasnippet
+                                  company-keywords
+                                  company-files
+                                  company-emoji
+                                  company-capf)))
+  (setq-local company-backends '(company-go))
   (toggle-truncate-lines 0)
   (validate-setq show-trailing-whitespace t)
   (set-fill-column 1000)
