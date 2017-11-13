@@ -215,8 +215,7 @@
     (mapc (lambda (regexp)
             (add-to-list 'helm-boring-file-regexp-list
                          regexp))
-          '("\\.DS_Store$" "\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-            "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
+          '("\\.DS_Store$" "\\._darcss$" "\\.la$" "\\.o$" "\\.i$")))
 
   (use-package helm-grep
     :bind (:map helm-grep-mode-map
@@ -1053,7 +1052,17 @@ With argument ARG, do this that many times."
                    (point))))
 (bind-key "M-DEL" #'ar/backward-delete-subword)
 (bind-key "<C-backspace>" #'ar/backward-delete-subword)
-(bind-key "C-x C-d" "\C-a\C- \C-e\M-w\C-j\C-y")
+
+(defun ar/duplicate-line ()
+  "Duplicate current line and paste below."
+  (interactive)
+  (let ((line-text (buffer-substring (line-beginning-position)
+                                     (line-end-position))))
+    (end-of-line)
+    (newline)
+    (insert line-text)))
+
+(bind-key "C-x C-d" #'ar/duplicate-line)
 
 (bind-key "C-z" #'next-buffer)
 
@@ -1823,6 +1832,8 @@ Repeated invocations toggle between the two most recently open buffers."
      "end tell \r"
      ))))
 
+(use-package helm-xcdoc :ensure t)
+
 ;;  Note: For ycmd.
 ;;  * No need for global_ycm_extra_conf.py
 ;;    (Use .ycm_extra_conf.py)
@@ -2566,7 +2577,7 @@ already narrowed."
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd company-pcomplete)))
+    (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
     (bind-key "<backtab>" #'company-complete eshell-mode-map)
     (bind-key "<tab>" #'company-complete eshell-mode-map))
 
