@@ -20,7 +20,7 @@
          (full-body (org-babel-expand-body:generic body params))
          (bin-file
           (org-babel-process-file-name
-           (org-babel-temp-file "org-babel-objc-block" org-babel-exeext))))
+           (org-babel-temp-file "org-babel-objc-block-" org-babel-exeext))))
     (with-temp-file src-file (insert full-body))
     (org-babel-eval
      (concat org-babel-objc-compile-command " " cmpflag " " src-file " " "-o" " " bin-file) "")
