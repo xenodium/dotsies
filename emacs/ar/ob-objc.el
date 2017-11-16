@@ -17,7 +17,6 @@
   "Compile Objective-C BODY with org PARAMS and execute binary."
   (let* ((src-file "org-babel-objc-block.m")
          (cmpflag (or (cdr (assq :cmpflag params)) ""))
-         (cmdline (or (cdr (assq :cmdline params)) ""))
          (full-body (org-babel-expand-body:generic body params))
          (bin-file
           (org-babel-process-file-name
