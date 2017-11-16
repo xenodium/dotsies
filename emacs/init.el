@@ -1589,7 +1589,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package swift-mode :ensure t
   :init (defvar flycheck-swift-sdk-path)
-  :after company-sourcekit flycheck
+  :after company-sourcekit
+  :after flycheck
   :config
   (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
   (csetq swift-mode:basic-offset 2))
