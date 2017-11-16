@@ -2204,6 +2204,10 @@ already narrowed."
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
 (use-package dumb-jump :ensure t
+  :after objc-mode
+  :after swift-mode
+  :bind (:map swift-mode-map
+              ("M-." . dumb-jump-go))
   :bind (:map objc-mode-map
               ("M-." . dumb-jump-go)))
 
@@ -2211,11 +2215,6 @@ already narrowed."
 ;; (use-package alert :ensure t
 ;;   :config
 ;;   (csetq alert-default-style 'osx-notifier))
-
-(use-package popup :ensure
-  :bind (:map popup-menu-keymap
-              ("M-n" . popup-next)
-              ("M-p" . popup-previous)))
 
 (defun ar/java-mode-hook-function ()
   "Called when entering `java-mode'."
