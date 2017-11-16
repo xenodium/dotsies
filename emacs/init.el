@@ -1913,6 +1913,8 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq figlet-default-font "small")
   (validate-setq figlet-options (list "-w 160")))
 
+(use-package ob-objc)
+
 (use-package ob
   :config
   (validate-setq org-export-babel-evaluate nil)
@@ -1928,6 +1930,7 @@ Repeated invocations toggle between the two most recently open buffers."
      (python . t)
      (ruby . t)
      (screen . nil)
+     (objc . t)
      ;; (sh . t) ;; Not loading in Emacs 26
      (js . t)
      (sql . nil)
