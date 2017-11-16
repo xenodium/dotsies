@@ -15,7 +15,7 @@
 
 (defun org-babel-execute:objc (body params)
   "Compile Objective-C BODY with org PARAMS and execute binary."
-  (let* ((src-file "org-babel-objc-block.m")
+  (let* ((src-file (org-babel-temp-file "org-babel-objc-block-" ".m"))
          (cmpflag (or (cdr (assq :cmpflag params)) ""))
          (full-body (org-babel-expand-body:generic body params))
          (bin-file
