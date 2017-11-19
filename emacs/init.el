@@ -2590,6 +2590,8 @@ already narrowed."
   (validate-setq eshell-list-files-after-cd t)
 
   (defun ar/eshell-mode-hook-function ()
+    ;; Turn off semantic-mode in eshell buffers.
+    (semantic-mode -1)
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
