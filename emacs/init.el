@@ -1407,6 +1407,9 @@ Argument PROMPT to check for additional prompt."
 
 (use-package recentf
   :config
+  (validate-setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
+                                   "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
+                                   ".gz" "~$" "/tmp/" "/ssh:" "/sudo:" "/scp:"))
   (validate-setq recentf-max-saved-items 200
                  recentf-max-menu-items 50)
   (recentf-mode))
