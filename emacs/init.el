@@ -163,6 +163,11 @@
 
 (use-package ido)
 
+(use-package imenu
+  :config
+  ;; Automatically rescan for imenu changes.
+  (set-default 'imenu-auto-rescan t))
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :demand
