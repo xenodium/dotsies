@@ -1639,7 +1639,9 @@ Repeated invocations toggle between the two most recently open buffers."
         ("C-p" . company-select-previous))
   :bind
   (:map company-active-map
+        ("C-l" . company-show-location)
         ("C-s" . company-filter-candidates)
+        ("C-d" . company-show-doc-buffer)
         ("C-n" . company-select-next)
         ("C-p" . company-select-previous)))
 
