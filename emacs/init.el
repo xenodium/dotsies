@@ -1374,9 +1374,13 @@ Argument PROMPT to check for additional prompt."
                                                     try-expand-dabbrev-all-buffers
                                                     try-expand-dabbrev-from-kill
                                                     try-complete-file-name-partially
+                                                    try-complete-file-name
+                                                    ;; From word before point according to all abbrev tables.
                                                     try-expand-all-abbrevs
                                                     try-expand-list
-                                                    try-expand-line)))
+                                                    try-expand-line
+                                                    ;; From entire line in a different buffer.
+                                                    try-expand-line-all-buffers)))
 
 ;; Thank you Sacha Chua.
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
