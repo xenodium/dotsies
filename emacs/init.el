@@ -3585,6 +3585,10 @@ line instead."
 
 (use-package simple
   :config
+  ;; Don't bother saving things to the kill-ring twice, remove duplicates.
+  (csetq kill-do-not-save-duplicates t)
+  ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
+  (csetq idle-update-delay 2)
   :bind
   (:map prog-mode-map
         ("M-C-y" . ar/yank-line-below)
