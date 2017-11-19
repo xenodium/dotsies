@@ -921,7 +921,12 @@ Values between 0 - 100."
   (global-font-lock-mode))
 
 (use-package jit-lock :config
-  (csetq jit-lock-stealth-time 10))
+  :config
+  ;; Allow font-lock-mode to do background parsing
+  (setq jit-lock-defer-time nil
+        ;; jit-lock-stealth-nice 0.1
+        jit-lock-stealth-time 1
+        jit-lock-stealth-verbose nil))
 
 (use-package autorevert
   :config
