@@ -168,6 +168,11 @@
   ;; Automatically rescan for imenu changes.
   (set-default 'imenu-auto-rescan t))
 
+;; Handles escaping regexes from input. For example: no need for \(\)
+(use-package pcre2el :ensure t
+  :config
+  (pcre-mode +1))
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :demand
