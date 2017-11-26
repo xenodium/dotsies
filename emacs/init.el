@@ -1631,9 +1631,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq company-minimum-prefix-length 2)
   (validate-setq company-tooltip-align-annotations t)
 
-  ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
-  (add-to-list 'company-begin-commands 'comint-magic-space)
-
   (global-company-mode)
   :bind
   (:map global-map
@@ -2613,7 +2610,9 @@ already narrowed."
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
-    (bind-key "C-l" #'ar/eshell-cd-to-parent)
+    ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
+    (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
+    (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
     (bind-key "<backtab>" #'company-complete eshell-mode-map)
     (bind-key "<tab>" #'company-complete eshell-mode-map))
 
@@ -2648,10 +2647,13 @@ already narrowed."
   ;; (advice-add 'shell-directory-tracker
   ;;             :override
   ;;             'ar/shell-directory-tracker)
-  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function)
-  :bind
-  (:map smartparens-strict-mode-map
-        ("SPC" . comint-magic-space)))
+  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
+
+;; ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
+;; (add-to-list 'company-begin-commands 'comint-magic-space)
+;; :bind
+;; (:map smartparens-strict-mode-map
+;;       ("SPC" . comint-magic-space))
 
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
