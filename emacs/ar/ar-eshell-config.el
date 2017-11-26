@@ -9,6 +9,7 @@
 (require 'esh-mode)
 (require 'em-alias)
 (require 'em-prompt)
+(require 'f)
 (require 'shrink-path)
 (require 'validate)
 
