@@ -25,7 +25,9 @@
   "Make eshell prompt purrrty."
   (let ((shrinked-dpath (car (shrink-path-prompt (eshell/pwd))))
         (dname (cdr (shrink-path-prompt (eshell/pwd)))))
-    (concat "\n┌─ " shrinked-dpath dname "\n"
+    ;; Uncomment to shrink path in prompt.
+    ;; (concat "\n┌─ " shrinked-dpath dname "\n"
+    (concat "\n┌─ " (abbreviate-file-name (eshell/pwd)) "\n"
             "└─>"
             (propertize (ar/eshell-config--git-branch-prompt)
                         'face 'font-lock-function-name-face)
