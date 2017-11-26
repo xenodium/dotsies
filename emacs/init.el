@@ -320,7 +320,7 @@
       (sp-wrap-with-pair "["))
     (insert " "))
 
-  (define-key smartparens-mode-map (kbd "M-[") #'ar/smartparens-wrap-square-bracket)
+  (define-key smartparens-mode-map (kbd "M-]") #'ar/smartparens-wrap-square-bracket)
 
   ;; Add to minibuffer also.
   (add-hook 'minibuffer-setup-hook 'smartparens-mode)
@@ -329,7 +329,7 @@
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
         ("C-c <left>" . sp-forward-barf-sexp)
-        ("C-l" . sp-rewrap-sexp)))
+        ("M-[" . sp-rewrap-sexp)))
 
 (defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
   "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
@@ -2600,6 +2600,12 @@ already narrowed."
   (validate-setq eshell-scroll-to-bottom-on-input 'all)
   (validate-setq eshell-list-files-after-cd t)
 
+  (defun ar/eshell-cd-to-parent ()
+    (interactive)
+    (goto-char (point-max))
+    (insert "cd ..")
+    (eshell-send-input nil t))
+
   (defun ar/eshell-mode-hook-function ()
     ;; Turn off semantic-mode in eshell buffers.
     (semantic-mode -1)
@@ -2607,6 +2613,7 @@ already narrowed."
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
+    (bind-key "C-l" #'ar/eshell-cd-to-parent)
     (bind-key "<backtab>" #'company-complete eshell-mode-map)
     (bind-key "<tab>" #'company-complete eshell-mode-map))
 
