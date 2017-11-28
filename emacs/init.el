@@ -1914,6 +1914,11 @@ Repeated invocations toggle between the two most recently open buffers."
   (validate-setq figlet-default-font "small")
   (validate-setq figlet-options (list "-w 160")))
 
+(use-package ob-swift :ensure t
+  :after ob
+  :config
+  (add-to-list 'org-babel-load-languages '(swift . t)))
+
 (use-package ob-objc)
 
 (use-package ob
