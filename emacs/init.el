@@ -163,6 +163,16 @@
 
 (use-package ido)
 
+(use-package imenu
+  :config
+  ;; Automatically rescan for imenu changes.
+  (set-default 'imenu-auto-rescan t))
+
+;; Handles escaping regexes from input. For example: no need for \(\)
+(use-package pcre2el :ensure t
+  :config
+  (pcre-mode +1))
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :demand
@@ -310,7 +320,7 @@
       (sp-wrap-with-pair "["))
     (insert " "))
 
-  (define-key smartparens-mode-map (kbd "M-[") #'ar/smartparens-wrap-square-bracket)
+  (define-key smartparens-mode-map (kbd "M-]") #'ar/smartparens-wrap-square-bracket)
 
   ;; Add to minibuffer also.
   (add-hook 'minibuffer-setup-hook 'smartparens-mode)
@@ -319,7 +329,7 @@
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
         ("C-c <left>" . sp-forward-barf-sexp)
-        ("C-l" . sp-rewrap-sexp)))
+        ("M-[" . sp-rewrap-sexp)))
 
 (defun ar/sp-backward-delete-char-advice-fun (orig-fun &rest r)
   "Play nice with `hungry-delete-backward' in ORIG-FUN and R."
@@ -916,7 +926,12 @@ Values between 0 - 100."
   (global-font-lock-mode))
 
 (use-package jit-lock :config
-  (csetq jit-lock-stealth-time 10))
+  :config
+  ;; Allow font-lock-mode to do background parsing
+  (setq jit-lock-defer-time nil
+        ;; jit-lock-stealth-nice 0.1
+        jit-lock-stealth-time 1
+        jit-lock-stealth-verbose nil))
 
 (use-package autorevert
   :config
@@ -1364,9 +1379,13 @@ Argument PROMPT to check for additional prompt."
                                                     try-expand-dabbrev-all-buffers
                                                     try-expand-dabbrev-from-kill
                                                     try-complete-file-name-partially
+                                                    try-complete-file-name
+                                                    ;; From word before point according to all abbrev tables.
                                                     try-expand-all-abbrevs
                                                     try-expand-list
-                                                    try-expand-line)))
+                                                    try-expand-line
+                                                    ;; From entire line in a different buffer.
+                                                    try-expand-line-all-buffers)))
 
 ;; Thank you Sacha Chua.
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
@@ -1397,6 +1416,9 @@ Argument PROMPT to check for additional prompt."
 
 (use-package recentf
   :config
+  (validate-setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
+                                   "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
+                                   ".gz" "~$" "/tmp/" "/ssh:" "/sudo:" "/scp:"))
   (validate-setq recentf-max-saved-items 200
                  recentf-max-menu-items 50)
   (recentf-mode))
@@ -1604,13 +1626,10 @@ Repeated invocations toggle between the two most recently open buffers."
   (use-package company-dabbrev-code
     :config
     (validate-setq company-dabbrev-code-ignore-case nil))
-  (validate-setq company-idle-delay 0)
+  (validate-setq company-idle-delay 0.2)
   (validate-setq company-show-numbers t)
   (validate-setq company-minimum-prefix-length 2)
   (validate-setq company-tooltip-align-annotations t)
-
-  ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
-  (add-to-list 'company-begin-commands 'comint-magic-space)
 
   (global-company-mode)
   :bind
@@ -1622,7 +1641,9 @@ Repeated invocations toggle between the two most recently open buffers."
         ("C-p" . company-select-previous))
   :bind
   (:map company-active-map
+        ("C-l" . company-show-location)
         ("C-s" . company-filter-candidates)
+        ("C-d" . company-show-doc-buffer)
         ("C-n" . company-select-next)
         ("C-p" . company-select-previous)))
 
@@ -2581,11 +2602,22 @@ already narrowed."
   (validate-setq eshell-scroll-to-bottom-on-input 'all)
   (validate-setq eshell-list-files-after-cd t)
 
+  (defun ar/eshell-cd-to-parent ()
+    (interactive)
+    (goto-char (point-max))
+    (insert "cd ..")
+    (eshell-send-input nil t))
+
   (defun ar/eshell-mode-hook-function ()
+    ;; Turn off semantic-mode in eshell buffers.
+    (semantic-mode -1)
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
     (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
+    ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
+    (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
+    (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
     (bind-key "<backtab>" #'company-complete eshell-mode-map)
     (bind-key "<tab>" #'company-complete eshell-mode-map))
 
@@ -2620,10 +2652,13 @@ already narrowed."
   ;; (advice-add 'shell-directory-tracker
   ;;             :override
   ;;             'ar/shell-directory-tracker)
-  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function)
-  :bind
-  (:map smartparens-strict-mode-map
-        ("SPC" . comint-magic-space)))
+  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
+
+;; ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
+;; (add-to-list 'company-begin-commands 'comint-magic-space)
+;; :bind
+;; (:map smartparens-strict-mode-map
+;;       ("SPC" . comint-magic-space))
 
 (defun ar/term-mode-hook-function ()
   "Called when entering term mode."
@@ -3575,6 +3610,10 @@ line instead."
 
 (use-package simple
   :config
+  ;; Don't bother saving things to the kill-ring twice, remove duplicates.
+  (csetq kill-do-not-save-duplicates t)
+  ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
+  (csetq idle-update-delay 2)
   :bind
   (:map prog-mode-map
         ("M-C-y" . ar/yank-line-below)
