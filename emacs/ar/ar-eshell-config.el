@@ -9,6 +9,7 @@
 (require 'esh-mode)
 (require 'em-alias)
 (require 'em-prompt)
+(require 'f)
 (require 'shrink-path)
 (require 'validate)
 
@@ -21,18 +22,29 @@
                                 "#"
                               "$"))))
 
+(defun ar/eshell-config--shrinked-dpath ()
+  "Shrinked current directory path."
+  (car (shrink-path-prompt (eshell/pwd))))
+
+(defun ar/eshell-config--dname ()
+  "Current directory name (no path)."
+  (f-filename (eshell/pwd)))
+
 (defun ar/eshell-config--prompt-function ()
   "Make eshell prompt purrrty."
-  (let ((shrinked-dpath (car (shrink-path-prompt (eshell/pwd))))
-        (dname (cdr (shrink-path-prompt (eshell/pwd)))))
-    (concat "\n┌─ " shrinked-dpath dname "\n"
-            "└─>"
-            (propertize (ar/eshell-config--git-branch-prompt)
-                        'face 'font-lock-function-name-face)
-            " "
-            (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face)
-            ;; needed for the input text to not have prompt face
-            (propertize " " 'face 'default))))
+  (concat "\n┌─ "
+          (abbreviate-file-name (f-parent (eshell/pwd)))
+          "/"
+          (propertize (ar/eshell-config--dname)
+                      'face 'eshell-ls-directory)
+          "\n"
+          "└─>"
+          (propertize (ar/eshell-config--git-branch-prompt)
+                      'face 'font-lock-function-name-face)
+          " "
+          (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face)
+          ;; needed for the input text to not have prompt face
+          (propertize " " 'face 'default)))
 
 (defun ar/eshell-config--git-branch-prompt ()
   "Git branch prompt."
