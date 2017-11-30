@@ -456,10 +456,6 @@
     (insert ",")))
 
 (defun ar/bazel-mode-hook-fun ()
-  ;; Disabling py-yapf-buffer (we're not in actual python-mode, but a derived one).
-  (remove-hook #'before-save-hook
-               #'py-yapf-buffer
-               t)
   (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
   (validate-setq company-grep-grep-flags "--type-add bazel:BUILD --type bazel --no-line-number --color never --no-filename  --smart-case --regexp")
   (validate-setq company-grep-grep-format-string "^\\s*\"//.*%s")
@@ -476,12 +472,8 @@
 
 (use-package bazel-mode
   :after company-grep
-  :demand ;; Hook isn't loaded early enough otherwise.
   :config
-  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun)
-  :bind (:map bazel-mode-map
-              ;; Overriding `python-indent-dedent-line-backspace'
-              ("<backtab>" . company-complete)))
+  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun))
 
 (use-package use-host-package
   :config
