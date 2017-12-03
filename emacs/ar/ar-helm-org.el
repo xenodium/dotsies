@@ -111,9 +111,10 @@
                                    (helm-org-goto-marker candidate)
                                    (org-show-subtree)
                                    (org-end-of-meta-data t)
-                                   (org-insert-heading)
-                                   (insert (format "%s." ,(ar/org-build-link url
-                                                                             (read-string "Description: " default-description))))
+                                   ;; Indent to current level.
+                                   (call-interactively (global-key-binding "\t"))
+                                   (insert (format "- %s.\n" ,(ar/org-build-link url
+                                                                                 (read-string "Description: " default-description))))
                                    (org-sort-list nil ?a)
                                    (ar/update-blog-timestamp-at-point)
                                    (hide-other)
