@@ -360,74 +360,66 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (validate-setq dabbrev-case-fold-search nil))
 
-(use-package ar-auto-correct
-  :after (abbrev ispell))
+(use-package ar-auto-correct)
 
-(use-package ar-buffer
-  :after (ar-process ar-string goto-addr url url-http)
-  ;; No need to confirm killing buffers.
-  :bind ([(control x) (k)] . kill-this-buffer))
+(use-package url)
+(use-package url-http)
+(use-package ar-string)
+(use-package ar-buffer)
 (use-package ar-dired)
-(use-package ar-file
-  :after (ar-string simple))
+(use-package ar-file)
 (use-package ar-bazel)
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
   :after helm)
 (use-package ar-helm-objc
-  :after (helm ar-file ar-helm ar-objc)
+  :after helm
   :commands (ar/helm-objc-import-update))
 (use-package ar-helm-projectile
   :bind ("<f7>" . ar/helm-projectile-shell-cd))
 (use-package ar-helm-org
   :after (helm helm-org org))
 (use-package ar-helm-shell
-  :after (ar-helm ar-shell shell)
   :config
   (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
 (use-package ar-helm-url
   :after helm)
 (use-package ar-helm-hotspots-config
   :demand
-  :after (ar-dired ar-helm-org ar-org helm-buffers)
+  :after helm-buffers
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
 (use-package ar-image
-  :after (ar-buffer ar-string)
   :commands (ar/image-open-html-for-current-dir))
-(use-package ar-imagemagick
-  :after (ar-process cl))
+(use-package ar-imagemagick)
 (use-package ar-linux)
 ;; TODO: Migrate to a config module.
 (use-package ar-mode-line
   :demand)
 (use-package ar-objc
-  :after (ar-buffer ar-file)
   :commands (ar/objc-import
              ar/objc-include))
+(use-package ar-process)
 (use-package ar-org
-  :after (ar-file ar-time ar-buffer org))
+  :after org)
 (use-package ar-org-blog
-  :after (ar-file ar-org ar-process)
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
 (use-package ar-ping)
-(use-package ar-shell
-  :after (cl comint))
+(use-package ar-shell)
 (use-package ar-sudo)
 (use-package ar-url
-  :after (ar-buffer ar-input enlive goto-addr)
+  :after (enlive goto-addr)
   :commands (ar/url-view-links-at))
 (use-package ar-osx
   :demand
   :commands (ar/osx-convert-plist-to-xml))
 (use-package ar-platform
-  :after (ar-osx ar-linux)
   :demand
   :bind (("C-x t" . ar/platform-new-browser-tab)))
 (use-package ar-ox-html
-  :after (org ox-html ar-file)
+  :after (org ox-html)
   :config
   (ar/ox-html-setup)
   :bind (:map org-mode-map
@@ -501,7 +493,6 @@
      (display-buffer ilog-buffer-name))))
 
 (use-package abbrev
-  :after ar-file
   :config
   (validate-setq abbrev-file-name "~/stuff/active/code/dots/emacs/abbrev_defs")
   (validate-setq save-abbrevs 'silently)
@@ -716,7 +707,6 @@ Values between 0 - 100."
               ("P" . peep-dired)))
 
 (use-package dired-subtree :ensure t
-  :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
@@ -765,7 +755,6 @@ Values between 0 - 100."
     (validate-setq zone-programs []))
 
   (use-package zone-words
-    :after zone
     :config
     (validate-setq zone-programs (vconcat [zone-words] zone-programs)))
 
@@ -783,12 +772,10 @@ Values between 0 - 100."
   ;;   :config
   ;;   (validate-setq zone-programs (vconcat [zone-rainbow] zone-programs)))
 
-  (use-package zone-select :ensure t
-    :after zone)
+  (use-package zone-select :ensure t)
 
   ;; A Nyan zone. Well, just because.
   (use-package zone-nyan :ensure t
-    :after zone
     :config
     (when (window-system)
       (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
@@ -861,7 +848,8 @@ Values between 0 - 100."
                    ("http://reddit.com/r/emacs/.rss" social reddit)
                    ("http://dangrover.com/feed.xml" blog dangrover))))
 
-(use-package elfeed-goodies :ensure t :after elfeed
+(use-package elfeed-goodies :ensure t
+  :after elfeed
   :config
   (validate-setq elfeed-goodies/entry-pane-position 'bottom)
   (elfeed-goodies/setup))
@@ -1004,7 +992,6 @@ Values between 0 - 100."
   (save-place-mode))
 
 (use-package helm-dash :ensure t
-  :after (go-mode)
   :config
   ;; View documentation in external browser.
   ;; (validate-setq helm-dash-browser-func #'browse-url)
@@ -1344,8 +1331,7 @@ Argument PROMPT to check for additional prompt."
   :mode (("\\.text\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode)
          ("\\.md\\'" . markdown-mode)))
-(use-package markdown-mode+ :ensure t
-  :after markdown-mode)
+(use-package markdown-mode+ :ensure t)
 
 (use-package time :config
   (csetq display-time-world-list '(("Europe/Paris" "Paris")
