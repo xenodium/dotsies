@@ -14,10 +14,10 @@
 
 (defvar ar/helm-hotspots-config--local-source
   '((name . "Local")
-    (candidates . (("Active" . ar/dired-split-active-to-active)
+    (candidates . (("Active" . ar/dired-split-active-to-current)
                    ("Blog" . "~/stuff/active/blog/index.org")
-                   ("Downloads" . ar/dired-split-downloads-to-active)
-                   ("Desktop" . ar/dired-split-desktop-to-active)
+                   ("Downloads" . ar/dired-split-downloads-to-current)
+                   ("Desktop" . ar/dired-split-desktop-to-current)
                    ("Init" . "~/stuff/active/code/dots/emacs/init.el")
                    ("Private" . "~/stuff/active/non-public/private.org")
                    ("Xcode Derived Data" . "~/Library/Developer/Xcode/DerivedData")
