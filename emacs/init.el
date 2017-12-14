@@ -3649,7 +3649,7 @@ line instead."
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (validate-setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (cond ((ar/osx-p)
-         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2017.14/libexec/plantuml.jar")
+         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2017.19/libexec/plantuml.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
         (t
          (message "Warning: Could not find plantuml.8018.jar")
