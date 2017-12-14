@@ -1,14 +1,4 @@
-source ~/.git-completion.sh
-source ~/.git-prompt.sh
-source ~/.colors.sh
-
 export TERM="screen-256color"
-
-### Prompt ### start
-
-export PS1='[\h \W$(__git_ps1 " (%s)")]\$ '
-
-### Prompt ### end
 
 ### Environment variables ### start
 
@@ -18,22 +8,7 @@ fi
 
 export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
-readonly YARN_BIN_PATH=`yarn global bin` || ""
-
-export PATH=$PATH:$YARN_BIN_PATH
-
 ### Environment variables ### end
-
-### nvm setup (Node Version Manager) ### start
-
-export NVM_DIR=~/.nvm
-# TODO: Add linux support.
-# TODO: Re-enable.
-# if [[ "$OSTYPE" == "darwin"* ]]; then
-#   source $(brew --prefix nvm)/nvm.sh
-# fi
-
-### nvm setup ### end
 
 ### Functions ### start
 
@@ -125,7 +100,7 @@ fi
 # Increase history size.
 export HISTSIZE=32768
 
-# Update and read historty file after every command.
+# Update and read history file after every command.
 # http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#1292
 # After each command, append to the history file and reread it
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
