@@ -37,8 +37,8 @@
     (menu-bar-mode 1))
   ;; Sets the command (Apple) key as Meta.
   (setq mac-command-modifier 'meta)
-  ;; Sets the option (Apple) key also as Meta.
-  (setq mac-option-modifier 'meta)
+  ;; Command as meta is enough. Let option act native.
+  (setq mac-option-modifier (quote none))
   (setq exec-path (append exec-path '("~/homebrew/bin"
                                       "~/homebrew/Cellar/llvm/HEAD/bin"
                                       "/usr/local/bin"))))
