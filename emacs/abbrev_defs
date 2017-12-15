@@ -133,6 +133,8 @@
 
 (define-abbrev-table 'eww-mode-abbrev-table '())
 
+(define-abbrev-table 'ffip-diff-mode-abbrev-table '())
+
 (define-abbrev-table 'finder-mode-abbrev-table '())
 
 (define-abbrev-table 'fireplace-mode-abbrev-table '())
@@ -179,6 +181,7 @@
     ("injeciton" "injection" nil 0)
     ("interesgt" "interest" nil 0)
     ("investement" "investment" nil 0)
+    ("isntall" "install" nil 0)
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 6)
     ("nattural" "natural" nil 0)
@@ -189,7 +192,7 @@
     ("proactively" "actively" nil 0)
     ("responsd" "respond" nil 0)
     ("rools" "rolls" nil 0)
-    ("saving" "saving" nil 0)
+    ("saving" "saving" nil 1)
     ("sepaate" "separate" nil 0)
     ("temove" "remove" nil 0)
     ("thiz" "this" nil 0)
@@ -197,9 +200,9 @@
     ("tracel" "travel" nil 0)
     ("trying" "trying" nil 4)
     ("typocal" "typical" nil 0)
-    ("update" "update" nil 3)
+    ("update" "update" nil 4)
     ("updated" "updated" nil 1)
-    ("updating" "updating" nil 7)
+    ("updating" "updating" nil 9)
     ("upfront" "front" nil 0)
     ("vaccumed" "vacuumed" nil 0)
     ("vaccuming" "vacuuming" nil 0)
@@ -232,6 +235,8 @@
 
 (define-abbrev-table 'help-mode-abbrev-table '())
 
+(define-abbrev-table 'helpful-mode-abbrev-table '())
+
 (define-abbrev-table 'howdoi-mode-abbrev-table '())
 
 (define-abbrev-table 'html-mode-abbrev-table '())
@@ -257,6 +262,10 @@
 (define-abbrev-table 'inferior-js-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
+
+(define-abbrev-table 'ivy-occur-grep-mode-abbrev-table '())
+
+(define-abbrev-table 'ivy-occur-mode-abbrev-table '())
 
 (define-abbrev-table 'jade-debugger-frames-mode-abbrev-table '())
 
@@ -316,6 +325,8 @@
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
 
+(define-abbrev-table 'magit-submodule-list-mode-abbrev-table '())
+
 (define-abbrev-table 'makefile-automake-mode-abbrev-table '())
 
 (define-abbrev-table 'makefile-bsdmake-mode-abbrev-table '())
@@ -333,6 +344,8 @@
 (define-abbrev-table 'message-mode-abbrev-table '())
 
 (define-abbrev-table 'messages-buffer-mode-abbrev-table '())
+
+(define-abbrev-table 'mhtml-mode-abbrev-table '())
 
 (define-abbrev-table 'net-utils-mode-abbrev-table '())
 
@@ -392,6 +405,10 @@
   '(
    ))
 
+(define-abbrev-table 'reb-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'reb-mode-abbrev-table '())
+
 (define-abbrev-table 'refine-mode-abbrev-table '())
 
 (define-abbrev-table 'restclient-mode-abbrev-table '())
@@ -407,6 +424,8 @@
 (define-abbrev-table 'rtags-references-tree-mode-abbrev-table '())
 
 (define-abbrev-table 'rtags-taglist-mode-abbrev-table '())
+
+(define-abbrev-table 'rxt-help-mode-abbrev-table '())
 
 (define-abbrev-table 'scss-mode-abbrev-table '())
 
@@ -431,9 +450,7 @@
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
-(define-abbrev-table 'sql-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'sql-mode-abbrev-table '())
 
 (define-abbrev-table 'suggest-mode-abbrev-table '())
 
