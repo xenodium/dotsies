@@ -21,7 +21,9 @@
 
 (defun ar/ios-sim-app-directories ()
   "Get all app directories for booted simulator."
-  (f-directories (expand-file-name (format "~/Library/Developer/CoreSimulator/Devices/%s/data/Containers/Data/Application" (ar/ios-sim-booted-id)))))
+  (let ((booted-sim-id (ar/ios-sim-booted-id)))
+    (assert booted-sim-id nil "No booted simulator")
+    (f-directories (expand-file-name (format "~/Library/Developer/CoreSimulator/Devices/%s/data/Containers/Data/Application" booted-sim-id)))))
 
 (defun ar/ios-sim-app-bundle-ids ()
   "Get all app bundle IDs for booted simulator."
