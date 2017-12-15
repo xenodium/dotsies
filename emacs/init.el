@@ -1587,8 +1587,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (setq-local flycheck-swiftlint-config-file
               (concat (file-name-as-directory
                        (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
-                      ".swiftlint.yml")
-              )
+                      ".swiftlint.yml"))
   (defun ar/--after-swift-save ()
     (call-process "swiftformat" nil "*swiftformat*" t "--indent" "2" buffer-file-name)
     (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
@@ -2221,13 +2220,11 @@ already narrowed."
     (setq-local objc-mode-hook-did-run t)))
 (add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
 
-(use-package dumb-jump :ensure t
-  :after objc-mode
-  :after swift-mode
-  :bind (:map swift-mode-map
-              ("M-." . dumb-jump-go))
-  :bind (:map objc-mode-map
-              ("M-." . dumb-jump-go)))
+(use-package smart-jump
+  :ensure t
+  :config
+  (smart-jump-setup-default-registers)
+  :bind ("M-." . smart-jump-go))
 
 ;; Growl-workalike for Emacs.
 ;; (use-package alert :ensure t
