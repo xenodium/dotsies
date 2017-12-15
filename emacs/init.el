@@ -393,6 +393,8 @@
 (use-package ar-image
   :commands (ar/image-open-html-for-current-dir))
 (use-package ar-imagemagick)
+(use-package ar-ios-sim
+  :after f dash)
 (use-package ar-linux)
 ;; TODO: Migrate to a config module.
 (use-package ar-mode-line
