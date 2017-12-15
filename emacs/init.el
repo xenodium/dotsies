@@ -561,7 +561,7 @@
                           :background nil
                           :foreground nil)
       (set-face-attribute 'powerline-active1 nil
-                          :background "#6c6c6c"
+                          :background "#262525"
                           :foreground "#ffffff"
                           :box nil)
       (set-face-attribute 'powerline-active2 nil
