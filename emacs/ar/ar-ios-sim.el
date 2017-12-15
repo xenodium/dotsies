@@ -29,22 +29,27 @@
           (ar/ios-sim-package-id-in-dir dir))
         (ar/ios-sim-app-directories)))
 
+(defun ar/ios-sim-app-directory (bundle-id)
+  "Get app directory from BUNDLE-ID."
+  (-first (lambda (dir)
+            (equal bundle-id
+                   (ar/ios-sim-package-id-in-dir dir)))
+          (ar/ios-sim-app-directories)))
+
 (defvar ar/ios-sim--last-bundle-id nil)
 
 (defun ar/ios-sim-documents-dir (arg)
+  "Show contents of documents directory for app. With ARG, show completion."
   (interactive "P")
   (let* ((bundle-id (if (or arg (not ar/ios-sim--last-bundle-id))
                         (completing-read "Bundle ID: " (ar/ios-sim-app-bundle-ids))
-                      (read-string (format "Bundle ID%s: "
-                                           (if ar/ios-sim--last-bundle-id
-                                               (format " (%s)" ar/ios-sim--last-bundle-id)
-                                             "")) )))
-         (path (-first (lambda (dir)
-                         (equal (if (> (length bundle-id) 0)
-                                    bundle-id
-                                  ar/ios-sim--last-bundle-id)
-                                (ar/ios-sim-package-id-in-dir dir)))
-                       (ar/ios-sim-app-directories))))
+                      (read-string
+                       (if ar/ios-sim--last-bundle-id
+                           (format "Bundle ID (%s): " ar/ios-sim--last-bundle-id)
+                         "Bundle ID: "))))
+         (path (ar/ios-sim-app-directory (if (> (length bundle-id) 0)
+                                             bundle-id
+                                           ar/ios-sim--last-bundle-id))))
     (assert path nil "Not found")
     (when (> (length bundle-id) 0)
       (setq ar/ios-sim--last-bundle-id bundle-id))
