@@ -580,9 +580,20 @@
                           :box nil)
       (spaceline-compile))))
 
+(defun ar/mode-icons-supported-p-advice-fun (orig-fun &rest r)
+  "`mode-icons-supported-p' is expensive. Cache it."
+  (if (boundp 'ar/mode-icons-supported-p)
+      ar/mode-icons-supported-p
+    (defvar ar/mode-icons-supported-p (apply orig-fun r))
+    ar/mode-icons-supported-p))
+
 ;; Yay mode icons!
-(use-package mode-icons :ensure t
+(use-package mode-icons
+  :ensure t
   :config
+  (advice-add 'mode-icons-supported-p
+              :around
+              'ar/mode-icons-supported-p-advice-fun)
   (when (window-system)
     (mode-icons-mode +1)))
 
