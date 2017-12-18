@@ -34,7 +34,7 @@
 (defun ar/bazel-qualified-package-path (path)
   "Convert PATH to google3-qualified package: /some/path/google3/package/BUILD => //package."
   (assert ar/bazel-qualify-regexp nil (format "%s must be set" 'ar/bazel-qualify-regexp))
-  (replace-regexp-in-string ar/bazel-qualify-regexp "//" (s-chop-suffix "/" (file-name-directory path))))
+  (replace-regexp-in-string ar/bazel-qualify-regexp "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
 
 (provide 'ar-bazel)
 
