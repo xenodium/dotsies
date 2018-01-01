@@ -1020,10 +1020,9 @@ Values between 0 - 100."
   "Helm-ag search remembering last location.  With ARG, forget the last location."
   (interactive "P")
   (defvar ar/helm-ag--default-locaction nil)
-  (validate-setq ar/helm-ag--default-locaction
-                 (read-directory-name "search in: " (if arg
-                                                        default-directory
-                                                      ar/helm-ag--default-locaction) nil t))
+  (when (or arg (not ar/helm-ag--default-locaction))
+    (validate-setq ar/helm-ag--default-locaction
+                   (read-directory-name "search in: " default-directory nil t)))
   (helm-do-ag ar/helm-ag--default-locaction))
 
 (defun ar/helm-ag-insert (arg)
