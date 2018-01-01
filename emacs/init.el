@@ -1047,6 +1047,13 @@ Values between 0 - 100."
                               :follow nil)))
     (call-interactively #'ar/helm-ag)))
 
+;; Differentiate C-i key binding from TAB.
+(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+(use-package prog-mode
+  :bind
+  (:map prog-mode-map
+        ("H-i" . ar/helm-ag-insert)))
+
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
