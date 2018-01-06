@@ -1,0 +1,8 @@
+#name : Swift API Availability Check Statement
+#key : available
+# --
+if #available(${1:platform name} ${2:version}, *) {
+    ${3:API available statements}
+} else {
+    ${4:fallback statements}
+}
