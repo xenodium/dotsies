@@ -50,6 +50,7 @@ def convert_to_yasnippets():
     if not xcode_snippet.language or not xcode_snippet.prefix:
       continue
     language_to_emacs_mode = {
+        "Xcode.SourceCodeLanguage.Swift": "swift-mode",
         "Xcode.SourceCodeLanguage.C": "c-mode",
         "Xcode.SourceCodeLanguage.C-Plus-Plus": "c++-mode",
         "Xcode.SourceCodeLanguage.Objective-C": "objc-mode"

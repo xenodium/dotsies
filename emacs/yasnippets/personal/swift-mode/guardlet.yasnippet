@@ -1,7 +1,6 @@
-# -*- mode: snippet -*-
-#name : Swift guard let
-#key : guard
+#name : Swift Guard-Let Statement
+#key : guardlet
 # --
-guard let ${1:var} = ${2:value} else {
-  $0
+guard let ${1:constant} = ${2:expression} else {
+  return ${3:return value}
 }
