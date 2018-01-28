@@ -8,8 +8,8 @@
 
 (require 'ar-file)
 (require 's)
-
-(defvar ar/bazel-qualify-regexp nil "For example: .*path/to/dir including WORKSPACE")
+(require 'f)
+(require 'dash)
 
 (defvar ar/bazel-compile-command "bazel build --ios_minimum_os=8.2")
 
@@ -27,14 +27,52 @@
     (assert closest-build-file nil "No BUILD found.")
     (format "%s:%s"
             (ar/bazel-qualified-package-path closest-build-file)
-            (completing-read "build rule: " (ar/file-build-rule-names (with-temp-buffer
-                                                                        (insert-file-contents closest-build-file)
-                                                                        (buffer-string)))))))
+            (completing-read "build rule: " (ar/bazel-rule-names-in-build-file-path closest-build-file)))))
+
+
+(defun ar/bazel-build-rule-names (str)
+  (mapcar (lambda (match)
+            (nth 1 match))
+          ;; match: name = "rulename"
+          (s-match-strings-all "name *= *\"\\(.*\\)\""
+                               str)))
+
+(defun ar/bazel-rule-names-in-build-file-path (file-path)
+  "Get rule names in build FILE-PATH."
+  (ar/bazel-build-rule-names (with-temp-buffer
+                               (insert-file-contents file-path)
+                               (buffer-string))))
+
+(defun ar/bazel-qualified-rule-names-in-build-file-path (file-path)
+  "Get qualified rule names in build FILE-PATH."
+  (let ((package-path (ar/bazel-qualified-package-path file-path)))
+    (-map (lambda (rule-name)
+            (format "%s:%s" package-path rule-name))
+          (ar/bazel-rule-names-in-build-file-path file-path))))
 
 (defun ar/bazel-qualified-package-path (path)
-  "Convert PATH to google3-qualified package: /some/path/google3/package/BUILD => //package."
-  (assert ar/bazel-qualify-regexp nil (format "%s must be set" 'ar/bazel-qualify-regexp))
-  (replace-regexp-in-string ar/bazel-qualify-regexp "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
+  "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
+  (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
+
+(defun ar/bazel-workspace-path ()
+  "Get bazel project path."
+  (let ((workspace (locate-dominating-file default-directory "WORKSPACE")))
+    (assert workspace nil "Not in a bazel project.")
+    (expand-file-name workspace)))
+
+(defun ar/bazel-workspace-build-files ()
+  "Get all BUILD files in bazel project."
+  (process-lines "find" (ar/bazel-workspace-path) "-name" "BUILD"))
+
+(defun ar/bazel-workspace-build-rules ()
+  "Get all workspace qualified rules."
+  (-mapcat 'ar/bazel-qualified-rule-names-in-build-file-path
+           (ar/bazel-workspace-build-files)))
+
+(defun ar/bazel-insert-rule ()
+  "Insert a qualified build rule, with completion."
+  (interactive)
+  (insert (completing-read "build rule: " (ar/bazel-workspace-build-rules))))
 
 (provide 'ar-bazel)
 
