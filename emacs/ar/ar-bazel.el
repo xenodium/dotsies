@@ -9,7 +9,7 @@
 (require 'ar-file)
 (require 's)
 
-(defvar ar/bazel-qualify-regexp nil)
+(defvar ar/bazel-qualify-regexp nil "For example: .*path/to/dir including WORKSPACE")
 
 (defvar ar/bazel-compile-command "bazel build --ios_minimum_os=8.2")
 
