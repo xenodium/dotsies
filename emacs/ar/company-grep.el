@@ -30,19 +30,25 @@
                                             (split-string company-grep-grep-flags " " t)
                                             (list (format company-grep-grep-format-string (regexp-quote value)) (projectile-project-root)))))))
 
+(defun company-grep--grap-symbol-cons ()
+  (when (and company-grep-grep-trigger
+             (looking-back company-grep-grep-trigger
+                           (line-beginning-position)))
+    (when (match-string-no-properties 1)
+      (cons (match-string-no-properties 1) t))))
+
 (defun company-grep (command &optional arg &rest ignored)
   (interactive (list 'interactive))
   (case command
     (interactive (company-begin-backend 'company-grep))
     (prefix
-     (if company-grep-grep-trigger
-         (company-grab-symbol-cons company-grep-grep-trigger)
-       (company-grab-symbol)))
+     (company-grep--grap-symbol-cons))
     (candidates
-     (company-grep-candidates (company-grab-symbol-cons company-grep-grep-trigger)))
+     (company-grep-candidates (company-grep--grap-symbol-cons)))
     (post-completion (funcall company-grep-grep-completion-fun))))
 
 (defun company-grep-candidates (value)
+  "Grep candidates for VALUE."
   (if (consp value)
       (let ((search-term (car value))
             (trigger-found (cdr value)))

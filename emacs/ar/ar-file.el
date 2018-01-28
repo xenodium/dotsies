@@ -157,13 +157,6 @@
                               fname)))))
     fpath))
 
-(defun ar/file-build-rule-names (str)
-  (mapcar (lambda (match)
-            (nth 1 match))
-          ;; match: name = "rulename"
-          (s-match-strings-all "name *= *\"\\(.*\\)\""
-                               str)))
-
 (defun ar/file-open-either-closest (start-fname &rest fnames)
   "Open the closest file, start at START-FNAME and go to parent dir until finding filename in FNAMES."
   (let ((closest-fname (apply #'ar/file-either-closest start-fname fnames)))
