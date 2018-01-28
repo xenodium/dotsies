@@ -237,6 +237,18 @@
     :after org-cliplink)
 
   (use-package helm-swoop :ensure t
+    :config
+    ;; Patching helm-swoop-pattern and helm-swoop-split-window-function until fixed upstream.
+    ;; See https://github.com/ShingoFukuyama/helm-swoop/pull/125
+    (setq helm-swoop-pattern "")
+    (validate-setq helm-swoop-split-window-function
+                   (lambda ($buf &optional resume)
+                     (if helm-swoop-split-with-multiple-windows
+                         (funcall helm-swoop-split-direction)
+                       (when (one-window-p)
+                         (funcall helm-swoop-split-direction)))
+                     (other-window 1)
+                     (switch-to-buffer $buf)))
     :bind (("M-C-s" . helm-multi-swoop-all)
            ("M-i" . helm-swoop))
     :commands (helm-swoop))
