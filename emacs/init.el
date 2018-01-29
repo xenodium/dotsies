@@ -714,8 +714,6 @@ Values between 0 - 100."
               ("i" . dired-hide-details-mode)
               ("M" . ar/dired-mark-all)))
 
-(use-package dired-du :ensure t)
-
 (use-package peep-dired
   :ensure t
   :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
