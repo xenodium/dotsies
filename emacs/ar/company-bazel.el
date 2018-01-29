@@ -10,18 +10,19 @@
 (require 'company)
 (require 'ar-bazel)
 
+(defvar-local company-bazel--prefix nil)
+
 (defun company-bazel--grap-symbol-cons ()
   "Return cons with symbol and t whenever prefix of \"// is found.
 The prefix is typically seen in deps. For example:
-deps = [
-    \"//\"
-    \"//package:target\",
-],
+    \"//A\" -> (\"A\" . t)
 "
-  (when (looking-back "\"//\\([^\"]*\\)"
+  (when (looking-back "\\(\\(//\\)\\|\\(:\\)\\)\\([^\"]*\\)"
                       (line-beginning-position))
-    (when (match-string-no-properties 1)
-      (cons (match-string-no-properties 1) t))))
+    (setq company-bazel--prefix
+          (match-string-no-properties 1))
+    (when company-bazel--prefix
+      (cons (match-string-no-properties 4) t))))
 
 (defun company-bazel (command &optional arg &rest ignored)
   "Company backend for completing dependencies in BUILD files. See company.el for COMMAND, ARG, IGNORED details."
@@ -41,18 +42,22 @@ deps = [
   (if (consp value)
       (let ((search-term (car value))
             (trigger-found (cdr value)))
-        (when trigger-found
-          (-map
-           (lambda (item)
-             ;; Results look like //package:Target
-             ;; but prefix (//) has already been inserted by user.
-             (s-chop-prefix "//" item))
-           (-filter
-            (lambda (item)
-              (when (s-contains-p search-term item)
-                item))
-            (ar/bazel-workspace-build-rules)))
-          ))))
+        (cond
+         ((string-equal company-bazel--prefix "//")
+          (when trigger-found
+            (-map
+             (lambda (item)
+               ;; Results look like //package:Target
+               ;; but prefix (//) has already been inserted by user.
+               (s-chop-prefix "//" item))
+             (-filter
+              (lambda (item)
+                (when (s-contains-p search-term item)
+                  item))
+              (ar/bazel-workspace-build-rules)))
+            ))
+         ((string-equal company-bazel--prefix ":")
+          (ar/bazel-rule-names-in-build-file-path (buffer-file-name)))))))
 
 (provide 'company-bazel)
 
