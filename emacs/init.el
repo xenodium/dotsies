@@ -1604,8 +1604,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
   ;; Don't forget to set sourcekit-project for the project.
   ;; (setq sourcekit-project "some/project.xcodeproj")
-  (setq-local company-backends '((company-sourcekit
-                                  company-yasnippet
+  (setq-local company-backends '((company-yasnippet
                                   company-dabbrev-code
                                   company-keywords
                                   company-files
