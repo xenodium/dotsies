@@ -376,6 +376,7 @@
 
 (use-package url)
 (use-package url-http)
+(use-package ar-assert)
 (use-package ar-string)
 (use-package ar-buffer)
 (use-package ar-dired)
@@ -1601,8 +1602,15 @@ Repeated invocations toggle between the two most recently open buffers."
                   "--config" flycheck-swiftlint-config-file
                   "--path" buffer-file-name))
 
+  ;; Don't forget to set sourcekit-project for the project.
   ;; (setq sourcekit-project "some/project.xcodeproj")
-  ;; (setq-local company-backends '(company-sourcekit))
+  (setq-local company-backends '((company-sourcekit
+                                  company-yasnippet
+                                  company-dabbrev-code
+                                  company-keywords
+                                  company-files
+                                  company-emoji
+                                  company-capf)))
 
   (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
 
@@ -1661,6 +1669,22 @@ Repeated invocations toggle between the two most recently open buffers."
   ("C-h c" . helpful-command)
   ("C-h f" . helpful-function)
   ("C-h v" . helpful-variable))
+
+(defun --around-sourcekit-project(f &rest r)
+  "Advice around sourcekit-project, apply F and R."
+  (defvar --sourcekit-project-cache (apply f r))
+  (unless --sourcekit-project-cache
+    (setq sourcekit-project (read-directory-name "What Xcode project? "))
+    (setq --sourcekit-project-cache  sourcekit-project))
+  --sourcekit-project-cache)
+
+(use-package sourcekit :ensure t
+  :config
+  (advice-add 'sourcekit-project :around
+              '--around-sourcekit-project)
+  (validate-setq sourcekit-sourcekittendaemon-executable
+                 (ar/assert (executable-find "sourcekittend")
+                            "No sourcekittend found")))
 
 (use-package company-sourcekit :ensure t)
 
