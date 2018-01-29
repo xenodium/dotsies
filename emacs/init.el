@@ -464,7 +464,7 @@
 
 (defun ar/bazel-mode-hook-fun ()
   (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
-  (setq-local company-backends '((company-bazel company-rfiles))))
+  (setq-local company-backends '(company-bazel company-rfiles)))
 
 (use-package bazel-mode
   :after company-grep
