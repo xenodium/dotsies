@@ -1674,6 +1674,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (defvar --sourcekit-project-cache (apply f r))
   (unless --sourcekit-project-cache
     (setq sourcekit-project (read-directory-name "What Xcode project? "))
+    ;; Selecting an xcodeproj with read-directory-name yields a path ending with /. Remove it.
+    (when (s-ends-with? "/" sourcekit-project)
+      (setq sourcekit-project (s-left -1 sourcekit-project)))
     (setq --sourcekit-project-cache  sourcekit-project))
   --sourcekit-project-cache)
 
