@@ -7,6 +7,8 @@
 
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
+(define-abbrev-table 'anaconda-view-mode-abbrev-table '())
+
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
 (define-abbrev-table 'awk-mode-abbrev-table
@@ -48,6 +50,12 @@
 (define-abbrev-table 'checkdoc-output-mode-abbrev-table '())
 
 (define-abbrev-table 'cider-browse-ns-mode-abbrev-table '())
+
+(define-abbrev-table 'cider-browse-spec-example-mode-abbrev-table '())
+
+(define-abbrev-table 'cider-browse-spec-mode-abbrev-table '())
+
+(define-abbrev-table 'cider-browse-spec-view-mode-abbrev-table '())
 
 (define-abbrev-table 'cider-connections-buffer-mode-abbrev-table '())
 
@@ -179,6 +187,7 @@
     ("funcitonality" "functionality" nil 0)
     ("impementation" "implementation" nil 0)
     ("injeciton" "injection" nil 0)
+    ("instroducing" "introducing" nil 0)
     ("interesgt" "interest" nil 0)
     ("investement" "investment" nil 0)
     ("isntall" "install" nil 0)
