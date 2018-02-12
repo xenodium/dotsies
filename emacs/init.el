@@ -590,14 +590,15 @@
     ar/mode-icons-supported-p))
 
 ;; Yay mode icons!
-(use-package mode-icons
-  :ensure t
-  :config
-  (advice-add 'mode-icons-supported-p
-              :around
-              'ar/mode-icons-supported-p-advice-fun)
-  (when (window-system)
-    (mode-icons-mode +1)))
+;; Disabling. It's slow.
+;; (use-package mode-icons
+;;   :ensure t
+;;   :config
+;;   (advice-add 'mode-icons-supported-p
+;;               :around
+;;               'ar/mode-icons-supported-p-advice-fun)
+;;   (when (window-system)
+;;     (mode-icons-mode +1)))
 
 (use-package tramp
   :config
@@ -1181,7 +1182,7 @@ Optional argument NON-RECURSIVE to shallow-search."
                       :background "default")
   ;; Automatically remove whitespace on saving.
   (add-hook 'before-save-hook 'whitespace-cleanup)
-  (global-whitespace-mode))
+  (add-hook 'prog-mode-hook 'whitespace-mode))
 
 (defun ar/compile-autoclose (buffer string)
   "Hide successful builds window with BUFFER and STRING."
@@ -1681,9 +1682,10 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (advice-add 'sourcekit-project :around
               '--around-sourcekit-project)
-  (validate-setq sourcekit-sourcekittendaemon-executable
-                 (ar/assert (executable-find "sourcekittend")
-                            "No sourcekittend found")))
+  ;; (validate-setq sourcekit-sourcekittendaemon-executable
+  ;;                (ar/assert (executable-find "sourcekittend")
+  ;;                           "No sourcekittend found"))
+  )
 
 (use-package company-sourcekit :ensure t)
 
@@ -1695,9 +1697,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-emoji :ensure t)
 
-(use-package emojify :ensure t
-  :config
-  (global-emojify-mode +1))
+;; Slow. Disabling.
+;; (use-package emojify :ensure t
+;;   :config
+;;   (global-emojify-mode +1))
 
 (use-package objc-mode
   :bind (:map objc-mode-map
