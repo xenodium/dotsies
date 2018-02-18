@@ -57,6 +57,7 @@
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
+(add-to-list 'load-path "~/.emacs.d/external")
 
 ;; Show keystrokes earlier (ie. C-x)
 (setq echo-keystrokes 0.1)
@@ -374,6 +375,7 @@
 
 (use-package ar-auto-correct)
 
+(use-package color-picker)
 (use-package url)
 (use-package url-http)
 (use-package ar-assert)
