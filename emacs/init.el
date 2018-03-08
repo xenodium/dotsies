@@ -33,6 +33,8 @@
 (run-with-idle-timer 5 t #'garbage-collect)
 (setq garbage-collection-messages t)
 
+(setq auto-window-vscroll nil)
+
 ;; From https://github.com/daschwa/emacs.d
 ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
 ;; that you can always see what's happening.
