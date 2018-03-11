@@ -543,14 +543,14 @@
       (spaceline-toggle-buffer-position-off)
       (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment time
-        "The current time."
-        (format-time-string "%H:%M"))
+                                "The current time."
+                                (format-time-string "%H:%M"))
       (spaceline-define-segment date
-        "The current date."
-        (format-time-string "%h %d"))
+                                "The current date."
+                                (format-time-string "%h %d"))
       (spaceline-define-segment padding
-        "Padding at end of line."
-        "  ")
+                                "Padding at end of line."
+                                "  ")
       (spaceline-spacemacs-theme 'date 'time 'padding)
       (validate-setq powerline-default-separator 'arrow)
       (set-face-attribute 'helm-candidate-number nil
