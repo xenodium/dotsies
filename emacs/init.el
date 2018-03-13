@@ -57,6 +57,7 @@
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
+(add-to-list 'load-path "~/.emacs.d/external")
 
 ;; Show keystrokes earlier (ie. C-x)
 (setq echo-keystrokes 0.1)
@@ -374,6 +375,7 @@
 
 (use-package ar-auto-correct)
 
+(use-package color-picker)
 (use-package url)
 (use-package url-http)
 (use-package ar-assert)
@@ -1675,6 +1677,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (defvar --sourcekit-project-cache (apply f r))
   (unless --sourcekit-project-cache
     (setq sourcekit-project (read-directory-name "What Xcode project? "))
+    ;; Selecting an xcodeproj with read-directory-name yields a path ending with /. Remove it.
+    (when (s-ends-with? "/" sourcekit-project)
+      (setq sourcekit-project (s-left -1 sourcekit-project)))
     (setq --sourcekit-project-cache  sourcekit-project))
   --sourcekit-project-cache)
 
@@ -3024,9 +3029,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
 
-(unless (ar/linux-p)
-  ;; No linux support.
-  (use-package highlight2clipboard :ensure t))
+;; Disabling rich text clipboard support (Used on macOX).
+;; (unless (ar/linux-p)
+;;   ;; No linux support.
+;;   (use-package highlight2clipboard :ensure t))
 
 (use-package writegood-mode :ensure t)
 
