@@ -981,6 +981,11 @@ Values between 0 - 100."
                    "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
 
+;; Use aya-create and aya-expand to
+;; Create a throw-away yasnippet for say:
+;; This is the ~rhythm of the ~night
+(use-package auto-yasnippet :ensure t)
+
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
 ;; (validate-setq swiper-completion-method 'ivy)
