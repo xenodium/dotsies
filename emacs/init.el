@@ -33,6 +33,8 @@
 (run-with-idle-timer 5 t #'garbage-collect)
 (setq garbage-collection-messages t)
 
+(setq auto-window-vscroll nil)
+
 ;; From https://github.com/daschwa/emacs.d
 ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
 ;; that you can always see what's happening.
@@ -541,14 +543,14 @@
       (spaceline-toggle-buffer-position-off)
       (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (spaceline-define-segment time
-        "The current time."
-        (format-time-string "%H:%M"))
+                                "The current time."
+                                (format-time-string "%H:%M"))
       (spaceline-define-segment date
-        "The current date."
-        (format-time-string "%h %d"))
+                                "The current date."
+                                (format-time-string "%h %d"))
       (spaceline-define-segment padding
-        "Padding at end of line."
-        "  ")
+                                "Padding at end of line."
+                                "  ")
       (spaceline-spacemacs-theme 'date 'time 'padding)
       (validate-setq powerline-default-separator 'arrow)
       (set-face-attribute 'helm-candidate-number nil
@@ -979,6 +981,11 @@ Values between 0 - 100."
                  '("~/.emacs.d/yasnippets/personal"
                    "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
+
+;; Use aya-create and aya-expand to
+;; Create a throw-away yasnippet for say:
+;; This is the ~rhythm of the ~night
+(use-package auto-yasnippet :ensure t)
 
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
@@ -1659,7 +1666,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package company-shell :ensure t)
 
 ;; Smarter shell completion.
-(use-package pcmpl-args :ensure t)
 (use-package pcmpl-homebrew :ensure t)
 (use-package pcmpl-git :ensure t)
 (use-package pcomplete-extension :ensure t)
