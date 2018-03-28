@@ -455,7 +455,6 @@
 (use-package ar-compile)
 
 (use-package company-grep)
-(use-package company-pcomplete)
 (use-package company-rfiles)
 (use-package company-bash-history)
 (use-package company-projectile-cd)
@@ -2641,7 +2640,7 @@ already narrowed."
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd company-pcomplete company-files)))
+    (setq-local company-backends '((company-projectile-cd company-files)))
     ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
     (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
     (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
@@ -2654,6 +2653,22 @@ already narrowed."
     :after validate
     :after eshell
     :after shrink-path))
+
+(defun eshell/ec (file-path)
+  "Alias to open FILE-PATH."
+  (find-file file-path))
+
+(defun eshell/e (file-path)
+  "Alias to open FILE-PATH."
+  (find-file file-path))
+
+(defun eshell/a ()
+  "Change PWD to active dir."
+  (eshell/cd "~/stuff/active"))
+
+(defun eshell/c ()
+  "Change PWD to active dir."
+  (eshell/cd "~/stuff/active/code/"))
 
 (use-package eshell-autojump :ensure t)
 
