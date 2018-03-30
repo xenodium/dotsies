@@ -1506,7 +1506,7 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Do not auto indent current line when pressing <RET>.
 (add-hook 'sgml-mode-hook
           (lambda() (local-set-key (kbd "<RET>")
-                                   #'electric-indent-just-newline)))
+                              #'electric-indent-just-newline)))
 
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
@@ -1523,8 +1523,8 @@ With a prefix ARG open line above the current line."
   "Insert an empty line after current line.  Keep existing position."
   (interactive)
   (save-mark-and-excursion
-   (end-of-line)
-   (newline)))
+    (end-of-line)
+    (newline)))
 
 (bind-key "C-o" #'ar/open-line)
 
