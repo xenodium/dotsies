@@ -203,7 +203,7 @@
   (use-package helm-ag :ensure t
     :config
     (cond ((executable-find "rg")
-           (validate-setq helm-ag-base-command "rg --vimgrep --no-heading"))
+           (validate-setq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
           ((executable-find "pt")
            (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup"))
           ((executable-find "ag")
