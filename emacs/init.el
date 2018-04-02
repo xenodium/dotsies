@@ -631,8 +631,8 @@ Values between 0 - 100."
   "Setup graphical display."
   (when (window-system)
     (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
-    ;; Set full screen.
-    (set-frame-parameter nil 'fullscreen 'fullboth)
+    ;; Set full screen (disabled while trying out chunkwm).
+    ;; (set-frame-parameter nil 'fullscreen 'fullboth)
     (ar/setup-graphical-mode-line)))
 (ar/setup-graphical-display)
 
