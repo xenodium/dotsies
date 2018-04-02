@@ -3530,7 +3530,7 @@ _y_outube
   (csetq org-refile-targets '((nil . (:regexp . "Week of"))
                               (nil . (:regexp . "RESOLVED"))))
 
-  (validate-setq org-ellipsis "⤵")
+  (validate-setq org-ellipsis "…")
   (validate-setq org-fontify-emphasized-text t)
   ;; Fontify code in code blocks.
   (validate-setq org-src-fontify-natively t)
