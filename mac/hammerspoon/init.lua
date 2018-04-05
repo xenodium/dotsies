@@ -10,5 +10,8 @@ hs.hotkey.bind({"alt"}, "T", function()
          return
       end
 
-      hs.execute("~/homebrew/bin/emacsclient -ne \"(ar/org-add-todo-in-file)\" -s /tmp/emacs*/server")
+      output,success = hs.execute("~/homebrew/bin/emacsclient -ne \"(ar/org-add-todo-in-file)\" -s /tmp/emacs*/server")
+      if not success then
+         hs.alert.show("Emacs did not add TODO")
+      end
 end)
