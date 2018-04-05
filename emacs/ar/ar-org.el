@@ -10,6 +10,16 @@
 (require 'ar-buffer)
 (require 'org)
 
+(defun ar/org-add-todo-in-file ()
+  "Go to tasks INBOX and add empty TODO."
+  (find-file (ar/org-get-daily-file-path))
+  (ar/org-goto-file (ar/org-get-daily-file-path) "inbox")
+  (org-narrow-to-subtree)
+  (org-show-subtree)
+  (org-end-of-meta-data t)
+  (org-insert-heading)
+  (insert "TODO "))
+
 ;; TODO: Move to ar/org-daily.
 (defvar ar/org-daily-file-path "set/path/to/daily.org"
   "Path to daily.org file.")

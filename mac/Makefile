@@ -1,4 +1,4 @@
-all: slate chunkwm
+all: slate chunkwm children
 
 slate:
 	cp slate ~/.slate
@@ -6,3 +6,6 @@ slate:
 chunkwm:
 	cp chunkwmrc ~/.chunkwmrc
 	cp skhdrc ~/.skhdrc
+
+children:
+	make -C hammerspoon
