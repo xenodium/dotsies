@@ -40,7 +40,7 @@ alt - f : chunkc tiling::window --toggle fullscreen
 shift + alt - f : chunkc tiling::window --toggle native-fullscreen
 
 # toggle window split type
-alt - e : chunkc tiling::window --toggle split
+# alt - e : chunkc tiling::window --toggle split
 
 # change layout of desktop
 alt - a : chunkc tiling::desktop --layout bsp
