@@ -1293,7 +1293,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Highlights current line.
 (use-package hl-line :ensure t
   :config
-  (global-hl-line-mode t))
+  (add-hook 'prog-mode-hook 'hl-line-mode))
 
 ;; Momentarily highlights cursor on scrolling events.
 ;; Disabling. Not needed when using hl-line.
