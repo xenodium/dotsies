@@ -20,6 +20,42 @@
   (org-insert-heading)
   (insert "TODO "))
 
+(defvar ar/org-short-link-regex "^http://goo.gl")
+
+(defun ar/org-add-short-link-in-file ()
+  "Go to \"Short links\" in org file and add new link."
+  (find-file (ar/org-get-daily-file-path))
+  (ar/org-goto-file (ar/org-get-daily-file-path) "short-links")
+  (org-show-subtree)
+  (org-end-of-meta-data t)
+  (call-interactively 'open-line)
+  (org-indent-line)
+  (when (string-match-p ar/org-short-link-regex (current-kill 0))
+    (insert (format "%s - " (current-kill 0)))))
+
+(defun ar/org-short-links-json ()
+  "Return all short links encoded in JSON link: and description:."
+  (json-encode (ar/org-short-links)))
+
+(defun ar/org-short-links ()
+  "Extracts short links from `ar/org-get-daily-file-path'."
+  (save-excursion
+    (save-restriction
+      (find-file (ar/org-get-daily-file-path))
+      (ar/org-goto-file (ar/org-get-daily-file-path) "short-links")
+      (org-show-subtree)
+      (org-end-of-meta-data t)
+      (-map
+       (lambda (line)
+         (let* ((entry (s-split " - " line))
+                (link (s-trim (nth 0 entry)))
+                (description (s-trim (nth 1 entry))))
+           (list
+            (cons "link" link)
+            (cons "description" description))))
+       (s-split "\n" (buffer-substring-no-properties (point-at-bol)
+                                                     (org-end-of-subtree t)))))))
+
 ;; TODO: Move to ar/org-daily.
 (defvar ar/org-daily-file-path "set/path/to/daily.org"
   "Path to daily.org file.")

@@ -1,3 +1,25 @@
+function split(str, delimiter)
+   local result = {}
+   for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+      table.insert(result, match);
+   end
+   return result
+end
+
+function fuzzyMatch(terms, text)
+   if terms == nil or terms == '' then
+      return true
+   end
+   local haystack = text:lower()
+   for _, needle in ipairs(split(terms, " ")) do
+      hs.printf(needle)
+      if not haystack:match(needle:lower()) then
+         return false
+      end
+   end
+   return true
+end
+
 function activateApp(appName, packageID)
    local app = hs.application.find(packageID)
    if not app then
@@ -37,46 +59,65 @@ function activateXcode()
    end
 end
 
-function addEmacsOrgModeTODO()
-   activateEmacs()
-
-   output,success = hs.execute("~/homebrew/bin/emacsclient -ne \"(ar/org-add-todo-in-file)\" -s /tmp/emacs*/server")
-   if not success then
-      hs.alert.show("Emacs did not add TODO")
+function emacsExecute(activate, elisp)
+   if activate then
+      activateEmacs()
    end
+
+   output,success = hs.execute("~/homebrew/bin/emacsclient -ne \""..elisp.."\" -s /tmp/emacs*/server")
+   if not success then
+      hs.alert.show("Emacs did not execute: "..elisp)
+   end
+
+   return output, success
+end
+
+function addEmacsOrgModeTODO()
+   emacsExecute(true, "(ar/org-add-todo-in-file)")
+end
+
+function addEmacsOrgModeGoLink()
+   emacsExecute(false, "(ar/org-add-short-link-in-file)")
+end
+
+function getEmacsOrgShortLinks()
+   output,success = emacsExecute(false, "(ar/org-short-links-json)")
+   if not success then
+      return nil
+   end
+   local decoded = hs.json.decode(output)
+   return hs.json.decode(decoded)
+end
+
+function searchEmacsOrgShortLinks()
+   local chooser = hs.chooser.new(function(choice)
+         if not choice then
+            return
+         end
+         output,success = hs.execute("open http://"..choice['text'])
+         if not success then
+            hs.alert.show("Could not open: "..choice['text'])
+         end
+   end)
+
+   local links = hs.fnutils.map(getEmacsOrgShortLinks(), function(item)
+                                   return {
+                                      text=item['link'],
+                                      subText=item['description']
+                                   }
+   end)
+   chooser:queryChangedCallback(function(query)
+         chooser:choices(hs.fnutils.filter(links, function(item)
+                                              hs.printf(item["text"])
+                                              -- Concat text and subText to search in either
+                                              return fuzzyMatch(query, item["text"]..item["subText"]) end))
+   end)
+
+   chooser:choices(links)
+   chooser:show()
 end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
+hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 hs.hotkey.bind({"alt"}, "E", function() activateApp("org.gnu.Emacs", "Emacs") end)
 hs.hotkey.bind({"alt"}, "X", function() activateApp("com.apple.dt.Xcode", "Xcode") end)
-
-local choices = {}
-for _, emoji in ipairs(hs.json.decode(io.open("emojis/emojis.json"):read())) do
-   table.insert(choices,
-                {text=emoji['name'],
-                 subText=table.concat(emoji['kwds'], ", "),
-                 image=hs.image.imageFromPath("emojis/" .. emoji['id'] .. ".png"),
-                 chars=emoji['chars']
-   })
-end
-
--- Focus the last used window.
-local function focusLastFocused()
-    local wf = hs.window.filter
-    local lastFocused = wf.defaultCurrentSpace:getWindows(wf.sortByFocusedLast)
-    if #lastFocused > 0 then lastFocused[1]:focus() end
-end
-
--- Create the chooser.
--- On selection, copy the emoji and type it into the focused application.
-local chooser = hs.chooser.new(function(choice)
-    if not choice then focusLastFocused(); return end
-    hs.pasteboard.setContents(choice["chars"])
-    focusLastFocused()
-    hs.eventtap.keyStrokes(hs.pasteboard.getContents())
-end)
-
-chooser:searchSubText(true)
-chooser:choices(choices)
-
-hs.hotkey.bind({"alt"}, ";", function() chooser:show() end)
