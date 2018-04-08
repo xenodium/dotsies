@@ -156,3 +156,9 @@ hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
                name="Google Calendar"
             },
 }) end)
+
+-- Window management
+
+hs.window.animationDuration = 0
+
+hs.hotkey.bind({"alt"}, "G", hs.grid.show)
