@@ -66,7 +66,7 @@
                                    (org-element-property :contents-end element))))))))))
 
 ;; TODO: Move to ar/org-daily.
-(defvar ar/org-daily-file-path "set/path/to/daily.org"
+(defvar ar/org-daily-file-path "~/stuff/active/non-public/private.org"
   "Path to daily.org file.")
 
 (defun ar/org-get-daily-file-path ()
