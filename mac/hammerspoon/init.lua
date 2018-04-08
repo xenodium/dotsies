@@ -31,48 +31,23 @@ function fuzzyMatch(terms, text)
    return true
 end
 
-function activateApp(appName, packageID)
-   local app = hs.application.find(packageID)
-   if not app then
-      hs.alert.show(appName.." is not running :/")
+function activateFirstOf(queries)
+   local query = hs.fnutils.find(queries, function(query) return hs.application.find(query["bundleID"]) ~= nil end)
+   if not query then
+      hs.alert.show("No app found\n "..hs.inspect.inspect(queries))
       return
    end
 
+   local app = hs.application.find(query["bundleID"])
    if not app:activate() then
-      hs.alert.show(appName.." not activated :/")
-      return
-   end
-end
-
-function activateEmacs()
-   local emacsApp = hs.application.find("org.gnu.Emacs")
-   if not emacsApp then
-      hs.alert.show("Emacs is not running :/")
-      return
-   end
-
-   if not emacsApp:activate() then
-      hs.alert.show("Emacs not activated :/")
-      return
-   end
-end
-
-function activateXcode()
-   local xcodeApp = hs.application.find("com.apple.dt.Xcode")
-   if not xcodeApp then
-      hs.alert.show("Xcode is not running :/")
-      return
-   end
-
-   if not xcodeApp:activate() then
-      hs.alert.show("Xcode not activated :/")
+      hs.alert.show(app["bundleID"].." not activated :/")
       return
    end
 end
 
 function emacsExecute(activate, elisp)
    if activate then
-      activateEmacs()
+      activateApp("org.gnu.Emacs", "Emacs")
    end
 
    output,success = hs.execute("~/homebrew/bin/emacsclient -ne \""..elisp.."\" -s /tmp/emacs*/server")
@@ -130,5 +105,54 @@ end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
-hs.hotkey.bind({"alt"}, "E", function() activateApp("org.gnu.Emacs", "Emacs") end)
-hs.hotkey.bind({"alt"}, "X", function() activateApp("com.apple.dt.Xcode", "Xcode") end)
+
+hs.hotkey.bind({"alt"}, "E", function() activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+}) end)
+
+hs.hotkey.bind({"alt"}, "X", function() activateFirstOf({
+            {
+               bundleID="com.apple.dt.Xcode",
+               name="Xcode"
+            }
+}) end)
+
+hs.hotkey.bind({"alt"}, "B", function() activateFirstOf({
+            {
+               bundleID="org.mozilla.firefox",
+               name="Firefox"
+            },
+            {
+               bundleID="com.apple.Safari",
+               name="Safari"
+            },
+            {
+               bundleID="com.google.Chrome",
+               name="Google Chrome"
+            },
+}) end)
+
+hs.hotkey.bind({"alt"}, "M", function() activateFirstOf({
+            {
+               bundleID="com.apple.mail",
+               name="Mail"
+            },
+            {
+               bundleID="org.epichrome.app.GoogleMail",
+               name="Google Mail"
+            },
+}) end)
+
+hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
+            {
+               bundleID="com.apple.iCal",
+               name="Calendar"
+            },
+            {
+               bundleID="org.epichrome.app.GoogleCalen",
+               name="Google Calendar"
+            },
+}) end)
