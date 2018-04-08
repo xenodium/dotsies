@@ -111,6 +111,13 @@ end
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 
+hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({
+            {
+               bundleID="com.kapeli.dashdoc",
+               name="Dash"
+            }
+}) end)
+
 hs.hotkey.bind({"alt"}, "E", function() activateFirstOf({
             {
                bundleID="org.gnu.Emacs",
