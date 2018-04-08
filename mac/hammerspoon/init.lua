@@ -1,3 +1,14 @@
+-- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs blah
+require("hs.ipc")
+
+-- Aliases
+
+-- Easily dump variables to the console.
+i = hs.inspect.inspect
+inspect = hs.inspect.inspect
+d = hs.doc
+doc = hs.doc
+
 function split(str, delimiter)
    local result = {}
    for match in (str..delimiter):gmatch("(.-)"..delimiter) do
