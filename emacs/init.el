@@ -981,6 +981,8 @@ Values between 0 - 100."
                    "~/.emacs.d/yasnippets/yasnippet-snippets"))
   (yas-reload-all))
 
+(use-package yasnippet-snippets :ensure t)
+
 ;; Use aya-create and aya-expand to
 ;; Create a throw-away yasnippet for say:
 ;; This is the ~rhythm of the ~night
