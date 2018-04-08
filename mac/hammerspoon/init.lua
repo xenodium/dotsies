@@ -47,7 +47,12 @@ end
 
 function emacsExecute(activate, elisp)
    if activate then
-      activateApp("org.gnu.Emacs", "Emacs")
+      activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
    end
 
    output,success = hs.execute("~/homebrew/bin/emacsclient -ne \""..elisp.."\" -s /tmp/emacs*/server")
@@ -161,4 +166,21 @@ hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
 
 hs.window.animationDuration = 0
 
+hs.grid.setMargins("0x0")
+
+hs.grid.setGrid("4x2")
+
 hs.hotkey.bind({"alt"}, "G", hs.grid.show)
+
+hs.hotkey.bind({"alt"}, "F", function()
+      local win = hs.window.focusedWindow()
+      local f = win:frame()
+      local screen = win:screen():frame()
+
+      f.x = screen.x + 15
+      f.y = screen.y + 15
+      f.w = screen.w - 30
+      f.h = screen.h - 30
+
+      win:setFrame(f)
+end)
