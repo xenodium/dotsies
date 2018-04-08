@@ -1960,7 +1960,6 @@ Repeated invocations toggle between the two most recently open buffers."
                                   company-files
                                   company-emoji
                                   company-capf)))
-  (add-hook 'after-save-hook 'ar/org--finalize-todo-externally nil t)
   (toggle-truncate-lines 0)
   (validate-setq show-trailing-whitespace t)
   (set-fill-column 1000)
