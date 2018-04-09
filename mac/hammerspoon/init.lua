@@ -169,6 +169,13 @@ hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
             },
 }) end)
 
+hs.hotkey.bind({"alt"}, "S", function() activateFirstOf({
+            {
+               bundleID="com.electron.chat",
+               name="Google Chat"
+            },
+}) end)
+
 -- Window management
 
 hs.window.animationDuration = 0
