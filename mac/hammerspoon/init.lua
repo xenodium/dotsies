@@ -164,7 +164,7 @@ hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
                name="Calendar"
             },
             {
-               bundleID="org.epichrome.app.GoogleCalen",
+               bundleID="org.epichrome.app.GoogleCalend",
                name="Google Calendar"
             },
 }) end)
