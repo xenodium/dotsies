@@ -191,3 +191,162 @@ hs.hotkey.bind({"alt"}, "F", function()
 
       win:setFrame(f)
 end)
+
+function readFile(file)
+   local f = assert(io.open(file, "rb"))
+   local content = f:read("*all")
+   f:close()
+   return content
+end
+
+
+function findfunction(x)
+  assert(type(x) == "string")
+  local f=_G
+  for v in x:gmatch("[^%.]+") do
+    if type(f) ~= "table" then
+       return nil, "looking for '"..v.."' expected table, not "..type(f)
+    end
+    f=f[v]
+  end
+  if type(f) == "function" then
+    return f
+  else
+    return nil, "expected function, not "..type(f)
+  end
+end
+
+function getModuleByName(name)
+   return hs.fnutils.find(doc._jsonForModules, function(module)
+                             return module['name'] == name
+   end)
+end
+
+function signatureFromQualifiedName(qualifiedName)
+   -- hs.grid.show( -> hs.grid
+   -- hs.grid.show -> hs.grid
+   local moduleName = string.match(qualifiedName, "(.*)[.]")
+
+   -- hs.grid.show -> show
+   local name = string.match(qualifiedName, "[.]([a-zA-Z]*)[(]?$")
+
+   local module = getModuleByName(moduleName)
+   if not module then
+      return nil
+   end
+
+   local constant = hs.fnutils.find(module['Constant'], function(f)
+                                        return f['name'] == name
+   end)
+   if constant then
+      return constant['signature']
+   end
+
+   local constructor = hs.fnutils.find(module['Constructor'], function(f)
+                                        return f['name'] == name
+   end)
+   if constructor then
+      return constructor['signature']
+   end
+
+   local method = hs.fnutils.find(module['Method'], function(f)
+                                        return f['name'] == name
+   end)
+   if method then
+      return method['signature']
+   end
+
+   local variable = hs.fnutils.find(module['Variable'], function(f)
+                                        return f['name'] == name
+   end)
+   if variable then
+      return variable['signature']
+   end
+
+   local phunction = hs.fnutils.find(module['Function'], function(f)
+                                        return f['name'] == name
+   end)
+   if phunction then
+      return phunction['signature']
+   end
+
+   return nil
+end
+
+function signatureCompletionForText(text)
+   local completions = hs.completionsForInputString(text)
+   return hs.fnutils.imap(completions, function(fallback)
+                             local signature = signatureFromQualifiedName(fallback)
+                             if signature then
+                                return signature
+                             end
+
+                             return fallback
+   end)
+end
+
+function length(table)
+   local count = 0
+   for _ in pairs(table) do count = count + 1 end
+   return count
+end
+
+function circularNext(items, from)
+   local len = length(items)
+
+   if len == 0  then
+      return nil
+   end
+
+   if from < 1 and from > len then
+      return nil
+   end
+
+   if from < len then
+      return items[from + 1]
+   end
+
+   return items[1]
+end
+
+function circularPrevious(items, from)
+   local len = length(items)
+
+   if len == 0  then
+      return nil
+   end
+
+   if from < 1 and from > len then
+      return nil
+   end
+
+   if from > 1 and from <= len then
+      return items[from -1]
+   end
+
+   return items[len]
+end
+
+function indexOf(item, items)
+   for i, current in pairs(items) do
+      if item == current then
+         return i
+      end
+   end
+   return nil
+end
+
+function focusNextWindow()
+   hs.window.focus(circularNext(hs.window.allWindows(),
+                                indexOf(hs.window.frontmostWindow(),
+                                        hs.window.allWindows())))
+end
+
+function focusPreviousWindow()
+   hs.window.focus(circularPrevious(hs.window.allWindows(),
+                                    indexOf(hs.window.frontmostWindow(),
+                                            hs.window.allWindows())))
+end
+
+hs.hotkey.bind({"alt"}, "N", focusNextWindow)
+hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
