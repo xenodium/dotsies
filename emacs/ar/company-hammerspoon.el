@@ -9,14 +9,24 @@
 (defvar company-hs-bin-path "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs")
 
 (require 'company)
+(require 'dash)
 
 (defun hammerspoon-shell ()
+  "Run a hammerspoon shell in a `term' buffer."
   (interactive)
-  (let ((shell-file-name company-hs-bin-path)
-        (shell-command-switch nil))
-    (shell)))
+  (require 'term)
+  (let* ((cmd "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs")
+         (args "-q")
+         (switches (split-string-and-unquote args))
+         (termbuf (apply 'make-term "hammerspoon" cmd nil switches)))
+    (set-buffer termbuf)
+    (term-mode)
+    (term-line-mode)
+    (switch-to-buffer termbuf)
+    (setq-local company-backends '((company-hammerspoon)))))
 
 (defun company-hs--prefix ()
+  "Return completion prefix prefix."
   (cond ((looking-back "\s" (line-beginning-position))
          "")
         ;; For example foo:
@@ -40,16 +50,15 @@
     (post-completion (company-hs--post-complete arg))))
 
 (defun company-hs--post-complete (arg)
+  "Run post compete action with ARG."
   (message (format "completed: %s" arg)))
 
 (defun company-hs--candidates (prefix)
   "Get candidates for PREFIX company completion using `pcomplete'."
-  (-map (lambda (item)
-          (if (s-starts-with? prefix item)
-              item
-            nil))
-        (json-read-from-string
-         (company-hs--candidates-json prefix))))
+  ;; append nil to convert vector to list.
+  (append (json-read-from-string
+           (company-hs--candidates-json prefix))
+          nil))
 
 (defun company-hs--candidates-json (prefix)
   "Candidates for PREFIX."
