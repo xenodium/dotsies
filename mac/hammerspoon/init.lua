@@ -165,8 +165,15 @@ hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
                name="Calendar"
             },
             {
-               bundleID="org.epichrome.app.GoogleCalen",
+               bundleID="org.epichrome.app.GoogleCalend",
                name="Google Calendar"
+            },
+}) end)
+
+hs.hotkey.bind({"alt"}, "S", function() activateFirstOf({
+            {
+               bundleID="com.electron.chat",
+               name="Google Chat"
             },
 }) end)
 
