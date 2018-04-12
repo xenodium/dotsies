@@ -83,6 +83,7 @@ end
 function searchEmacsOrgShortLinks()
    local chooser = hs.chooser.new(function(choice)
          if not choice then
+            focusPreviousWindow()
             return
          end
          output,success = hs.execute("open http://"..choice['text'])
