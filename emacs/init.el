@@ -1508,7 +1508,7 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Do not auto indent current line when pressing <RET>.
 (add-hook 'sgml-mode-hook
           (lambda() (local-set-key (kbd "<RET>")
-                              #'electric-indent-just-newline)))
+                                   #'electric-indent-just-newline)))
 
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
@@ -1525,8 +1525,8 @@ With a prefix ARG open line above the current line."
   "Insert an empty line after current line.  Keep existing position."
   (interactive)
   (save-mark-and-excursion
-    (end-of-line)
-    (newline)))
+   (end-of-line)
+   (newline)))
 
 (bind-key "C-o" #'ar/open-line)
 
@@ -3749,7 +3749,7 @@ line instead."
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (validate-setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (cond ((ar/osx-p)
-         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2017.19/libexec/plantuml.jar")
+         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.1/libexec/plantuml.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
         (t
          (message "Warning: Could not find plantuml.8018.jar")
