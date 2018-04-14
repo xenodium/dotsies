@@ -209,19 +209,19 @@ end
 
 
 function findfunction(x)
-  assert(type(x) == "string")
-  local f=_G
-  for v in x:gmatch("[^%.]+") do
-    if type(f) ~= "table" then
-       return nil, "looking for '"..v.."' expected table, not "..type(f)
-    end
-    f=f[v]
-  end
-  if type(f) == "function" then
-    return f
-  else
-    return nil, "expected function, not "..type(f)
-  end
+   assert(type(x) == "string")
+   local f=_G
+   for v in x:gmatch("[^%.]+") do
+      if type(f) ~= "table" then
+         return nil, "looking for '"..v.."' expected table, not "..type(f)
+      end
+      f=f[v]
+   end
+   if type(f) == "function" then
+      return f
+   else
+      return nil, "expected function, not "..type(f)
+   end
 end
 
 function getModuleByName(name)
@@ -247,28 +247,28 @@ function signatureFromQualifiedName(qualifiedName)
    end
 
    local constant = hs.fnutils.find(module['Constant'], function(f)
-                                        return f['name'] == name
+                                       return f['name'] == name
    end)
    if constant then
       return constant['signature']
    end
 
    local constructor = hs.fnutils.find(module['Constructor'], function(f)
-                                        return f['name'] == name
+                                          return f['name'] == name
    end)
    if constructor then
       return constructor['signature']
    end
 
    local method = hs.fnutils.find(module['Method'], function(f)
-                                        return f['name'] == name
+                                     return f['name'] == name
    end)
    if method then
       return method['signature']
    end
 
    local variable = hs.fnutils.find(module['Variable'], function(f)
-                                        return f['name'] == name
+                                       return f['name'] == name
    end)
    if variable then
       return variable['signature']
@@ -354,4 +354,5 @@ end
 hs.hotkey.bind({"alt"}, "N", focusNextWindow)
 hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
 
+-- This must be the last line.
 hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
