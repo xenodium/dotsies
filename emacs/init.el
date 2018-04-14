@@ -850,6 +850,7 @@ Values between 0 - 100."
                    ("http://sdegutis.com/blog/atom.xml" blog StevenDegutis)
                    ("http://blog.josephholsten.com/feed.xml" blog Libera-Ideoj)
                    ("http://prodissues.com/feed" blog Prodissues)
+                   ("http://irreal.org/blog/?feed=rss2" blog Irreal)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
                    ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
                    ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
