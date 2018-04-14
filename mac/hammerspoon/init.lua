@@ -1,6 +1,23 @@
 -- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
 
+-- Easier installation of spoons.
+hs.loadSpoon("SpoonInstall")
+
+spoon.SpoonInstall.use_syncinstall = true
+spoon.SpoonInstall:andUse("KSheet")
+
+ksheetVisible = false
+hs.hotkey.bind({"alt"}, "H", function()
+      if ksheetVisible then
+         spoon.KSheet:hide()
+         ksheetVisible = false
+      else
+         spoon.KSheet:show()
+         ksheetVisible = true
+      end
+end)
+
 -- Aliases
 
 -- Easily dump variables to the console.
@@ -355,4 +372,12 @@ hs.hotkey.bind({"alt"}, "N", focusNextWindow)
 hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
 
 -- This must be the last line.
-hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
+-- hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
+spoon.SpoonInstall:andUse("FadeLogo",
+                          {
+                             config = {
+                                default_run = 1.0,
+                             },
+                             start = true
+                          }
+)
