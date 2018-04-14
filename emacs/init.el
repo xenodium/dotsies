@@ -846,6 +846,7 @@ Values between 0 - 100."
   :config
   (validate-setq elfeed-feeds
                  '(("http://www.thisiscolossal.com/feed" blog Colossal)
+                   ("http://blog.josephholsten.com/feed.xml" blog Libera-Ideoj)
                    ("http://prodissues.com/feed" blog Prodissues)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
                    ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
