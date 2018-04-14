@@ -2665,7 +2665,7 @@ already narrowed."
   (validate-setq eshell-error-if-no-glob t)
   (validate-setq eshell-glob-case-insensitive t)
   (validate-setq eshell-scroll-to-bottom-on-input 'all)
-  (validate-setq eshell-list-files-after-cd t)
+  (validate-setq eshell-list-files-after-cd nil)
 
   (defun ar/eshell-cd-to-parent ()
     (interactive)
