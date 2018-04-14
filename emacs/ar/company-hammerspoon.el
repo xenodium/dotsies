@@ -10,6 +10,22 @@
 
 (require 'company)
 (require 'dash)
+(require 'smartparens)
+
+(defun hammerspoon-shell--beginning-of-line ()
+  (interactive)
+  (beginning-of-line)
+  (forward-char 2))
+
+(defvar hammerspoon-shell-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-a") 'hammerspoon-shell--beginning-of-line)
+    map)
+  "Keymap for `hammerspoon-shell-minor-mode-map'.")
+
+(define-minor-mode hammerspoon-shell-minor-mode
+  "Minor mode to simulate buffer local keybindings."
+  :init-value nil hammerspoon-shell-minor-mode-map)
 
 (defun hammerspoon-shell ()
   "Run a hammerspoon shell in a `term' buffer."
@@ -23,7 +39,11 @@
     (term-mode)
     (term-line-mode)
     (switch-to-buffer termbuf)
-    (setq-local company-backends '((company-hammerspoon)))))
+    ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
+    (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
+    (setq-local company-backends '((company-hammerspoon)))
+    (hammerspoon-shell-minor-mode)
+    (smartparens-strict-mode +1)))
 
 (defun company-hs--prefix ()
   "Return completion prefix prefix."
