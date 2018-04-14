@@ -1,4 +1,4 @@
--- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs blah
+-- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
 
 -- Aliases
@@ -230,11 +230,14 @@ function getModuleByName(name)
    end)
 end
 
+-- Given  "hs.window.desktop("
+-- We get "hs.window.desktop() -> hs.window object"
 function signatureFromQualifiedName(qualifiedName)
    -- hs.grid.show( -> hs.grid
    -- hs.grid.show -> hs.grid
    local moduleName = string.match(qualifiedName, "(.*)[.]")
 
+   -- hs.grid.show(-> show
    -- hs.grid.show -> show
    local name = string.match(qualifiedName, "[.]([a-zA-Z]*)[(]?$")
 
@@ -293,14 +296,8 @@ function signatureCompletionForText(text)
    end)
 end
 
-function length(table)
-   local count = 0
-   for _ in pairs(table) do count = count + 1 end
-   return count
-end
-
 function circularNext(items, from)
-   local len = length(items)
+   local len = #items
 
    if len == 0  then
       return nil
@@ -318,7 +315,7 @@ function circularNext(items, from)
 end
 
 function circularPrevious(items, from)
-   local len = length(items)
+   local len = #items
 
    if len == 0  then
       return nil
@@ -335,26 +332,26 @@ function circularPrevious(items, from)
    return items[len]
 end
 
-function indexOf(item, items)
-   for i, current in pairs(items) do
-      if item == current then
-         return i
-      end
-   end
-   return nil
+function newestWindows()
+   return hs.fnutils.filter(hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast),
+                            function(item)
+                               return hs.fnutils.contains(hs.window.allWindows(), item)
+   end)
 end
 
 function focusNextWindow()
-   hs.window.focus(circularNext(hs.window.allWindows(),
-                                indexOf(hs.window.frontmostWindow(),
-                                        hs.window.allWindows())))
+   hs.window.focus(circularNext(newestWindows(),
+                                hs.fnutils.indexOf(newestWindows(),
+                                                   hs.window.focusedWindow())))
 end
 
 function focusPreviousWindow()
-   hs.window.focus(circularPrevious(hs.window.allWindows(),
-                                    indexOf(hs.window.frontmostWindow(),
-                                            hs.window.allWindows())))
+   hs.window.focus(circularPrevious(newestWindows(),
+                                    hs.fnutils.indexOf(newestWindows(),
+                                                       hs.window.focusedWindow())))
 end
 
 hs.hotkey.bind({"alt"}, "N", focusNextWindow)
 hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
+
+hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
