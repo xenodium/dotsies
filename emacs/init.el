@@ -3689,7 +3689,8 @@ line instead."
   (save-excursion
     (move-end-of-line nil)
     (newline)
-    (yank)))
+    (yank))
+  (next-line))
 
 (use-package simple
   :config
