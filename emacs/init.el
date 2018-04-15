@@ -1978,6 +1978,15 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
+;; From http://zzamboni.org/post/my-emacs-configuration-with-commentary
+(defun ar/org-reformat-buffer ()
+  (interactive)
+  (when (y-or-n-p "Really format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+
 (defun ar/org-mark-done ()
   "Mark current item as DONE and refile."
   (interactive)
