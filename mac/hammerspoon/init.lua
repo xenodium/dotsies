@@ -371,6 +371,12 @@ end
 hs.hotkey.bind({"alt"}, "N", focusNextWindow)
 hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
 
+--
+-- ace-window style focused-window switcher.
+--
+hs.hints.hintChars = {'a','s','d','f','g','h','j','k','l'}
+hs.hotkey.bind({"alt"}, "J", hs.hints.windowHints)
+
 -- This must be the last line.
 -- hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
 spoon.SpoonInstall:andUse("FadeLogo",
