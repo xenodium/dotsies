@@ -176,6 +176,11 @@
   :config
   (pcre-mode +1))
 
+(use-package midnight
+  :config
+  (setq midnight-mode 't)
+  (setq midnight-period 7200))
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :demand
