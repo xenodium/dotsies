@@ -176,6 +176,11 @@
   :config
   (pcre-mode +1))
 
+(use-package midnight
+  :config
+  (setq midnight-mode 't)
+  (setq midnight-period 7200))
+
 ;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
   :demand
@@ -846,7 +851,12 @@ Values between 0 - 100."
   :config
   (validate-setq elfeed-feeds
                  '(("http://www.thisiscolossal.com/feed" blog Colossal)
+                   ("http://cmsj.net/feed.xml" blog Chris-Jones)
+                   ("http://sdegutis.com/blog/atom.xml" blog StevenDegutis)
+                   ("http://blog.josephholsten.com/feed.xml" blog Libera-Ideoj)
                    ("http://prodissues.com/feed" blog Prodissues)
+                   ("http://zzamboni.org/index.xml" blog Diego-Martín-Zamboni)
+                   ("http://irreal.org/blog/?feed=rss2" blog Irreal)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog Ben-Evans)
                    ("http://ios-goodies.tumblr.com/rss" blog ios-goodies)
                    ("https://feeds.feedburner.com/codinghorror" blog Coding-Horror)
@@ -1968,6 +1978,15 @@ Repeated invocations toggle between the two most recently open buffers."
   (yas-minor-mode 1)
   (org-display-inline-images))
 
+;; From http://zzamboni.org/post/my-emacs-configuration-with-commentary
+(defun ar/org-reformat-buffer ()
+  (interactive)
+  (when (y-or-n-p "Really format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+
 (defun ar/org-mark-done ()
   "Mark current item as DONE and refile."
   (interactive)
@@ -2661,7 +2680,7 @@ already narrowed."
   (validate-setq eshell-error-if-no-glob t)
   (validate-setq eshell-glob-case-insensitive t)
   (validate-setq eshell-scroll-to-bottom-on-input 'all)
-  (validate-setq eshell-list-files-after-cd t)
+  (validate-setq eshell-list-files-after-cd nil)
 
   (defun ar/eshell-cd-to-parent ()
     (interactive)
@@ -3684,7 +3703,8 @@ line instead."
   (save-excursion
     (move-end-of-line nil)
     (newline)
-    (yank)))
+    (yank))
+  (next-line))
 
 (use-package simple
   :config

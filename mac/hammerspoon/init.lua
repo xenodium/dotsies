@@ -1,5 +1,22 @@
--- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs blah
+-- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
+
+-- Easier installation of spoons.
+hs.loadSpoon("SpoonInstall")
+
+spoon.SpoonInstall.use_syncinstall = true
+spoon.SpoonInstall:andUse("KSheet")
+
+ksheetVisible = false
+hs.hotkey.bind({"alt"}, "H", function()
+      if ksheetVisible then
+         spoon.KSheet:hide()
+         ksheetVisible = false
+      else
+         spoon.KSheet:show()
+         ksheetVisible = true
+      end
+end)
 
 -- Aliases
 
@@ -209,19 +226,19 @@ end
 
 
 function findfunction(x)
-  assert(type(x) == "string")
-  local f=_G
-  for v in x:gmatch("[^%.]+") do
-    if type(f) ~= "table" then
-       return nil, "looking for '"..v.."' expected table, not "..type(f)
-    end
-    f=f[v]
-  end
-  if type(f) == "function" then
-    return f
-  else
-    return nil, "expected function, not "..type(f)
-  end
+   assert(type(x) == "string")
+   local f=_G
+   for v in x:gmatch("[^%.]+") do
+      if type(f) ~= "table" then
+         return nil, "looking for '"..v.."' expected table, not "..type(f)
+      end
+      f=f[v]
+   end
+   if type(f) == "function" then
+      return f
+   else
+      return nil, "expected function, not "..type(f)
+   end
 end
 
 function getModuleByName(name)
@@ -230,11 +247,14 @@ function getModuleByName(name)
    end)
 end
 
+-- Given  "hs.window.desktop("
+-- We get "hs.window.desktop() -> hs.window object"
 function signatureFromQualifiedName(qualifiedName)
    -- hs.grid.show( -> hs.grid
    -- hs.grid.show -> hs.grid
    local moduleName = string.match(qualifiedName, "(.*)[.]")
 
+   -- hs.grid.show(-> show
    -- hs.grid.show -> show
    local name = string.match(qualifiedName, "[.]([a-zA-Z]*)[(]?$")
 
@@ -244,28 +264,28 @@ function signatureFromQualifiedName(qualifiedName)
    end
 
    local constant = hs.fnutils.find(module['Constant'], function(f)
-                                        return f['name'] == name
+                                       return f['name'] == name
    end)
    if constant then
       return constant['signature']
    end
 
    local constructor = hs.fnutils.find(module['Constructor'], function(f)
-                                        return f['name'] == name
+                                          return f['name'] == name
    end)
    if constructor then
       return constructor['signature']
    end
 
    local method = hs.fnutils.find(module['Method'], function(f)
-                                        return f['name'] == name
+                                     return f['name'] == name
    end)
    if method then
       return method['signature']
    end
 
    local variable = hs.fnutils.find(module['Variable'], function(f)
-                                        return f['name'] == name
+                                       return f['name'] == name
    end)
    if variable then
       return variable['signature']
@@ -293,14 +313,8 @@ function signatureCompletionForText(text)
    end)
 end
 
-function length(table)
-   local count = 0
-   for _ in pairs(table) do count = count + 1 end
-   return count
-end
-
 function circularNext(items, from)
-   local len = length(items)
+   local len = #items
 
    if len == 0  then
       return nil
@@ -318,7 +332,7 @@ function circularNext(items, from)
 end
 
 function circularPrevious(items, from)
-   local len = length(items)
+   local len = #items
 
    if len == 0  then
       return nil
@@ -335,26 +349,41 @@ function circularPrevious(items, from)
    return items[len]
 end
 
-function indexOf(item, items)
-   for i, current in pairs(items) do
-      if item == current then
-         return i
-      end
-   end
-   return nil
+function newestWindows()
+   return hs.fnutils.filter(hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast),
+                            function(item)
+                               return hs.fnutils.contains(hs.window.allWindows(), item)
+   end)
 end
 
 function focusNextWindow()
-   hs.window.focus(circularNext(hs.window.allWindows(),
-                                indexOf(hs.window.frontmostWindow(),
-                                        hs.window.allWindows())))
+   hs.window.focus(circularNext(newestWindows(),
+                                hs.fnutils.indexOf(newestWindows(),
+                                                   hs.window.focusedWindow())))
 end
 
 function focusPreviousWindow()
-   hs.window.focus(circularPrevious(hs.window.allWindows(),
-                                    indexOf(hs.window.frontmostWindow(),
-                                            hs.window.allWindows())))
+   hs.window.focus(circularPrevious(newestWindows(),
+                                    hs.fnutils.indexOf(newestWindows(),
+                                                       hs.window.focusedWindow())))
 end
 
 hs.hotkey.bind({"alt"}, "N", focusNextWindow)
 hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
+
+--
+-- ace-window style focused-window switcher.
+--
+hs.hints.hintChars = {'a','s','d','f','g','h','j','k','l'}
+hs.hotkey.bind({"alt"}, "J", hs.hints.windowHints)
+
+-- This must be the last line.
+-- hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()
+spoon.SpoonInstall:andUse("FadeLogo",
+                          {
+                             config = {
+                                default_run = 1.0,
+                             },
+                             start = true
+                          }
+)
