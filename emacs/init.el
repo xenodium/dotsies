@@ -850,7 +850,9 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("http://www.thisiscolossal.com/feed" blog Colossal)
+                 '(("http://www.modernemacs.com/index.xml" blog ModernEmacs)
+                   ("http://www.thisiscolossal.com/feed" blog Colossal)
+                   ("http://nullprogram.com/feed" blog Chris-Wellons)
                    ("http://cmsj.net/feed.xml" blog Chris-Jones)
                    ("http://sdegutis.com/blog/atom.xml" blog StevenDegutis)
                    ("http://blog.josephholsten.com/feed.xml" blog Libera-Ideoj)
@@ -885,6 +887,8 @@ Values between 0 - 100."
 
 ;; Suggests elisp methods based on inputs and outputs.
 (use-package suggest :ensure t)
+
+(use-package realgud :ensure t)
 
 ;; Semantic code search for emacs lisp.
 (use-package elisp-refs :ensure t)
