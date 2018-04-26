@@ -850,7 +850,9 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("http://www.modernemacs.com/index.xml" blog ModernEmacs)
+                 '(("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
+                   ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld)
+                   ("http://www.modernemacs.com/index.xml" blog ModernEmacs)
                    ("http://www.thisiscolossal.com/feed" blog Colossal)
                    ("http://nullprogram.com/feed" blog Chris-Wellons)
                    ("http://cmsj.net/feed.xml" blog Chris-Jones)
@@ -877,7 +879,11 @@ Values between 0 - 100."
                    ("http://sachachua.com/blog/feed" blog sachachua)
                    ("https://news.ycombinator.com/rss" news hackernews)
                    ("http://reddit.com/r/emacs/.rss" social reddit)
-                   ("http://dangrover.com/feed.xml" blog dangrover))))
+                   ("http://dangrover.com/feed.xml" blog dangrover)))
+  (defun ar/elfeed-set-style ()
+    ;; Separate elfeed lines for readability.
+    (validate-setq line-spacing 15))
+  (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style))
 
 (use-package elfeed-goodies :ensure t
   :after elfeed
