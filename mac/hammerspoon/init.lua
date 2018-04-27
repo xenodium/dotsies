@@ -204,7 +204,7 @@ hs.grid.setGrid("4x2")
 
 hs.hotkey.bind({"alt"}, "G", hs.grid.show)
 
-hs.hotkey.bind({"alt"}, "F", function()
+function reframeFocusedWindow()
       local win = hs.window.focusedWindow()
       local f = win:frame()
       local screen = win:screen():frame()
@@ -215,7 +215,9 @@ hs.hotkey.bind({"alt"}, "F", function()
       f.h = screen.h - 30
 
       win:setFrame(f)
-end)
+end
+
+hs.hotkey.bind({"alt"}, "F", reframeFocusedWindow)
 
 function readFile(file)
    local f = assert(io.open(file, "rb"))
