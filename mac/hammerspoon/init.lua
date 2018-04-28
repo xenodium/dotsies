@@ -1,6 +1,9 @@
 -- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
 
+ar = {}
+ar.window=require("ar.window")
+
 -- Easier installation of spoons.
 hs.loadSpoon("SpoonInstall")
 
@@ -313,59 +316,6 @@ function signatureCompletionForText(text)
 
                              return fallback
    end)
-end
-
-function circularNext(items, from)
-   local len = #items
-
-   if len == 0  then
-      return nil
-   end
-
-   if from < 1 and from > len then
-      return nil
-   end
-
-   if from < len then
-      return items[from + 1]
-   end
-
-   return items[1]
-end
-
-function circularPrevious(items, from)
-   local len = #items
-
-   if len == 0  then
-      return nil
-   end
-
-   if from < 1 and from > len then
-      return nil
-   end
-
-   if from > 1 and from <= len then
-      return items[from -1]
-   end
-
-   return items[len]
-end
-
-ar = {}
-ar.window = {}
-ar.window.filtered = {}
-ar.window.filtered.byCreationTime = hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast)
-
-ar.window.focusNext = function()
-   hs.window.focus(circularNext(ar.window.filtered.byCreationTime,
-                                hs.fnutils.indexOf(ar.window.filtered.byCreationTime,
-                                                   hs.window.focusedWindow())))
-end
-
-ar.window.focusPrevious = function()
-   hs.window.focus(circularPrevious(ar.window.filtered.byCreationTime,
-                                    hs.fnutils.indexOf(ar.window.filtered.byCreationTime,
-                                                       hs.window.focusedWindow())))
 end
 
 hs.hotkey.bind({"alt"}, "N", ar.window.focusNext)
