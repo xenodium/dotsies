@@ -1,5 +1,10 @@
 local window = {}
 
+if ar == nil then
+   ar = {}
+end
+ar.window = window
+
 local function circularNext(items, from)
    local len = #items
 
