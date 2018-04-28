@@ -205,16 +205,16 @@ hs.grid.setGrid("4x2")
 hs.hotkey.bind({"alt"}, "G", hs.grid.show)
 
 function reframeFocusedWindow()
-      local win = hs.window.focusedWindow()
-      local f = win:frame()
-      local screen = win:screen():frame()
+   local win = hs.window.focusedWindow()
+   local f = win:frame()
+   local screen = win:screen():frame()
 
-      f.x = screen.x + 15
-      f.y = screen.y + 15
-      f.w = screen.w - 30
-      f.h = screen.h - 30
+   f.x = screen.x + 15
+   f.y = screen.y + 15
+   f.w = screen.w - 30
+   f.h = screen.h - 30
 
-      win:setFrame(f)
+   win:setFrame(f)
 end
 
 hs.hotkey.bind({"alt"}, "F", reframeFocusedWindow)
@@ -351,27 +351,25 @@ function circularPrevious(items, from)
    return items[len]
 end
 
-function newestWindows()
-   return hs.fnutils.filter(hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast),
-                            function(item)
-                               return hs.fnutils.contains(hs.window.allWindows(), item)
-   end)
-end
+ar = {}
+ar.window = {}
+ar.window.filtered = {}
+ar.window.filtered.byCreationTime = hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast)
 
-function focusNextWindow()
-   hs.window.focus(circularNext(newestWindows(),
-                                hs.fnutils.indexOf(newestWindows(),
+ar.window.focusNext = function()
+   hs.window.focus(circularNext(ar.window.filtered.byCreationTime,
+                                hs.fnutils.indexOf(ar.window.filtered.byCreationTime,
                                                    hs.window.focusedWindow())))
 end
 
-function focusPreviousWindow()
-   hs.window.focus(circularPrevious(newestWindows(),
-                                    hs.fnutils.indexOf(newestWindows(),
+ar.window.focusPrevious = function()
+   hs.window.focus(circularPrevious(ar.window.filtered.byCreationTime,
+                                    hs.fnutils.indexOf(ar.window.filtered.byCreationTime,
                                                        hs.window.focusedWindow())))
 end
 
-hs.hotkey.bind({"alt"}, "N", focusNextWindow)
-hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
+hs.hotkey.bind({"alt"}, "N", ar.window.focusNext)
+hs.hotkey.bind({"alt"}, "P", ar.window.focusPrevious)
 
 --
 -- ace-window style focused-window switcher.
@@ -387,5 +385,4 @@ spoon.SpoonInstall:andUse("FadeLogo",
                                 default_run = 1.0,
                              },
                              start = true
-                          }
-)
+})
