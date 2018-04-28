@@ -1,8 +1,7 @@
 -- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
 
-ar = {}
-ar.window=require("ar.window")
+require("ar.window")
 
 -- Easier installation of spoons.
 hs.loadSpoon("SpoonInstall")
