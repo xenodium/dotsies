@@ -46,15 +46,26 @@ function window.lastCreatedWindows()
 end
 
 function window.focusNext()
-   hs.window.focus(circularNext(window.lastCreatedWindows(),
-                                hs.fnutils.indexOf(window.lastCreatedWindows(),
-                                                   hs.window.focusedWindow())))
+   local windows = window.lastCreatedWindows()
+   circularNext(windows,
+                hs.fnutils.indexOf(windows,
+                                   window.focusedWindow())):focus()
 end
 
 function window.focusPrevious()
-   hs.window.focus(circularPrevious(window.lastCreatedWindows(),
-                                    hs.fnutils.indexOf(window.lastCreatedWindows(),
-                                                       hs.window.focusedWindow())))
+   local windows = window.lastCreatedWindows()
+   circularPrevious(windows,
+                    hs.fnutils.indexOf(windows,
+                                       window.focusedWindow())):focus()
+end
+
+function window.focusedWindow()
+   if hs.fnutils.contains(ar.window.lastCreatedWindows(),
+                          hs.window.focusedWindow()) then
+      return hs.window.focusedWindow()
+   end
+   -- No draggable focused window. Pick the first draggable one.
+   return ar.window.lastCreatedWindows()[1]
 end
 
 return window
