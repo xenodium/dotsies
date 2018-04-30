@@ -3615,7 +3615,8 @@ _y_outube
   (validate-setq org-return-follows-link t)
   :bind
   (:map org-mode-map
-        ("C-c C-l" . ar/org-insert-link-dwim)))
+        ("C-c C-l" . ar/org-insert-link-dwim)
+        ("M-C-y" . ar/yank-line-below)))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
