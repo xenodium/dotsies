@@ -1,6 +1,8 @@
 -- Enable repl via /Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs
 require("hs.ipc")
 
+require("ar.window")
+
 -- Easier installation of spoons.
 hs.loadSpoon("SpoonInstall")
 
@@ -204,18 +206,20 @@ hs.grid.setGrid("4x2")
 
 hs.hotkey.bind({"alt"}, "G", hs.grid.show)
 
-hs.hotkey.bind({"alt"}, "F", function()
-      local win = hs.window.focusedWindow()
-      local f = win:frame()
-      local screen = win:screen():frame()
+function reframeFocusedWindow()
+   local win = hs.window.focusedWindow()
+   local f = win:frame()
+   local screen = win:screen():frame()
 
-      f.x = screen.x + 15
-      f.y = screen.y + 15
-      f.w = screen.w - 30
-      f.h = screen.h - 30
+   f.x = screen.x + 15
+   f.y = screen.y + 15
+   f.w = screen.w - 30
+   f.h = screen.h - 30
 
-      win:setFrame(f)
-end)
+   win:setFrame(f)
+end
+
+hs.hotkey.bind({"alt"}, "F", reframeFocusedWindow)
 
 function readFile(file)
    local f = assert(io.open(file, "rb"))
@@ -313,63 +317,8 @@ function signatureCompletionForText(text)
    end)
 end
 
-function circularNext(items, from)
-   local len = #items
-
-   if len == 0  then
-      return nil
-   end
-
-   if from < 1 and from > len then
-      return nil
-   end
-
-   if from < len then
-      return items[from + 1]
-   end
-
-   return items[1]
-end
-
-function circularPrevious(items, from)
-   local len = #items
-
-   if len == 0  then
-      return nil
-   end
-
-   if from < 1 and from > len then
-      return nil
-   end
-
-   if from > 1 and from <= len then
-      return items[from -1]
-   end
-
-   return items[len]
-end
-
-function newestWindows()
-   return hs.fnutils.filter(hs.window.filter.defaultCurrentSpace:getWindows(hs.window.filter.sortByCreatedLast),
-                            function(item)
-                               return hs.fnutils.contains(hs.window.allWindows(), item)
-   end)
-end
-
-function focusNextWindow()
-   hs.window.focus(circularNext(newestWindows(),
-                                hs.fnutils.indexOf(newestWindows(),
-                                                   hs.window.focusedWindow())))
-end
-
-function focusPreviousWindow()
-   hs.window.focus(circularPrevious(newestWindows(),
-                                    hs.fnutils.indexOf(newestWindows(),
-                                                       hs.window.focusedWindow())))
-end
-
-hs.hotkey.bind({"alt"}, "N", focusNextWindow)
-hs.hotkey.bind({"alt"}, "P", focusPreviousWindow)
+hs.hotkey.bind({"alt"}, "N", ar.window.focusNext)
+hs.hotkey.bind({"alt"}, "P", ar.window.focusPrevious)
 
 --
 -- ace-window style focused-window switcher.
@@ -385,5 +334,4 @@ spoon.SpoonInstall:andUse("FadeLogo",
                                 default_run = 1.0,
                              },
                              start = true
-                          }
-)
+})
