@@ -1240,8 +1240,10 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
-;; Override selection with new text.
-(delete-selection-mode +1)
+(use-package delsel
+  :config
+  ;; Override selection with new text.
+  (delete-selection-mode +1))
 
 (use-package electric
   :config
