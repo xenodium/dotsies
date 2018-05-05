@@ -850,7 +850,9 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
+                 '(("https://piware.de/post/index.xml" blog tech)
+                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
+                   ("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
                    ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld)
                    ("http://www.modernemacs.com/index.xml" blog ModernEmacs)
                    ("http://www.thisiscolossal.com/feed" blog Colossal)
