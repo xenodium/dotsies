@@ -1246,7 +1246,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package electric
   :config
-  (electric-indent-mode))
+  (electric-indent-mode +1))
 
 ;; Highlight matching parenthesis.
 (use-package paren :ensure t
