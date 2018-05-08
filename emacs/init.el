@@ -852,6 +852,7 @@ Values between 0 - 100."
   (validate-setq elfeed-feeds
                  '(("https://piware.de/post/index.xml" blog tech)
                    ("http://200ok.ch/atom.xml" blog emacs 200ok)
+                   ("https://changelog.complete.org/feed" blog JohnGoerzen)
                    ("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
                    ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld)
                    ("http://www.modernemacs.com/index.xml" blog ModernEmacs)
@@ -1249,7 +1250,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 (use-package electric
   :config
-  (electric-indent-mode))
+  (electric-indent-mode +1))
 
 ;; Highlight matching parenthesis.
 (use-package paren :ensure t
@@ -3619,7 +3620,8 @@ _y_outube
   (validate-setq org-return-follows-link t)
   :bind
   (:map org-mode-map
-        ("C-c C-l" . ar/org-insert-link-dwim)))
+        ("C-c C-l" . ar/org-insert-link-dwim)
+        ("M-C-y" . ar/yank-line-below)))
 
 ;; Required by code block syntax highlighting.
 (use-package htmlize :ensure t)
@@ -3783,7 +3785,7 @@ line instead."
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (validate-setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
   (cond ((ar/osx-p)
-         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2017.19/libexec/plantuml.jar")
+         (validate-setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.1/libexec/plantuml.jar")
          (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
         (t
          (message "Warning: Could not find plantuml.8018.jar")
