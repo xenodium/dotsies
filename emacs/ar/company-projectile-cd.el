@@ -10,6 +10,7 @@
 (require 'company)
 (require 'dash)
 (require 'f)
+(require 's)
 (require 'projectile)
 
 (defun company-projectile-cd (command &optional arg &rest ignored)
@@ -69,9 +70,11 @@
 
 (defun company-projectile-cd--expand-inserted-path (path)
   "Replace relative PATH insertion with its absolute equivalent if needed."
-  (unless (f-exists-p path)
-    (delete-region (point) (- (point) (length path)))
-    (insert (concat (projectile-project-root) path))))
+  (delete-region (point) (- (point) (length path)))
+  (insert (if (s-contains-p " " path)
+              ;; Quote if spaces found.
+              (format "\"%s\"" path)
+            path)))
 
 (defun company-projectile-cd--reset-root ()
   "Reset project root. Useful when cd'ing in and out of projects."

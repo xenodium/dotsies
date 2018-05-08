@@ -20,9 +20,11 @@
                      (file-name-directory (directory-file-name arg))) 1))
     (post-completion (progn
                        (delete-region (point) (- (point) (length arg)))
+                       ;; Remove trailing slash.
                        (let ((path (if (s-ends-with? "/" arg)
                                        (s-left -1 arg)
                                      arg)))
+                         ;; Quote if spaces found.
                          (insert (if (s-contains-p " " path)
                                      (format "\"%s\"" path)
                                    path)))))
