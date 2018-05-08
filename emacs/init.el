@@ -459,6 +459,7 @@
 (use-package ar-font)
 (use-package ar-compile)
 
+(use-package company-escaped-files)
 (use-package company-grep)
 (use-package company-rfiles)
 (use-package company-bash-history)
@@ -2709,7 +2710,7 @@ already narrowed."
     (smartparens-strict-mode +1)
     (eshell-smart-initialize)
     (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd company-files)))
+    (setq-local company-backends '((company-projectile-cd company-escaped-files)))
     ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
     (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
     (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
