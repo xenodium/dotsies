@@ -799,10 +799,10 @@ Values between 0 - 100."
   (use-package zone-select :ensure t)
 
   ;; A Nyan zone. Well, just because.
-  (use-package zone-nyan :ensure t
-    :config
-    (when (window-system)
-      (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
+  ;; (use-package zone-nyan :ensure t
+  ;;   :config
+  ;;   (when (window-system)
+  ;;     (validate-setq zone-programs (vconcat [zone-nyan] zone-programs))))
 
   (use-package discover-my-major :ensure t)
 
