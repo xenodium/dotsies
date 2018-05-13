@@ -703,7 +703,7 @@ Values between 0 - 100."
   :commands dired-mode
   :config
   ;; Adding h to switches to use units in size.
-  (validate-setq dired-listing-switches "-alh")
+  (validate-setq dired-listing-switches "-Alh")
   (fullframe dired quit-window)
   ;; Try to guess the target directory for operations.
   (validate-setq dired-dwim-target t)
