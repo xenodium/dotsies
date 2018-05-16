@@ -2336,6 +2336,7 @@ already narrowed."
   :ensure t
   :config
   (smart-jump-setup-default-registers)
+  (setq dumb-jump-selector 'helm)
   :bind ("M-." . smart-jump-go))
 
 ;; Growl-workalike for Emacs.
