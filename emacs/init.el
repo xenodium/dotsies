@@ -851,7 +851,12 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("https://emacsnotes.wordpress.com/feed" blog tech emacs)
+                 '(("https://wincent.com/blog.rss" blog tech dev wincent)
+                   ("https://writequit.org/posts.xml" blog tech emacs writequit)
+                   ("https://medium.com/feed/@mwfogleman" blog tech emacs meditation MichaelFogleman)
+                   ("http://francismurillo.github.io/hacker/feed.xml" blog tech emacs francismurillo)
+                   ("http://francismurillo.github.io/watcher/feed.xml" blog anime francismurillo)
+                   ("https://emacsnotes.wordpress.com/feed" blog tech emacs)
                    ("https://piware.de/post/index.xml" blog tech)
                    ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ("https://changelog.complete.org/feed" blog emacs tech JohnGoerzen)
