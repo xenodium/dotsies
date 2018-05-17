@@ -1012,6 +1012,11 @@ Values between 0 - 100."
 
 (use-package yasnippet-snippets :ensure t)
 
+(use-package ivy :ensure t)
+
+;; Display's yasnippet previous inline when cycling through results.
+(use-package ivy-yasnippet :ensure t)
+
 ;; Use aya-create and aya-expand to
 ;; Create a throw-away yasnippet for say:
 ;; This is the ~rhythm of the ~night
