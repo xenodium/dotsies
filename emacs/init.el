@@ -725,6 +725,11 @@ Values between 0 - 100."
               ("i" . dired-hide-details-mode)
               ("M" . ar/dired-mark-all)))
 
+(use-package dired-aux
+  :config
+  ;; Make "Z" shortcut available in dired to extract iOS ipa zips.
+  (add-to-list 'dired-compress-file-suffixes '("\\.ipa\\'" "" "unzip -o -d %o %i")))
+
 (use-package peep-dired
   :ensure t
   :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
