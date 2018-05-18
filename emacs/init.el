@@ -3597,6 +3597,15 @@ _y_outube
 
   (use-package org-faces
     :config
+    (custom-set-faces
+     '(org-block-begin-line
+       ((t (:underline nil :foreground "#008ED1" :background nil))))
+     '(org-block-background
+       ((t (:background "#202020"))))
+     '(org-block
+       ((t (:background "#202020"))))
+     '(org-block-end-line
+       ((t (:overline nil :foreground "#008ED1" :background nil)))))
     (csetq org-todo-keyword-faces
            '(("TODO" . (:foreground "red" :weight bold))
              ("STARTED" . (:foreground "yellow" :weight bold))
