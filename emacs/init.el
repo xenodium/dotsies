@@ -725,6 +725,11 @@ Values between 0 - 100."
               ("i" . dired-hide-details-mode)
               ("M" . ar/dired-mark-all)))
 
+(use-package dired-aux
+  :config
+  ;; Make "Z" shortcut available in dired to extract iOS ipa zips.
+  (add-to-list 'dired-compress-file-suffixes '("\\.ipa\\'" "" "unzip -o -d %o %i")))
+
 (use-package peep-dired
   :ensure t
   :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
@@ -1013,6 +1018,11 @@ Values between 0 - 100."
   (yas-reload-all))
 
 (use-package yasnippet-snippets :ensure t)
+
+(use-package ivy :ensure t)
+
+;; Display's yasnippet previous inline when cycling through results.
+(use-package ivy-yasnippet :ensure t)
 
 ;; Use aya-create and aya-expand to
 ;; Create a throw-away yasnippet for say:
@@ -1580,10 +1590,10 @@ With a prefix ARG open line above the current line."
               ("/" . dired-narrow)))
 
 ;; Add git state highlighting to dired (a la K for zsh).
-(use-package dired-k
-  :ensure t
-  :config
-  (add-hook 'dired-initial-position-hook 'dired-k))
+;; (use-package dired-k
+;;   :ensure t
+;;   :config
+;;   (add-hook 'dired-initial-position-hook 'dired-k))
 
 ;; Useful for diffing directories.
 (use-package ztree :ensure t)
@@ -3595,6 +3605,15 @@ _y_outube
 
   (use-package org-faces
     :config
+    (custom-set-faces
+     '(org-block-begin-line
+       ((t (:underline nil :foreground "#008ED1" :background nil))))
+     '(org-block-background
+       ((t (:background "#202020"))))
+     '(org-block
+       ((t (:background "#202020"))))
+     '(org-block-end-line
+       ((t (:overline nil :foreground "#008ED1" :background nil)))))
     (csetq org-todo-keyword-faces
            '(("TODO" . (:foreground "red" :weight bold))
              ("STARTED" . (:foreground "yellow" :weight bold))

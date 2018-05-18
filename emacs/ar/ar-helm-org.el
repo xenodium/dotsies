@@ -112,7 +112,7 @@
                                    (org-show-subtree)
                                    (org-end-of-meta-data t)
                                    ;; Indent to current level.
-                                   (call-interactively (global-key-binding "\t"))
+                                   ;; (call-interactively (global-key-binding "\t"))
                                    (insert (format "- %s.\n" ,(ar/org-build-link url
                                                                                  (read-string "Description: " default-description))))
                                    (org-sort-list nil ?a)
