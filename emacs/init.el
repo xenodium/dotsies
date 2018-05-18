@@ -1583,10 +1583,10 @@ With a prefix ARG open line above the current line."
               ("/" . dired-narrow)))
 
 ;; Add git state highlighting to dired (a la K for zsh).
-(use-package dired-k
-  :ensure t
-  :config
-  (add-hook 'dired-initial-position-hook 'dired-k))
+;; (use-package dired-k
+;;   :ensure t
+;;   :config
+;;   (add-hook 'dired-initial-position-hook 'dired-k))
 
 ;; Useful for diffing directories.
 (use-package ztree :ensure t)
