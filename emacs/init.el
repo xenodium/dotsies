@@ -857,6 +857,7 @@ Values between 0 - 100."
   :config
   (validate-setq elfeed-feeds
                  '(("https://wincent.com/blog.rss" blog tech dev wincent)
+                   ("https://scripter.co/index.xml" blog emacs tech dev)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
                    ("https://medium.com/feed/@mwfogleman" blog tech emacs meditation MichaelFogleman)
                    ("http://francismurillo.github.io/hacker/feed.xml" blog tech emacs francismurillo)
