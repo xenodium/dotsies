@@ -306,8 +306,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   (custom-set-faces
    '(org-block-begin-line
      ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-   '(org-block-background
-     ((t (:background "#FFFFEA"))))
    '(org-block-end-line
      ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
    '(which-func ((t (:foreground "#008000"))))))
@@ -320,8 +318,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
    '(org-block-begin-line
      ((t (:foreground "#008ED1" :background nil))))
    '(org-block ((t (:background "SlateBlue4" :foreground nil :box nil))))
-   '(org-block-background
-     ((t (:background "#111111"))))
    '(org-block-end-line
      ((t (:foreground "#008ED1" :background nil))))
    '(which-func ((t (:foreground "green"))))))
