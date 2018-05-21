@@ -3609,8 +3609,6 @@ _y_outube
     (custom-set-faces
      '(org-block-begin-line
        ((t (:underline nil :foreground "#008ED1" :background nil))))
-     '(org-block-background
-       ((t (:background "#202020"))))
      '(org-block
        ((t (:background "#202020"))))
      '(org-block-end-line
