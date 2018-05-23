@@ -722,6 +722,8 @@ Values between 0 - 100."
   (add-hook 'dired-mode-hook 'discover-mode)
   ;; Hide dired details by default.
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  :bind (:map global-map
+              ("C-l". dired-jump))
   :bind (:map dired-mode-map
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
@@ -731,6 +733,7 @@ Values between 0 - 100."
               ("P" . peep-dired)
               ("f" . helm-find-files)
               ("i" . dired-hide-details-mode)
+              ("C-l". dired-jump)
               ("M" . ar/dired-mark-all)))
 
 (use-package dired-aux
