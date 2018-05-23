@@ -24,6 +24,14 @@
 ;; No Alarms.
 (setq ring-bell-function 'ignore)
 
+;;; Transparent titlebar
+;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
+;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
+(when (memq window-system '(mac ns))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; nil for dark text
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
