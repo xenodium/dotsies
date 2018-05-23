@@ -20,6 +20,11 @@ hs.hotkey.bind({"alt"}, "H", function()
       end
 end)
 
+-- Spectacle Window Manager Keybindings For Hammerspoon
+-- https://github.com/scottwhudson/Lunette
+hs.loadSpoon("Lunette")
+spoon.Lunette:bindHotkeys()
+
 -- Aliases
 
 -- Easily dump variables to the console.
