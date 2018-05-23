@@ -710,8 +710,8 @@ Values between 0 - 100."
   :after (discover fullframe helm)
   :commands dired-mode
   :config
-  ;; Adding h to switches to use units in size.
-  (validate-setq dired-listing-switches "-Alh")
+  ;; Adding human readable units and sorted by date.
+  (validate-setq dired-listing-switches "-Alht")
   (fullframe dired quit-window)
   ;; Try to guess the target directory for operations.
   (validate-setq dired-dwim-target t)
