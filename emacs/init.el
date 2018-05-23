@@ -2658,6 +2658,13 @@ already narrowed."
   ;; Ensure shell prompts are read-only.
   (validate-setq comint-prompt-read-only t))
 
+(use-package openwith :ensure t
+  :config
+  (csetq openwith-associations
+         ;; Regexp to match known file extensions.
+         '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$" "open" (file))))
+  (openwith-mode 1))
+
 (use-package menu-bar
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
