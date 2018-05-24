@@ -19,9 +19,11 @@
 
 (defun ar/dired-current-directory ()
   "Get the current directory from buffer, including `dired-mode'."
-  (if(eq major-mode 'dired-mode)
-      (buffer-file-name)
-    (file-name-directory (buffer-file-name))))
+  (if (buffer-file-name)
+      (if (eq major-mode 'dired-mode)
+          (buffer-file-name)
+        (file-name-directory (buffer-file-name)))
+    (expand-file-name default-directory)))
 
 (defun ar/dired-split-downloads-to-current ()
   "Split window with downloads to active directory."
