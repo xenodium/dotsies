@@ -2664,8 +2664,15 @@ already narrowed."
 (use-package openwith :ensure t
   :config
   (csetq openwith-associations
-         ;; Regexp to match known file extensions.
-         '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$" "open" (file))))
+         (cond
+          ((ar/osx-p)
+           '(("\\.\\(dmg\\)$"
+              "open" (file))
+             ("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+              "open" ("-a" "VLC" file))))
+          ((ar/linux-p)
+           '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+              "xdg-open" (file))))))
   (openwith-mode 1))
 
 (use-package menu-bar
