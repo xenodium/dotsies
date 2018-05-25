@@ -63,23 +63,33 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
-  (ar/file-assert-file-exists org-plantuml-jar-path)
-  (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
-  (with-current-buffer (find-file-noselect (expand-file-name
-                                            "~/stuff/active/blog/index.org"))
-    (let ((org-time-stamp-custom-formats
-           '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
-          (org-display-custom-times 't))
-      (unwind-protect
-          (progn
-           (advice-add 'org-timestamp-translate
-                       :around
-                       'ar/ox-html--timestamp-translate-advice-fun)
-           (org-html-export-to-html))
-        (advice-remove 'org-timestamp-translate
-                       'ar/ox-html--timestamp-translate-advice-fun))
-      (browse-url (format "file:%s" (expand-file-name
-                                     "~/stuff/active/blog/index.html"))))))
+  (let ((whitespace-line-foreground (face-attribute 'whitespace-line :foreground))
+        (whitespace-line-background (face-attribute 'whitespace-line :background)))
+    ;; Unset face (disable whitespace mode prior to export).
+    (set-face-attribute 'whitespace-line nil
+                        :foreground nil
+                        :background nil)
+    (ar/file-assert-file-exists org-plantuml-jar-path)
+    (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
+    (with-current-buffer (find-file-noselect (expand-file-name
+                                              "~/stuff/active/blog/index.org"))
+      (let ((org-time-stamp-custom-formats
+             '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
+            (org-display-custom-times 't))
+        (unwind-protect
+            (progn
+              (advice-add 'org-timestamp-translate
+                          :around
+                          'ar/ox-html--timestamp-translate-advice-fun)
+              (org-html-export-to-html))
+          (advice-remove 'org-timestamp-translate
+                         'ar/ox-html--timestamp-translate-advice-fun))
+        (browse-url (format "file:%s" (expand-file-name
+                                       "~/stuff/active/blog/index.html")))))
+    ;; Restore face (enable whitespace mode after export)
+    (set-face-attribute 'whitespace-line nil
+                        :foreground whitespace-line-foreground
+                        :background whitespace-line-background)))
 
 (setq org-html-head-extra
       "<style type='text/css'>
