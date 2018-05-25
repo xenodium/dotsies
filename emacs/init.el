@@ -1143,7 +1143,7 @@ With argument ARG, do this that many times."
 
 (bind-key "C-x C-d" #'ar/duplicate-line)
 
-(bind-key "C-z" #'next-buffer)
+(bind-key "C-z" #'ar/dired-split-downloads-to-current)
 
 ;; Save current position to mark ring when jumping to a different place
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
