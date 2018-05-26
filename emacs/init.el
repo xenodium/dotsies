@@ -3731,7 +3731,8 @@ _y_outube
 ;; Weather forecast (no login/account needed).
 (use-package wttrin :ensure t
   :config
-  (csetq wttrin-default-cities (list "London" "Boston"))
+  (csetq wttrin-default-accept-language '("Accept-Language" . "en-GB"))
+  (csetq wttrin-default-cities (list "London"))
   (defalias 'ar/weather 'wttrin))
 
 (defun ar/kill-region-advice-fun (orig-fun &rest r)
