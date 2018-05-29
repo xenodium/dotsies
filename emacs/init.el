@@ -868,7 +868,12 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("https://wincent.com/blog.rss" blog tech dev wincent)
+                 '(("https://martinralbrecht.wordpress.com/feed" blog emacs tech MartinAlbrecht)
+                   ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
+                   ("https://manuel-uberti.github.io/feed.xml" blog emacs ManuelUberti)
+                   ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
+                   ("http://kundeveloper.com/feed" blog emacs tech KunDeveloper)
+                   ("https://wincent.com/blog.rss" blog tech dev wincent)
                    ("https://scripter.co/index.xml" blog emacs tech dev)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
                    ("https://medium.com/feed/@mwfogleman" blog tech emacs meditation MichaelFogleman)
