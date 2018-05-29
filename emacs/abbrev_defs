@@ -155,6 +155,8 @@
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
+(define-abbrev-table 'gdb-script-mode-abbrev-table '())
+
 (define-abbrev-table 'gfm-mode-abbrev-table '())
 
 (define-abbrev-table 'ggtags-global-mode-abbrev-table '())
@@ -195,6 +197,7 @@
     ("make" "make" nil 7)
     ("nattural" "natural" nil 0)
     ("overriden" "overridden" nil 0)
+    ("paradigns" "paradigms" nil 0)
     ("playfull" "playful" nil 0)
     ("pleassure" "pleasure" nil 0)
     ("poppped" "popped" nil 0)
@@ -232,6 +235,8 @@
 (define-abbrev-table 'google-maps-static-mode-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
+
+(define-abbrev-table 'gud-mode-abbrev-table '())
 
 (define-abbrev-table 'hackernews-mode-abbrev-table '())
 
@@ -304,6 +309,10 @@
 (define-abbrev-table 'lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'lua-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'magit-cherry-mode-abbrev-table '())
 
@@ -415,6 +424,8 @@
   '(
    ))
 
+(define-abbrev-table 'realgud:info-mode-abbrev-table '())
+
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-mode-abbrev-table '())
@@ -491,6 +502,8 @@
 (define-abbrev-table 'typescript-mode-abbrev-table '())
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
+
+(define-abbrev-table 'use-package-statistics-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-bzr-log-view-mode-abbrev-table '())
 
