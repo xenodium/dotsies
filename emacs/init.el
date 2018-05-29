@@ -1094,27 +1094,28 @@ Values between 0 - 100."
 (defun ar/helm-ag-insert (arg)
   ;; Helm-ag and insert match.
   (interactive "P")
-  (let* ((actions (helm-make-actions
-                   "Insert"
-                   (lambda (candidate)
-                     ;; Drop file:line:column. For example:
-                     ;; arc_hostlink.c:13:2:#include <linux/fs.h>
-                     ;; => #include <linux/fs.h>
-                     (insert (replace-regexp-in-string "^[^ ]*:" "" candidate)))))
-         (helm-source-do-ag (helm-build-async-source "The Silver Searcher"
-                              :init 'helm-ag--do-ag-set-command
-                              :candidates-process 'helm-ag--do-ag-candidate-process
-                              :persistent-action  'helm-ag--persistent-action
-                              :action actions
-                              :nohighlight t
-                              :requires-pattern 3
-                              :candidate-number-limit 9999
-                              :keymap helm-do-ag-map
-                              :follow nil)))
+  (defun ar/insert-candidate (candidate)
+    (move-beginning-of-line 1)
+    (unless (eolp)
+      (kill-line))
+    ;; Drop file:line:column. For example:
+    ;; arc_hostlink.c:13:2:#include <linux/fs.h>
+    ;; => #include <linux/fs.h>
+    (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
+    (indent-for-tab-command))
+  (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
+                             :init 'helm-ag--do-ag-set-command
+                             :candidates-process 'helm-ag--do-ag-candidate-process
+                             :action 'ar/insert-candidate
+                             :nohighlight t
+                             :requires-pattern 3
+                             :candidate-number-limit 9999
+                             :keymap helm-do-ag-map)))
     (call-interactively #'ar/helm-ag)))
 
 ;; Differentiate C-i key binding from TAB.
 (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+
 (use-package prog-mode
   :bind
   (:map prog-mode-map
