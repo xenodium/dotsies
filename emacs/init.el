@@ -35,9 +35,9 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
-;; Put off GC until 500MB of allocation or 5s of idle time.
-(setq gc-cons-threshold (* 511 1024 1024))
-(setq gc-cons-percentage 0.5)
+;; Put off GC until 10MB of allocation or 5s of idle time.
+(setq gc-cons-threshold (* 10 1024 1024))
+(setq gc-cons-percentage 0.2)
 (run-with-idle-timer 5 t #'garbage-collect)
 (setq garbage-collection-messages t)
 
