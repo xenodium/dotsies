@@ -136,6 +136,7 @@
 ;; Always use a box cursor.
 (setq-default cursor-type 'box)
 
+;; Get from https://github.com/adobe-fonts/source-code-pro
 (ar/set-font "Source Code Pro")
 
 ;; Additional theme overrides
