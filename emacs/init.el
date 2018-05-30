@@ -868,7 +868,8 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("https://martinralbrecht.wordpress.com/feed" blog emacs tech MartinAlbrecht)
+                 '(("https://matt.hackinghistory.ca/feed" blog emacs tech MattPrice)
+                   ("https://martinralbrecht.wordpress.com/feed" blog emacs tech MartinAlbrecht)
                    ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
                    ("https://manuel-uberti.github.io/feed.xml" blog emacs ManuelUberti)
                    ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
