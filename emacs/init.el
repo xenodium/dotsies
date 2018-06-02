@@ -403,6 +403,7 @@
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
+
   :after helm)
 (use-package ar-helm-objc
   :after helm
@@ -468,6 +469,7 @@
 (use-package ar-font)
 (use-package ar-compile)
 
+(use-package company-swimports)
 (use-package company-escaped-files)
 (use-package company-grep)
 (use-package company-rfiles)
@@ -1716,7 +1718,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; Don't forget to set sourcekit-project for the project.
     ;; (setq sourcekit-project "some/project.xcodeproj")
-    (setq-local company-backends '((company-yasnippet
+    (setq-local company-backends '((company-swimports
+                                    company-yasnippet
                                     company-dabbrev-code
                                     company-keywords
                                     company-files
