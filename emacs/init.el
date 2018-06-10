@@ -3657,6 +3657,10 @@ _y_outube
              ("OBSOLETE" . (:foreground "blue" :weight bold))
              ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
+  ;; Look into font-locking email addresses.
+  ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
+  (use-package button-lock :ensure t)
+
   (csetq org-refile-targets '((nil . (:regexp . "Week of"))
                               (nil . (:regexp . "RESOLVED"))))
 
