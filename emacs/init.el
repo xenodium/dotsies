@@ -3204,7 +3204,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package flycheck-inline
   :ensure t
   :config
-  (flycheck-inline-enable))
+  (flycheck-inline-mode +1))
 
 (use-package pos-tip :ensure t
   :config
