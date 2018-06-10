@@ -684,6 +684,13 @@ Values between 0 - 100."
 ;; Stucture and Interpretation of Computer Progams in info format.
 (use-package sicp :ensure t)
 
+(defun ar/format-info-mode ()
+  "Opening .info files does not automatically set things up. Give it a little help."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (kill-buffer (current-buffer))
+    (info file-name)))
+
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
