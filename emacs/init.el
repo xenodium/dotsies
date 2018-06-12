@@ -478,10 +478,6 @@
 (use-package company-projectile-cd)
 (use-package flycheck-swiftlint)
 
-(defun my-completion (completion)
-  (when (looking-at-p "\"")
-    (forward-char)
-    (insert ",")))
 
 (defun ar/bazel-mode-hook-fun ()
   (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
