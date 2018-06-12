@@ -875,6 +875,7 @@ Values between 0 - 100."
   (validate-setq elfeed-feeds
                  '(("https://matt.hackinghistory.ca/feed/" blog emacs MattPrice)
                    ("https://elephly.net/feed.xml" blog emacs Elephly)
+                   ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
                    ("https://ogbe.net/blog.xml" blog emacs tech DennisOgbe)
                    ("https://matt.hackinghistory.ca/feed" blog emacs tech MattPrice)
                    ("https://martinralbrecht.wordpress.com/feed" blog emacs tech MartinAlbrecht)
