@@ -2244,7 +2244,6 @@ already narrowed."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-(bind-key "C-c l" #'ar/split-camel-region)
 
 ;; Simplify lisp navigation/editing (ie. slurp/barf).
 ;; Disabling lispy for the time being (affecting imenu).
