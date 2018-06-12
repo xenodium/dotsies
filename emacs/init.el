@@ -926,6 +926,7 @@ Values between 0 - 100."
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (validate-setq line-spacing 15))
+  (add-hook 'elfeed-search-mode-hook #'centered-cursor-mode)
   (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style))
 
 (use-package elfeed-goodies :ensure t
