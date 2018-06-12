@@ -115,6 +115,16 @@
   :config
   (beginend-global-mode))
 
+;; From https://www.reddit.com/r/emacs/comments/8qkkh9/poll_theme_activation_on_loading/e0k7j4v
+(defun ar/load-theme (&rest args)
+  "Like `load-theme', but disables all themes before loading the new one."
+  ;; The `interactive' magic is for creating a future-proof passthrough.
+  (interactive (advice-eval-interactive-spec
+                (cadr (interactive-form #'load-theme))))
+  (mapcar #'disable-theme custom-enabled-themes)
+  (apply (if (called-interactively-p 'any) #'funcall-interactively #'funcall)
+         #'load-theme args))
+
 (use-package base16-theme :ensure t
   :config
   (load-theme 'base16-atelier-heath t))
