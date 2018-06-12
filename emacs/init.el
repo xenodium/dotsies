@@ -392,6 +392,7 @@
 (use-package ar-auto-correct)
 
 (use-package color-picker)
+(use-package scimax-string)
 (use-package url)
 (use-package url-http)
 (use-package ar-assert)
