@@ -3658,13 +3658,6 @@ _y_outube
 
   (use-package org-faces
     :config
-    (custom-set-faces
-     '(org-block-begin-line
-       ((t (:underline nil :foreground "#008ED1" :background nil))))
-     '(org-block
-       ((t (:background "#202020"))))
-     '(org-block-end-line
-       ((t (:overline nil :foreground "#008ED1" :background nil)))))
     (csetq org-todo-keyword-faces
            '(("TODO" . (:foreground "red" :weight bold))
              ("STARTED" . (:foreground "yellow" :weight bold))
@@ -3736,8 +3729,11 @@ _y_outube
                                 `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
                                 `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
                                 `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))))
-
+                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil))))
+                                '(org-block-begin-line ((t (:underline nil :foreground "#008ED1" :background nil))))
+                                '(org-block ((t (:background "#202020"))))
+                                '(org-block-end-line ((t (:overline nil :foreground "#008ED1" :background nil))))
+                                )))))
 (use-package org-bullets :ensure t
   :config
   (validate-setq org-bullets-bullet-list
