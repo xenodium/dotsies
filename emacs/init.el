@@ -478,6 +478,8 @@
 (use-package company-projectile-cd)
 (use-package flycheck-swiftlint)
 
+;; Easy access to links in buffer (using avy).
+(use-package link-hint :ensure t)
 
 (defun ar/bazel-mode-hook-fun ()
   (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
@@ -3404,7 +3406,7 @@ Open: _p_oint _e_xternally
 "
   ("e" ar/platform-open-in-external-app nil)
   ("p" ar/open-file-at-point nil)
-  ("u" ar/helm-buffer-urls nil)
+  ("u" link-hint-open-link nil)
   ("q" nil "cancel"))
 
 (defhydra hydra-open-prog-mode (:color blue)
