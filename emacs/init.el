@@ -108,8 +108,8 @@
 
 (use-package async :ensure t :demand
   :config
-  (dired-async-mode 1)
-  (async-bytecomp-package-mode 1))
+  (dired-async-mode +1)
+  (async-bytecomp-package-mode +1))
 
 (use-package beginend :ensure t
   :config
@@ -287,7 +287,7 @@
         (call-interactively 'helm-delete-minibuffer-contents)
       (helm-keyboard-quit)))
 
-  (helm-mode 1)
+  (helm-mode +1)
 
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
@@ -1193,7 +1193,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package helm-gtags
   :ensure t
   :config
-  (helm-gtags-mode 1))
+  (helm-gtags-mode +1))
 
 (use-package projectile-sift :ensure t
   :config
@@ -1222,7 +1222,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (add-hook 'ediff-prepare-buffer-hook
             (lambda ()
               (when (eq major-mode 'org-mode)
-                (visible-mode 1)  ; default 0
+                (visible-mode +1)  ; default 0
                 (setq-local truncate-lines nil)  ; no `org-startup-truncated' in hook
                 (setq-local org-hide-leading-stars t)))))
 
@@ -1305,7 +1305,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Highlight matching parenthesis.
 (use-package paren :ensure t
   :config
-  (show-paren-mode 1)
+  (show-paren-mode +1)
   ;; Without this matching parens aren't highlighted in region.
   (validate-setq show-paren-priority -50)
   (validate-setq show-paren-delay 0)
@@ -2039,9 +2039,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (toggle-truncate-lines 0)
   (validate-setq show-trailing-whitespace t)
   (set-fill-column 1000)
-  (flyspell-mode)
-  (org-bullets-mode 1)
-  (yas-minor-mode 1)
+  (flyspell-mode +1)
+  (org-bullets-mode +1)
+  (yas-minor-mode +1)
   (org-display-inline-images))
 
 ;; From http://zzamboni.org/post/my-emacs-configuration-with-commentary
@@ -2297,7 +2297,7 @@ already narrowed."
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   ;; Disabling lispy for the time being (affecting imenu).
-  ;; (lispy-mode 1)
+  ;; (lispy-mode +1)
   ;; (setq-local company-backends '((company-yasnippet company-dabbrev-code company-emoji company-capf company-keywords company-files)))
   (setq-local company-backends '((company-yasnippet
                                   company-dabbrev-code
@@ -2472,7 +2472,7 @@ already narrowed."
                                   company-keywords)
                                  company-files
                                  company-dabbrev))
-  (tern-mode 1)
+  (tern-mode +1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
   (modify-syntax-entry ?< "(>")
@@ -2481,7 +2481,7 @@ already narrowed."
 (use-package html-check-frag :ensure t
   :config
   (add-hook 'html-mode-hook (lambda ()
-                              (html-check-frag-mode 1))))
+                              (html-check-frag-mode +1))))
 
 (use-package requirejs :ensure t)
 
@@ -2542,7 +2542,8 @@ already narrowed."
 
 (use-package flyspell
   :after ar-auto-correct
-  :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
+  :config
+  (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
 
 ;; Maybe helps with #slow flyspell in org mode.
 ;; Seem to interfere with mu4e. Disabling momentarily.
@@ -2635,10 +2636,10 @@ already narrowed."
                                                  (when fci-mode (fci-mode -1)))))
   ;; Re-enable fci if needed.
   (add-hook 'company-completion-finished-hook (lambda (&rest ignore)
-                                                (when company-fci-mode-on-p (fci-mode 1))))
+                                                (when company-fci-mode-on-p (fci-mode +1))))
   ;; Re-enable fci if needed.
   (add-hook 'company-completion-cancelled-hook (lambda (&rest ignore)
-                                                 (when company-fci-mode-on-p (fci-mode 1)))))
+                                                 (when company-fci-mode-on-p (fci-mode +1)))))
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (let ((m prog-mode-map))
@@ -2655,11 +2656,11 @@ already narrowed."
   (rainbow-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
-  (semantic-mode 1)
+  (semantic-mode +1)
   ;; #slow
   ;; (turn-on-fci-mode)
   ;; (ar/company-fci-workaround)
-  (yas-minor-mode 1))
+  (yas-minor-mode +1))
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
@@ -2695,7 +2696,7 @@ already narrowed."
           ((ar/linux-p)
            '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
               "xdg-open" (file))))))
-  (openwith-mode 1))
+  (openwith-mode +1))
 
 (use-package menu-bar
   ;; No need to confirm killing buffers.
@@ -3004,7 +3005,7 @@ With a prefix argument N, (un)comment that many sexps."
                  (append winner-boring-buffers '("*helm M-x*"
                                                  "helm mini*"
                                                  "*helm projectile*")))
-  (winner-mode 1)
+  (winner-mode +1)
   :bind (("<escape>" . ar/dwim-key-esc)))
 
 (use-package helm-descbinds :ensure
@@ -3014,8 +3015,8 @@ With a prefix argument N, (un)comment that many sexps."
 (use-package auto-compile :ensure t
   :demand
   :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1))
+  (auto-compile-on-load-mode +1)
+  (auto-compile-on-save-mode +1))
 
 ;; Collaborate with clipboard.
 (csetq select-enable-clipboard t)
@@ -3101,7 +3102,7 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;;  Save Emacs state from one session to another.
 ;;  Disabling. Trial without it.
-;; (desktop-save-mode 1)
+;; (desktop-save-mode +1)
 ;;  Number of buffers to restore immediately.
 ;; (validate-setq desktop-restore-eager 10)
 
@@ -3224,7 +3225,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 
 (use-package pos-tip :ensure t
   :config
-  (when (fboundp 'tooltip-mode) (tooltip-mode 1)))
+  (when (fboundp 'tooltip-mode) (tooltip-mode +1)))
 
 (use-package flycheck-pos-tip :ensure t
   :after flycheck
@@ -3381,7 +3382,7 @@ _v_ariable       _u_ser-option
 (defhydra hydra-goto-line (:pre (progn
                                   ;; Disabling. Slow on large files.
                                   ;; (global-git-gutter-mode -1)
-                                  (linum-mode 1))
+                                  (linum-mode +1))
                                 :post (progn
                                         ;; Disabling. Slow on large files.
                                         ;; (global-git-gutter-mode +1)
@@ -3438,7 +3439,7 @@ Open: _p_oint _e_xternally
   ("q" nil "quit"))
 (bind-key "C-c s" #'hydra-search/body)
 
-(defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
+(defhydra hydra-git-gutter (:pre (git-gutter-mode +1))
   "
 Git: _n_ext     _s_tage  _d_iff
      _p_revious _k_ill _q_uit
@@ -3571,7 +3572,7 @@ _y_outube
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
+      (smerge-mode +1))))
 
 (use-package stripe-buffer :ensure t
   :config
