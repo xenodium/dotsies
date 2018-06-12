@@ -9,7 +9,7 @@
 (when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
 
 ;; https://oremacs.com/2015/01/17/setting-up-ediff
-;; Macro  for setting custom variables.
+;; Macro for setting custom variables.
 ;; Similar to custom-set-variables, but more like setq.
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set)
