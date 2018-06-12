@@ -2748,6 +2748,10 @@ already narrowed."
   (use-package em-dirs)
   (use-package em-smart)
 
+  ;; Avoid "WARNING: terminal is not fully functional."
+  ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
+  (setenv "PAGER" "cat")
+
   (validate-setq eshell-where-to-jump 'begin)
   (validate-setq eshell-review-quick-commands nil)
   (validate-setq eshell-smart-space-goes-to-end t)
