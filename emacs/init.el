@@ -9,7 +9,7 @@
 (when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
 
 ;; https://oremacs.com/2015/01/17/setting-up-ediff
-;; Macro  for setting custom variables.
+;; Macro for setting custom variables.
 ;; Similar to custom-set-variables, but more like setq.
 (defmacro csetq (variable value)
   `(funcall (or (get ',variable 'custom-set)
@@ -35,9 +35,9 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
-;; Put off GC until 500MB of allocation or 5s of idle time.
-(setq gc-cons-threshold (* 511 1024 1024))
-(setq gc-cons-percentage 0.5)
+;; Put off GC until 10MB of allocation or 5s of idle time.
+(setq gc-cons-threshold (* 10 1024 1024))
+(setq gc-cons-percentage 0.2)
 (run-with-idle-timer 5 t #'garbage-collect)
 (setq garbage-collection-messages t)
 
@@ -108,12 +108,22 @@
 
 (use-package async :ensure t :demand
   :config
-  (dired-async-mode 1)
-  (async-bytecomp-package-mode 1))
+  (dired-async-mode +1)
+  (async-bytecomp-package-mode +1))
 
 (use-package beginend :ensure t
   :config
   (beginend-global-mode))
+
+;; From https://www.reddit.com/r/emacs/comments/8qkkh9/poll_theme_activation_on_loading/e0k7j4v
+(defun ar/load-theme (&rest args)
+  "Like `load-theme', but disables all themes before loading the new one."
+  ;; The `interactive' magic is for creating a future-proof passthrough.
+  (interactive (advice-eval-interactive-spec
+                (cadr (interactive-form #'load-theme))))
+  (mapcar #'disable-theme custom-enabled-themes)
+  (apply (if (called-interactively-p 'any) #'funcall-interactively #'funcall)
+         #'load-theme args))
 
 (use-package base16-theme :ensure t
   :config
@@ -136,6 +146,7 @@
 ;; Always use a box cursor.
 (setq-default cursor-type 'box)
 
+;; Get from https://github.com/adobe-fonts/source-code-pro
 (ar/set-font "Source Code Pro")
 
 ;; Additional theme overrides
@@ -286,7 +297,7 @@
         (call-interactively 'helm-delete-minibuffer-contents)
       (helm-keyboard-quit)))
 
-  (helm-mode 1)
+  (helm-mode +1)
 
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
@@ -391,6 +402,7 @@
 (use-package ar-auto-correct)
 
 (use-package color-picker)
+(use-package scimax-string)
 (use-package url)
 (use-package url-http)
 (use-package ar-assert)
@@ -402,6 +414,7 @@
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
+
   :after helm)
 (use-package ar-helm-objc
   :after helm
@@ -467,6 +480,7 @@
 (use-package ar-font)
 (use-package ar-compile)
 
+(use-package company-swimports)
 (use-package company-escaped-files)
 (use-package company-grep)
 (use-package company-rfiles)
@@ -474,10 +488,8 @@
 (use-package company-projectile-cd)
 (use-package flycheck-swiftlint)
 
-(defun my-completion (completion)
-  (when (looking-at-p "\"")
-    (forward-char)
-    (insert ",")))
+;; Easy access to links in buffer (using avy).
+(use-package link-hint :ensure t)
 
 (defun ar/bazel-mode-hook-fun ()
   (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
@@ -681,6 +693,13 @@ Values between 0 - 100."
 ;; Stucture and Interpretation of Computer Progams in info format.
 (use-package sicp :ensure t)
 
+(defun ar/format-info-mode ()
+  "Opening .info files does not automatically set things up. Give it a little help."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (kill-buffer (current-buffer))
+    (info file-name)))
+
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
@@ -776,7 +795,6 @@ Values between 0 - 100."
   (use-package magit :ensure t
     :bind ("C-x g" . magit-status)
     :config
-    (validate-setq magit-revert-buffers nil)  ;; Disabling. Too slow on large repos.
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (fullframe magit-status magit-mode-quit-window))
 
@@ -867,8 +885,18 @@ Values between 0 - 100."
 (use-package elfeed :ensure t
   :config
   (validate-setq elfeed-feeds
-                 '(("https://wincent.com/blog.rss" blog tech dev wincent)
-                   ("https://scripter.co/index.xml" blog emacs tech dev)
+                 '(("https://matt.hackinghistory.ca/feed/" blog emacs MattPrice)
+                   ("https://elephly.net/feed.xml" blog emacs Elephly)
+                   ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
+                   ("https://ogbe.net/blog.xml" blog emacs tech DennisOgbe)
+                   ("https://matt.hackinghistory.ca/feed" blog emacs tech MattPrice)
+                   ("https://martinralbrecht.wordpress.com/feed" blog emacs tech MartinAlbrecht)
+                   ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
+                   ("https://manuel-uberti.github.io/feed.xml" blog emacs ManuelUberti)
+                   ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
+                   ("http://kundeveloper.com/feed" blog emacs tech KunDeveloper)
+                   ("https://wincent.com/blog.rss" blog tech dev wincent)
+                   ("https://scripter.co/posts/index.xml" blog emacs tech dev)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
                    ("https://medium.com/feed/@mwfogleman" blog tech emacs meditation MichaelFogleman)
                    ("http://francismurillo.github.io/hacker/feed.xml" blog tech emacs francismurillo)
@@ -911,6 +939,7 @@ Values between 0 - 100."
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (validate-setq line-spacing 15))
+  (add-hook 'elfeed-search-mode-hook #'centered-cursor-mode)
   (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style))
 
 (use-package elfeed-goodies :ensure t
@@ -1094,27 +1123,28 @@ Values between 0 - 100."
 (defun ar/helm-ag-insert (arg)
   ;; Helm-ag and insert match.
   (interactive "P")
-  (let* ((actions (helm-make-actions
-                   "Insert"
-                   (lambda (candidate)
-                     ;; Drop file:line:column. For example:
-                     ;; arc_hostlink.c:13:2:#include <linux/fs.h>
-                     ;; => #include <linux/fs.h>
-                     (insert (replace-regexp-in-string "^[^ ]*:" "" candidate)))))
-         (helm-source-do-ag (helm-build-async-source "The Silver Searcher"
-                              :init 'helm-ag--do-ag-set-command
-                              :candidates-process 'helm-ag--do-ag-candidate-process
-                              :persistent-action  'helm-ag--persistent-action
-                              :action actions
-                              :nohighlight t
-                              :requires-pattern 3
-                              :candidate-number-limit 9999
-                              :keymap helm-do-ag-map
-                              :follow nil)))
+  (defun ar/insert-candidate (candidate)
+    (move-beginning-of-line 1)
+    (unless (eolp)
+      (kill-line))
+    ;; Drop file:line:column. For example:
+    ;; arc_hostlink.c:13:2:#include <linux/fs.h>
+    ;; => #include <linux/fs.h>
+    (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
+    (indent-for-tab-command))
+  (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
+                             :init 'helm-ag--do-ag-set-command
+                             :candidates-process 'helm-ag--do-ag-candidate-process
+                             :action 'ar/insert-candidate
+                             :nohighlight t
+                             :requires-pattern 3
+                             :candidate-number-limit 9999
+                             :keymap helm-do-ag-map)))
     (call-interactively #'ar/helm-ag)))
 
 ;; Differentiate C-i key binding from TAB.
 (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+
 (use-package prog-mode
   :bind
   (:map prog-mode-map
@@ -1173,7 +1203,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package helm-gtags
   :ensure t
   :config
-  (helm-gtags-mode 1))
+  (helm-gtags-mode +1))
 
 (use-package projectile-sift :ensure t
   :config
@@ -1202,7 +1232,7 @@ Optional argument NON-RECURSIVE to shallow-search."
   (add-hook 'ediff-prepare-buffer-hook
             (lambda ()
               (when (eq major-mode 'org-mode)
-                (visible-mode 1)  ; default 0
+                (visible-mode +1)  ; default 0
                 (setq-local truncate-lines nil)  ; no `org-startup-truncated' in hook
                 (setq-local org-hide-leading-stars t)))))
 
@@ -1285,7 +1315,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; Highlight matching parenthesis.
 (use-package paren :ensure t
   :config
-  (show-paren-mode 1)
+  (show-paren-mode +1)
   ;; Without this matching parens aren't highlighted in region.
   (validate-setq show-paren-priority -50)
   (validate-setq show-paren-delay 0)
@@ -1708,7 +1738,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; Don't forget to set sourcekit-project for the project.
     ;; (setq sourcekit-project "some/project.xcodeproj")
-    (setq-local company-backends '((company-yasnippet
+    (setq-local company-backends '((company-swimports
+                                    company-yasnippet
                                     company-dabbrev-code
                                     company-keywords
                                     company-files
@@ -2018,9 +2049,9 @@ Repeated invocations toggle between the two most recently open buffers."
   (toggle-truncate-lines 0)
   (validate-setq show-trailing-whitespace t)
   (set-fill-column 1000)
-  (flyspell-mode)
-  (org-bullets-mode 1)
-  (yas-minor-mode 1)
+  (flyspell-mode +1)
+  (org-bullets-mode +1)
+  (yas-minor-mode +1)
   (org-display-inline-images))
 
 ;; From http://zzamboni.org/post/my-emacs-configuration-with-commentary
@@ -2227,7 +2258,6 @@ already narrowed."
       (replace-match (format " %s"
                              (downcase (match-string 0)))
                      t nil))))
-(bind-key "C-c l" #'ar/split-camel-region)
 
 ;; Simplify lisp navigation/editing (ie. slurp/barf).
 ;; Disabling lispy for the time being (affecting imenu).
@@ -2277,7 +2307,7 @@ already narrowed."
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   ;; Disabling lispy for the time being (affecting imenu).
-  ;; (lispy-mode 1)
+  ;; (lispy-mode +1)
   ;; (setq-local company-backends '((company-yasnippet company-dabbrev-code company-emoji company-capf company-keywords company-files)))
   (setq-local company-backends '((company-yasnippet
                                   company-dabbrev-code
@@ -2452,7 +2482,7 @@ already narrowed."
                                   company-keywords)
                                  company-files
                                  company-dabbrev))
-  (tern-mode 1)
+  (tern-mode +1)
   ;; Moving about by list and expression.
   ;; From http://jbm.io/2014/01/react-in-emacs-creature-comforts/
   (modify-syntax-entry ?< "(>")
@@ -2461,7 +2491,7 @@ already narrowed."
 (use-package html-check-frag :ensure t
   :config
   (add-hook 'html-mode-hook (lambda ()
-                              (html-check-frag-mode 1))))
+                              (html-check-frag-mode +1))))
 
 (use-package requirejs :ensure t)
 
@@ -2522,12 +2552,15 @@ already narrowed."
 
 (use-package flyspell
   :after ar-auto-correct
-  :config (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
+  :config
+  (bind-key "C-M-i" #'ar/auto-correct-ispell-word-then-abbrev flyspell-mode-map))
 
 ;; Maybe helps with #slow flyspell in org mode.
-(use-package flyspell-lazy :ensure t
-  :after flyspell
-  :config (flyspell-lazy-mode 1))
+;; Seem to interfere with mu4e. Disabling momentarily.
+;; (use-package flyspell-lazy :ensure t
+;;   :after flyspell
+;;   :config
+;;   (flyspell-lazy-mode +1))
 
 ;; #slow
 ;; (use-package fill-column-indicator :ensure t
@@ -2613,10 +2646,10 @@ already narrowed."
                                                  (when fci-mode (fci-mode -1)))))
   ;; Re-enable fci if needed.
   (add-hook 'company-completion-finished-hook (lambda (&rest ignore)
-                                                (when company-fci-mode-on-p (fci-mode 1))))
+                                                (when company-fci-mode-on-p (fci-mode +1))))
   ;; Re-enable fci if needed.
   (add-hook 'company-completion-cancelled-hook (lambda (&rest ignore)
-                                                 (when company-fci-mode-on-p (fci-mode 1)))))
+                                                 (when company-fci-mode-on-p (fci-mode +1)))))
 (defun ar/prog-mode-hook-function ()
   "Called when entering all programming modes."
   (let ((m prog-mode-map))
@@ -2633,11 +2666,11 @@ already narrowed."
   (rainbow-mode)
   (centered-cursor-mode)
   ;; Language-aware editing commands. Useful for imenu-menu.
-  (semantic-mode 1)
+  (semantic-mode +1)
   ;; #slow
   ;; (turn-on-fci-mode)
   ;; (ar/company-fci-workaround)
-  (yas-minor-mode 1))
+  (yas-minor-mode +1))
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
@@ -2664,9 +2697,16 @@ already narrowed."
 (use-package openwith :ensure t
   :config
   (csetq openwith-associations
-         ;; Regexp to match known file extensions.
-         '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$" "open" (file))))
-  (openwith-mode 1))
+         (cond
+          ((ar/osx-p)
+           '(("\\.\\(dmg\\)$"
+              "open" (file))
+             ("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+              "open" ("-a" "VLC" file))))
+          ((ar/linux-p)
+           '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+              "xdg-open" (file))))))
+  (openwith-mode +1))
 
 (use-package menu-bar
   ;; No need to confirm killing buffers.
@@ -2723,6 +2763,10 @@ already narrowed."
   (use-package esh-mode)
   (use-package em-dirs)
   (use-package em-smart)
+
+  ;; Avoid "WARNING: terminal is not fully functional."
+  ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
+  (setenv "PAGER" "cat")
 
   (validate-setq eshell-where-to-jump 'begin)
   (validate-setq eshell-review-quick-commands nil)
@@ -2971,7 +3015,7 @@ With a prefix argument N, (un)comment that many sexps."
                  (append winner-boring-buffers '("*helm M-x*"
                                                  "helm mini*"
                                                  "*helm projectile*")))
-  (winner-mode 1)
+  (winner-mode +1)
   :bind (("<escape>" . ar/dwim-key-esc)))
 
 (use-package helm-descbinds :ensure
@@ -2981,8 +3025,8 @@ With a prefix argument N, (un)comment that many sexps."
 (use-package auto-compile :ensure t
   :demand
   :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1))
+  (auto-compile-on-load-mode +1)
+  (auto-compile-on-save-mode +1))
 
 ;; Collaborate with clipboard.
 (csetq select-enable-clipboard t)
@@ -3068,7 +3112,7 @@ With a prefix argument N, (un)comment that many sexps."
 
 ;;  Save Emacs state from one session to another.
 ;;  Disabling. Trial without it.
-;; (desktop-save-mode 1)
+;; (desktop-save-mode +1)
 ;;  Number of buffers to restore immediately.
 ;; (validate-setq desktop-restore-eager 10)
 
@@ -3187,11 +3231,11 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package flycheck-inline
   :ensure t
   :config
-  (flycheck-inline-enable))
+  (flycheck-inline-mode +1))
 
 (use-package pos-tip :ensure t
   :config
-  (when (fboundp 'tooltip-mode) (tooltip-mode 1)))
+  (when (fboundp 'tooltip-mode) (tooltip-mode +1)))
 
 (use-package flycheck-pos-tip :ensure t
   :after flycheck
@@ -3348,7 +3392,7 @@ _v_ariable       _u_ser-option
 (defhydra hydra-goto-line (:pre (progn
                                   ;; Disabling. Slow on large files.
                                   ;; (global-git-gutter-mode -1)
-                                  (linum-mode 1))
+                                  (linum-mode +1))
                                 :post (progn
                                         ;; Disabling. Slow on large files.
                                         ;; (global-git-gutter-mode +1)
@@ -3375,7 +3419,7 @@ Open: _p_oint _e_xternally
 "
   ("e" ar/platform-open-in-external-app nil)
   ("p" ar/open-file-at-point nil)
-  ("u" ar/helm-buffer-urls nil)
+  ("u" link-hint-open-link nil)
   ("q" nil "cancel"))
 
 (defhydra hydra-open-prog-mode (:color blue)
@@ -3405,7 +3449,7 @@ Open: _p_oint _e_xternally
   ("q" nil "quit"))
 (bind-key "C-c s" #'hydra-search/body)
 
-(defhydra hydra-git-gutter (:pre (git-gutter-mode 1))
+(defhydra hydra-git-gutter (:pre (git-gutter-mode +1))
   "
 Git: _n_ext     _s_tage  _d_iff
      _p_revious _k_ill _q_uit
@@ -3538,7 +3582,7 @@ _y_outube
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
+      (smerge-mode +1))))
 
 (use-package stripe-buffer :ensure t
   :config
@@ -3624,19 +3668,16 @@ _y_outube
 
   (use-package org-faces
     :config
-    (custom-set-faces
-     '(org-block-begin-line
-       ((t (:underline nil :foreground "#008ED1" :background nil))))
-     '(org-block
-       ((t (:background "#202020"))))
-     '(org-block-end-line
-       ((t (:overline nil :foreground "#008ED1" :background nil)))))
     (csetq org-todo-keyword-faces
            '(("TODO" . (:foreground "red" :weight bold))
              ("STARTED" . (:foreground "yellow" :weight bold))
              ("DONE" . (:foreground "green" :weight bold))
              ("OBSOLETE" . (:foreground "blue" :weight bold))
              ("CANCELLED" . (:foreground "gray" :weight bold)))))
+
+  ;; Look into font-locking email addresses.
+  ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
+  (use-package button-lock :ensure t)
 
   (csetq org-refile-targets '((nil . (:regexp . "Week of"))
                               (nil . (:regexp . "RESOLVED"))))
@@ -3698,8 +3739,11 @@ _y_outube
                                 `(org-level-3 ((t (,@headline ,@sans-font :height 1.25  :box ,padding))))
                                 `(org-level-2 ((t (,@headline ,@sans-font :height 1.5   :box ,padding))))
                                 `(org-level-1 ((t (,@headline ,@sans-font :height 1.75  :box ,padding))))
-                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil)))))))))
-
+                                `(org-document-title ((t (,@headline ,@sans-font :height 1.5 :underline nil))))
+                                '(org-block-begin-line ((t (:underline nil :foreground "#008ED1" :background nil))))
+                                '(org-block ((t (:background "#202020"))))
+                                '(org-block-end-line ((t (:overline nil :foreground "#008ED1" :background nil))))
+                                )))))
 (use-package org-bullets :ensure t
   :config
   (validate-setq org-bullets-bullet-list
@@ -3724,7 +3768,8 @@ _y_outube
 ;; Weather forecast (no login/account needed).
 (use-package wttrin :ensure t
   :config
-  (csetq wttrin-default-cities (list "London" "Boston"))
+  (csetq wttrin-default-accept-language '("Accept-Language" . "en-GB"))
+  (csetq wttrin-default-cities (list "London"))
   (defalias 'ar/weather 'wttrin))
 
 (defun ar/kill-region-advice-fun (orig-fun &rest r)
