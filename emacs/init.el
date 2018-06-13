@@ -2087,7 +2087,7 @@ Repeated invocations toggle between the two most recently open buffers."
      (ruby . t)
      (screen . nil)
      (objc . t)
-     ;; (sh . t) ;; Not loading in Emacs 26
+     (shell . t)
      (js . t)
      (sql . nil)
      (sqlite . t))))
