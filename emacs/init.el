@@ -889,6 +889,7 @@ Values between 0 - 100."
   :config
   (validate-setq elfeed-feeds
                  '(("https://matt.hackinghistory.ca/feed/" blog emacs MattPrice)
+                   ("http://www.brool.com/index.xml" blog emacs Brool)
                    ("https://elephly.net/feed.xml" blog emacs Elephly)
                    ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
                    ("https://ogbe.net/blog.xml" blog emacs tech DennisOgbe)
