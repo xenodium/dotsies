@@ -912,6 +912,12 @@ Values between 0 - 100."
     (interactive)
     (setq god-global-mode nil)
     (god-local-mode -1))
+  (defun ar/god-mode-update-cursor ()
+    (setq cursor-type (if (or god-local-mode buffer-read-only)
+                          'box
+                        'hbar)))
+  (add-hook 'god-mode-enabled-hook 'ar/god-mode-update-cursor)
+  (add-hook 'god-mode-disabled-hook 'ar/god-mode-update-cursor)
   :bind (("<escape>" . ar/god-mode-local-enabled))
   :bind (:map god-local-mode-map
               ("i" . ar/god-mode-local-disabled)))
