@@ -3206,6 +3206,8 @@ With a prefix argument N, (un)comment that many sexps."
 
 (use-package google-translate :ensure t)
 
+(use-package powerthesaurus :ensure t)
+
 ;; From http://ergoemacs.org/emacs/emacs_copy_file_path.html
 (defun ar/copy-file-path (&optional φdir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
