@@ -43,6 +43,9 @@
 
 (setq auto-window-vscroll nil)
 
+;; flet is no longer available. Use noflet as a replacement.
+(use-package noflet :ensure t)
+
 ;; From https://github.com/daschwa/emacs.d
 ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
 ;; that you can always see what's happening.
