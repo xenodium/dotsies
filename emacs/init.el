@@ -902,6 +902,8 @@ Values between 0 - 100."
           (message "%s" output)
         (message "Opened: %s" ,url)))))
 
+(use-package god-mode :ensure t)
+
 (use-package elfeed :ensure t
   :config
   (defun ar/elfeed-open-youtube-video ()
