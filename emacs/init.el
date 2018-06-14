@@ -902,7 +902,19 @@ Values between 0 - 100."
           (message "%s" output)
         (message "Opened: %s" ,url)))))
 
-(use-package god-mode :ensure t)
+(use-package god-mode :ensure t
+  :config
+  (defun ar/god-mode-local-enabled ()
+    (interactive)
+    (setq god-global-mode t)
+    (god-local-mode +1))
+  (defun ar/god-mode-local-disabled()
+    (interactive)
+    (setq god-global-mode nil)
+    (god-local-mode -1))
+  :bind (("<escape>" . ar/god-mode-local-enabled))
+  :bind (:map god-local-mode-map
+              ("i" . ar/god-mode-local-disabled)))
 
 (use-package elfeed :ensure t
   :config
@@ -3100,8 +3112,7 @@ With a prefix argument N, (un)comment that many sexps."
                  (append winner-boring-buffers '("*helm M-x*"
                                                  "helm mini*"
                                                  "*helm projectile*")))
-  (winner-mode +1)
-  :bind (("<escape>" . ar/dwim-key-esc)))
+  (winner-mode +1))
 
 (use-package helm-descbinds :ensure
   :bind (("C-h b" . helm-descbinds)
