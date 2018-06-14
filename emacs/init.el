@@ -43,9 +43,6 @@
 
 (setq auto-window-vscroll nil)
 
-;; flet is no longer available. Use noflet as a replacement.
-(use-package noflet :ensure t)
-
 ;; From https://github.com/daschwa/emacs.d
 ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
 ;; that you can always see what's happening.
@@ -108,6 +105,9 @@
 (require 'use-package)
 
 (use-package validate :ensure t)
+
+;; flet is no longer available. Use noflet as a replacement.
+(use-package noflet :ensure t)
 
 (use-package async :ensure t :demand
   :config
@@ -885,10 +885,30 @@ Values between 0 - 100."
 (use-package maxframe :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
+(defun ar/youtube-async-download (url)
+  (message "Downloading: %s" url)
+  (async-start
+   `(lambda ()
+      (process-lines "youtube-dl" "--no-progress" "-o" "~/Downloads/%(title)s.%(ext)s" ,url))
+
+   `(lambda (lines)
+      ;; TODO: Add some error handling.
+      (message "Downloaded: %s" ,url)
+      (string-match "/.*mp4" (nth 3 lines))
+      (let ((file-path (match-string-no-properties 0 (nth 3 lines))))
+        (shell-command (format "open -a VLC \"%s\"" file-path) ))
+      (message "Opening: %s" ,url))))
+
 (use-package elfeed :ensure t
   :config
+  (defun ar/elfeed-yt-download ()
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (ar/youtube-async-download link))))
   (validate-setq elfeed-feeds
                  '(("https://matt.hackinghistory.ca/feed/" blog emacs MattPrice)
+                   ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w")
                    ("http://www.brool.com/index.xml" blog emacs Brool)
                    ("https://elephly.net/feed.xml" blog emacs Elephly)
                    ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
@@ -3146,16 +3166,10 @@ With a prefix argument N, (un)comment that many sexps."
                     (action . (lambda (url)
                                 (browse-url url)))))))
 
-;;  From http://oremacs.com/2015/01/05/youtube-dl
 (defun ar/youtube-download ()
   "Download youtube video from url in clipboard."
   (interactive)
-  (let* ((url (current-kill 0))
-         (default-directory "~/Downloads")
-         (proc (get-buffer-process (ansi-term "/bin/bash"))))
-    (term-send-string
-     proc
-     (concat "cd ~/Downloads && youtube-dl " url "\n"))))
+  (ar/youtube-async-download (current-kill 0)))
 
 (defun ar/view-clipboard-buffer ()
   "View clipboard buffer."
