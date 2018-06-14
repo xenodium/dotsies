@@ -962,7 +962,7 @@ Values between 0 - 100."
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)))
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
-    (validate-setq line-spacing 15))
+    (validate-setq line-spacing 25))
   (add-hook 'elfeed-search-mode-hook #'centered-cursor-mode)
   (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style))
 
