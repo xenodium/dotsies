@@ -2599,6 +2599,12 @@ already narrowed."
 ;; I prefer sentences to end with one space instead.
 (csetq sentence-end-double-space nil)
 
+(use-package shr-color
+  :config
+  ;; These help to render HTML email in mu4e.
+  (validate-setq shr-color-visible-luminance-min 70)
+  (validate-setq shr-color-visible-distance-min 5))
+
 (use-package flyspell
   :after ar-auto-correct
   :config
