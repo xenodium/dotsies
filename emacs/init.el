@@ -885,27 +885,30 @@ Values between 0 - 100."
 (use-package maxframe :ensure t)
 (add-hook 'window-setup-hook 'maximize-frame t)
 
-(defun ar/youtube-async-download (url)
+(defun ar/open-youtube-url (url)
+  "Download and open youtube URL."
+  ;; Check for URLs like:
+  ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
+  ;; https://youtu.be/rzQEIRRJ2T0
+  (assert (string-match-p "^https://\\(www\\.\\)?youtu\\(\\.be\\|be\\.com\\)" url)
+          nil "Not a youtube URL: %s" url)
   (message "Downloading: %s" url)
   (async-start
    `(lambda ()
-      (process-lines "youtube-dl" "--no-progress" "-o" "~/Downloads/%(title)s.%(ext)s" ,url))
-
-   `(lambda (lines)
-      ;; TODO: Add some error handling.
-      (message "Downloaded: %s" ,url)
-      (string-match "/.*mp4" (nth 3 lines))
-      (let ((file-path (match-string-no-properties 0 (nth 3 lines))))
-        (shell-command (format "open -a VLC \"%s\"" file-path) ))
-      (message "Opening: %s" ,url))))
+      (shell-command-to-string
+       (format "youtube-dl --newline --exec \"open -a VLC {}\" -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
+   `(lambda (output)
+      (if (string-match-p "ERROR:" output)
+          (message "%s" output)
+        (message "Opened: %s" ,url)))))
 
 (use-package elfeed :ensure t
   :config
-  (defun ar/elfeed-youtube-download ()
+  (defun ar/elfeed-open-youtube-video ()
     (interactive)
     (let ((link (elfeed-entry-link elfeed-show-entry)))
       (when link
-        (ar/youtube-async-download link))))
+        (ar/open-youtube-url link))))
   (validate-setq elfeed-feeds
                  '(("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
@@ -3167,10 +3170,10 @@ With a prefix argument N, (un)comment that many sexps."
                     (action . (lambda (url)
                                 (browse-url url)))))))
 
-(defun ar/youtube-download ()
+(defun ar/open-youtube-clipboard-url ()
   "Download youtube video from url in clipboard."
   (interactive)
-  (ar/youtube-async-download (current-kill 0)))
+  (ar/open-youtube-url (current-kill 0)))
 
 (defun ar/view-clipboard-buffer ()
   "View clipboard buffer."
