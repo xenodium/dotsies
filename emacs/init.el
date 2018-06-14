@@ -901,14 +901,16 @@ Values between 0 - 100."
 
 (use-package elfeed :ensure t
   :config
-  (defun ar/elfeed-yt-download ()
+  (defun ar/elfeed-youtube-download ()
     (interactive)
     (let ((link (elfeed-entry-link elfeed-show-entry)))
       (when link
         (ar/youtube-async-download link))))
   (validate-setq elfeed-feeds
                  '(("https://matt.hackinghistory.ca/feed/" blog emacs MattPrice)
-                   ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w")
+                   ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
+                   ("http://cestlaz.github.io/rss.xml" blog emacs Zamansky)
+                   ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                    ("http://www.brool.com/index.xml" blog emacs Brool)
                    ("https://elephly.net/feed.xml" blog emacs Elephly)
                    ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
@@ -970,6 +972,7 @@ Values between 0 - 100."
   :after elfeed
   :config
   (validate-setq elfeed-goodies/entry-pane-position 'bottom)
+  (validate-setq elfeed-goodies/tag-column-width 35)
   (elfeed-goodies/setup))
 
 ;; Suggests elisp methods based on inputs and outputs.
