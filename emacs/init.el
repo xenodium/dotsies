@@ -981,6 +981,7 @@ Values between 0 - 100."
                    ("https://swiftweekly.github.io/feed.xml" blog swift tech SwiftWeekly)
                    ("https://wincent.com/blog.rss" blog tech dev wincent)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
+                   ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
                    ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)))
   (defun ar/elfeed-set-style ()
