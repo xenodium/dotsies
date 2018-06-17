@@ -755,7 +755,7 @@ Values between 0 - 100."
               ("k" . dired-previous-line)
               ;; Go to parent directory.
               ("^" . ar/file-find-alternate-parent-dir)
-              ("RET" . dired-find-alternate-file)
+              ("RET" . dired-find-file)
               ("P" . peep-dired)
               ("f" . helm-find-files)
               ("i" . dired-hide-details-mode)
