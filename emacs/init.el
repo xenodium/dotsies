@@ -3955,6 +3955,11 @@ line instead."
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
+(use-package conf-mode
+  :config
+  ;; Open rc files with conf-mode.
+  (add-to-list 'auto-mode-alist '("rc$" . conf-mode)))
+
 ;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
 ;; (use-package  puml-mode :ensure t)
 
