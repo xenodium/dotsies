@@ -907,23 +907,31 @@ Values between 0 - 100."
         (message "Opened: %s" ,url)))))
 
 (use-package god-mode :ensure t
+  :demand ;; Gets god-mode enabled for all buffers.
   :config
-  (defun ar/god-mode-local-enabled ()
+  (defun ar/god-mode-local-enable ()
     (interactive)
     (god-local-mode +1))
-  (defun ar/god-mode-local-disabled()
+
+  (defun ar/god-mode-local-disable()
     (interactive)
     (god-local-mode -1))
+
   (defun ar/god-mode-update-cursor ()
     (if (or god-local-mode buffer-read-only)
         (set-cursor-color "dim gray")
       (set-cursor-color "#FA009A")))
+
+  (add-hook 'find-file-hook #'ar/god-mode-local-enable nil t)
   (add-hook 'buffer-list-update-hook 'ar/god-mode-update-cursor)
   (add-hook 'god-mode-enabled-hook 'ar/god-mode-update-cursor)
   (add-hook 'god-mode-disabled-hook 'ar/god-mode-update-cursor)
-  :bind (("<escape>" . ar/god-mode-local-enabled))
+
+  (setq god-global-mode t)
+
+  :bind (("<escape>" . ar/god-mode-local-enable))
   :bind (:map god-local-mode-map
-              ("i" . ar/god-mode-local-disabled)))
+              ("i" . ar/god-mode-local-disable)))
 
 (use-package elfeed :ensure t
   :config
@@ -4007,5 +4015,6 @@ line instead."
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
 
+(message "blah blah")
 (provide 'init)
 ;;; init.el ends here
