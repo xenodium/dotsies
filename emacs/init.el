@@ -35,6 +35,11 @@
 ;; Guarantee that Emacs never loads outdated byte code files.
 (setq load-prefer-newer t)
 
+(defun ar/byte-compile-elpa-dir ()
+  "Byte-recompile all elpa packages."
+  (interactive)
+  (byte-recompile-directory (concat user-emacs-directory "elpa") 0))
+
 ;; Put off GC until 10MB of allocation or 5s of idle time.
 (setq gc-cons-threshold (* 10 1024 1024))
 (setq gc-cons-percentage 0.2)
