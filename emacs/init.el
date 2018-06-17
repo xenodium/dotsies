@@ -734,7 +734,6 @@ Values between 0 - 100."
   :config
   ;; Adding human readable units and sorted by date.
   (validate-setq dired-listing-switches "-Alht")
-  (fullframe dired quit-window)
   ;; Try to guess the target directory for operations.
   (validate-setq dired-dwim-target t)
   ;; Enable since disabled by default.
