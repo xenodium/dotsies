@@ -788,6 +788,8 @@ Values between 0 - 100."
 
 (use-package with-editor :ensure t
   :config
+  (add-hook 'eshell-mode-hook 'with-editor-export-editor)
+  (add-hook 'term-exec-hook   'with-editor-export-editor)
   (add-hook 'shell-mode-hook  'with-editor-export-editor))
 
 (use-package fullframe :ensure t
