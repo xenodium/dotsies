@@ -909,6 +909,10 @@ Values between 0 - 100."
 (use-package god-mode :ensure t
   :demand ;; Gets god-mode enabled for all buffers.
   :config
+  (add-to-list 'god-exempt-major-modes 'elfeed-search-mode)
+  (add-to-list 'god-exempt-major-modes 'elfeed-show-mode)
+  (add-to-list 'god-exempt-major-modes 'eshell-mode)
+
   (defun ar/god-mode-local-enable ()
     (interactive)
     (god-local-mode +1))
