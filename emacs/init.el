@@ -1473,13 +1473,6 @@ Else call `ediff-buffers'."
 
 (use-package git-timemachine :ensure t)
 
-(use-package linum
-  :ensure t
-  :config
-  (set-face-attribute 'linum nil
-                      :background "#1B1D1E")
-  (validate-setq linum-format "%4d "))
-
 (use-package git-gutter
   :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
@@ -3510,20 +3503,23 @@ _v_ariable       _u_ser-option
   ("e" apropos-value))
 (bind-key "C-h h" #'hydra-apropos/body)
 
-(defhydra hydra-goto-line (:pre (progn
-                                  ;; Disabling. Slow on large files.
-                                  ;; (global-git-gutter-mode -1)
-                                  (linum-mode +1))
-                                :post (progn
-                                        ;; Disabling. Slow on large files.
-                                        ;; (global-git-gutter-mode +1)
-                                        (linum-mode -1))
-                                :color blue)
-  "goto"
-  ("g" goto-line "line")
-  ("c" goto-char "char")
-  ("q" nil "quit"))
-(bind-key "M-g" #'hydra-goto-line/body)
+(use-package display-line-numbers
+  :demand
+  :config
+  (defhydra hydra-goto-line (:pre (progn
+                                    ;; Disabling. Slow on large files.
+                                    ;; (global-git-gutter-mode -1)
+                                    (display-line-numbers-mode +1))
+                                  :post (progn
+                                          ;; Disabling. Slow on large files.
+                                          ;; (global-git-gutter-mode +1)
+                                          (display-line-numbers-mode -1))
+                                  :color blue)
+    "goto"
+    ("g" goto-line "line")
+    ("c" goto-char "char")
+    ("q" nil "quit"))
+  :bind (("M-g" . hydra-goto-line/body)))
 
 (defhydra hydra-open-c-mode (:color blue)
   "open"
