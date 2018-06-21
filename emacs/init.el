@@ -908,36 +908,37 @@ Values between 0 - 100."
           (message "%s" output)
         (message "Opened: %s" ,url)))))
 
-(use-package god-mode :ensure t
-  :demand ;; Gets god-mode enabled for all buffers.
-  :config
-  (add-to-list 'god-exempt-major-modes 'elfeed-search-mode)
-  (add-to-list 'god-exempt-major-modes 'elfeed-show-mode)
-  (add-to-list 'god-exempt-major-modes 'eshell-mode)
+;; Not sure how I feel about god-mode yet. Disabling for a bit.
+;; (use-package god-mode :ensure t
+;;   :demand ;; Gets god-mode enabled for all buffers.
+;;   :config
+;;   (add-to-list 'god-exempt-major-modes 'elfeed-search-mode)
+;;   (add-to-list 'god-exempt-major-modes 'elfeed-show-mode)
+;;   (add-to-list 'god-exempt-major-modes 'eshell-mode)
 
-  (defun ar/god-mode-local-enable ()
-    (interactive)
-    (god-local-mode +1))
+;;   (defun ar/god-mode-local-enable ()
+;;     (interactive)
+;;     (god-local-mode +1))
 
-  (defun ar/god-mode-local-disable()
-    (interactive)
-    (god-local-mode -1))
+;;   (defun ar/god-mode-local-disable()
+;;     (interactive)
+;;     (god-local-mode -1))
 
-  (defun ar/god-mode-update-cursor ()
-    (if (or god-local-mode buffer-read-only)
-        (set-cursor-color "dim gray")
-      (set-cursor-color "#FA009A")))
+;;   (defun ar/god-mode-update-cursor ()
+;;     (if (or god-local-mode buffer-read-only)
+;;         (set-cursor-color "dim gray")
+;;       (set-cursor-color "#FA009A")))
 
-  (add-hook 'find-file-hook #'ar/god-mode-local-enable nil t)
-  (add-hook 'buffer-list-update-hook 'ar/god-mode-update-cursor)
-  (add-hook 'god-mode-enabled-hook 'ar/god-mode-update-cursor)
-  (add-hook 'god-mode-disabled-hook 'ar/god-mode-update-cursor)
+;;   (add-hook 'find-file-hook #'ar/god-mode-local-enable nil t)
+;;   (add-hook 'buffer-list-update-hook 'ar/god-mode-update-cursor)
+;;   (add-hook 'god-mode-enabled-hook 'ar/god-mode-update-cursor)
+;;   (add-hook 'god-mode-disabled-hook 'ar/god-mode-update-cursor)
 
-  (setq god-global-mode t)
+;;   (setq god-global-mode t)
 
-  :bind (("<escape>" . ar/god-mode-local-enable))
-  :bind (:map god-local-mode-map
-              ("i" . ar/god-mode-local-disable)))
+;;   :bind (("<escape>" . ar/god-mode-local-enable))
+;;   :bind (:map god-local-mode-map
+;;               ("i" . ar/god-mode-local-disable)))
 
 (use-package elfeed :ensure t
   :config
