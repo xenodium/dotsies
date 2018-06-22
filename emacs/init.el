@@ -1013,7 +1013,26 @@ Values between 0 - 100."
     ;; Separate elfeed lines for readability.
     (validate-setq line-spacing 25))
   (add-hook 'elfeed-search-mode-hook #'centered-cursor-mode)
-  (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style))
+  (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style)
+
+  (defun ar/elfeed-view-filtered (filter)
+    "Filter the elfeed-search buffer to show feeds tagged with FILTER."
+    (interactive)
+    (elfeed)
+    (unwind-protect
+        (let ((elfeed-search-filter-active :live))
+          (setq elfeed-search-filter filter))
+      (elfeed-search-update :force)))
+
+  (defun ar/elfeed-view-emacs ()
+    "Filter the elfeed-search buffer to show emacs-tagged feeds."
+    (interactive)
+    (ar/elfeed-view-filtered "@6-months-ago +unread +emacs"))
+
+  (defun ar/elfeed-view-news ()
+    "Filter the elfeed-search buffer to show news-tagged feeds."
+    (interactive)
+    (ar/elfeed-view-filtered "@6-months-ago +unread +news")))
 
 (use-package elfeed-goodies :ensure t
   :after elfeed
