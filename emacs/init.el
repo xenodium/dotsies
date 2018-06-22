@@ -2920,6 +2920,12 @@ already narrowed."
   (validate-setq eshell-scroll-to-bottom-on-input 'all)
   (validate-setq eshell-list-files-after-cd nil)
 
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-commands "ssh")
+              (add-to-list 'eshell-visual-commands "tail")
+              (add-to-list 'eshell-visual-commands "top")))
+
   (defun ar/eshell-cd-to-parent ()
     (interactive)
     (goto-char (point-max))
