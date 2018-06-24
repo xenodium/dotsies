@@ -2840,7 +2840,7 @@ already narrowed."
   (csetq openwith-associations
          (cond
           ((ar/osx-p)
-           '(("\\.\\(dmg\\)$"
+           '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
               "open" (file))
              ("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
               "open" ("-a" "VLC" file))))
