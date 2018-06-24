@@ -12,6 +12,7 @@
 (require 'f)
 (require 'shrink-path)
 (require 'validate)
+(require 'iimage)
 
 (defun ar/eshell-config--prompt-char ()
   "Return shell config character, based on current OX. For example, an  for MacOS."
