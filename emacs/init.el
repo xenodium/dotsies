@@ -3375,6 +3375,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   (flycheck-inline-mode +1))
 
+(use-package osx-dictionary
+  :if (memq window-system '(mac ns))
+  :ensure t)
+
 (use-package pos-tip :ensure t
   :config
   (when (fboundp 'tooltip-mode) (tooltip-mode +1)))
