@@ -87,6 +87,16 @@
   (org-show-subtree)
   (recenter-top-bottom 3))
 
+(defun ar/helm-org--preprocess-description (full-description)
+  "Reformat page FULL-DESCRIPTION. For example:
+HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
+  (string-match "^\\(.*\\)\\( | \\)\\(.*\\)$" full-description)
+  (let ((site (match-string 3 full-description))
+        (description (match-string 1 full-description)))
+    (if (and site description)
+        (format "%s (%s)" description site)
+      full-description)))
+
 (defun ar/helm-org-insert-clipboard-bookmark ()
   "Insert a bookmark link from clipboard."
   (interactive)
@@ -95,7 +105,8 @@
    (current-kill 0)
    (lambda (url default-description)
      (insert (format "%s." (ar/org-build-link url
-                                              (read-string "Description: " default-description)))))))
+                                              (read-string "Description: " (ar/helm-org--preprocess-description
+                                                                            default-description))))))))
 
 (defun ar/helm-org-add-bookmark ()
   "Add a bookmark to blog."
@@ -114,7 +125,8 @@
                                    ;; Indent to current level.
                                    ;; (call-interactively (global-key-binding "\t"))
                                    (insert (format "- %s.\n" ,(ar/org-build-link url
-                                                                                 (read-string "Description: " default-description))))
+                                                                                 (read-string "Description: "
+                                                                                              (ar/helm-org--preprocess-description default-description)))))
                                    (org-sort-list nil ?a)
                                    (ar/update-blog-timestamp-at-point)
                                    (hide-other)
