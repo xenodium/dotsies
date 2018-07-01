@@ -949,7 +949,6 @@ Values between 0 - 100."
         (ar/open-youtube-url link))))
   (validate-setq elfeed-feeds
                  '(
-                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
                    ("http://blog.davep.org/feed.xml" blog emacs tech davep)
@@ -1006,8 +1005,10 @@ Values between 0 - 100."
                    ("https://wincent.com/blog.rss" blog tech dev wincent)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
                    ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
+                   ("https://www.johndcook.com/blog/comments/feed" blog emacs JohnDCook)
                    ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
+                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ))
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
