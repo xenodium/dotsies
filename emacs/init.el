@@ -1819,48 +1819,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-(defun ar/swift-mode-hook-function ()
-  "Called when entering `swift-mode'."
-  ;; swiftlint autocorrect --path
-  ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
-  (add-to-list 'flycheck-checkers 'swiftlint)
-  (setq-local flycheck-swiftlint-config-file
-              (concat (file-name-as-directory
-                       (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
-                      ".swiftlint.yml"))
-  (defun ar/--after-swift-save ()
-    (call-process "swiftformat" nil "*swiftformat*" t "--indent" "2" buffer-file-name)
-    (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
-                  "--config" flycheck-swiftlint-config-file
-                  "--path" buffer-file-name))
-
-  ;; Don't forget to set sourcekit-project for the project.
-  ;; (setq sourcekit-project "some/project.xcodeproj")
-  (setq-local company-backends '((company-yasnippet
-                                  company-dabbrev-code
-                                  company-keywords
-                                  company-files
-                                  company-emoji
-                                  company-capf)))
-
-  (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
-
 (use-package swift-mode :ensure t
-  :init (defvar flycheck-swift-sdk-path)
   :after company-sourcekit
   :after flycheck
   :config
-  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
-  (csetq swift-mode:basic-offset 2))
-
-(use-package lua-mode :ensure t)
-
-(use-package company-lua :ensure t
-  :config
   (defun ar/swift-mode-hook-function ()
     "Called when entering `swift-mode'."
-    ;; swiftlint autocorrect --path
-    ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
     (add-to-list 'flycheck-checkers 'swiftlint)
     (setq-local flycheck-swiftlint-config-file
                 (concat (file-name-as-directory
@@ -1874,7 +1838,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; Don't forget to set sourcekit-project for the project.
     ;; (setq sourcekit-project "some/project.xcodeproj")
-    (setq-local company-backends '((company-swimports
+    (setq-local company-backends '((company-sourcekit
+                                    company-swimports
                                     company-yasnippet
                                     company-dabbrev-code
                                     company-keywords
@@ -1883,7 +1848,12 @@ Repeated invocations toggle between the two most recently open buffers."
                                     company-capf)))
 
     (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
-  )
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
+  (csetq swift-mode:basic-offset 2))
+
+(use-package lua-mode :ensure t)
+
+(use-package company-lua :ensure t)
 
 (use-package company :ensure t
   :config

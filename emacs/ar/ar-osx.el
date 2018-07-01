@@ -30,8 +30,6 @@
   "Perform initializations for Mac OS X."
   (unless (ar/osx-p)
     (error "Loading OS X config on different platform"))
-  ;; On Mac, this is effectively fn-M-backspace.
-  (bind-key "M-(" #'kill-word)
   ;; Keep menu bar under graphical OS X for fullscreen.
   (when (window-system)
     (menu-bar-mode 1))
