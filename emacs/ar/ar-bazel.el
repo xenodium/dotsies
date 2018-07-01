@@ -76,6 +76,13 @@
   (interactive)
   (insert (completing-read "build rule: " (ar/bazel-workspace-build-rules))))
 
+(defun ar/bazel-print-rules ()
+  "Print all BUILD rules in workspace."
+  (interactive)
+  (mapc (lambda (rule)
+          (message rule))
+        (ar/bazel-workspace-build-rules)))
+
 (provide 'ar-bazel)
 
 ;;; ar-bazel.el ends here
