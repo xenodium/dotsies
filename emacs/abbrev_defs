@@ -197,6 +197,7 @@
     ("collitions" "collisions" nil 1)
     ("comapred" "compared" nil 0)
     ("componetns" "components" nil 0)
+    ("counceling" "counseling" nil 0)
     ("cunction" "function" nil 0)
     ("decoratgor" "decorator" nil 0)
     ("deserialising" "deserializing" nil 0)
@@ -217,7 +218,7 @@
     ("liverpool" "liverpool" nil 0)
     ("make" "make" nil 7)
     ("nattural" "natural" nil 0)
-    ("ok" "ok" nil 0)
+    ("ok" "ok" nil 2)
     ("overriden" "overridden" nil 0)
     ("paradigns" "paradigms" nil 0)
     ("playfull" "playful" nil 0)
@@ -225,6 +226,7 @@
     ("poppped" "popped" nil 0)
     ("proactively" "actively" nil 0)
     ("responsd" "respond" nil 0)
+    ("responsiblities" "responsibilities" nil 0)
     ("rools" "rolls" nil 0)
     ("saving" "saving" nil 1)
     ("sepaate" "separate" nil 0)
@@ -301,6 +303,8 @@
 (define-abbrev-table 'indium-list-scripts-mode-abbrev-table '())
 
 (define-abbrev-table 'indium-repl-mode-abbrev-table '())
+
+(define-abbrev-table 'inferior-emacs-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-js-mode-abbrev-table '())
 
