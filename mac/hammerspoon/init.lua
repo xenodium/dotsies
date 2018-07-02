@@ -88,7 +88,25 @@ function emacsExecute(activate, elisp)
 end
 
 function addEmacsOrgModeTODO()
-   emacsExecute(true, "(ar/org-add-todo-in-file)")
+   appRequestingOrgEdit = hs.application.frontmostApplication()
+   local activate = true
+   if appRequestingOrgEdit:bundleID() == "org.gnu.Emacs" then
+      activate = false
+   end
+   emacsExecute(activate, "(ar/hammerspoon-org-modal-add-todo)")
+end
+
+function backFromEmacsOrgEdit()
+   if appRequestingOrgEdit == nil then
+      hs.alert("Not editing org file")
+      return
+   end
+   if appRequestingOrgEdit:bundleID() == "org.gnu.Emacs" then
+      -- No need to bounce back to Emacs if invoked from Emacs.
+      return
+   end
+   appRequestingOrgEdit:activate()
+   appRequestingOrgEdit = nil
 end
 
 function addEmacsOrgModeGoLink()
