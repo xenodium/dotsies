@@ -456,9 +456,12 @@
 (use-package ar-process)
 (use-package ar-org
   :after org)
+(use-package ar-hammerspoon-org-modal
+  :after ar-org)
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
+(use-package company-hammerspoon)
 (use-package ar-ping)
 (use-package ar-shell)
 (use-package ar-sudo)
