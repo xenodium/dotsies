@@ -18,7 +18,8 @@
   (ar/hammerspoon-org-modal-mode -1)
   ;; goto-char didn't work, but switching buffer is enough to return to maker.
   (switch-to-buffer (marker-buffer ar/hammerspoon-org-modal--marker))
-  (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacsOrgEdit()'"))
+  (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacsOrgEdit()'")
+  (message "Saved %s" (ar/org-get-daily-file-path)))
 
 (defun ar/hammerspoon-org-modal-add-todo ()
   "Go to tasks INBOX and add empty TODO."
