@@ -456,9 +456,12 @@
 (use-package ar-process)
 (use-package ar-org
   :after org)
+(use-package ar-hammerspoon-org-modal
+  :after ar-org)
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
+(use-package company-hammerspoon)
 (use-package ar-ping)
 (use-package ar-shell)
 (use-package ar-sudo)
@@ -949,7 +952,6 @@ Values between 0 - 100."
         (ar/open-youtube-url link))))
   (validate-setq elfeed-feeds
                  '(
-                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
                    ("http://blog.davep.org/feed.xml" blog emacs tech davep)
@@ -1006,8 +1008,10 @@ Values between 0 - 100."
                    ("https://wincent.com/blog.rss" blog tech dev wincent)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
                    ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
+                   ("https://www.johndcook.com/blog/comments/feed" blog emacs JohnDCook)
                    ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
+                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ))
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
@@ -1823,48 +1827,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; See http://clang.llvm.org/docs/ClangFormat.html
 (use-package clang-format :ensure t)
 
-(defun ar/swift-mode-hook-function ()
-  "Called when entering `swift-mode'."
-  ;; swiftlint autocorrect --path
-  ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
-  (add-to-list 'flycheck-checkers 'swiftlint)
-  (setq-local flycheck-swiftlint-config-file
-              (concat (file-name-as-directory
-                       (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
-                      ".swiftlint.yml"))
-  (defun ar/--after-swift-save ()
-    (call-process "swiftformat" nil "*swiftformat*" t "--indent" "2" buffer-file-name)
-    (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
-                  "--config" flycheck-swiftlint-config-file
-                  "--path" buffer-file-name))
-
-  ;; Don't forget to set sourcekit-project for the project.
-  ;; (setq sourcekit-project "some/project.xcodeproj")
-  (setq-local company-backends '((company-yasnippet
-                                  company-dabbrev-code
-                                  company-keywords
-                                  company-files
-                                  company-emoji
-                                  company-capf)))
-
-  (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
-
 (use-package swift-mode :ensure t
-  :init (defvar flycheck-swift-sdk-path)
   :after company-sourcekit
   :after flycheck
   :config
-  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
-  (csetq swift-mode:basic-offset 2))
-
-(use-package lua-mode :ensure t)
-
-(use-package company-lua :ensure t
-  :config
   (defun ar/swift-mode-hook-function ()
     "Called when entering `swift-mode'."
-    ;; swiftlint autocorrect --path
-    ;; (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
     (add-to-list 'flycheck-checkers 'swiftlint)
     (setq-local flycheck-swiftlint-config-file
                 (concat (file-name-as-directory
@@ -1878,7 +1846,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; Don't forget to set sourcekit-project for the project.
     ;; (setq sourcekit-project "some/project.xcodeproj")
-    (setq-local company-backends '((company-swimports
+    (setq-local company-backends '((company-sourcekit
+                                    company-swimports
                                     company-yasnippet
                                     company-dabbrev-code
                                     company-keywords
@@ -1887,7 +1856,12 @@ Repeated invocations toggle between the two most recently open buffers."
                                     company-capf)))
 
     (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
-  )
+  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
+  (csetq swift-mode:basic-offset 2))
+
+(use-package lua-mode :ensure t)
+
+(use-package company-lua :ensure t)
 
 (use-package company :ensure t
   :config
@@ -3379,6 +3353,10 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :ensure t
   :config
   (flycheck-inline-mode +1))
+
+(use-package osx-dictionary
+  :if (memq window-system '(mac ns))
+  :ensure t)
 
 (use-package pos-tip :ensure t
   :config
