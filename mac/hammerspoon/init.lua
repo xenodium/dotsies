@@ -89,11 +89,13 @@ end
 
 function addEmacsOrgModeTODO()
    appRequestingOrgEdit = hs.application.frontmostApplication()
-   local activate = true
-   if appRequestingOrgEdit:bundleID() == "org.gnu.Emacs" then
-      activate = false
-   end
-   emacsExecute(activate, "(ar/hammerspoon-org-modal-add-todo)")
+   emacsExecute(false, "(ar/hammerspoon-org-modal-add-todo)")
+   activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
 end
 
 function backFromEmacsOrgEdit()
@@ -125,7 +127,7 @@ end
 function searchEmacsOrgShortLinks()
    local chooser = hs.chooser.new(function(choice)
          if not choice then
-            focusPreviousWindow()
+            ar.window.focusPrevious()
             return
          end
          output,success = hs.execute("open http://"..choice['text'])
