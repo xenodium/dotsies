@@ -1325,6 +1325,11 @@ Optional argument NON-RECURSIVE to shallow-search."
   ;; Automatically highlight first change.
   (add-hook 'ediff-startup-hook 'ediff-next-difference)
 
+  (use-package outline
+    :config
+    ;; Ensure ediff expands org files.
+    (add-hook 'ediff-prepare-buffer-hook #'outline-show-all))
+
   ;; Expand org files when ediffing.
   (add-hook 'ediff-prepare-buffer-hook
             (lambda ()
