@@ -88,7 +88,7 @@ function emacsExecute(activate, elisp)
 end
 
 function addEmacsOrgModeTODO()
-   appRequestingOrgEdit = hs.application.frontmostApplication()
+   appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/hammerspoon-org-modal-add-todo)")
    activateFirstOf({
             {
@@ -98,17 +98,28 @@ function addEmacsOrgModeTODO()
       })
 end
 
-function backFromEmacsOrgEdit()
-   if appRequestingOrgEdit == nil then
-      hs.alert("Not editing org file")
+function searchEmacsBrowserBookmarks()
+   appRequestingEmacs = hs.application.frontmostApplication()
+   emacsExecute(false, "(ar/modal-ivy-search-bookmarks)")
+   activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
+end
+
+function backFromEmacs()
+   if appRequestingEmacs == nil then
+      hs.alert("Emacs not previously requested")
       return
    end
-   if appRequestingOrgEdit:bundleID() == "org.gnu.Emacs" then
+   if appRequestingEmacs:bundleID() == "org.gnu.Emacs" then
       -- No need to bounce back to Emacs if invoked from Emacs.
       return
    end
-   appRequestingOrgEdit:activate()
-   appRequestingOrgEdit = nil
+   appRequestingEmacs:activate()
+   appRequestingEmacs = nil
 end
 
 function addEmacsOrgModeGoLink()
@@ -154,6 +165,7 @@ function searchEmacsOrgShortLinks()
 end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
+hs.hotkey.bind({"alt"}, "W", searchEmacsBrowserBookmarks)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 
 hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({
