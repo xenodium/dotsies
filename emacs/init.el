@@ -953,7 +953,10 @@ Values between 0 - 100."
   (validate-setq elfeed-feeds
                  '(
                    ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
+                   ("https://sciencebasedmedicine.org/feed" blog medicine ScienceBasedMedicine)
+                   ("https://www.ogre.com/blog/feed" blog dev Ogre)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
+                   ("https://increment.com/feed.xml" blog dev Increment)
                    ("http://blog.davep.org/feed.xml" blog emacs tech davep)
                    ("http://blog.josephholsten.com/feed.xml" blog hammerspoon tech Libera-Ideoj)
                    ("http://cestlaz.github.io/rss.xml" blog emacs Zamansky)
