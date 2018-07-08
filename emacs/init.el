@@ -498,6 +498,7 @@
 (use-package company-bash-history)
 (use-package company-projectile-cd)
 (use-package flycheck-swiftlint)
+(use-package modal-ivy :after ivy)
 
 ;; Easy access to links in buffer (using avy).
 (use-package link-hint :ensure t)

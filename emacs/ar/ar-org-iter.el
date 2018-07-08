@@ -55,6 +55,21 @@ FUN should `save-excursion' if moving point."
     (assert (org-on-heading-p) nil "Unexpected item found")
     (funcall fun (org-element-headline-parser (point-max)))))
 
+;; Copied from org-element-link-successor, no longer available in org-element.
+;; TODO: Migrate to newer APIs.
+(defun ar/org-iter--link-successor (limit)
+  "Search for the next link and return position.
+LIMIT bounds the search.
+Return value is a cons cell whose car is `link' and cdr is
+beginning position."
+  (save-excursion
+    (let ((link-regexp
+           (if org-target-link-regexp
+               (concat org-any-link-re "\\|" org-target-link-regexp)
+             org-any-link-re)))
+      (when (re-search-forward link-regexp limit t)
+        (cons 'link (match-beginning 0))))))
+
 (defun ar/org-iter-for-each-link (fun)
   "For each link, call FUN with link as argument.
 FUN should `save-excursion' if moving point."
@@ -62,13 +77,13 @@ FUN should `save-excursion' if moving point."
   (ar/org-iter--assert-with-block)
   (save-excursion
     (save-restriction
-      (let ((next-link (org-element-link-successor)))
+      (let ((next-link (ar/org-iter--link-successor (point-max))))
         (while (not (null next-link))
           (goto-char (cdr next-link))
           (let ((link (org-element-link-parser)))
             (funcall fun link)
             (goto-char (org-element-property :end link)))
-          (setq next-link (org-element-link-successor)))))))
+          (setq next-link (ar/org-iter--link-successor (point-max))))))))
 
 (defun ar/org-iter-for-each-heading-1-link (heading-1-fun link-fun)
   (ar/org-iter--assert-org-mode)
@@ -147,38 +162,6 @@ FUN should `save-excursion' if moving point."
          (setq link-called-count (1+ link-called-count))))
       (should (= heading-called-count 2))
       (should (= link-called-count 5)))))
-
-(defun __wip-helm-bookmarks ()
-  (interactive)
-  (ar/org-iter-with-org-file
-   "~/stuff/active/blog/index.org"
-   (let ((sources '()))
-     (ar/org-iter-for-each-heading-1
-      (lambda (heading)
-        (let ((candidates '()))
-          ;; TODO: Consider using widen instead.
-          (save-restriction
-            (org-narrow-to-subtree)
-            (ar/org-iter-for-each-link
-             (lambda (link)
-               (add-to-list 'candidates
-                (cons (cond ((and (org-element-property :contents-begin link)
-                            (org-element-property :contents-end link))
-                       (buffer-substring (org-element-property :contents-begin link)
-                                         (org-element-property :contents-end link)))
-                      (t
-                       (org-element-property :raw-link link)))
-                      (org-element-property :raw-link link))
-                t))))
-          (add-to-list 'sources
-                       (helm-build-sync-source (replace-regexp-in-string ".*#\\]\\] " ""
-                                                                         (org-element-property :raw-value heading))
-                         :nomark t
-                         :candidates candidates
-                         :resume 'noresume
-                         :action (lambda (href)
-                                   (browse-url href)))))))
-     (helm :sources sources))))
 
 (provide 'ar-org-iter)
 
