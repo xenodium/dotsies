@@ -2,3 +2,6 @@
 	editor = emacsclient -t
 [rerere]
 	enabled = true
+
+[merge]
+	conflictStyle = diff3
