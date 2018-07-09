@@ -1342,6 +1342,15 @@ Optional argument NON-RECURSIVE to shallow-search."
                 (setq-local truncate-lines nil)  ; no `org-startup-truncated' in hook
                 (setq-local org-hide-leading-stars t))))
 
+  ;; From https://stackoverflow.com/questions/9656311/conflict-resolution-with-emacs-ediff-how-can-i-take-the-changes-of-both-version
+  (defun ar/ediff-copy-both-to-C ()
+    "Ediff copy A and B to C."
+    (interactive)
+    (ediff-copy-diff ediff-current-difference nil 'C nil
+                     (concat
+                      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+
   ;; From https://scripter.co/do-ediff-as-i-mean/
   (defun ar/ediff-dwim ()
     "Do ediff as I mean.
