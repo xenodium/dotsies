@@ -3358,6 +3358,12 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   :config
   (flycheck-inline-mode +1))
 
+;; Trying out flycheck-inline first.
+;; (use-package flycheck-posframe :ensure t
+;;   :after flycheck
+;;   :config
+;;   (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
+
 (use-package osx-dictionary
   :if (memq window-system '(mac ns))
   :ensure t)
@@ -3365,11 +3371,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package pos-tip :ensure t
   :config
   (when (fboundp 'tooltip-mode) (tooltip-mode +1)))
-
-(use-package flycheck-pos-tip :ensure t
-  :after flycheck
-  :config
-  (flycheck-pos-tip-mode))
 
 ;; No Objective-C 'other file' support out of the box. Fix that.
 (csetq cc-other-file-alist
