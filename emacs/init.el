@@ -1314,7 +1314,7 @@ Optional argument NON-RECURSIVE to shallow-search."
 (use-package projectile :ensure t
   :config
   (validate-setq projectile-enable-caching t)
-  (projectile-global-mode))
+  (projectile-mode))
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
