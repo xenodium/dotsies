@@ -56,6 +56,21 @@
   "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
   (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
 
+(defun ar/bazel-dired-bin-dir ()
+  "Open WORKSPACE's bazel-bin directory."
+  (interactive)
+  (find-file (concat (ar/bazel-workspace-path) "bazel-bin")))
+
+(defun ar/bazel-dired-out-dir ()
+  "Open WORKSPACE's bazel-out directory."
+  (interactive)
+  (find-file (concat (ar/bazel-workspace-path) "bazel-out")))
+
+(defun ar/bazel-dired-genfiles-dir ()
+  "Open WORKSPACE's bazel-genfiles directory."
+  (interactive)
+  (find-file (concat (ar/bazel-workspace-path) "bazel-genfiles")))
+
 (defun ar/bazel-workspace-path ()
   "Get bazel project path."
   (let ((workspace (locate-dominating-file default-directory "WORKSPACE")))
