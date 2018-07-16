@@ -2221,6 +2221,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package ob-objc)
 
+(use-package gnuplot :ensure t)
+
 (use-package ob
   :config
   (validate-setq org-export-babel-evaluate nil)
