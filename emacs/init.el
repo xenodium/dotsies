@@ -416,9 +416,11 @@
 (use-package ar-assert)
 (use-package ar-string)
 (use-package ar-buffer)
-(use-package ar-dired)
+(use-package ar-dired
+  :after f)
 (use-package ar-file)
-(use-package ar-bazel)
+(use-package ar-bazel
+  :after s)
 (use-package ar-alist)
 (use-package ar-git)
 (use-package ar-helm
@@ -438,7 +440,7 @@
   :after helm)
 (use-package ar-helm-hotspots-config
   :demand
-  :after helm-buffers
+  :after (f helm-buffers)
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
 (use-package ar-image
@@ -461,7 +463,8 @@
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
-(use-package company-hammerspoon)
+(use-package company-hammerspoon
+  :after company)
 (use-package ar-ping)
 (use-package ar-shell)
 (use-package ar-sudo)
@@ -491,13 +494,20 @@
 (use-package ar-font)
 (use-package ar-compile)
 
-(use-package company-swimports)
-(use-package company-escaped-files)
-(use-package company-grep)
-(use-package company-rfiles)
-(use-package company-bash-history)
-(use-package company-projectile-cd)
-(use-package flycheck-swiftlint)
+(use-package company-swimports
+  :after company)
+(use-package company-escaped-files
+  :after s)
+(use-package company-grep
+  :after s)
+(use-package company-rfiles
+  :after company)
+(use-package company-bash-history
+  :after company)
+(use-package company-projectile-cd
+  :after company)
+(use-package flycheck-swiftlint
+  :after flycheck)
 (use-package modal-ivy :after ivy)
 
 ;; Easy access to links in buffer (using avy).
@@ -811,8 +821,6 @@ Values between 0 - 100."
     (add-to-list 'magit-no-confirm 'stage-all-changes)
     (fullframe magit-status magit-mode-quit-window))
 
-  (use-package magit-rockstar :ensure t)
-
   (use-package rotate :ensure t)
 
   ;; A screensaver of sorts
@@ -1053,8 +1061,6 @@ Values between 0 - 100."
 ;; Suggests elisp methods based on inputs and outputs.
 (use-package suggest :ensure t)
 
-(use-package realgud :ensure t)
-
 ;; Semantic code search for emacs lisp.
 (use-package elisp-refs :ensure t)
 
@@ -1067,7 +1073,7 @@ Values between 0 - 100."
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(use-package anchored-transpose :ensure t)
+(use-package anchored-transpose)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -2316,8 +2322,8 @@ already narrowed."
   (set-face-attribute 'objc-font-lock-function-name nil :foreground "#dcdcdc")
   (validate-setq objc-font-lock-background-face nil))
 
-(use-package dummy-h-mode :ensure t
-  :mode(("\\.h\\'" . dummy-h-mode)))
+(use-package dummy-h-mode
+  :mode (("\\.h\\'" . dummy-h-mode)))
 
 (use-package go-eldoc :ensure t
   :commands go-eldoc-setup)
@@ -2398,7 +2404,9 @@ already narrowed."
 (use-package litable :ensure t)
 
 ;; Edit HTML templates in Javascript code (automatically escape).
-(use-package string-edit :ensure t)
+(use-package string-edit :ensure t
+  :mode (("\\.js\\'" . rjsx-mode)
+         ("\\.jsx\\'" . rjsx-mode)))
 
 (defun ar/add-functions-to-mode-hooks (hook-functions hooks)
   "Add HOOK-FUNCTIONS to mode HOOKS."
@@ -2444,12 +2452,6 @@ already narrowed."
 (ar/add-functions-to-mode-hooks '(ar/emacs-lisp-mode-hook-function)
                                 '(emacs-lisp-mode-hook
                                   ielm-mode-hook))
-
-;; Super handy for highlighting bookmarks.
-(use-package bookmark+ :ensure t
-  :init
-  ;; Need to define to fix break in latest bookmark+.
-  (defvar bmkp-replace-EWW-keys-flag nil))
 
 (defun ar/clang-format-buffer ()
   "Clang format current buffer."
@@ -3954,6 +3956,8 @@ line instead."
   (csetq kill-do-not-save-duplicates t)
   ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
   (csetq idle-update-delay 2)
+  ;; Increase mark ring size.
+  (csetq global-mark-ring-max 500)
   :bind
   (:map prog-mode-map
         ("M-C-y" . ar/yank-line-below)
@@ -4034,6 +4038,5 @@ line instead."
 
 (ar/load-all-files "~/.emacs.d/local/*.el")
 
-(message "blah blah")
 (provide 'init)
 ;;; init.el ends here
