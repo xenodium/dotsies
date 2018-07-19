@@ -2715,7 +2715,7 @@ already narrowed."
   :config
   (validate-setq company-tern-meta-as-single-line t))
 
-(use-package js-mode
+(use-package js
   :config
   (setq js-indent-level 2))
 
@@ -3500,8 +3500,7 @@ _v_ariable       _u_ser-option
 (bind-key "C-h h" #'hydra-apropos/body)
 
 (use-package display-line-numbers
-  :demand
-  :config
+  :init
   (defhydra hydra-goto-line (:pre (progn
                                     ;; Disabling. Slow on large files.
                                     ;; (global-git-gutter-mode -1)
