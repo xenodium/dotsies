@@ -751,6 +751,8 @@ Values between 0 - 100."
   :after (discover fullframe helm)
   :commands dired-mode
   :config
+  ;; For dired-jump.
+  (use-package dired-x)
   ;; Adding human readable units and sorted by date.
   (validate-setq dired-listing-switches "-Alht")
   ;; Try to guess the target directory for operations.
