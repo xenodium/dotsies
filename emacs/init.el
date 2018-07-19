@@ -1957,6 +1957,38 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;   (global-emojify-mode +1))
 
 (use-package objc-mode
+  :init
+  (defun ar/objc-mode-hook-function ()
+    "Called when entering `objc-mode'."
+    ;; Hook is run twice. Avoid:
+    ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16759
+    (unless (boundp 'objc-mode-hook-did-run)
+      (ar/clang-format-toggle-automatic)
+      (objc-font-lock-mode)
+      (helm-dash-activate-docset "iOS")
+      (set-fill-column 100)
+
+      (validate-setq company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
+      (validate-setq company-grep-grep-format-string "^#import\\s*\".*%s")
+      (validate-setq company-grep-grep-trigger "import \"")
+      (validate-setq company-grep-grep-cleanup-fun (lambda (items)
+                                                     (mapcar (lambda (item)
+                                                               (ar/string-match item "import +\"\\(.*\\)\"" 1))
+                                                             items)))
+      (setq-local company-backends '((company-grep company-files company-yasnippet company-keywords company-clang)))
+
+      ;; (setq-local company-backends '((company-rtags)))
+      ;; NOTE: Disabling while trying irony out
+      ;; (setq-local company-backends
+      ;;      ;; List with multiple back-ends for mutual inclusion.
+      ;;      '(( ;;company-ycmd
+      ;;         company-yasnippet
+      ;;         company-gtags
+      ;;         company-dabbrev-code
+      ;;         company-files)))
+      ;;(ycmd-mode)
+      (setq-local objc-mode-hook-did-run t)))
+  :hook (objc-mode . ar/objc-mode-hook-function)
   :bind (:map objc-mode-map
               ([f6] . recompile)))
 
@@ -2161,21 +2193,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; View, browse, rotate, manipulate images with picpocket.
 (use-package picpocket :ensure t)
 
-(defun ar/org-mode-hook-function ()
-  "Called when entering org mode."
-  (setq-local company-backends '((company-yasnippet
-                                  company-keywords
-                                  company-files
-                                  company-emoji
-                                  company-capf)))
-  (toggle-truncate-lines 0)
-  (validate-setq show-trailing-whitespace t)
-  (set-fill-column 1000)
-  (flyspell-mode +1)
-  (org-bullets-mode +1)
-  (yas-minor-mode +1)
-  (org-display-inline-images))
-
 ;; From http://zzamboni.org/post/my-emacs-configuration-with-commentary
 (defun ar/org-reformat-buffer ()
   (interactive)
@@ -2363,8 +2380,7 @@ already narrowed."
   (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package company-go :ensure t
-  :config
-  (add-hook 'go-mode-hook #'ar/go-mode-hook-function))
+  :hook (go-mode . ar/go-mode-hook-function))
 
 ;; go get -u github.com/golang/lint/golint
 (use-package golint :ensure t)
@@ -2480,38 +2496,6 @@ already narrowed."
               'make-it-local))
   (print before-save-hook))
 
-(defun ar/objc-mode-hook-function ()
-  "Called when entering `objc-mode'."
-  ;; Hook is run twice. Avoid:
-  ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16759
-  (unless (boundp 'objc-mode-hook-did-run)
-    (ar/clang-format-toggle-automatic)
-    (objc-font-lock-mode)
-    (helm-dash-activate-docset "iOS")
-    (set-fill-column 100)
-
-    (validate-setq company-grep-grep-flags "--type objc --no-line-number --color never --no-filename --smart-case --regexp")
-    (validate-setq company-grep-grep-format-string "^#import\\s*\".*%s")
-    (validate-setq company-grep-grep-trigger "import \"")
-    (validate-setq company-grep-grep-cleanup-fun (lambda (items)
-                                                   (mapcar (lambda (item)
-                                                             (ar/string-match item "import +\"\\(.*\\)\"" 1))
-                                                           items)))
-    (setq-local company-backends '((company-grep company-files company-yasnippet company-keywords company-clang)))
-
-    ;; (setq-local company-backends '((company-rtags)))
-    ;; NOTE: Disabling while trying irony out
-    ;; (setq-local company-backends
-    ;;      ;; List with multiple back-ends for mutual inclusion.
-    ;;      '(( ;;company-ycmd
-    ;;         company-yasnippet
-    ;;         company-gtags
-    ;;         company-dabbrev-code
-    ;;         company-files)))
-    ;;(ycmd-mode)
-    (setq-local objc-mode-hook-did-run t)))
-(add-hook 'objc-mode-hook #'ar/objc-mode-hook-function)
-
 (use-package smart-jump
   :ensure t
   :config
@@ -2524,15 +2508,15 @@ already narrowed."
 ;;   :config
 ;;   (csetq alert-default-style 'osx-notifier))
 
-(defun ar/java-mode-hook-function ()
-  "Called when entering `java-mode'."
-  (bind-key [f6] java-mode-map)
-  ;; 2-char indent for java.
-  (defvar c-basic-offset)
-  (validate-setq c-basic-offset 2)
-  (set-fill-column 100))
-
-(add-hook 'java-mode-hook #'ar/java-mode-hook-function)
+(use-package cc-mode
+  :init
+  (defun ar/java-mode-hook-function ()
+    "Called when entering `java-mode'."
+    ;; 2-char indent for java.
+    (defvar c-basic-offset)
+    (validate-setq c-basic-offset 2)
+    (set-fill-column 100))
+  :hook (java-mode . ar/java-mode-hook-function))
 
 (use-package immortal-scratch :ensure t
   :config
@@ -2612,17 +2596,14 @@ already narrowed."
   (modify-syntax-entry ?> ")<"))
 
 (use-package html-check-frag :ensure t
-  :config
-  (add-hook 'html-mode-hook (lambda ()
-                              (html-check-frag-mode +1))))
+  :hook (html-mode . html-check-frag-mode))
 
 (use-package requirejs :ensure t)
 
 (use-package rjsx-mode :ensure t
+  :hook (js2-mode . ar/js2-mode-hook-function)
   :mode (("\\.js\\'" . rjsx-mode)
-         ("\\.jsx\\'" . rjsx-mode))
-  :config
-  (add-hook #'js2-mode-hook #'ar/js2-mode-hook-function))
+         ("\\.jsx\\'" . rjsx-mode)))
 
 ;; Disabling in favor of rjsx-mode.
 ;; (use-package js2-mode :ensure t
@@ -2714,14 +2695,14 @@ already narrowed."
 
 ;; Work in progress.
 (use-package web-mode :ensure t
+  :hook (web-mode . ar/web-mode-hook-function)
   :config
   (validate-setq web-mode-code-indent-offset 2)
   (defadvice web-mode-highlight-part (around tweak-jsx activate)
     (if (equal web-mode-content-type "jsx")
         (let ((web-mode-enable-part-face nil))
           ad-do-it)
-      ad-do-it))
-  (add-hook #'web-mode-hook #'ar/web-mode-hook-function))
+      ad-do-it)))
 
 (defun ar/tern-delete-process ()
   "Delete tern.jsp process."
@@ -2734,12 +2715,9 @@ already narrowed."
   :config
   (validate-setq company-tern-meta-as-single-line t))
 
-(defun ar/js-mode-hook-function ()
-  "Called when entering `js-mode'."
-  (setq-local company-tooltip-align-annotations t)
-  (setq-local js-indent-level 2))
-
-(add-hook 'js-mode-hook #'ar/js-mode-hook-function)
+(use-package js-mode
+  :config
+  (setq js-indent-level 2))
 
 ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
 (use-package color-theme-sanityinc-tomorrow :ensure t)
@@ -2749,12 +2727,10 @@ already narrowed."
 ;;                  'ar/org-src-color-blocks-dark)
 
 (use-package aggressive-indent :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
 
 (use-package highlight-quoted :ensure t
-  :config
-  (add-hook 'prog-mode-hook 'highlight-quoted-mode))
+  :hook (prog-mode . highlight-quoted-mode))
 
 (use-package centered-cursor-mode :ensure t
   :pin melpa
@@ -2886,6 +2862,20 @@ already narrowed."
   :ensure t)
 
 (use-package eshell
+  :init
+  (defun ar/eshell-mode-hook-function ()
+    ;; Turn off semantic-mode in eshell buffers.
+    (semantic-mode -1)
+    (smartparens-strict-mode +1)
+    (eshell-smart-initialize)
+    (setq-local global-hl-line-mode nil)
+    (setq-local company-backends '((company-projectile-cd company-escaped-files)))
+    ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
+    (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
+    (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
+    (bind-key "<backtab>" #'company-complete eshell-mode-map)
+    (bind-key "<tab>" #'company-complete eshell-mode-map))
+  :hook (eshell-mode . ar/eshell-mode-hook-function)
   :config
   (use-package em-hist)
   (use-package em-glob)
@@ -2919,21 +2909,6 @@ already narrowed."
     (goto-char (point-max))
     (insert "cd ..")
     (eshell-send-input nil t))
-
-  (defun ar/eshell-mode-hook-function ()
-    ;; Turn off semantic-mode in eshell buffers.
-    (semantic-mode -1)
-    (smartparens-strict-mode +1)
-    (eshell-smart-initialize)
-    (setq-local global-hl-line-mode nil)
-    (setq-local company-backends '((company-projectile-cd company-escaped-files)))
-    ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
-    (setq-local company-begin-commands (append company-begin-commands (list 'comint-magic-space)))
-    (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map)
-    (bind-key "<backtab>" #'company-complete eshell-mode-map)
-    (bind-key "<tab>" #'company-complete eshell-mode-map))
-
-  (add-hook #'eshell-mode-hook #'ar/eshell-mode-hook-function)
 
   (use-package ar-eshell-config
     :after validate
@@ -2975,12 +2950,11 @@ already narrowed."
   (dirs))
 
 (use-package shell
-  :commands shell-mode
-  :init
+  ;; :init
   ;; (advice-add 'shell-directory-tracker
   ;;             :override
   ;;             'ar/shell-directory-tracker)
-  (add-hook #'shell-mode-hook #'ar/shell-mode-hook-function))
+  :hook (shell-mode . ar/shell-mode-hook-function))
 
 ;; ;; comint-magic-space needs to be whitelisted to ensure we still receive company-begin events.
 ;; (add-to-list 'company-begin-commands 'comint-magic-space)
@@ -2988,12 +2962,13 @@ already narrowed."
 ;; (:map smartparens-strict-mode-map
 ;;       ("SPC" . comint-magic-space))
 
-(defun ar/term-mode-hook-function ()
-  "Called when entering term mode."
-  ;; Don't need trailing spaces highlighted in terminal.
-  (setq-local whitespace-style '(face empty tabs)))
-
-(add-hook 'term-mode-hook #'ar/term-mode-hook-function)
+(use-package term
+  :init
+  (defun ar/term-mode-hook-function ()
+    "Called when entering term mode."
+    ;; Don't need trailing spaces highlighted in terminal.
+    (setq-local whitespace-style '(face empty tabs)))
+  :hook (term-mode . ar/term-mode-hook-function))
 
 ;; From http://endlessparentheses.com/a-comment-or-uncomment-sexp-command.html
 (defun ar/uncomment-sexp (&optional n)
@@ -3167,10 +3142,10 @@ With a prefix argument N, (un)comment that many sexps."
 ;; More expected region behaviour.
 (transient-mark-mode t)
 
-;;  Make a shell script executable automatically on save.
-;;  From https://github.com/bbatsov/prelude
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
+(use-package executable
+  ;;  Make a shell script executable automatically on save.
+  ;;  From https://github.com/bbatsov/prelude
+  :hook (after-save . executable-make-buffer-file-executable-if-script-p))
 
 ;;  Automatically indent yanked code
 ;;  From http://www.emacswiki.org/emacs/AutoIndentation#toc3
@@ -3336,6 +3311,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
 (use-package writegood-mode :ensure t)
 
 (use-package flycheck :ensure t
+  :hook (after-init . global-flycheck-mode)
   :config
   ;; TODO: Ensure proselint is installed.
   ;; From http://unconj.ca/blog/linting-prose-in-emacs.html
@@ -3355,8 +3331,7 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
   ;; Override default flycheck triggers
   (validate-setq flycheck-check-syntax-automatically
                  '(save idle-change mode-enabled)
-                 flycheck-idle-change-delay 0.8)
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+                 flycheck-idle-change-delay 0.8))
 
 (use-package flycheck-inline
   :ensure t
@@ -3723,8 +3698,8 @@ _y_outube
       (smerge-mode +1))))
 
 (use-package stripe-buffer :ensure t
-  :config
-  (add-hook 'dired-mode-hook #'turn-on-stripe-buffer-mode))
+  :after dired-mode
+  :hook (dired-mode . turn-on-stripe-buffer-mode))
 
 (use-package cl
   :init
@@ -3793,9 +3768,24 @@ _y_outube
     (call-interactively 'org-insert-link)))
 
 (use-package org
+  :init
+  (defun ar/org-mode-hook-function ()
+    "Called when entering org mode."
+    (setq-local company-backends '((company-yasnippet
+                                    company-keywords
+                                    company-files
+                                    company-emoji
+                                    company-capf)))
+    (toggle-truncate-lines 0)
+    (validate-setq show-trailing-whitespace t)
+    (set-fill-column 1000)
+    (flyspell-mode +1)
+    (org-bullets-mode +1)
+    (yas-minor-mode +1)
+    (org-display-inline-images))
   :ensure t
+  :hook (org-mode . ar/org-mode-hook-function)
   :config
-  (add-hook 'org-mode-hook #'ar/org-mode-hook-function)
   (csetq org-todo-keywords
          '((sequence
             "TODO"
