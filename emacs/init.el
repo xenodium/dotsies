@@ -111,6 +111,10 @@
 
 (use-package validate :ensure t)
 
+;; Ensure window is maximized after window setup.
+(use-package maxframe :ensure t
+  :hook (window-setup . maximize-frame))
+
 ;; flet is no longer available. Use noflet as a replacement.
 (use-package noflet :ensure t)
 
@@ -208,11 +212,13 @@
   (setq midnight-mode 't)
   (setq midnight-period 7200))
 
-;; TODO: Can I rely on :after to ensure helm is installed before ar-*?
 (use-package helm
-  :demand
+  ;; Save current position to mark ring when jumping to a different place
+  :hook  (helm-goto-line-before . helm-save-current-pos-to-mark-ring)
   :ensure t
   :config
+  (use-package helm-utils)
+  (use-package helm-elisp)
   ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
   (validate-setq helm-show-completion-display-function #'helm-default-display-buffer)
   (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
@@ -293,12 +299,11 @@
   (use-package helm-config)
 
   (use-package helm-eshell
-    :after helm-files
-    :config
+    :init
     (defun helm-eshell-mode-hook-func ()
       (bind-key "M-r" #'helm-eshell-history eshell-mode-map))
-
-    (add-hook #'eshell-mode-hook #'helm-eshell-mode-hook-func))
+    :hook (eshell-mode . helm-eshell-mode-hook-func)
+    :after helm-files)
 
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
     "First time clear miniuffer. Quit thereafter."
@@ -334,8 +339,7 @@
 
 ;; make ELisp regular expressions more readable.
 (use-package easy-escape :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'easy-escape-minor-mode))
+  :hook (emacs-lisp-mode . easy-escape-minor-mode))
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
@@ -350,7 +354,8 @@
 ;;                             (?\< . ?\>)))
 
 (use-package smartparens :ensure t
-  :demand
+  ;; Add to minibuffer also.
+  :hook (minibuffer-setup . smartparens-mode)
   :config
   (require 'smartparens-config)
   (require 'smartparens-html)
@@ -368,12 +373,7 @@
         (backward-char))
       (sp-wrap-with-pair "["))
     (insert " "))
-
   (define-key smartparens-mode-map (kbd "M-]") #'ar/smartparens-wrap-square-bracket)
-
-  ;; Add to minibuffer also.
-  (add-hook 'minibuffer-setup-hook 'smartparens-mode)
-
   :bind
   (:map smartparens-strict-mode-map
         ("C-c <right>" . sp-forward-slurp-sexp)
@@ -515,14 +515,13 @@
 ;; Easy access to links in buffer (using avy).
 (use-package link-hint :ensure t)
 
-(defun ar/bazel-mode-hook-fun ()
-  (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
-  (setq-local company-backends '(company-bazel company-rfiles)))
-
 (use-package bazel-mode
+  :init
+  (defun ar/bazel-mode-hook-fun ()
+    (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
+    (setq-local company-backends '(company-bazel company-rfiles)))
   :after company-grep
-  :config
-  (add-hook 'bazel-mode-hook #'ar/bazel-mode-hook-fun))
+  :hook (bazel-mode . ar/bazel-mode-hook-fun))
 
 (use-package use-host-package
   :config
@@ -708,7 +707,7 @@ Values between 0 - 100."
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
 (use-package py-yapf :ensure t
-  :commands (py-yapf-enable-on-save)
+  :hook (python-mode . py-yapf-enable-on-save)
   :config
   (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
@@ -750,7 +749,7 @@ Values between 0 - 100."
   (dired-mark-files-regexp ""))
 
 (use-package dired
-  :after (discover fullframe helm)
+  :hook (dired-mode . dired-hide-details-mode)
   :commands dired-mode
   :config
   ;; For dired-jump.
@@ -763,9 +762,6 @@ Values between 0 - 100."
   (put 'dired-find-alternate-file 'disabled nil)
   ;; Automatically refresh dired buffers when contents changes.
   (validate-setq dired-auto-revert-buffer t)
-  (add-hook 'dired-mode-hook 'discover-mode)
-  ;; Hide dired details by default.
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   :bind (:map global-map
               ("C-l". dired-jump))
   :bind (:map dired-mode-map
@@ -775,7 +771,6 @@ Values between 0 - 100."
               ("^" . ar/file-find-alternate-parent-dir)
               ("RET" . dired-find-file)
               ("P" . peep-dired)
-              ("f" . helm-find-files)
               ("i" . dired-hide-details-mode)
               ("C-l". dired-jump)
               ("M" . ar/dired-mark-all)))
@@ -805,10 +800,9 @@ Values between 0 - 100."
 (bind-key "<C-M-backspace>" #'ar/join-previous-sexp)
 
 (use-package with-editor :ensure t
-  :config
-  (add-hook 'eshell-mode-hook 'with-editor-export-editor)
-  (add-hook 'term-exec-hook   'with-editor-export-editor)
-  (add-hook 'shell-mode-hook  'with-editor-export-editor))
+  :hook ((eshell-mode . with-editor-export-editor)
+         (term-exec . with-editor-export-editor)
+         (shell-mode . with-editor-export-editor)))
 
 (use-package fullframe :ensure t
   :commands (fullframe)
@@ -869,8 +863,7 @@ Values between 0 - 100."
   ;; Make Emacs more discoverable (Handy for dired-mode). Trigger with '?'.
   ;; From http://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
   (use-package discover :ensure t
-    :demand
-    :commands (discover-mode)))
+    :hook (dired-mode . discover-mode)))
 
 ;; Disabling while trying out spaceline.
 ;; (defun ar/setup-graphical-mode-line ()
@@ -902,10 +895,6 @@ Values between 0 - 100."
   (validate-setq mode-line-end-spaces
                  (list (propertize " " 'display '(space :align-to (- right 17)))
                        'display-time-string)))
-
-;; Ensure window is maximized.
-(use-package maxframe :ensure t)
-(add-hook 'window-setup-hook 'maximize-frame t)
 
 (defun ar/open-youtube-url (url)
   "Download and open youtube URL."
@@ -957,12 +946,20 @@ Values between 0 - 100."
 ;;               ("i" . ar/god-mode-local-disable)))
 
 (use-package elfeed :ensure t
+  :after centered-cursor-mode
+  :config
+  (defun ar/elfeed-set-style ()
+    ;; Separate elfeed lines for readability.
+    (validate-setq line-spacing 25))
+  :hook ((elfeed-search-mode . centered-cursor-mode)
+         (elfeed-search-mode . ar/elfeed-set-style))
   :config
   (defun ar/elfeed-open-youtube-video ()
     (interactive)
     (let ((link (elfeed-entry-link elfeed-show-entry)))
       (when link
         (ar/open-youtube-url link))))
+
   (validate-setq elfeed-feeds
                  '(
                    ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
@@ -1030,11 +1027,6 @@ Values between 0 - 100."
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
                    ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ))
-  (defun ar/elfeed-set-style ()
-    ;; Separate elfeed lines for readability.
-    (validate-setq line-spacing 25))
-  (add-hook 'elfeed-search-mode-hook #'centered-cursor-mode)
-  (add-hook 'elfeed-search-mode-hook #'ar/elfeed-set-style)
 
   (defun ar/elfeed-view-filtered (filter)
     "Filter the elfeed-search buffer to show feeds tagged with FILTER."
@@ -1287,9 +1279,6 @@ With argument ARG, do this that many times."
 
 (bind-key "C-z" #'ar/dired-split-downloads-to-current)
 
-;; Save current position to mark ring when jumping to a different place
-(add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
-
 ;; Calendar client.
 (use-package calfw :ensure t)
 
@@ -1329,21 +1318,45 @@ Optional argument NON-RECURSIVE to shallow-search."
 
 ;; Best way (so far) to search for files in repo.
 (use-package helm-projectile :ensure t
-  :demand
   :bind ("C-x f" . helm-projectile))
 
 (use-package ediff
+  :init
+  ;; ediff-revision cleanup.
+  ;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
+  (defvar ar/ediff-bwin-config nil
+    "Window configuration before ediff.")
+
+  (defvar ar/ediff-bwin-reg ?b
+    "Register to be set up to hold ar/ediff-bwin-config configuration.")
+
+  (defun ar/ediff-bsh ()
+    "Function to be called before any buffers or window setup for ediff."
+    (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
+    (window-configuration-to-register ar/ediff-bwin-reg))
+
+  (defun ar/ediff-aswh ()
+    "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
+    (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess))
+
+  (defun ar/ediff-qh ()
+    "Function to be called when ediff quits."
+    (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
+    (ediff-cleanup-mess)
+    (jump-to-register ar/ediff-bwin-reg))
+  ;; Automatically highlight first change.
+  :hook ((ediff-startup . ediff-next-difference)
+         (ediff-before-setup . ar/ediff-bsh)
+         (ediff-after-setup-windows . ar/ediff-aswh);
+         (ediff-quit . ar/ediff-qh))
   :config
   (csetq ediff-window-setup-function #'ediff-setup-windows-plain)
   (csetq ediff-split-window-function #'split-window-horizontally)
 
-  ;; Automatically highlight first change.
-  (add-hook 'ediff-startup-hook 'ediff-next-difference)
-
   (use-package outline
-    :config
+    :after outline
     ;; Ensure ediff expands org files.
-    (add-hook 'ediff-prepare-buffer-hook #'outline-show-all))
+    :hook (ediff-prepare-buffer . outline-show-all))
 
   ;; Expand org files when ediffing.
   (add-hook 'ediff-prepare-buffer-hook
@@ -1411,34 +1424,10 @@ Else call `ediff-buffers'."
        (t
         (call-interactively #'ediff-buffers))))))
 
-;; ediff-revision cleanup.
-;; From http://www.emacswiki.org/emacs/DavidBoon#toc8
-(defvar ar/ediff-bwin-config nil
-  "Window configuration before ediff.")
-
-(defvar ar/ediff-bwin-reg ?b
-  "Register to be set up to hold ar/ediff-bwin-config configuration.")
-
-(defun ar/ediff-bsh ()
-  "Function to be called before any buffers or window setup for ediff."
-  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
-  (window-configuration-to-register ar/ediff-bwin-reg))
-
-(defun ar/ediff-aswh ()
-  "Setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
-  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess))
-
-(defun ar/ediff-qh ()
-  "Function to be called when ediff quits."
-  (remove-hook 'ediff-quit-hook #'ediff-cleanup-mess)
-  (ediff-cleanup-mess)
-  (jump-to-register ar/ediff-bwin-reg))
-
-(add-hook 'ediff-before-setup-hook #'ar/ediff-bsh)
-(add-hook 'ediff-after-setup-windows-hook #'ar/ediff-aswh);
-(add-hook 'ediff-quit-hook #'ar/ediff-qh)
-
 (use-package whitespace
+  ;; Automatically remove whitespace on saving.
+  :hook ((before-save . whitespace-cleanup)
+         (prog-mode . whitespace-mode))
   :config
   ;; When nil, fill-column is used instead.
   (validate-setq whitespace-line-column nil)
@@ -1447,10 +1436,7 @@ Else call `ediff-buffers'."
   (validate-setq whitespace-style '(face empty tabs lines-tail trailing))
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
-                      :background "default")
-  ;; Automatically remove whitespace on saving.
-  (add-hook 'before-save-hook 'whitespace-cleanup)
-  (add-hook 'prog-mode-hook 'whitespace-mode))
+                      :background "default"))
 
 (defun ar/compile-autoclose (buffer string)
   "Hide successful builds window with BUFFER and STRING."
@@ -1547,8 +1533,7 @@ Else call `ediff-buffers'."
 
 ;; Highlights current line.
 (use-package hl-line :ensure t
-  :config
-  (add-hook 'prog-mode-hook 'hl-line-mode))
+  :hook (prog-mode . hl-line-mode))
 
 ;; Momentarily highlights cursor on scrolling events.
 ;; Disabling. Not needed when using hl-line.
@@ -1758,10 +1743,11 @@ Position the cursor at it's beginning, according to the current mode."
   (forward-line -1)
   (indent-according-to-mode))
 
-;; Do not auto indent current line when pressing <RET>.
-(add-hook 'sgml-mode-hook
-          (lambda() (local-set-key (kbd "<RET>")
-                              #'electric-indent-just-newline)))
+(use-package sgml-mode
+  :after electric
+  :bind (:map sgml-mode-map
+              ;; Do not auto indent current line when pressing <RET>.
+              ("<RET>" . electric-indent-just-newline)))
 
 (defun ar/smart-open-line (arg)
   "Insert an empty line after the current line.
@@ -1852,9 +1838,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package clang-format :ensure t)
 
 (use-package swift-mode :ensure t
-  :after company-sourcekit
-  :after flycheck
-  :config
+  :init
   (defun ar/swift-mode-hook-function ()
     "Called when entering `swift-mode'."
     (add-to-list 'flycheck-checkers 'swiftlint)
@@ -1880,7 +1864,10 @@ Repeated invocations toggle between the two most recently open buffers."
                                     company-capf)))
 
     (add-hook 'after-save-hook 'ar/--after-swift-save nil t))
-  (add-hook 'swift-mode-hook #'ar/swift-mode-hook-function)
+  :hook (swift-mode . ar/swift-mode-hook-function)
+  :after company-sourcekit
+  :after flycheck
+  :config
   (csetq swift-mode:basic-offset 2))
 
 (use-package lua-mode :ensure t)
@@ -2171,9 +2158,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package company-anaconda :ensure t)
 
-(use-package python-docstring :ensure t
-  :commands (python-docstring-mode))
-
 ;; View, browse, rotate, manipulate images with picpocket.
 (use-package picpocket :ensure t)
 
@@ -2319,13 +2303,16 @@ already narrowed."
 ;;   (setq-local company-backends '(company-anaconda))
 ;;   (py-yapf-enable-on-save))
 
-(defun ar/python-mode-hook-function ()
-  "Called when entering `python-mode'."
-  (validate-setq python-indent-offset 2)
-  (validate-setq python-indent-guess-indent-offset nil)
-  (python-docstring-mode +1)
-  (py-yapf-enable-on-save))
-(add-hook 'python-mode-hook #'ar/python-mode-hook-function)
+(use-package python-docstring :ensure t
+  :hook (python-mode . python-docstring-mode))
+
+(use-package python
+  :init
+  (defun ar/python-mode-hook-function ()
+    "Called when entering `python-mode'."
+    (validate-setq python-indent-offset 2)
+    (validate-setq python-indent-guess-indent-offset nil))
+  :hook (python-mode . ar/python-mode-hook-function))
 
 (use-package objc-font-lock
   :ensure t
@@ -2573,23 +2560,23 @@ already narrowed."
                    "--trailing-comma" "all"
                    )))
 
-(defun ar/setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (prettier-js-mode +1)
-  (setq-local company-backends '(company-tide
-                                 (company-dabbrev-code
-                                  company-gtags
-                                  company-etags
-                                  company-keywords)
-                                 company-files
-                                 company-dabbrev))
-  (company-mode +1))
-
 (use-package tide :ensure t
+  :init
+  (defun ar/setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (validate-setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (prettier-js-mode +1)
+    (setq-local company-backends '(company-tide
+                                   (company-dabbrev-code
+                                    company-gtags
+                                    company-etags
+                                    company-keywords)
+                                   company-files
+                                   company-dabbrev))
+    (company-mode +1))
   :after web-mode
   :config
   (add-hook 'js2-mode-hook #'ar/setup-tide-mode)
