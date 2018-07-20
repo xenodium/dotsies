@@ -118,7 +118,7 @@
 ;; flet is no longer available. Use noflet as a replacement.
 (use-package noflet :ensure t)
 
-(use-package async :ensure t :demand
+(use-package async :ensure t
   :config
   (dired-async-mode +1)
   (async-bytecomp-package-mode +1))
@@ -441,7 +441,6 @@
 (use-package ar-helm-url
   :after helm)
 (use-package ar-helm-hotspots-config
-  :demand
   :after (f helm-buffers)
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
@@ -516,6 +515,7 @@
 (use-package link-hint :ensure t)
 
 (use-package bazel-mode
+  :mode ("BUILD\\'" . bazel-mode)
   :init
   (defun ar/bazel-mode-hook-fun ()
     (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
@@ -531,7 +531,7 @@
                    "apt-get install")))
 
 (use-package last-change-jump
-  :demand ;; No lazy loading. We want global mode started ASAP.
+  :defer t ;; We want this global mode started soon after init.
   :config
   (global-last-change-jump-mode +1)
   :bind ("C-c `" . last-change-jump))
@@ -3132,7 +3132,6 @@ With a prefix argument N, (un)comment that many sexps."
          ("C-h w" . helm-descbinds)))
 
 (use-package auto-compile :ensure t
-  :demand
   :config
   (auto-compile-on-load-mode +1)
   (auto-compile-on-save-mode +1))
