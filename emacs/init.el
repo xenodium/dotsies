@@ -124,6 +124,7 @@
   (async-bytecomp-package-mode +1))
 
 (use-package beginend :ensure t
+  :defer t
   :config
   (beginend-global-mode))
 
@@ -413,8 +414,6 @@
 
 (use-package color-picker)
 (use-package scimax-string)
-(use-package url)
-(use-package url-http)
 (use-package ar-assert)
 (use-package ar-string)
 (use-package ar-buffer)
@@ -436,8 +435,8 @@
 (use-package ar-helm-org
   :after (helm helm-org org))
 (use-package ar-helm-shell
-  :config
-  (bind-key "M-r" #'ar/helm-shell-search-history shell-mode-map))
+  :bind (:map shell-mode-map
+              ("M-r" . ar/helm-shell-search-history)))
 (use-package ar-helm-url
   :after helm)
 (use-package ar-helm-hotspots-config
@@ -512,7 +511,8 @@
 (use-package modal-ivy :after ivy)
 
 ;; Easy access to links in buffer (using avy).
-(use-package link-hint :ensure t)
+(use-package link-hint :ensure t
+  :commands (link-hint-open-link))
 
 (use-package bazel-mode
   :mode ("BUILD\\'" . bazel-mode)
@@ -577,62 +577,64 @@
 
 (defun ar/setup-graphical-mode-line ()
   "Set up graphical mode line."
-  (use-package spaceline :ensure t
-    :config
-    (use-package spaceline-config
-      :config
-      (when (ar/osx-p)
-        ;; OS X color glitches workaround.
-        ;; https://github.com/syl20bnr/spacemacs/issues/4426
-        (validate-setq ns-use-srgb-colorspace nil))
-      (spaceline-toggle-minor-modes-off)
-      (spaceline-toggle-buffer-encoding-off)
-      (spaceline-toggle-buffer-encoding-abbrev-off)
-      (spaceline-toggle-buffer-position-off)
-      (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      (spaceline-define-segment time
-        "The current time."
-        (format-time-string "%H:%M"))
-      (spaceline-define-segment date
-        "The current date."
-        (format-time-string "%h %d"))
-      (spaceline-define-segment padding
-        "Padding at end of line."
-        "  ")
-      (spaceline-spacemacs-theme 'date 'time 'padding)
-      (validate-setq powerline-default-separator 'arrow)
-      (set-face-attribute 'helm-candidate-number nil
-                          :foreground nil
-                          :background nil)
-      (set-face-attribute 'spaceline-highlight-face nil
-                          :foreground "#525086"
-                          :background nil)
-      (set-face-attribute 'mode-line nil
-                          :background nil
-                          :foreground nil
-                          :box nil)
-      (set-face-attribute 'mode-line-buffer-id nil
-                          :background nil
-                          :foreground nil)
-      (set-face-attribute 'powerline-active1 nil
-                          :background "#262525"
-                          :foreground "#ffffff"
-                          :box nil)
-      (set-face-attribute 'powerline-active2 nil
-                          :background nil
-                          :foreground "#ffffff"
-                          :box nil)
-      (set-face-attribute 'powerline-inactive1 nil
-                          :background nil
-                          :foreground nil
-                          :box nil)
-      (set-face-attribute 'powerline-inactive2 nil
-                          :background nil
-                          :box nil)
-      (set-face-attribute 'mode-line-inactive nil
-                          :background nil
-                          :box nil)
-      (spaceline-compile))))
+  ;; Disabling.
+  ;; (use-package spaceline :ensure t
+  ;;   :config
+  ;;   (use-package spaceline-config
+  ;;     :config
+  ;;     (when (ar/osx-p)
+  ;;       ;; OS X color glitches workaround.
+  ;;       ;; https://github.com/syl20bnr/spacemacs/issues/4426
+  ;;       (validate-setq ns-use-srgb-colorspace nil))
+  ;;     (spaceline-toggle-minor-modes-off)
+  ;;     (spaceline-toggle-buffer-encoding-off)
+  ;;     (spaceline-toggle-buffer-encoding-abbrev-off)
+  ;;     (spaceline-toggle-buffer-position-off)
+  ;;     (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+  ;;     (spaceline-define-segment time
+  ;;       "The current time."
+  ;;       (format-time-string "%H:%M"))
+  ;;     (spaceline-define-segment date
+  ;;       "The current date."
+  ;;       (format-time-string "%h %d"))
+  ;;     (spaceline-define-segment padding
+  ;;       "Padding at end of line."
+  ;;       "  ")
+  ;;     (spaceline-spacemacs-theme 'date 'time 'padding)
+  ;;     (validate-setq powerline-default-separator 'arrow)
+  ;;     (set-face-attribute 'helm-candidate-number nil
+  ;;                         :foreground nil
+  ;;                         :background nil)
+  ;;     (set-face-attribute 'spaceline-highlight-face nil
+  ;;                         :foreground "#525086"
+  ;;                         :background nil)
+  ;;     (set-face-attribute 'mode-line nil
+  ;;                         :background nil
+  ;;                         :foreground nil
+  ;;                         :box nil)
+  ;;     (set-face-attribute 'mode-line-buffer-id nil
+  ;;                         :background nil
+  ;;                         :foreground nil)
+  ;;     (set-face-attribute 'powerline-active1 nil
+  ;;                         :background "#262525"
+  ;;                         :foreground "#ffffff"
+  ;;                         :box nil)
+  ;;     (set-face-attribute 'powerline-active2 nil
+  ;;                         :background nil
+  ;;                         :foreground "#ffffff"
+  ;;                         :box nil)
+  ;;     (set-face-attribute 'powerline-inactive1 nil
+  ;;                         :background nil
+  ;;                         :foreground nil
+  ;;                         :box nil)
+  ;;     (set-face-attribute 'powerline-inactive2 nil
+  ;;                         :background nil
+  ;;                         :box nil)
+  ;;     (set-face-attribute 'mode-line-inactive nil
+  ;;                         :background nil
+  ;;                         :box nil)
+  ;;     (spaceline-compile)))
+  )
 
 (defun ar/mode-icons-supported-p-advice-fun (orig-fun &rest r)
   "`mode-icons-supported-p' is expensive. Cache it."
@@ -662,7 +664,9 @@
   (setenv "TMPDIR" "/tmp")
   (validate-setq tramp-default-method "ssh"))
 
-(use-package helm-tramp :ensure t)
+(use-package helm-tramp :ensure t
+  :commands (helm-tramp))
+
 (defalias 'ar/exit-tramp 'tramp-cleanup-all-buffers)
 
 ;; Based on http://www.pygopar.com/setting-emacs-transparency
@@ -711,9 +715,6 @@ Values between 0 - 100."
   :config
   (validate-setq py-yapf-options '("--style={based_on_style: google, indent_width: 2}")))
 
-(use-package helm-codesearch :ensure t)
-
-;; Stucture and Interpretation of Computer Progams in info format.
 (use-package sicp :ensure t)
 
 (defun ar/format-info-mode ()
@@ -726,7 +727,8 @@ Values between 0 - 100."
 (use-package helm-pydoc :ensure t
   :commands (helm-pydoc))
 
-(use-package helm-describe-modes :ensure t)
+(use-package helm-describe-modes :ensure t
+  :commands (helm-describe-modes))
 
 ;; Needs:
 ;;   brew install Caskroom/cask/xquartz
@@ -763,7 +765,7 @@ Values between 0 - 100."
   ;; Automatically refresh dired buffers when contents changes.
   (validate-setq dired-auto-revert-buffer t)
   :bind (:map global-map
-              ("C-l". dired-jump))
+              ("C-l" . dired-jump))
   :bind (:map dired-mode-map
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
@@ -782,14 +784,13 @@ Values between 0 - 100."
 
 (use-package peep-dired
   :ensure t
-  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
   :bind (:map dired-mode-map
               ("P" . peep-dired)))
 
 (use-package dired-subtree :ensure t
-  :config
-  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)
+              ("<backtab>" . dired-subtree-cycle)))
 
 (defun ar/join-previous-sexp ()
   (interactive)
@@ -1055,10 +1056,12 @@ Values between 0 - 100."
   (elfeed-goodies/setup))
 
 ;; Suggests elisp methods based on inputs and outputs.
-(use-package suggest :ensure t)
+(use-package suggest :ensure t
+  :commands (suggest))
 
 ;; Semantic code search for emacs lisp.
-(use-package elisp-refs :ensure t)
+(use-package elisp-refs :ensure t
+  :mode ("\\.el\\'" . emacs-lisp-mode))
 
 ;; Start off with elfeed.
 
