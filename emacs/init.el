@@ -3897,9 +3897,8 @@ _y_outube
   (validate-setq ns-use-srgb-colorspace nil)
   (validate-setq x-underline-at-descent-line t)
   (setq-default mode-line-format
-                '(""
+                '(" "
                   mode-line-front-space
-                  mode-line-mule-info
                   mode-line-client
                   mode-line-frame-identification
                   mode-line-buffer-identification " " mode-line-position
