@@ -140,7 +140,14 @@
 
 (use-package base16-theme :ensure t
   :config
-  (load-theme 'base16-atelier-heath t))
+  (load-theme 'base16-atelier-heath t)
+  (let ((line (face-attribute 'mode-line :underline)))
+    (set-face-attribute 'mode-line          nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :underline  line)
+    (set-face-attribute 'mode-line          nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :background "#695d69")))
 
 ;; (use-package danneskjold-theme :ensure t)
 ;; (use-package molokai-theme :ensure t)
@@ -449,9 +456,6 @@
 (use-package ar-ios-sim
   :after f dash)
 (use-package ar-linux)
-;; TODO: Migrate to a config module.
-(use-package ar-mode-line
-  :demand)
 (use-package ar-objc
   :commands (ar/objc-import
              ar/objc-include))
@@ -1125,7 +1129,6 @@ Values between 0 - 100."
   ;; Be quiet about dired refresh.
   (csetq auto-revert-verbose nil)
   (global-auto-revert-mode))
-
 
 ;; Let auto-revert-mode update vc/git info.
 ;; Need it for mode-line-format to stay up to date.
@@ -3782,7 +3785,6 @@ _y_outube
     (validate-setq show-trailing-whitespace t)
     (set-fill-column 1000)
     (flyspell-mode +1)
-    (org-bullets-mode +1)
     (yas-minor-mode +1)
     (org-display-inline-images))
   :ensure t
@@ -3874,7 +3876,9 @@ _y_outube
                                 '(org-block ((t (:background "#202020"))))
                                 '(org-block-end-line ((t (:overline nil :foreground "#008ED1" :background nil))))
                                 )))))
+
 (use-package org-bullets :ensure t
+  :hook (org-mode . org-bullets-mode)
   :config
   (validate-setq org-bullets-bullet-list
                  '("◉" "◎" "⚫" "○" "►" "◇")))
@@ -3885,6 +3889,30 @@ _y_outube
   (interactive)
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
+
+(use-package moody
+  :ensure t
+  :config
+  ;; Fixes mode line separator issues.
+  (validate-setq ns-use-srgb-colorspace nil)
+  (validate-setq x-underline-at-descent-line t)
+  (setq-default mode-line-format
+                '(""
+                  mode-line-front-space
+                  mode-line-mule-info
+                  mode-line-client
+                  mode-line-frame-identification
+                  mode-line-buffer-identification " " mode-line-position
+                  (vc-mode vc-mode)
+                  (multiple-cursors-mode mc/mode-line)
+                  " " mode-line-modes
+                  mode-line-end-spaces))
+  (use-package minions
+    :ensure t
+    :config
+    (minions-mode +1))
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
 
 ;; Wonderful weather forecast.
 ;; Disabling (needs login now).
