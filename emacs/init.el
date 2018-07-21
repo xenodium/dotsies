@@ -987,6 +987,7 @@ Values between 0 - 100."
                    ("http://sdegutis.com/blog/atom.xml" blog tech StevenDegutis)
                    ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
                    ("http://www.brool.com/index.xml" blog emacs Brool)
+                   ("http://www.gonsie.com/blorg/feed.xml" blog emacs dev)
                    ("http://www.ict4g.net/adolfo/feed.xml" blog tech dev Adolfo)
                    ("http://www.modernemacs.com/index.xml" blog emacs tech ModernEmacs)
                    ("http://www.sastibe.de/index.xml" blog emacs SebastianSchweer)
