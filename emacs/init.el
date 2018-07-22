@@ -348,6 +348,7 @@
 ;; make ELisp regular expressions more readable.
 (use-package easy-escape :ensure t
   :hook (emacs-lisp-mode . easy-escape-minor-mode)
+  :config
   ;; TODO: Figure out why face foreground isn't displayed.
   (set-face-attribute 'easy-escape-face nil :foreground "red")
   (validate-setq easy-escape-character ?⑊))
