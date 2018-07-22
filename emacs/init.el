@@ -347,7 +347,10 @@
 
 ;; make ELisp regular expressions more readable.
 (use-package easy-escape :ensure t
-  :hook (emacs-lisp-mode . easy-escape-minor-mode))
+  :hook (emacs-lisp-mode . easy-escape-minor-mode)
+  ;; TODO: Figure out why face foreground isn't displayed.
+  (set-face-attribute 'easy-escape-face nil :foreground "red")
+  (validate-setq easy-escape-character ?⑊))
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
@@ -1091,13 +1094,12 @@ Values between 0 - 100."
 (bind-key "C-+" #'text-scale-increase)
 (bind-key "C--" #'text-scale-decrease)
 
-(use-package hackernews :ensure t)
+(use-package hackernews :ensure t
+  :commands hackernews)
 
 ;; Stack Exchange viewer.
-(use-package sx :ensure t)
-
-;; Search StackOverflow snippets.
-(use-package howdoi :ensure t)
+(use-package sx :ensure t
+  :commands sx-search)
 
 (use-package which-key :ensure t
   :config (which-key-mode))
@@ -1105,7 +1107,8 @@ Values between 0 - 100."
 ;; Twitter.
 (use-package twittering-mode :ensure t)
 
-(use-package rainbow-delimiters :ensure t)
+(use-package rainbow-delimiters :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package hungry-delete :ensure t
   :config (global-hungry-delete-mode))
@@ -1151,35 +1154,28 @@ Values between 0 - 100."
   :bind ("C-c w" . er/expand-region))
 
 ;; Visual feedback for query-replace, replace, and multiple cursors.
-(use-package visual-regexp :ensure t)
-
-(use-package replace-pairs :ensure t)
-
-(use-package easy-escape :ensure t
-  :config
-  ;; TODO: Figure out why face foreground isn't displayed.
-  (set-face-attribute 'easy-escape-face nil :foreground "red")
-  (validate-setq easy-escape-character ?⑊))
+(use-package visual-regexp :ensure t
+  :commands (vr/mc-mark vr/query-replace vr/replace))
 
 (use-package yasnippet :ensure t
+  :hook ((org-mode . yas-minor-mode)
+         (prog-mode . yas-minor-mode))
   :config
+  (use-package yasnippet-snippets :ensure t)
   (validate-setq yas-indent-line 'fixed)
   (validate-setq yas-snippet-dirs
                  '("~/.emacs.d/yasnippets/personal"
                    "~/.emacs.d/yasnippets/yasnippet-snippets"))
-  (yas-reload-all))
+  (yas-reload-all)
+  (use-package ivy :ensure t)
 
-(use-package yasnippet-snippets :ensure t)
+  ;; Display's yasnippet previous inline when cycling through results.
+  (use-package ivy-yasnippet :ensure t)
 
-(use-package ivy :ensure t)
-
-;; Display's yasnippet previous inline when cycling through results.
-(use-package ivy-yasnippet :ensure t)
-
-;; Use aya-create and aya-expand to
-;; Create a throw-away yasnippet for say:
-;; This is the ~rhythm of the ~night
-(use-package auto-yasnippet :ensure t)
+  ;; Use aya-create and aya-expand to
+  ;; Create a throw-away yasnippet for say:
+  ;; This is the ~rhythm of the ~night
+  (use-package auto-yasnippet :ensure t))
 
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
@@ -1211,6 +1207,7 @@ Values between 0 - 100."
   (save-place-mode))
 
 (use-package helm-dash :ensure t
+  :commands (helm-dash)
   :config
   ;; View documentation in external browser.
   ;; (validate-setq helm-dash-browser-func #'browse-url)
@@ -1287,7 +1284,8 @@ With argument ARG, do this that many times."
 (bind-key "C-z" #'ar/dired-split-downloads-to-current)
 
 ;; Calendar client.
-(use-package calfw :ensure t)
+;; Disabling. Not using.
+;; (use-package calfw :ensure t)
 
 (defun ar/helm-do-grep-recursive (&optional non-recursive)
   "Like `helm-do-grep', but greps recursively by default.
@@ -1824,8 +1822,9 @@ With a prefix ARG open line above the current line."
 
 (use-package avy :ensure t
   :after key-chord
-  :config
+  :init
   (key-chord-define-global "jj" #'avy-goto-char-2)
+  :commands (avy-goto-char-2)
   :bind (("M-s" . avy-goto-word-1)))
 
 ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
@@ -2773,7 +2772,6 @@ already narrowed."
   ;; Spellcheck comments and documentation
   ;; From http://mwolson.org/projects/emacs-config/init.el.html
   (flyspell-prog-mode)
-  (rainbow-delimiters-mode)
   ;;(hl-line-mode)
   (rainbow-mode)
   (centered-cursor-mode)
@@ -2782,7 +2780,7 @@ already narrowed."
   ;; #slow
   ;; (turn-on-fci-mode)
   ;; (ar/company-fci-workaround)
-  (yas-minor-mode +1))
+  )
 
 (defun ar/markdown-mode-hook-function ()
   "Called when entering `markdown-mode'."
@@ -3785,7 +3783,6 @@ _y_outube
     (validate-setq show-trailing-whitespace t)
     (set-fill-column 1000)
     (flyspell-mode +1)
-    (yas-minor-mode +1)
     (org-display-inline-images))
   :ensure t
   :hook (org-mode . ar/org-mode-hook-function)
