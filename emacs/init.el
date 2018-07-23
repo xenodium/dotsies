@@ -971,7 +971,7 @@ Values between 0 - 100."
 
   (validate-setq elfeed-feeds
                  '(
-                   ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
+                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                    ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
                    ("http://blog.davep.org/feed.xml" blog emacs tech davep)
                    ("http://blog.josephholsten.com/feed.xml" blog hammerspoon tech Libera-Ideoj)
@@ -1030,12 +1030,13 @@ Values between 0 - 100."
                    ("https://webgefrickel.de/blog/feed" blog tech dev SteffenRademacker)
                    ("https://wincent.com/blog.rss" blog tech dev wincent)
                    ("https://writequit.org/posts.xml" blog tech emacs writequit)
+                   ("https://www.bytedude.com/feed.xml" blog emacs MarcinS)
                    ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
                    ("https://www.johndcook.com/blog/comments/feed" blog emacs JohnDCook)
                    ("https://www.ogre.com/blog/feed" blog dev Ogre)
                    ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                    ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
-                   ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
+                   ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
                    ))
 
   (defun ar/elfeed-view-filtered (filter)
@@ -3968,6 +3969,7 @@ line instead."
   (next-line))
 
 (use-package simple
+  :hook (org-mode . visual-line-mode)
   :config
   ;; Don't bother saving things to the kill-ring twice, remove duplicates.
   (csetq kill-do-not-save-duplicates t)
