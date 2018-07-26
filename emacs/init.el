@@ -657,11 +657,12 @@
   :config
   (nyan-mode +1))
 
-(use-package fontawesome :ensure t
-  :after ar-font
-  :defer 10
-  :config
-  (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
+;; Disabling. Not used.
+;; (use-package fontawesome :ensure t
+;;   :after ar-font
+;;   :defer 10
+;;   :config
+;;   (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
 
 ;; Disabling for now.
 ;; (use-package all-the-icons :ensure t
