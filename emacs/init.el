@@ -214,7 +214,6 @@
   :hook  (helm-goto-line-before . helm-save-current-pos-to-mark-ring)
   :ensure t
   :config
-  (message "hello helm")
   (use-package helm-utils)
   (use-package helm-elisp)
   ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
@@ -226,10 +225,12 @@
   (validate-setq helm-candidate-number-limit 200)
 
   (use-package helm-net
+    :defer t
     :config
     (validate-setq helm-net-prefer-curl t))
 
   (use-package helm-imenu
+    :defer t
     :config
     (use-package imenu
       :config
@@ -238,11 +239,14 @@
     (use-package imenu-anywhere :ensure t))
 
   ;; Switch major modes and toggle minor modes.
-  (use-package helm-source)
+  (use-package helm-source
+    :defer t)
 
-  (use-package helm-mode-manager :ensure t)
+  (use-package helm-mode-manager :ensure t
+    :defer t)
 
   (use-package helm-ag :ensure t
+    :defer t
     :config
     (defun ar/helm-ag-insert (arg)
       ;; Helm-ag and insert match.
@@ -339,6 +343,46 @@
   (use-package helm-c-yasnippet
     :defer t
     :ensure t)
+
+  (use-package helm-make :ensure t
+    :defer t)
+
+  (use-package helm-company :ensure t
+    :defer t)
+
+  ;; Best way (so far) to search for files in repo.
+  (use-package helm-projectile :ensure t
+    :bind ("C-x f" . helm-projectile))
+
+  (use-package helm-gtags
+    :defer t
+    :ensure t
+    :config
+    (helm-gtags-mode +1))
+
+  (use-package helm-dash :ensure t
+    :commands (helm-dash)
+    :config
+    ;; View documentation in external browser.
+    ;; (validate-setq helm-dash-browser-func #'browse-url)
+    ;; View documentation in ewww.
+    (validate-setq helm-dash-browser-func #'eww))
+
+  (use-package helm-pydoc :ensure t
+    :commands (helm-pydoc))
+
+  (use-package helm-describe-modes :ensure t
+    :commands (helm-describe-modes))
+
+  (use-package helm-tramp :ensure t
+    :commands (helm-tramp))
+
+  (use-package helm-descbinds :ensure
+    :bind (("C-h b" . helm-descbinds)
+           ("C-h w" . helm-descbinds)))
+
+  (use-package helm-xcdoc :ensure t
+    :defer t)
 
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
@@ -656,9 +700,6 @@
   (validate-setq tramp-default-method "ssh")
   (defalias 'ar/exit-tramp 'tramp-cleanup-all-buffers))
 
-(use-package helm-tramp :ensure t
-  :commands (helm-tramp))
-
 (when (display-graphic-p)
   ;; Enable if you'd like to start as fullscreen.
   ;; (set-frame-parameter nil 'fullscreen 'fullboth)
@@ -702,12 +743,6 @@
   (let ((file-name (buffer-file-name)))
     (kill-buffer (current-buffer))
     (info file-name)))
-
-(use-package helm-pydoc :ensure t
-  :commands (helm-pydoc))
-
-(use-package helm-describe-modes :ensure t
-  :commands (helm-describe-modes))
 
 ;; Needs:
 ;;   brew install Caskroom/cask/xquartz
@@ -1136,14 +1171,6 @@
                                                    user-emacs-directory))
   (save-place-mode))
 
-(use-package helm-dash :ensure t
-  :commands (helm-dash)
-  :config
-  ;; View documentation in external browser.
-  ;; (validate-setq helm-dash-browser-func #'browse-url)
-  ;; View documentation in ewww.
-  (validate-setq helm-dash-browser-func #'eww))
-
 (defun ar/projectile-helm-ag ()
   "Search current repo/project using ag."
   (interactive)
@@ -1247,10 +1274,6 @@ Optional argument NON-RECURSIVE to shallow-search."
 ;; brew install global --with-exuberant-ctags
 ;; http://writequit.org/org/settings.html#sec-1-26
 (use-package ggtags :ensure t)
-(use-package helm-gtags
-  :ensure t
-  :config
-  (helm-gtags-mode +1))
 
 (use-package projectile-sift :ensure t
   :config
@@ -1261,10 +1284,6 @@ Optional argument NON-RECURSIVE to shallow-search."
   :config
   (validate-setq projectile-enable-caching t)
   (projectile-mode))
-
-;; Best way (so far) to search for files in repo.
-(use-package helm-projectile :ensure t
-  :bind ("C-x f" . helm-projectile))
 
 (use-package ediff
   :init
@@ -1830,8 +1849,6 @@ Repeated invocations toggle between the two most recently open buffers."
         ("C-n" . company-select-next)
         ("C-p" . company-select-previous)))
 
-(use-package helm-company :ensure t)
-
 (use-package company-shell :ensure t)
 
 ;; Smarter shell completion.
@@ -2028,8 +2045,6 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   )
 
-(use-package helm-make :ensure t)
-
 (use-package drag-stuff :ensure t
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
@@ -2086,8 +2101,6 @@ Repeated invocations toggle between the two most recently open buffers."
      "    end tell \r"
      "end tell \r"
      ))))
-
-(use-package helm-xcdoc :ensure t)
 
 ;;  Note: For ycmd.
 ;;  * No need for global_ycm_extra_conf.py
@@ -2228,8 +2241,7 @@ already narrowed."
 (use-package pydoc-info :ensure t)
 
 (use-package elpy :ensure t
-  :config
-  (elpy-enable))
+  :hook (python-mode . elpy-enable))
 
 ;; Disabled anaconda in favor of elpy.
 ;; (defun ar/python-mode-hook-function-anaconda ()
@@ -2266,48 +2278,48 @@ already narrowed."
 (use-package dummy-h-mode
   :mode (("\\.h\\'" . dummy-h-mode)))
 
-(use-package go-eldoc :ensure t
-  :commands go-eldoc-setup)
-
-(use-package gotest :ensure t)
-
-;; go get -u golang.org/x/tools/cmd/gorename
-(use-package go-rename :ensure t)
-
-(use-package go-snippets :ensure t
-  :config
-  (go-snippets-initialize))
-
-(use-package godoctor :ensure t)
-
 (use-package go-mode :ensure t
+  :hook (go-mode . ar/go-mode-hook-function)
+  :mode ("\\.go\\'" . go-mode)
+  :config
+  (csetq gofmt-command "goimports")
+
+  (use-package go-snippets :ensure t
+    :config
+    (go-snippets-initialize))
+
+  (use-package company-go :ensure t)
+  ;; go get -u github.com/golang/lint/golint
+  (use-package golint :ensure t)
+
+  (use-package go-eldoc :ensure t
+    :config
+    (go-eldoc-setup))
+
+  (use-package gotest :ensure t)
+
+  ;; go get -u golang.org/x/tools/cmd/gorename
+  (use-package go-rename :ensure t)
+
+  (use-package godoctor :ensure t)
+  ;; Requires gocode daemon. Install with:
+  ;; go get -u golang.org/x/tools/cmd/...
+  ;; go get -u github.com/nsf/gocode
+  ;; go get -u github.com/rogpeppe/godef
+  ;; go get -u golang.org/x/tools/cmd/goimports
+  ;; Useful info at:
+  ;; From http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
+  ;; From http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
+  ;; From http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
+  (defun ar/go-mode-hook-function ()
+    "Called when entering `go-mode'."
+    (helm-dash-activate-docset "Go")
+    (setq-local company-backends '(company-go))
+    (validate-setq tab-width 2 indent-tabs-mode t)
+    (add-hook 'before-save-hook #'gofmt-before-save t t))
   :bind
   (:map go-mode-map
         ("M-." . godef-jump)))
-;; Requires gocode daemon. Install with:
-;; go get -u golang.org/x/tools/cmd/...
-;; go get -u github.com/nsf/gocode
-;; go get -u github.com/rogpeppe/godef
-;; go get -u golang.org/x/tools/cmd/goimports
-;; Useful info at:
-;; From http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch
-;; From http://tleyden.github.io/blog/2014/05/27/configure-emacs-as-a-go-editor-from-scratch-part-2
-;; From http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs
-(defun ar/go-mode-hook-function ()
-  "Called when entering `go-mode'."
-  (helm-dash-activate-docset "Go")
-  (csetq gofmt-command "goimports")
-  (setq-local company-backends '(company-go))
-  (company-mode)
-  (go-eldoc-setup)
-  (validate-setq tab-width 2 indent-tabs-mode t)
-  (add-hook 'before-save-hook #'gofmt-before-save))
-
-(use-package company-go :ensure t
-  :hook (go-mode . ar/go-mode-hook-function))
-
-;; go get -u github.com/golang/lint/golint
-(use-package golint :ensure t)
 
 ;; From http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss
 (defadvice pop-to-mark-command (around ensure-new-position activate)
@@ -2372,7 +2384,7 @@ already narrowed."
 (defun ar/emacs-lisp-mode-hook-function ()
   "Called when entering `emacs-lisp-mode'."
   (bind-key "RET" 'comment-indent-new-line emacs-lisp-mode-map)
-  (helm-dash-activate-docset "Emacs Lisp")
+  ;; (helm-dash-activate-docset "Emacs Lisp")
   ;; Pretty print output to *Pp Eval Output*.
   (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
   ;; Disabling lispy for the time being (affecting imenu).
@@ -2522,12 +2534,12 @@ already narrowed."
 (use-package html-check-frag :ensure t
   :hook (html-mode . html-check-frag-mode))
 
-(use-package requirejs :ensure t)
-
 (use-package rjsx-mode :ensure t
   :hook (js2-mode . ar/js2-mode-hook-function)
   :mode (("\\.js\\'" . rjsx-mode)
-         ("\\.jsx\\'" . rjsx-mode)))
+         ("\\.jsx\\'" . rjsx-mode))
+  :config
+  (use-package requirejs :ensure t))
 
 ;; Disabling in favor of rjsx-mode.
 ;; (use-package js2-mode :ensure t
@@ -2785,6 +2797,7 @@ already narrowed."
   :ensure t)
 
 (use-package eshell
+  :commands eshell
   :init
   (defun ar/eshell-mode-hook-function ()
     ;; Turn off semantic-mode in eshell buffers.
@@ -2802,7 +2815,10 @@ already narrowed."
   :config
   (use-package em-hist)
   (use-package em-glob)
-  (use-package esh-mode)
+  (use-package esh-mode
+    :config
+    ;; Why is validate-setq not finding it?
+    (csetq eshell-scroll-to-bottom-on-input 'all))
   (use-package em-dirs)
   (use-package em-smart)
 
@@ -2818,7 +2834,6 @@ already narrowed."
   (validate-setq eshell-hist-ignoredups t)
   (validate-setq eshell-error-if-no-glob t)
   (validate-setq eshell-glob-case-insensitive t)
-  (validate-setq eshell-scroll-to-bottom-on-input 'all)
   (validate-setq eshell-list-files-after-cd nil)
 
   (add-hook 'eshell-mode-hook
@@ -3049,10 +3064,6 @@ With a prefix argument N, (un)comment that many sexps."
                                                  "helm mini*"
                                                  "*helm projectile*")))
   (winner-mode +1))
-
-(use-package helm-descbinds :ensure
-  :bind (("C-h b" . helm-descbinds)
-         ("C-h w" . helm-descbinds)))
 
 (use-package auto-compile :ensure t
   :config
@@ -3953,7 +3964,9 @@ line instead."
   (unless (server-running-p)
     (server-start)))
 
-(ar/load-all-files "~/.emacs.d/local/*.el")
+(run-with-idle-timer 5 nil
+                     'ar/load-all-files
+                     "~/.emacs.d/local/*.el")
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 ;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
