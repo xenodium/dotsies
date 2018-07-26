@@ -201,30 +201,20 @@
 (use-package restart-emacs :ensure t
   :commands (restart-emacs))
 
-(use-package esup :ensure t)
-
-(use-package ido)
-
-(use-package imenu
-  :config
-  ;; Automatically rescan for imenu changes.
-  (set-default 'imenu-auto-rescan t))
+(use-package esup :ensure t
+  :commands (esup))
 
 ;; Handles escaping regexes from input. For example: no need for \(\)
 (use-package pcre2el :ensure t
   :config
   (pcre-mode +1))
 
-(use-package midnight
-  :config
-  (setq midnight-mode 't)
-  (setq midnight-period 7200))
-
 (use-package helm
   ;; Save current position to mark ring when jumping to a different place
   :hook  (helm-goto-line-before . helm-save-current-pos-to-mark-ring)
   :ensure t
   :config
+  (message "hello helm")
   (use-package helm-utils)
   (use-package helm-elisp)
   ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
@@ -239,17 +229,42 @@
     :config
     (validate-setq helm-net-prefer-curl t))
 
-  (use-package helm-imenu)
+  (use-package helm-imenu
+    :config
+    (use-package imenu
+      :config
+      ;; Automatically rescan for imenu changes.
+      (set-default 'imenu-auto-rescan t))
+    (use-package imenu-anywhere :ensure t))
 
   ;; Switch major modes and toggle minor modes.
   (use-package helm-source)
 
   (use-package helm-mode-manager :ensure t)
 
-  (use-package imenu-anywhere :ensure t)
-
   (use-package helm-ag :ensure t
     :config
+    (defun ar/helm-ag-insert (arg)
+      ;; Helm-ag and insert match.
+      (interactive "P")
+      (defun ar/insert-candidate (candidate)
+        (move-beginning-of-line 1)
+        (unless (eolp)
+          (kill-line))
+        ;; Drop file:line:column. For example:
+        ;; arc_hostlink.c:13:2:#include <linux/fs.h>
+        ;; => #include <linux/fs.h>
+        (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
+        (indent-for-tab-command))
+      (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
+                                 :init 'helm-ag--do-ag-set-command
+                                 :candidates-process 'helm-ag--do-ag-candidate-process
+                                 :action 'ar/insert-candidate
+                                 :nohighlight t
+                                 :requires-pattern 3
+                                 :candidate-number-limit 9999
+                                 :keymap helm-do-ag-map)))
+        (call-interactively #'ar/helm-ag)))
     (cond ((executable-find "rg")
            (validate-setq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
           ((executable-find "pt")
@@ -260,9 +275,9 @@
            (validate-setq helm-ag-base-command "ack --nocolor --nogroup"))))
 
   (use-package helm-buffers
-    :after ido
     :config
     (validate-setq helm-buffer-max-length 40)
+    (use-package ido)
     (validate-setq ido-use-virtual-buffers t)
     ;; Remote checking is slow. Disable.
     (validate-setq helm-buffer-skip-remote-checking t)
@@ -284,8 +299,7 @@
                 ("n" . helm-grep-mode-jump-other-window-forward)
                 ("p" . helm-grep-mode-jump-other-window-backward)))
 
-  (use-package helm-org
-    :after org-cliplink)
+  (use-package helm-org)
 
   (use-package helm-swoop :ensure t
     :config
@@ -322,6 +336,10 @@
 
   (helm-mode +1)
 
+  (use-package helm-c-yasnippet
+    :defer t
+    :ensure t)
+
   :bind (("C-x C-f" . helm-find-files)
          ("C-c i" . helm-semantic-or-imenu)
          ("M-x" . helm-M-x)
@@ -355,8 +373,6 @@
 
 ;; Logs commands in a separate buffer. Handy for screenscasts.
 (use-package command-log-mode :ensure t)
-
-(use-package enlive :ensure t)
 
 ;; Disabling while trying out smartparens.
 ;; ;; Automatically closes brackets.
@@ -423,8 +439,12 @@
 
 (use-package ar-auto-correct)
 
-(use-package color-picker)
-(use-package scimax-string)
+(use-package color-picker
+  :commands color-picker)
+
+;; Unused. Disabling for now.
+;; (use-package scimax-string)
+
 (use-package ar-assert)
 (use-package ar-string)
 (use-package ar-buffer)
@@ -434,17 +454,24 @@
 (use-package ar-bazel
   :after s)
 (use-package ar-alist)
+
+(use-package ar-frame
+  :commands ar/frame-set-current-frame-alpha-channel)
+
 (use-package ar-git)
 (use-package ar-helm
-
   :after helm)
+
 (use-package ar-helm-objc
   :after helm
   :commands (ar/helm-objc-import-update))
+
 (use-package ar-helm-projectile
   :bind ("<f7>" . ar/helm-projectile-shell-cd))
+
 (use-package ar-helm-org
-  :after (helm helm-org org))
+  :after (helm helm-org org org-cliplink))
+
 (use-package ar-helm-shell
   :bind (:map shell-mode-map
               ("M-r" . ar/helm-shell-search-history)))
@@ -456,66 +483,89 @@
          ("C-x b" . ar/helm-hotspots)))
 (use-package ar-image
   :commands (ar/image-open-html-for-current-dir))
+
 (use-package ar-imagemagick)
+
 (use-package ar-ios-sim
   :after f dash)
+
 (use-package ar-linux)
+
 (use-package ar-objc
   :commands (ar/objc-import
              ar/objc-include))
+
 (use-package ar-process)
+
 (use-package ar-org
   :after org)
+
 (use-package ar-hammerspoon-org-modal
   :after ar-org)
+
 (use-package ar-org-blog
   :commands (ar/org-blog-insert-image
              ar/org-blog-insert-resized-image))
+
 (use-package company-hammerspoon
   :after company)
+
 (use-package ar-ping)
 (use-package ar-shell)
 (use-package ar-sudo)
+
 (use-package ar-url
-  :after (enlive goto-addr)
-  :commands (ar/url-view-links-at))
+  :commands (ar/url-view-links-at)
+  :config
+  (use-package enlive :ensure t))
+
 (use-package ar-osx
   :demand
   :commands (ar/osx-convert-plist-to-xml))
+
 (use-package ar-platform
   :demand
   :bind (("C-x t" . ar/platform-new-browser-tab)))
+
 (use-package ar-ox-html
   :after (org ox-html)
   :config
   (ar/ox-html-setup)
   :bind (:map org-mode-map
               ([f6] . ar/ox-html-export)))
+
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
-(use-package ar-yas
-  :after yasnippet)
+
 (use-package ar-magit
   :after magit)
+
 (use-package ar-typescript)
 (use-package ar-font)
 (use-package ar-compile)
 
 (use-package company-swimports
   :after company)
+
 (use-package company-escaped-files
   :after s)
+
 (use-package company-grep
   :after s)
+
 (use-package company-rfiles
   :after company)
+
 (use-package company-bash-history
   :after company)
+
 (use-package company-projectile-cd
   :after company)
+
 (use-package flycheck-swiftlint
   :after flycheck)
+
 (use-package modal-ivy :after ivy)
 
 ;; Easy access to links in buffer (using avy).
@@ -531,13 +581,6 @@
   :after company-grep
   :hook (bazel-mode . ar/bazel-mode-hook-fun))
 
-(use-package use-host-package
-  :config
-  (validate-setq use-host-package-install-cmd
-                 (if (ar/osx-p)
-                     "brew install"
-                   "apt-get install")))
-
 (use-package last-change-jump
   :defer t ;; We want this global mode started soon after init.
   :config
@@ -548,13 +591,13 @@
 (use-package string-inflection :ensure t)
 
 (use-package interaction-log :ensure t
+  :defer t
+  :commands ar/interation-log-show
   :config
   (interaction-log-mode +1)
-  (global-set-key
-   (kbd "C-h j")
-   (lambda ()
-     (interactive)
-     (display-buffer ilog-buffer-name))))
+  (defun ar/interation-log-show()
+    (interactive)
+    (display-buffer ilog-buffer-name)))
 
 (use-package abbrev
   :config
@@ -563,12 +606,13 @@
   (setq-default abbrev-mode t))
 
 (use-package nyan-mode :ensure t
+  :if (display-graphic-p)
   :config
-  (when (window-system)
-    (nyan-mode +1)))
+  (nyan-mode +1))
 
 (use-package fontawesome :ensure t
-  :after ar/font-assert-installed
+  :after ar-font
+  :defer 10
   :config
   (ar/font-assert-installed "FontAwesome" "Install ttf from http://fontawesome.io."))
 
@@ -582,67 +626,6 @@
 ;;   (ar/font-assert-installed "Weather Icons" "Install ttf from https://erikflowers.github.io/weather-icons.")
 ;;   (ar/font-assert-installed "font-mfizz" "Install ttf from https://github.com/fizzed/font-mfizz/blob/master/dist.")
 ;;   (ar/font-assert-installed "icomoon" "Install ttf from https://github.com/vorillaz/devicons/tree/master/fonts."))
-
-(defun ar/setup-graphical-mode-line ()
-  "Set up graphical mode line."
-  ;; Disabling.
-  ;; (use-package spaceline :ensure t
-  ;;   :config
-  ;;   (use-package spaceline-config
-  ;;     :config
-  ;;     (when (ar/osx-p)
-  ;;       ;; OS X color glitches workaround.
-  ;;       ;; https://github.com/syl20bnr/spacemacs/issues/4426
-  ;;       (validate-setq ns-use-srgb-colorspace nil))
-  ;;     (spaceline-toggle-minor-modes-off)
-  ;;     (spaceline-toggle-buffer-encoding-off)
-  ;;     (spaceline-toggle-buffer-encoding-abbrev-off)
-  ;;     (spaceline-toggle-buffer-position-off)
-  ;;     (validate-setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  ;;     (spaceline-define-segment time
-  ;;       "The current time."
-  ;;       (format-time-string "%H:%M"))
-  ;;     (spaceline-define-segment date
-  ;;       "The current date."
-  ;;       (format-time-string "%h %d"))
-  ;;     (spaceline-define-segment padding
-  ;;       "Padding at end of line."
-  ;;       "  ")
-  ;;     (spaceline-spacemacs-theme 'date 'time 'padding)
-  ;;     (validate-setq powerline-default-separator 'arrow)
-  ;;     (set-face-attribute 'helm-candidate-number nil
-  ;;                         :foreground nil
-  ;;                         :background nil)
-  ;;     (set-face-attribute 'spaceline-highlight-face nil
-  ;;                         :foreground "#525086"
-  ;;                         :background nil)
-  ;;     (set-face-attribute 'mode-line nil
-  ;;                         :background nil
-  ;;                         :foreground nil
-  ;;                         :box nil)
-  ;;     (set-face-attribute 'mode-line-buffer-id nil
-  ;;                         :background nil
-  ;;                         :foreground nil)
-  ;;     (set-face-attribute 'powerline-active1 nil
-  ;;                         :background "#262525"
-  ;;                         :foreground "#ffffff"
-  ;;                         :box nil)
-  ;;     (set-face-attribute 'powerline-active2 nil
-  ;;                         :background nil
-  ;;                         :foreground "#ffffff"
-  ;;                         :box nil)
-  ;;     (set-face-attribute 'powerline-inactive1 nil
-  ;;                         :background nil
-  ;;                         :foreground nil
-  ;;                         :box nil)
-  ;;     (set-face-attribute 'powerline-inactive2 nil
-  ;;                         :background nil
-  ;;                         :box nil)
-  ;;     (set-face-attribute 'mode-line-inactive nil
-  ;;                         :background nil
-  ;;                         :box nil)
-  ;;     (spaceline-compile)))
-  )
 
 (defun ar/mode-icons-supported-p-advice-fun (orig-fun &rest r)
   "`mode-icons-supported-p' is expensive. Cache it."
@@ -670,32 +653,16 @@
   ;; http://lists.macosforge.org/pipermail/macports-tickets/2011-June/084295.html
   (validate-setq tramp-verbose 10)
   (setenv "TMPDIR" "/tmp")
-  (validate-setq tramp-default-method "ssh"))
+  (validate-setq tramp-default-method "ssh")
+  (defalias 'ar/exit-tramp 'tramp-cleanup-all-buffers))
 
 (use-package helm-tramp :ensure t
   :commands (helm-tramp))
 
-(defalias 'ar/exit-tramp 'tramp-cleanup-all-buffers)
-
-;; Based on http://www.pygopar.com/setting-emacs-transparency
-(defun ar/set-current-frame-alpha-channel (focused-alpha
-                                           unfocused-alpha)
-  "Set FOCUSED-ALPHA and UNFOCUSED-ALPHA channels for current frame.
-Values between 0 - 100."
-  (interactive "nOn Focus: \nnOn Unfocus: ")
-  (set-frame-parameter (selected-frame)
-                       'alpha
-                       (list focused-alpha unfocused-alpha)))
-
-;; TODO: Revisit this.
-(defun ar/setup-graphical-display ()
-  "Setup graphical display."
-  (when (window-system)
-    (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")) ;; Other fun ones 𝔼𝕞𝕒𝕔𝕤
-    ;; Set full screen (disabled while trying out chunkwm).
-    ;; (set-frame-parameter nil 'fullscreen 'fullboth)
-    (ar/setup-graphical-mode-line)))
-(ar/setup-graphical-display)
+(when (display-graphic-p)
+  ;; Enable if you'd like to start as fullscreen.
+  ;; (set-frame-parameter nil 'fullscreen 'fullboth)
+  (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
 ;; Tip of the day.
 (use-package totd :ensure t
@@ -703,18 +670,22 @@ Values between 0 - 100."
   :config
   (totd-start))
 
-(use-package speed-type :ensure t)
+(use-package speed-type :ensure t
+  :commands (speed-type-text
+             speed-type-region
+             speed-type-buffer))
 
 (use-package restclient :ensure t
-  :commands (restclient-mode))
+  :commands restclient-mode)
 
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state :ensure t
+  :defer 10
   :config (region-state-mode))
 
 ;; Safely delete packages.
 (use-package package-safe-delete :ensure t
-  :commands (package-safe-delete))
+  :commands package-safe-delete)
 
 ;; Formats python buffer with yapf
 ;; Install with: pip install git+https://github.com/google/yapf.git
@@ -786,6 +757,7 @@ Values between 0 - 100."
               ("M" . ar/dired-mark-all)))
 
 (use-package dired-aux
+  :commands dired-mode
   :config
   ;; Make "Z" shortcut available in dired to extract iOS ipa zips.
   (add-to-list 'dired-compress-file-suffixes '("\\.ipa\\'" "" "unzip -o -d %o %i")))
@@ -874,26 +846,6 @@ Values between 0 - 100."
   (use-package discover :ensure t
     :hook (dired-mode . discover-mode)))
 
-;; Disabling while trying out spaceline.
-;; (defun ar/setup-graphical-mode-line ()
-;;   "Set up graphical mode line."
-;;   (use-package rich-minority :ensure t)
-;;   ;; Hide all minor modes from mode line.
-;;   (add-to-list 'rm-whitelist nil t)
-;;   (use-package smart-mode-line :ensure t)
-;;   ;; Disabling, to try out dark theme.
-;;   ;;  (use-package smart-mode-line-powerline-theme :ensure t)
-;;   (validate-setq sml/theme 'dark
-;;         sml/mule-info nil
-;;         sml/show-remote nil
-;;         sml/name-width '(20 . 40)
-;;         sml/shorten-modes t
-;;         sml/mode-width 'right)
-;;   (custom-set-faces
-;;    '(mode-line ((t (:background "#2A358D" :foreground "gray60")))))
-;;   (add-hook 'after-init-hook #'ar/enable-graphical-time)
-;;   (sml/setup))
-
 (defun ar/enable-graphical-time ()
   "Enable graphical time in modeline."
   (interactive)
@@ -922,39 +874,8 @@ Values between 0 - 100."
           (message "%s" output)
         (message "Opened: %s" ,url)))))
 
-;; Not sure how I feel about god-mode yet. Disabling for a bit.
-;; (use-package god-mode :ensure t
-;;   :demand ;; Gets god-mode enabled for all buffers.
-;;   :config
-;;   (add-to-list 'god-exempt-major-modes 'elfeed-search-mode)
-;;   (add-to-list 'god-exempt-major-modes 'elfeed-show-mode)
-;;   (add-to-list 'god-exempt-major-modes 'eshell-mode)
-
-;;   (defun ar/god-mode-local-enable ()
-;;     (interactive)
-;;     (god-local-mode +1))
-
-;;   (defun ar/god-mode-local-disable()
-;;     (interactive)
-;;     (god-local-mode -1))
-
-;;   (defun ar/god-mode-update-cursor ()
-;;     (if (or god-local-mode buffer-read-only)
-;;         (set-cursor-color "dim gray")
-;;       (set-cursor-color "#FA009A")))
-
-;;   (add-hook 'find-file-hook #'ar/god-mode-local-enable nil t)
-;;   (add-hook 'buffer-list-update-hook 'ar/god-mode-update-cursor)
-;;   (add-hook 'god-mode-enabled-hook 'ar/god-mode-update-cursor)
-;;   (add-hook 'god-mode-disabled-hook 'ar/god-mode-update-cursor)
-
-;;   (setq god-global-mode t)
-
-;;   :bind (("<escape>" . ar/god-mode-local-enable))
-;;   :bind (:map god-local-mode-map
-;;               ("i" . ar/god-mode-local-disable)))
-
 (use-package elfeed :ensure t
+  :commands elfeed
   :after centered-cursor-mode
   :config
   (defun ar/elfeed-set-style ()
@@ -1067,13 +988,11 @@ Values between 0 - 100."
 
 ;; Suggests elisp methods based on inputs and outputs.
 (use-package suggest :ensure t
-  :commands (suggest))
+  :commands suggest)
 
 ;; Semantic code search for emacs lisp.
 (use-package elisp-refs :ensure t
   :mode ("\\.el\\'" . emacs-lisp-mode))
-
-;; Start off with elfeed.
 
 (use-package bind-key :ensure t)
 
@@ -1082,7 +1001,8 @@ Values between 0 - 100."
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(use-package anchored-transpose)
+(use-package anchored-transpose
+  :commands anchored-transpose)
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-7-3
 ;; Transpose stuff with M-t
@@ -1104,10 +1024,12 @@ Values between 0 - 100."
   :commands sx-search)
 
 (use-package which-key :ensure t
-  :config (which-key-mode))
+  :config
+  (which-key-mode))
 
 ;; Twitter.
-(use-package twittering-mode :ensure t)
+(use-package twittering-mode :ensure t
+  :commands twittering-mode)
 
 (use-package rainbow-delimiters :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -1160,10 +1082,12 @@ Values between 0 - 100."
   :commands (vr/mc-mark vr/query-replace vr/replace))
 
 (use-package yasnippet :ensure t
-  :hook ((org-mode . yas-minor-mode)
-         (prog-mode . yas-minor-mode))
+  :defer 10
   :config
+  (use-package ar-yas)
+
   (use-package yasnippet-snippets :ensure t)
+
   (validate-setq yas-indent-line 'fixed)
   (validate-setq yas-snippet-dirs
                  '("~/.emacs.d/yasnippets/personal"
@@ -1172,12 +1096,14 @@ Values between 0 - 100."
   (use-package ivy :ensure t)
 
   ;; Display's yasnippet previous inline when cycling through results.
-  (use-package ivy-yasnippet :ensure t)
+  (use-package ivy-yasnippet :ensure t
+    :commands ivy-yasnippet)
 
   ;; Use aya-create and aya-expand to
   ;; Create a throw-away yasnippet for say:
   ;; This is the ~rhythm of the ~night
-  (use-package auto-yasnippet :ensure t))
+  (use-package auto-yasnippet :ensure t
+    :commands (aya-create aya-expand)))
 
 ;; Back to helm-swoop for now.
 ;; (use-package swiper :ensure t)
@@ -1200,8 +1126,10 @@ Values between 0 - 100."
 ;; (use-package annoying-arrows-mode :ensure t
 ;;   :config (global-annoying-arrows-mode))
 
+;; COMEBACK
 ;; Remember point/place for each file.
-(use-package saveplace :defer t
+(use-package saveplace
+  :defer 10
   :config
   (setq-default save-place t)
   (validate-setq save-place-file (expand-file-name ".places"
@@ -1230,35 +1158,46 @@ Values between 0 - 100."
                    (read-directory-name "search in: " default-directory nil t)))
   (helm-do-ag ar/helm-ag--default-locaction))
 
-(defun ar/helm-ag-insert (arg)
-  ;; Helm-ag and insert match.
-  (interactive "P")
-  (defun ar/insert-candidate (candidate)
-    (move-beginning-of-line 1)
-    (unless (eolp)
-      (kill-line))
-    ;; Drop file:line:column. For example:
-    ;; arc_hostlink.c:13:2:#include <linux/fs.h>
-    ;; => #include <linux/fs.h>
-    (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
-    (indent-for-tab-command))
-  (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
-                             :init 'helm-ag--do-ag-set-command
-                             :candidates-process 'helm-ag--do-ag-candidate-process
-                             :action 'ar/insert-candidate
-                             :nohighlight t
-                             :requires-pattern 3
-                             :candidate-number-limit 9999
-                             :keymap helm-do-ag-map)))
-    (call-interactively #'ar/helm-ag)))
-
 ;; Differentiate C-i key binding from TAB.
 (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 
 (use-package prog-mode
+  :config
+  (defun ar/yank-line-below ()
+    "Yank to line below."
+    (interactive)
+    (save-excursion
+      (move-end-of-line nil)
+      (newline)
+      (yank))
+    (next-line))
+
+  ;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L111
+  (defun ar/smart-open-line-above ()
+    "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+    (interactive)
+    (move-beginning-of-line nil)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (defun ar/smart-open-line (arg)
+    "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode.
+With a prefix ARG open line above the current line."
+    (interactive "P")
+    (if arg
+        (ar/smart-open-line-above)
+      (progn
+        (move-end-of-line nil)
+        (newline-and-indent))))
   :bind
   (:map prog-mode-map
-        ("H-i" . ar/helm-ag-insert)))
+        ("H-i" . ar/helm-ag-insert)
+        ("M-C-y" . ar/yank-line-below)
+        ("M-<return>" . ar/smart-open-line-above)
+        ("C-<return>" . ar/smart-open-line)))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
 (defun ar/backward-delete-subword (arg)
@@ -1740,32 +1679,11 @@ Argument PROMPT to check for additional prompt."
   (other-window 1))
 (bind-key "C-\\" #'ar/swap-windows)
 
-;; From https://github.com/bbatsov/prelude/blob/a52cdc83eeec567b13a8a5719a174dfe294ee739/core/prelude-core.el#L111
-(defun ar/smart-open-line-above ()
-  "Insert an empty line above the current line.
-Position the cursor at it's beginning, according to the current mode."
-  (interactive)
-  (move-beginning-of-line nil)
-  (newline-and-indent)
-  (forward-line -1)
-  (indent-according-to-mode))
-
 (use-package sgml-mode
   :after electric
   :bind (:map sgml-mode-map
               ;; Do not auto indent current line when pressing <RET>.
               ("<RET>" . electric-indent-just-newline)))
-
-(defun ar/smart-open-line (arg)
-  "Insert an empty line after the current line.
-Position the cursor at its beginning, according to the current mode.
-With a prefix ARG open line above the current line."
-  (interactive "P")
-  (if arg
-      (ar/smart-open-line-above)
-    (progn
-      (move-end-of-line nil)
-      (newline-and-indent))))
 
 (defun ar/open-line ()
   "Insert an empty line after current line.  Keep existing position."
@@ -2110,8 +2028,6 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   )
 
-(use-package helm-c-yasnippet :ensure t)
-
 (use-package helm-make :ensure t)
 
 (use-package drag-stuff :ensure t
@@ -2237,8 +2153,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; |_| |_\__, |_\___|\__|
 ;;       |___/
 (use-package figlet :ensure t
+  :commands figlet
   :config
-  (use-host-package :name "figlet")
   (validate-setq figlet-default-font "small")
   (validate-setq figlet-options (list "-w 160")))
 
@@ -3787,7 +3703,8 @@ _y_outube
     (flyspell-mode +1)
     (org-display-inline-images))
   :ensure t
-  :hook (org-mode . ar/org-mode-hook-function)
+  :hook ((org-mode . ar/org-mode-hook-function)
+         (org-mode . visual-line-mode))
   :config
   (csetq org-todo-keywords
          '((sequence
@@ -3846,7 +3763,7 @@ _y_outube
 (ignore-errors
   (use-package org-beautify-theme :ensure t
     :config
-    (when (window-system)
+    (when (display-graphic-p)
       ;; From https://github.com/howardabrams/dot-files/blob/HEAD/emacs-client.org
       (deftheme ar/org-theme "Sub-theme to beautify org mode")
       (let* ((sans-font (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
@@ -3923,6 +3840,7 @@ _y_outube
 
 ;; Weather forecast (no login/account needed).
 (use-package wttrin :ensure t
+  :commands wttrin
   :config
   (csetq wttrin-default-accept-language '("Accept-Language" . "en-GB"))
   (csetq wttrin-default-cities (list "London"))
@@ -3959,38 +3877,21 @@ line instead."
      (message "Copied line")
      (list (line-beginning-position) (line-end-position)))))
 
-(defun ar/yank-line-below ()
-  "Yank to line below."
-  (interactive)
-  (save-excursion
-    (move-end-of-line nil)
-    (newline)
-    (yank))
-  (next-line))
-
 (use-package simple
-  :hook (org-mode . visual-line-mode)
   :config
   ;; Don't bother saving things to the kill-ring twice, remove duplicates.
   (csetq kill-do-not-save-duplicates t)
   ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
   (csetq idle-update-delay 2)
   ;; Increase mark ring size.
-  (csetq global-mark-ring-max 500)
-  :bind
-  (:map prog-mode-map
-        ("M-C-y" . ar/yank-line-below)
-        ("M-j" . ar/join-next-line)
-        ("M-<return>" . ar/smart-open-line-above)
-        ("C-<return>" . ar/smart-open-line)))
-
-(use-package char-fold)
+  (csetq global-mark-ring-max 500))
 
 (use-package isearch
-  :after char-fold
   :preface
   (provide 'isearch)
   :config
+  (use-package char-fold)
+
   (csetq search-default-mode #'char-fold-to-regexp)
   ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
   (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
@@ -4009,10 +3910,9 @@ line instead."
 ;; Open gyp files in prog-mode.
 (add-to-list 'auto-mode-alist '("\\.gyp\\'" . prog-mode))
 
+;; Open rc files with conf-mode.
 (use-package conf-mode
-  :config
-  ;; Open rc files with conf-mode.
-  (add-to-list 'auto-mode-alist '("rc$" . conf-mode)))
+  :mode ("rc$" . conf-mode))
 
 ;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
 ;; (use-package  puml-mode :ensure t)
@@ -4030,11 +3930,9 @@ line instead."
    (not (string= lang "plantuml"))
    (not (string= lang "python"))))
 
-(use-package org-src)
-
 (use-package ob-plantuml
-  :after org-src
   :config
+  (use-package org-src)
   ;; Use fundamental mode when editing plantuml blocks with C-c '
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
   (validate-setq org-confirm-babel-evaluate 'ar/org-confirm-babel-evaluate)
@@ -4050,7 +3948,7 @@ line instead."
   (validate-setq use-dialog-box nil))
 
 (use-package server
-  :defer 2
+  :defer 10
   :config
   (unless (server-running-p)
     (server-start)))
