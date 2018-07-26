@@ -519,12 +519,15 @@
 (use-package ar-helm-shell
   :bind (:map shell-mode-map
               ("M-r" . ar/helm-shell-search-history)))
+
 (use-package ar-helm-url
   :after helm)
+
 (use-package ar-helm-hotspots-config
-  :after (f helm-buffers)
+  :after (f helm)
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
+
 (use-package ar-image
   :commands (ar/image-open-html-for-current-dir))
 
@@ -1125,8 +1128,7 @@
 
   (validate-setq yas-indent-line 'fixed)
   (validate-setq yas-snippet-dirs
-                 '("~/.emacs.d/yasnippets/personal"
-                   "~/.emacs.d/yasnippets/yasnippet-snippets"))
+                 '("~/.emacs.d/yasnippets/personal"))
   (yas-reload-all)
   (use-package ivy :ensure t)
 
@@ -2537,9 +2539,10 @@ already narrowed."
 (use-package rjsx-mode :ensure t
   :hook (js2-mode . ar/js2-mode-hook-function)
   :mode (("\\.js\\'" . rjsx-mode)
-         ("\\.jsx\\'" . rjsx-mode))
-  :config
-  (use-package requirejs :ensure t))
+         ("\\.jsx\\'" . rjsx-mode)))
+
+;; Not using. Disabling.
+;; (use-package requirejs :ensure t)
 
 ;; Disabling in favor of rjsx-mode.
 ;; (use-package js2-mode :ensure t
