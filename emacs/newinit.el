@@ -86,8 +86,10 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
+;; use-package-enable-imenu-support must be
+;; set before requiring use-package.
 (setq use-package-enable-imenu-support t)
+(require 'use-package)
 (setq use-package-verbose t)
 
 (use-package async
