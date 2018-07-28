@@ -32,6 +32,7 @@
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
+(add-to-list 'load-path "~/.emacs.d/local")
 (add-to-list 'load-path "~/.emacs.d/external")
 
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
@@ -51,11 +52,36 @@
 				      "~/homebrew/Cellar/llvm/HEAD/bin"
 				      "/usr/local/bin"))))
 
-;;;; Set up use-package - START
+;;;; Set up package tls
 
-;; TODO: Can we optimize ar-package?
-(require 'ar-package)
-(ar/package-initialize)
+(require 'cl)
+(require 'package)
+(require 'tls)
+
+(assert (executable-find "gnutls-cli") nil
+	"Need brew install gnutls or apt-get install gnutls-bin")
+(assert (eq 0 (call-process-shell-command "python -c \"import certifi\"")) nil
+	"Need python -m pip install --user certifi")
+
+(let ((trustfile
+       (replace-regexp-in-string
+        "\\\\" "/"
+        (replace-regexp-in-string
+         "\n" ""
+	 (shell-command-to-string "python -m certifi")))))
+  (setq tls-program
+        (list
+         (format "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)))
+  (setq gnutls-trustfiles (list trustfile)))
+
+(setq tls-checktrust t)
+(setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+(package-initialize)
+
+;;;;
+
+;;;; Set up use-package - START
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -77,7 +103,9 @@
 
 ;;;; Init helpers - START
 
-(use-package validate :ensure t)
+(use-package validate
+  :ensure t
+  (defalias 'vsetq 'validate-setq))
 
 ;;;; Init helpers - END
 
@@ -89,7 +117,8 @@
   ;; Don't want titles in frames.
   (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
-(use-package base16-theme :ensure t
+(use-package base16-theme
+  :ensure t
   :config
   (load-theme 'base16-atelier-heath t)
   (let ((line (face-attribute 'mode-line :underline)))
@@ -156,7 +185,6 @@
 (defun ar/edit-init ()
   (interactive)
   (find-file "~/stuff/active/code/dots/emacs/newinit.el"))
-
 ;;;; Init maintenance - END
 
 ;;;; Editing - START
@@ -244,6 +272,11 @@
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
 ;;;; Buffers END
+
+(use-package ar-mu4e
+  :if (locate-library "ar-mu4e")
+  :bind (:map global-map
+              ("M-m" . ar/mu4e--view-unread-messages)))
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 ;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
