@@ -200,6 +200,17 @@
   :ensure t
   :bind ("C-c w" . er/expand-region))
 
+(defun ar/yank-line-below ()
+  "Yank to line below."
+  (interactive)
+  (save-excursion
+    (move-end-of-line nil)
+    (newline)
+    (yank))
+  (next-line))
+
+(bind-key "M-C-y" #'ar/yank-line-below)
+
 (use-package whitespace
   :defer 5
   ;; Automatically remove whitespace on saving.
@@ -314,6 +325,17 @@ line instead."
        (list (region-beginning) (region-end))
      (message "Copied line")
      (list (line-beginning-position) (line-end-position)))))
+
+(defun ar/duplicate-line ()
+  "Duplicate current line and paste below."
+  (interactive)
+  (let ((line-text (buffer-substring (line-beginning-position)
+                                     (line-end-position))))
+    (end-of-line)
+    (newline)
+    (insert line-text)))
+
+(bind-key "C-x C-d" #'ar/duplicate-line)
 
 (use-package hungry-delete
   :defer 5
@@ -561,6 +583,92 @@ already narrowed."
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
 ;;;; Buffers END
+
+;;;; Org START
+
+(use-package org
+  :ensure t
+  :hook ((org-mode . ar/org-mode-hook-function)
+         (org-mode . visual-line-mode))
+  :bind (:map org-mode-map
+              ("C-c C-l" . ar/org-insert-link-dwim))
+  :config
+  (setq org-todo-keywords
+        '((sequence
+           "TODO"
+           "STARTED"
+           "DONE"
+           "OBSOLETE"
+           "CANCELLED")))
+
+  (use-package org-faces
+    :config
+    (vsetq org-todo-keyword-faces
+           '(("TODO" . (:foreground "red" :weight bold))
+             ("STARTED" . (:foreground "yellow" :weight bold))
+             ("DONE" . (:foreground "green" :weight bold))
+             ("OBSOLETE" . (:foreground "blue" :weight bold))
+             ("CANCELLED" . (:foreground "gray" :weight bold)))))
+
+  (defun ar/org-insert-link-dwim ()
+    "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
+    (interactive)
+    (if (and (string-match-p "^http" (current-kill 0))
+             (region-active-p))
+        (let ((region-content (buffer-substring-no-properties (region-beginning)
+                                                              (region-end))))
+          (delete-region (region-beginning)
+                         (region-end))
+          (insert (format "[[%s][%s]]"
+                          (current-kill 0)
+                          region-content)))
+      (call-interactively 'org-insert-link)))
+
+  (defun ar/org-mode-hook-function ()
+    (toggle-truncate-lines 0)
+    (org-display-inline-images)
+    (vsetq show-trailing-whitespace t)
+    (set-fill-column 1000))
+
+  ;; Look into font-locking email addresses.
+  ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
+  ;; (use-package button-lock :ensure t)
+
+  (setq org-refile-targets '((nil . (:regexp . "Week of"))
+                             (nil . (:regexp . "RESOLVED"))))
+
+  (vsetq org-ellipsis "…")
+  (vsetq org-fontify-emphasized-text t)
+
+  ;; Fontify code in code blocks.
+  (vsetq org-src-fontify-natively t)
+
+  ;; When exporting anything, do not insert in kill ring.
+  (setq org-export-copy-to-kill-ring nil)
+
+  ;; Display images inline when running in GUI.
+  (vsetq org-startup-with-inline-images (display-graphic-p))
+  (vsetq org-src-tab-acts-natively t)
+
+  ;; Prevent inadvertently editing invisible areas in Org.
+  (vsetq org-catch-invisible-edits 'error)
+  (vsetq org-cycle-separator-lines 2)
+  (vsetq org-image-actual-width nil)
+  (vsetq org-hide-emphasis-markers t)
+
+  ;; All Org leading stars become invisible.
+  (vsetq org-hide-leading-stars t)
+
+  ;; Skip Org's odd indentation levels (1, 3, ...).
+  (vsetq org-odd-levels-only t)
+
+  ;; Disable auto isearch within org-goto.
+  (vsetq org-goto-auto-isearch nil)
+
+  ;; Enable RET to follow Org links.
+  (vsetq org-return-follows-link t))
+
+;;;; Org END
 
 (use-package ar-mu4e
   :if (locate-library "ar-mu4e")
