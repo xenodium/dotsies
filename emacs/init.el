@@ -524,7 +524,8 @@
   :after helm)
 
 (use-package ar-helm-hotspots-config
-  :after (f helm)
+  :demand ;; There are files in ar/load-all-files needing ar-helm-hotspots-config.
+  :after (f helm-buffers)
   :bind (("C-x C-b" . ar/helm-hotspots)
          ("C-x b" . ar/helm-hotspots)))
 
