@@ -128,9 +128,7 @@
 
 (use-package fullframe
   :ensure t
-  :commands fullframe
-  :config
-  (message "fullframe"))
+  :commands fullframe)
 
 ;;;; Appearance - END
 
@@ -161,6 +159,19 @@
 
 ;;;; Init maintenance - END
 
+;;;; Editing - START
+
+(use-package expand-region
+  :ensure t
+  :bind ("C-c w" . er/expand-region)
+  :config
+  ;; Workaround fixing expand-region:
+  ;; https://github.com/magnars/expand-region.el/issues/220
+  ;; (validate-setq shift-select-mode nil)
+  )
+
+;;;; Editing - END
+
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
@@ -168,6 +179,71 @@
   (add-to-list 'magit-no-confirm 'stage-all-changes)
   (message "magit")
   (fullframe magit-status magit-mode-quit-window))
+
+;; Ivy equivalents to Emacs commands.
+(use-package counsel
+  :ensure t
+  :defer 0.1
+  :config
+  ;; Smex handles M-x command sorting. Bringing recent commands to the top.
+  (use-package smex
+    :ensure t)
+  (counsel-mode +1))
+
+(use-package ivy
+  :ensure t
+  :defer 0.1
+  :config
+  (validate-setq ivy-height 40)
+  (validate-setq ivy-count-format "")
+  (validate-setq ivy-use-virtual-buffers t)
+  (validate-setq enable-recursive-minibuffers t)
+  (ivy-mode +1))
+
+;;;; Navigation START
+(use-package isearch
+  :commands (isearch-forward isearch-backward)
+  :defer
+  :preface
+  (provide 'isearch)
+  :config
+  (use-package char-fold)
+
+  (validate-setq search-default-mode #'char-fold-to-regexp)
+
+  ;; Prepopulate isearch with selectionn.
+  ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
+  (defadvice isearch-mode (around isearch-mode-default-string
+				  (forward &optional regexp op-fun recursive-edit word-p) activate)
+    "Enable isearch to start with current selection."
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (progn
+          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+          (deactivate-mark)
+          ad-do-it
+          (if (not forward)
+              (isearch-repeat-backward)
+            (goto-char (mark))
+            (isearch-repeat-forward)))
+      ad-do-it)))
+
+(use-package centered-cursor-mode
+  :defer 0.1
+  :ensure t
+  :pin melpa
+  :init
+  ;; Workaround to use centered-cursor-mode in --nw.
+  (defvar mouse-wheel-mode nil)
+  :config
+  (global-centered-cursor-mode +1))
+
+;;;; Navigation END
+
+;;;; Buffers START
+(use-package menu-bar
+  ;; No need to confirm killing buffers.
+  :bind ("C-x k" . kill-this-buffer))
+;;;; Buffers END
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 ;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
