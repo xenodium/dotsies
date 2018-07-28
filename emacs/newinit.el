@@ -129,6 +129,9 @@
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#695d69")))
 
+;; No color for fringe, blends with the rest of the window.
+(set-face-attribute 'fringe nil :background nil)
+
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
