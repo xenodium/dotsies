@@ -296,7 +296,14 @@
               ("\\" . mc/vertical-align-with-space)
               ("#" . mc/insert-numbers) ; use num prefix to set the starting number
               ("^" . mc/edit-beginnings-of-lines)
-              ("$" . mc/edit-ends-of-lines)))
+              ("$" . mc/edit-ends-of-lines))
+  :config
+  ;; MC-friendly packages.
+  (use-package phi-search :ensure t)
+  (use-package phi-rectangle :ensure t)
+  (use-package phi-search-mc :ensure t
+    :config
+    (phi-search-mc/setup-keys)))
 
 ;; From https://github.com/daschwa/emacs.d
 (defadvice kill-ring-save (before slick-copy activate compile)
@@ -370,6 +377,34 @@ line instead."
             (isearch-repeat-forward)))
       ad-do-it)))
 
+;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun ar/narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if you
+         ;; don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
+
+(bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
+
 (use-package swiper
   :ensure t
   :bind ("M-i" . swiper))
@@ -393,6 +428,54 @@ line instead."
 ;;;; Navigation END
 
 ;;;; Helm START
+
+(use-package helm
+  ;; Save current position to mark ring when jumping to a different place
+  :hook  (helm-goto-line-before . helm-save-current-pos-to-mark-ring)
+  :ensure t
+  :config
+  (use-package helm-utils)
+  (use-package helm-elisp)
+
+  ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
+  (validate-setq helm-show-completion-display-function #'helm-default-display-buffer)
+  (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (validate-setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (validate-setq helm-split-window-in-side-p t)
+  (validate-setq helm-candidate-number-limit 200)
+
+  (use-package helm-config)
+
+  (use-package helm-imenu
+    :defer t
+    :config
+    (use-package imenu
+      :config
+      ;; Automatically rescan for imenu changes.
+      (set-default 'imenu-auto-rescan t))
+    (use-package imenu-anywhere
+      :ensure t))
+
+  ;; Best way (so far) to search for files in repo.
+  (use-package helm-projectile
+    :ensure t
+    :bind ("C-x f" . helm-projectile))
+
+  (defun ar/helm-keyboard-quit-dwim (&optional arg)
+    "First time clear miniuffer. Quit thereafter."
+    (interactive "P")
+    (if (> (length (minibuffer-contents)) 0)
+        (call-interactively 'helm-delete-minibuffer-contents)
+      (helm-keyboard-quit)))
+
+  :bind (("C-c i" . helm-semantic-or-imenu)
+         :map helm-map
+         ("C-i" . helm-execute-persistent-action) ; make TAB works in terminal
+         ("C-z" . helm-select-action) ; list actions using C-z
+         ("M-p" . helm-previous-source)
+         ("M-n" . helm-next-source)
+         ("C-g" . ar/helm-keyboard-quit-dwim)))
 
 (use-package helm-ag
   :ensure t
