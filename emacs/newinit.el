@@ -198,6 +198,7 @@
   :bind ("C-c w" . er/expand-region))
 
 (use-package whitespace
+  :defer 5
   ;; Automatically remove whitespace on saving.
   :hook ((before-save . whitespace-cleanup)
          (prog-mode . whitespace-mode))
@@ -305,6 +306,7 @@ line instead."
      (list (line-beginning-position) (line-end-position)))))
 
 (use-package hungry-delete
+  :defer 5
   :ensure t
   :config (global-hungry-delete-mode))
 
@@ -341,7 +343,7 @@ line instead."
 ;;;; Navigation START
 (use-package isearch
   :commands (isearch-forward isearch-backward)
-  :defer
+  :defer 5
   :preface
   (provide 'isearch)
   :config
@@ -365,6 +367,10 @@ line instead."
             (isearch-repeat-forward)))
       ad-do-it)))
 
+(use-package swiper
+  :ensure t
+  :bind ("M-i" . swiper))
+
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t
@@ -385,7 +391,12 @@ line instead."
 
 ;;;; Helm START
 
-(use-package helm-ag :ensure t
+(use-package helm-ag
+  :ensure t
+  :commands (ar/helm-ag
+             ar/find-dired-current-dir
+             ar/find-all-dired-current-dir
+             ar/helm-ag-insert)
   :config
   (defun ar/helm-ag-insert (arg)
     ;; Helm-ag and insert match.
@@ -446,6 +457,7 @@ line instead."
 ;;;; Hydra START
 (use-package hydra
   :ensure t
+  :defer 5
   :config
   (validate-setq hydra-is-helpful t)
   (defhydra hydra-search (:color blue)
