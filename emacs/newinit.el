@@ -213,6 +213,10 @@
 
 (bind-key "M-C-y" #'ar/yank-line-below)
 
+(use-package drag-stuff :ensure t
+  :bind (("M-<up>" . drag-stuff-up)
+         ("M-<down>" . drag-stuff-down)))
+
 (use-package whitespace
   :defer 5
   ;; Automatically remove whitespace on saving.
