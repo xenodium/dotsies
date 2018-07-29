@@ -246,6 +246,19 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
+            ;; Remember history of things across launches (ie. kill ring).
+            ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+            (use-package savehist
+              :defer 2
+              :config
+              (vsetq savehist-file "~/.emacs.d/savehist")
+              (vsetq savehist-save-minibuffer-history t)
+              (vsetq history-length 1000)
+              (vsetq savehist-additional-variables
+                     '(kill-ring
+                       search-ring
+                       regexp-search-ring))
+              (savehist-mode +1))
             (use-package whitespace
               :defer 5
               ;; Automatically remove whitespace on saving.
