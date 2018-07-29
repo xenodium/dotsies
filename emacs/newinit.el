@@ -561,7 +561,7 @@ already narrowed."
     (defvar ar/helm-ag--default-locaction nil)
     (when (or arg (not ar/helm-ag--default-locaction))
       (vsetq ar/helm-ag--default-locaction
-                     (read-directory-name "search in: " default-directory nil t)))
+             (read-directory-name "search in: " default-directory nil t)))
     (helm-do-ag ar/helm-ag--default-locaction))
 
   (defun ar/find-dired-current-dir ()
@@ -587,6 +587,10 @@ already narrowed."
         (t
          (vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
 
+(use-package ar-helm-org
+  :commands (ar/helm-org-add-bookmark
+             ar/helm-org-add-backlog-link))
+
 ;;;; Helm END
 
 ;;;; Hydra START
@@ -602,7 +606,18 @@ already narrowed."
     ("a" ar/find-all-dired-current-dir "find all files")
     ("i" ar/helm-ag-insert "insert match")
     ("q" nil "quit"))
-  :bind (("C-c s" . hydra-search/body)))
+  (defhydra hydra-quick-insert (:color blue)
+    "
+Quick insert: _w_eb bookmark _b_acklog bookmark
+              _t_odo _d_one
+"
+    ("w" ar/helm-org-add-bookmark nil)
+    ("b" ar/helm-org-add-backlog-link nil)
+    ("t" ar/org-add-todo nil)
+    ("d" ar/org-add-done nil)
+    ("q" nil nil :color blue))
+  :bind (("C-c s" . hydra-search/body)
+         ("C-c x" . hydra-quick-insert/body)))
 ;;;; Hydra END
 
 ;;;; Buffers START
@@ -694,6 +709,10 @@ already narrowed."
 
   ;; Enable RET to follow Org links.
   (vsetq org-return-follows-link t))
+
+(use-package ar-org
+  :commands (ar/org-add-todo
+             ar/org-add-done))
 
 (use-package ob
   :after org

@@ -7,6 +7,7 @@
 ;;; Code:
 
 
+(require 'ar-org)
 (require 'cl)
 (require 'helm)
 (require 'helm-org)
@@ -73,7 +74,7 @@
                                       (org-end-of-meta-data t)
                                       (org-insert-heading)
                                       (insert (concat new-backlog-link "."))
-                                      (ar/update-blog-timestamp-at-point)
+                                      (ar/org-timestamp-at-point)
                                       (save-buffer))))))))))
 
 (defun ar/helm-org--blog-bookmark-candidates ()
@@ -128,7 +129,7 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                                                                                  (read-string "Description: "
                                                                                               (ar/helm-org--preprocess-description default-description)))))
                                    (org-sort-list nil ?a)
-                                   (ar/update-blog-timestamp-at-point)
+                                   (ar/org-timestamp-at-point)
                                    (hide-other)
                                    (save-buffer)))))))))
 
