@@ -117,7 +117,7 @@
   ;; Enable if you'd like to start as fullscreen.
   ;; (set-frame-parameter nil 'fullscreen 'fullboth)
   ;; Don't want titles in frames.
-  (validate-setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
+  (vsetq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
 (use-package base16-theme
   :ensure t
@@ -142,7 +142,7 @@
 (use-package moody
   :ensure t
   :config
-  (validate-setq x-underline-at-descent-line t)
+  (vsetq x-underline-at-descent-line t)
   (setq-default mode-line-format
                 '(" "
                   mode-line-front-space
@@ -224,11 +224,11 @@
          (prog-mode . whitespace-mode))
   :config
   ;; When nil, fill-column is used instead.
-  (validate-setq whitespace-line-column nil)
+  (vsetq whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines
   ;; longer than fill-column, and trailing blanks.
-  (validate-setq whitespace-style '(face empty tabs lines-tail trailing))
-  (validate-setq show-trailing-whitespace t)
+  (vsetq whitespace-style '(face empty tabs lines-tail trailing))
+  (vsetq show-trailing-whitespace t)
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
                       :background "default"))
@@ -372,10 +372,10 @@ line instead."
   :ensure t
   :defer 0.1
   :config
-  (validate-setq ivy-height 40)
-  (validate-setq ivy-count-format "")
-  (validate-setq ivy-use-virtual-buffers t)
-  (validate-setq enable-recursive-minibuffers t)
+  (vsetq ivy-height 40)
+  (vsetq ivy-count-format "")
+  (vsetq ivy-use-virtual-buffers t)
+  (vsetq enable-recursive-minibuffers t)
   (ivy-mode +1))
 
 ;;;; Navigation START
@@ -387,7 +387,7 @@ line instead."
   :config
   (use-package char-fold)
 
-  (validate-setq search-default-mode #'char-fold-to-regexp)
+  (vsetq search-default-mode #'char-fold-to-regexp)
 
   ;; Prepopulate isearch with selectionn.
   ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
@@ -453,6 +453,12 @@ already narrowed."
   :config
   (global-centered-cursor-mode +1))
 
+(use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
+  :ensure t
+  :bind (("C-c <up>" . git-gutter:previous-hunk)
+         ("C-c <down>" . git-gutter:next-hunk)))
+
 ;;;; Navigation END
 
 ;;;; Helm START
@@ -466,12 +472,12 @@ already narrowed."
   (use-package helm-elisp)
 
   ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
-  (validate-setq helm-show-completion-display-function #'helm-default-display-buffer)
-  (validate-setq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
-  (validate-setq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
-  (validate-setq helm-split-window-default-side 'below) ;; open helm buffer below.
-  (validate-setq helm-split-window-in-side-p t)
-  (validate-setq helm-candidate-number-limit 200)
+  (vsetq helm-show-completion-display-function #'helm-default-display-buffer)
+  (vsetq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (vsetq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (vsetq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (vsetq helm-split-window-in-side-p t)
+  (vsetq helm-candidate-number-limit 200)
 
   (use-package helm-config)
 
@@ -539,7 +545,7 @@ already narrowed."
     (interactive "P")
     (defvar ar/helm-ag--default-locaction nil)
     (when (or arg (not ar/helm-ag--default-locaction))
-      (validate-setq ar/helm-ag--default-locaction
+      (vsetq ar/helm-ag--default-locaction
                      (read-directory-name "search in: " default-directory nil t)))
     (helm-do-ag ar/helm-ag--default-locaction))
 
@@ -558,13 +564,13 @@ already narrowed."
 
 
   (cond ((executable-find "rg")
-         (validate-setq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
+         (vsetq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
         ((executable-find "pt")
-         (validate-setq helm-ag-base-command "pt -e --nocolor --nogroup"))
+         (vsetq helm-ag-base-command "pt -e --nocolor --nogroup"))
         ((executable-find "ag")
-         (validate-setq helm-ag-base-command "ag --nocolor --nogroup"))
+         (vsetq helm-ag-base-command "ag --nocolor --nogroup"))
         (t
-         (validate-setq helm-ag-base-command "ack --nocolor --nogroup"))))
+         (vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
 
 ;;;; Helm END
 
@@ -573,7 +579,7 @@ already narrowed."
   :ensure t
   :defer 5
   :config
-  (validate-setq hydra-is-helpful t)
+  (vsetq hydra-is-helpful t)
   (defhydra hydra-search (:color blue)
     "search"
     ("d" ar/helm-ag "search directory")
@@ -673,6 +679,33 @@ already narrowed."
 
   ;; Enable RET to follow Org links.
   (vsetq org-return-follows-link t))
+
+(use-package ob
+  :after org
+  :bind (:map org-mode-map
+              ("C-c C-c" . org-ctrl-c-ctrl-c))
+  :config
+  (vsetq org-export-babel-evaluate nil)
+
+  (use-package ob-objc)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (ditaa . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (gnuplot . t)
+     (haskell . nil)
+     (ocaml . nil)
+     (python . t)
+     (ruby . t)
+     (screen . nil)
+     (objc . t)
+     (shell . t)
+     (js . t)
+     (sql . nil)
+     (sqlite . t))))
 
 ;;;; Org END
 
