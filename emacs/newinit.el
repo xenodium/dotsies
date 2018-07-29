@@ -177,6 +177,13 @@
 
 ;;;; Appearance END
 
+;;; Base libraries START
+
+(use-package s
+  :ensure t)
+
+;;; Base libraries END
+
 ;;;; Init maintenance START
 
 ;; Find errors in init.el by bisecting the file.
@@ -763,7 +770,12 @@ Quick insert: _w_eb bookmark _b_acklog bookmark
 
 ;;;; Hammerspoon START
 
+;; Add TODOs modally.
 (use-package ar-hammerspoon-org-modal
+  :defer 5)
+
+;; Search for index.org bookmarks modally.
+(use-package modal-ivy
   :defer 5)
 
 ;;;; Hammerspoon END
