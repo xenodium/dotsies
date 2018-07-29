@@ -1,8 +1,6 @@
-;; Put off GC until 10MB of allocation or 5s of idle time.
-(setq gc-cons-threshold (* 10 1024 1024))
-(setq gc-cons-percentage 0.2)
-(run-with-idle-timer 5 t #'garbage-collect)
-(setq garbage-collection-messages t)
+;;; Init.el GC values (undone at end).
+(setq gc-cons-threshold (* 384 1024 1024)
+      gc-cons-percentage 0.6)
 
 ;; Match theme color early on, so loading experience is smoother.
 (set-background-color "#1b181b")
@@ -718,6 +716,12 @@ already narrowed."
 ;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
 (add-hook 'emacs-startup-hook
           (lambda ()
+            ;; Now set GC values post init.el.
+            (vsetq gc-cons-threshold 16777216
+                   gc-cons-percentage 0.1)
+            (run-with-idle-timer 5 t #'garbage-collect)
+            (vsetq garbage-collection-messages t)
+
             (message "Emacs ready in %s with %d garbage collections."
                      (format "%.2f seconds"
                              (float-time
