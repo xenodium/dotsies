@@ -3191,56 +3191,6 @@ Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
        (file-name-directory fPath)))
     (message "File path copied: %s" fPath)))
 
-(defun ar/open-file-at-point ()
-  "Open the file path at point.
-If there is text selection, uses the text selection for path.
-If the path starts with “http://”, open the URL in browser.
-Input path can be {relative, full path, URL}.
-Path may have a trailing “:‹n›” that indicates line number.
-If so, jump to that line number.
-If path does not have a file extention, automatically try with “.el” for elisp
-files.
-This command is similar to `find-file-at-point' but without prompting for
-confirmation.
-
-URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
-  (interactive)
-  (let ((ξpath (if (use-region-p)
-                   (buffer-substring-no-properties (region-beginning) (region-end))
-                 (let (p0 p1 p2)
-                   (validate-setq p0 (point))
-                   ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-                   (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
-                   (validate-setq p1 (point))
-                   (goto-char p0)
-                   (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
-                   (validate-setq p2 (point))
-                   (goto-char p0)
-                   (buffer-substring-no-properties p1 p2)))))
-    (if (string-match-p "\\`https?://" ξpath)
-        (browse-url ξpath)
-      (progn ; not starting “http://”
-        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" ξpath)
-            (progn
-              (let (
-                    (ξfpath (match-string 1 ξpath))
-                    (ξline-num (string-to-number (match-string 2 ξpath))))
-                (if (file-exists-p ξfpath)
-                    (progn
-                      (find-file ξfpath)
-                      (goto-char 1)
-                      (forward-line (1- ξline-num)))
-                  (progn
-                    (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξfpath))
-                      (find-file ξfpath))))))
-          (progn
-            (if (file-exists-p ξpath)
-                (find-file ξpath)
-              (if (file-exists-p (concat ξpath ".el"))
-                  (find-file (concat ξpath ".el"))
-                (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
-                  (find-file ξpath ))))))))))
-
 ;; Disabling rich text clipboard support (Used on macOX).
 ;; (unless (ar/linux-p)
 ;;   ;; No linux support.
@@ -3458,7 +3408,7 @@ _v_ariable       _u_ser-option
   "open"
   ("o" ff-find-other-file "other")
   ("e" ar/platform-open-in-external-app "externally")
-  ("u" ar/open-file-at-point "url at point")
+  ("u" ar/platform-open-file-at-point "url at point")
   ("b" ar/file-open-closest-build-file "build file")
   ("q" nil "cancel"))
 
@@ -3468,7 +3418,7 @@ Open: _p_oint _e_xternally
       _u_rls
 "
   ("e" ar/platform-open-in-external-app nil)
-  ("p" ar/open-file-at-point nil)
+  ("p" ar/platform-open-file-at-point nil)
   ("u" link-hint-open-link nil)
   ("q" nil "cancel"))
 
@@ -3476,7 +3426,7 @@ Open: _p_oint _e_xternally
   "open"
   ("o" ff-find-other-file "other")
   ("e" ar/platform-open-in-external-app "externally")
-  ("u" ar/open-file-at-point "url at point")
+  ("u" ar/platform-open-file-at-point "url at point")
   ("b" ar/file-open-closest-build-file "build file")
   ("q" nil "cancel"))
 
