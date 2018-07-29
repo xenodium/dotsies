@@ -8,6 +8,7 @@
 
 (require 'ox-html)
 (require 'ar-file)
+(require 'ob-plantuml)
 
 (defun ar/org-html-export-to-kill-ring ()
   "Export current buffer as HTML to kill ring.
