@@ -2,6 +2,10 @@
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
 
+;;; Temprarily avoid loading modes during init (undone at end).
+(defvar ar/init--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
 ;; Match theme color early on, so loading experience is smoother.
 (set-background-color "#1b181b")
 
@@ -711,6 +715,18 @@ already narrowed."
   :if (locate-library "ar-mu4e")
   :bind (:map global-map
               ("M-m" . ar/mu4e--view-unread-messages)))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            ;; Undo GC values post init.el.
+            (vsetq gc-cons-threshold 16777216
+                   gc-cons-percentage 0.1)
+            (run-with-idle-timer 5 t #'garbage-collect)
+            (vsetq garbage-collection-messages t)))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist ar/init--file-name-handler-alist)))
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 ;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
