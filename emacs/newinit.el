@@ -1073,6 +1073,11 @@ Git: _n_ext     _s_tage  _d_iff
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
+                (load file))))
+
 (provide 'init)
 ;;; init.el ends here
 
