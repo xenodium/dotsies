@@ -106,6 +106,11 @@
 (use-package use-package-ensure-system-package
   :ensure t)
 
+(use-package use-package-chords
+  :ensure t
+  :config
+  (key-chord-mode 1))
+
 ;;;; Set up use-package END
 
 ;;;; Init helpers START
@@ -473,35 +478,35 @@ line instead."
                           (isearch-repeat-backward)
                         (goto-char (mark))
                         (isearch-repeat-forward)))
-                  ad-do-it)))))
+                  ad-do-it)))
 
-;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-(defun ar/narrow-or-widen-dwim (p)
-  "Widen if buffer is narrowed, narrow-dwim otherwise.
+            ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+            (defun ar/narrow-or-widen-dwim (p)
+              "Widen if buffer is narrowed, narrow-dwim otherwise.
 Dwim means: region, org-src-block, org-subtree, or defun,
 whichever applies first. Narrowing to org-src-block actually
 calls `org-edit-src-code'.
 
 With prefix P, don't widen, just narrow even if buffer is
 already narrowed."
-  (interactive "P")
-  (declare (interactive-only))
-  (cond ((and (buffer-narrowed-p) (not p)) (widen))
-        ((region-active-p)
-         (narrow-to-region (region-beginning) (region-end)))
-        ((derived-mode-p 'org-mode)
-         ;; `org-edit-src-code' is not a real narrowing
-         ;; command. Remove this first conditional if you
-         ;; don't want it.
-         (cond ((ignore-errors (org-edit-src-code))
-                (delete-other-windows))
-               ((ignore-errors (org-narrow-to-block) t))
-               (t (org-narrow-to-subtree))))
-        ((derived-mode-p 'latex-mode)
-         (LaTeX-narrow-to-environment))
-        (t (narrow-to-defun))))
+              (interactive "P")
+              (declare (interactive-only))
+              (cond ((and (buffer-narrowed-p) (not p)) (widen))
+                    ((region-active-p)
+                     (narrow-to-region (region-beginning) (region-end)))
+                    ((derived-mode-p 'org-mode)
+                     ;; `org-edit-src-code' is not a real narrowing
+                     ;; command. Remove this first conditional if you
+                     ;; don't want it.
+                     (cond ((ignore-errors (org-edit-src-code))
+                            (delete-other-windows))
+                           ((ignore-errors (org-narrow-to-block) t))
+                           (t (org-narrow-to-subtree))))
+                    ((derived-mode-p 'latex-mode)
+                     (LaTeX-narrow-to-environment))
+                    (t (narrow-to-defun))))
 
-(bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
+            (bind-key "C-x n n" #'ar/narrow-or-widen-dwim)))
 
 (use-package swiper
   :ensure t
@@ -528,6 +533,17 @@ already narrowed."
   :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk)))
+
+(use-package window
+  :chords (("BB" . other-window)
+           ("JJ" . ar/switch-to-previous-buffer))
+  :init
+  ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
+  (defun ar/switch-to-previous-buffer ()
+    "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1))))
 
 (add-hook 'emacs-startup-hook
           (lambda ()
@@ -618,13 +634,13 @@ already narrowed."
       (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
       (indent-for-tab-command))
     (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
-                               :init 'helm-ag--do-ag-set-command
-                               :candidates-process 'helm-ag--do-ag-candidate-process
-                               :action 'ar/insert-candidate
-                               :nohighlight t
-                               :requires-pattern 3
-                               :candidate-number-limit 9999
-                               :keymap helm-do-ag-map)))
+                                                      :init 'helm-ag--do-ag-set-command
+                                                      :candidates-process 'helm-ag--do-ag-candidate-process
+                                                      :action 'ar/insert-candidate
+                                                      :nohighlight t
+                                                      :requires-pattern 3
+                                                      :candidate-number-limit 9999
+                                                      :keymap helm-do-ag-map)))
       (call-interactively #'ar/helm-ag)))
 
   (defun ar/helm-ag (arg)
