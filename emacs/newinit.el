@@ -224,7 +224,8 @@
 
 (bind-key "M-C-y" #'ar/yank-line-below)
 
-(use-package drag-stuff :ensure t
+(use-package drag-stuff
+  :ensure t
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
 
@@ -244,14 +245,16 @@
                       :foreground "DarkOrange1"
                       :background "default"))
 
-(use-package smartparens :ensure t
+(use-package smartparens
+  :ensure t
+  :defer 0.01
   ;; Add to minibuffer also.
-  :hook ((minibuffer-setup . smartparens-mode))
+  :hook ((minibuffer-setup . smartparens-mode)
+         (prog-mode . smartparens-strict-mode))
   :config
   (require 'smartparens-config)
   (require 'smartparens-html)
   (require 'smartparens-python)
-  (smartparens-global-strict-mode +1)
 
   (defun ar/kill-region-advice-fun (orig-fun &rest r)
     "Advice function around `kill-region' (ORIG-FUN and R)."
@@ -474,6 +477,21 @@ already narrowed."
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk)))
 
+;; In addition to highlighting, we get navigation between
+(use-package highlight-symbol
+  :hook ((prog-mode . highlight-symbol-mode)
+         (prog-mode . highlight-symbol-nav-mode))
+  :ensure t
+  :bind (:map highlight-symbol-nav-mode-map
+              (("M-n" . highlight-symbol-next)
+               ("M-p" . highlight-symbol-prev)))
+  :config
+  (set-face-attribute 'highlight-symbol-face nil
+                      :background "default"
+                      :foreground "yellow")
+  (vsetq highlight-symbol-idle-delay 0.2)
+  (vsetq highlight-symbol-on-navigation-p t))
+
 ;;;; Navigation END
 
 ;;;; Helm START
@@ -546,13 +564,13 @@ already narrowed."
       (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
       (indent-for-tab-command))
     (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
-                               :init 'helm-ag--do-ag-set-command
-                               :candidates-process 'helm-ag--do-ag-candidate-process
-                               :action 'ar/insert-candidate
-                               :nohighlight t
-                               :requires-pattern 3
-                               :candidate-number-limit 9999
-                               :keymap helm-do-ag-map)))
+                                                      :init 'helm-ag--do-ag-set-command
+                                                      :candidates-process 'helm-ag--do-ag-candidate-process
+                                                      :action 'ar/insert-candidate
+                                                      :nohighlight t
+                                                      :requires-pattern 3
+                                                      :candidate-number-limit 9999
+                                                      :keymap helm-do-ag-map)))
       (call-interactively #'ar/helm-ag)))
 
   (defun ar/helm-ag (arg)
