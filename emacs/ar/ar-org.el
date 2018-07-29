@@ -113,7 +113,7 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
       (org-end-of-meta-data t)
       (org-insert-heading)
       (insert child)
-      (ar/update-blog-timestamp-at-point)
+      (ar/org-timestamp-at-point)
       (save-buffer))))
 
 (defun ar/org-goto-current-week ()
@@ -345,6 +345,12 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
       (org-return)))
    (t
     (org-return))))
+
+(defun ar/org-timestamp-at-point ()
+  "Update blog entry timestamp at point."
+  (interactive)
+  (ar/org-update-drawer "MODIFIED"
+                        (format-time-string "[%Y-%m-%d %a]")))
 
 (provide 'ar-org)
 

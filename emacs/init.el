@@ -3933,12 +3933,6 @@ line instead."
 ;; For plantuml see https://zhangweize.wordpress.com/2010/09/20/update-plantuml-mode
 ;; (use-package  puml-mode :ensure t)
 
-(defun ar/update-blog-timestamp-at-point ()
-  "Update blog entry timestamp at point."
-  (interactive)
-  (ar/org-update-drawer "MODIFIED"
-                        (format-time-string "[%Y-%m-%d %a]")))
-
 (defun ar/org-confirm-babel-evaluate (lang body)
   "Do not confirm org babel evaluation for LANG and BODY."
   (and
