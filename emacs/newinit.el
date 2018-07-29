@@ -244,75 +244,76 @@
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
 
-(use-package whitespace
-  :defer 5
-  ;; Automatically remove whitespace on saving.
-  :hook ((before-save . whitespace-cleanup)
-         (prog-mode . whitespace-mode))
-  :config
-  ;; When nil, fill-column is used instead.
-  (vsetq whitespace-line-column nil)
-  ;; Highlight empty lines, TABs, blanks at beginning/end, lines
-  ;; longer than fill-column, and trailing blanks.
-  (vsetq whitespace-style '(face empty tabs lines-tail trailing))
-  (vsetq show-trailing-whitespace t)
-  (set-face-attribute 'whitespace-line nil
-                      :foreground "DarkOrange1"
-                      :background "default"))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (use-package whitespace
+              :defer 5
+              ;; Automatically remove whitespace on saving.
+              :hook ((before-save . whitespace-cleanup)
+                     (prog-mode . whitespace-mode))
+              :config
+              ;; When nil, fill-column is used instead.
+              (vsetq whitespace-line-column nil)
+              ;; Highlight empty lines, TABs, blanks at beginning/end, lines
+              ;; longer than fill-column, and trailing blanks.
+              (vsetq whitespace-style '(face empty tabs lines-tail trailing))
+              (vsetq show-trailing-whitespace t)
+              (set-face-attribute 'whitespace-line nil
+                                  :foreground "DarkOrange1"
+                                  :background "default"))
+            (use-package smartparens
+              :ensure t
+              :defer 0.01
+              ;; Add to minibuffer also.
+              :hook ((minibuffer-setup . smartparens-mode)
+                     (prog-mode . smartparens-strict-mode)
+                     (eshell-mode . smartparens-strict-mode))
+              :config
+              (require 'smartparens-config)
+              (require 'smartparens-html)
+              (require 'smartparens-python)
 
-(use-package smartparens
-  :ensure t
-  :defer 0.01
-  ;; Add to minibuffer also.
-  :hook ((minibuffer-setup . smartparens-mode)
-         (prog-mode . smartparens-strict-mode)
-         (eshell-mode . smartparens-strict-mode))
-  :config
-  (require 'smartparens-config)
-  (require 'smartparens-html)
-  (require 'smartparens-python)
+              (defun ar/kill-region-advice-fun (orig-fun &rest r)
+                "Advice function around `kill-region' (ORIG-FUN and R)."
+                (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
+                        mark-active)
+                    (apply orig-fun r)
+                  ;; Kill entire line.
+                  (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
+                        (offset (- (point)
+                                   (line-beginning-position))))
+                    (apply orig-fun (list (line-beginning-position)
+                                          (line-end-position)
+                                          nil))
+                    (delete-char 1)
+                    (forward-char (min offset
+                                       (- (line-end-position)
+                                          (line-beginning-position)))))))
 
-  (defun ar/kill-region-advice-fun (orig-fun &rest r)
-    "Advice function around `kill-region' (ORIG-FUN and R)."
-    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
-            mark-active)
-        (apply orig-fun r)
-      ;; Kill entire line.
-      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
-            (offset (- (point)
-                       (line-beginning-position))))
-        (apply orig-fun (list (line-beginning-position)
-                              (line-end-position)
-                              nil))
-        (delete-char 1)
-        (forward-char (min offset
-                           (- (line-end-position)
-                              (line-beginning-position)))))))
+              (advice-add 'kill-region
+                          :around
+                          'ar/kill-region-advice-fun)
 
-  (advice-add 'kill-region
-              :around
-              'ar/kill-region-advice-fun)
+              ;; I prefer keeping C-w to DWIM kill, provided by
+              ;; `ar/kill-region-advice-fun'. Removing remap.
+              ;;   (define-key smartparens-strict-mode-map [remap kill-region] nil)
 
-  ;; I prefer keeping C-w to DWIM kill, provided by
-  ;; `ar/kill-region-advice-fun'. Removing remap.
-  ;;   (define-key smartparens-strict-mode-map [remap kill-region] nil)
+              (defun ar/smartparens-wrap-square-bracket (arg)
+                "[] equivalent of `paredit-wrap-round'."
+                (interactive "P")
+                (save-excursion
+                  (unless (sp-point-in-symbol)
+                    (backward-char))
+                  (sp-wrap-with-pair "["))
+                (insert " "))
 
-  (defun ar/smartparens-wrap-square-bracket (arg)
-    "[] equivalent of `paredit-wrap-round'."
-    (interactive "P")
-    (save-excursion
-      (unless (sp-point-in-symbol)
-        (backward-char))
-      (sp-wrap-with-pair "["))
-    (insert " "))
-
-  :bind (:map smartparens-strict-mode-map
-              ([remap kill-region] . kill-region)
-              ("C-c <right>" . sp-forward-slurp-sexp)
-              ("C-c <left>" . sp-forward-barf-sexp)
-              ("M-[" . sp-rewrap-sexp)
-              :map smartparens-mode-map
-              ("M-]" . ar/smartparens-wrap-square-bracket)))
+              :bind (:map smartparens-strict-mode-map
+                          ([remap kill-region] . kill-region)
+                          ("C-c <right>" . sp-forward-slurp-sexp)
+                          ("C-c <left>" . sp-forward-barf-sexp)
+                          ("M-[" . sp-rewrap-sexp)
+                          :map smartparens-mode-map
+                          ("M-]" . ar/smartparens-wrap-square-bracket)))))
 
 
 (use-package region-bindings-mode
@@ -432,31 +433,34 @@ line instead."
 ;;;; Ivy END
 
 ;;;; Navigation START
-(use-package isearch
-  :commands (isearch-forward isearch-backward)
-  :defer 5
-  :preface
-  (provide 'isearch)
-  :config
-  (use-package char-fold)
 
-  (vsetq search-default-mode #'char-fold-to-regexp)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (use-package isearch
+              :commands (isearch-forward isearch-backward)
+              :defer 5
+              :preface
+              (provide 'isearch)
+              :config
+              (use-package char-fold)
 
-  ;; Prepopulate isearch with selectionn.
-  ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
-  (defadvice isearch-mode (around isearch-mode-default-string
-                                  (forward &optional regexp op-fun recursive-edit word-p) activate)
-    "Enable isearch to start with current selection."
-    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-        (progn
-          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
-          (deactivate-mark)
-          ad-do-it
-          (if (not forward)
-              (isearch-repeat-backward)
-            (goto-char (mark))
-            (isearch-repeat-forward)))
-      ad-do-it)))
+              (vsetq search-default-mode #'char-fold-to-regexp)
+
+              ;; Prepopulate isearch with selectionn.
+              ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
+              (defadvice isearch-mode (around isearch-mode-default-string
+                                              (forward &optional regexp op-fun recursive-edit word-p) activate)
+                "Enable isearch to start with current selection."
+                (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+                    (progn
+                      (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+                      (deactivate-mark)
+                      ad-do-it
+                      (if (not forward)
+                          (isearch-repeat-backward)
+                        (goto-char (mark))
+                        (isearch-repeat-forward)))
+                  ad-do-it)))))
 
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
@@ -512,20 +516,22 @@ already narrowed."
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk)))
 
-;; In addition to highlighting, we get navigation between
-(use-package highlight-symbol
-  :hook ((prog-mode . highlight-symbol-mode)
-         (prog-mode . highlight-symbol-nav-mode))
-  :ensure t
-  :bind (:map highlight-symbol-nav-mode-map
-              (("M-n" . highlight-symbol-next)
-               ("M-p" . highlight-symbol-prev)))
-  :config
-  (set-face-attribute 'highlight-symbol-face nil
-                      :background "default"
-                      :foreground "yellow")
-  (vsetq highlight-symbol-idle-delay 0.2)
-  (vsetq highlight-symbol-on-navigation-p t))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            ;; In addition to highlighting, we get navigation between
+            (use-package highlight-symbol
+              :hook ((prog-mode . highlight-symbol-mode)
+                     (prog-mode . highlight-symbol-nav-mode))
+              :ensure t
+              :bind (:map highlight-symbol-nav-mode-map
+                          (("M-n" . highlight-symbol-next)
+                           ("M-p" . highlight-symbol-prev)))
+              :config
+              (set-face-attribute 'highlight-symbol-face nil
+                                  :background "default"
+                                  :foreground "yellow")
+              (vsetq highlight-symbol-idle-delay 0.2)
+              (vsetq highlight-symbol-on-navigation-p t))))
 
 ;;;; Navigation END
 
@@ -659,78 +665,81 @@ already narrowed."
 ;;;; Less important END
 
 ;;;; Hydra START
-(use-package hydra
-  :ensure t
-  :defer 5
-  :config
-  (vsetq hydra-is-helpful t)
-  (defhydra hydra-search (:color blue)
-    "search"
-    ("d" ar/helm-ag "search directory")
-    ("f" ar/find-dired-current-dir "find file")
-    ("a" ar/find-all-dired-current-dir "find all files")
-    ("i" ar/helm-ag-insert "insert match")
-    ("q" nil "quit"))
-  (defhydra hydra-quick-insert (:color blue)
-    "
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (use-package hydra
+              :ensure t
+              :defer 5
+              :config
+              (vsetq hydra-is-helpful t)
+              (defhydra hydra-search (:color blue)
+                "search"
+                ("d" ar/helm-ag "search directory")
+                ("f" ar/find-dired-current-dir "find file")
+                ("a" ar/find-all-dired-current-dir "find all files")
+                ("i" ar/helm-ag-insert "insert match")
+                ("q" nil "quit"))
+              (defhydra hydra-quick-insert (:color blue)
+                "
 Quick insert: _w_eb bookmark _b_acklog bookmark
               _t_odo _d_one
 "
-    ("w" ar/helm-org-add-bookmark nil)
-    ("b" ar/helm-org-add-backlog-link nil)
-    ("t" ar/org-add-todo nil)
-    ("d" ar/org-add-done nil)
-    ("q" nil nil :color blue))
+                ("w" ar/helm-org-add-bookmark nil)
+                ("b" ar/helm-org-add-backlog-link nil)
+                ("t" ar/org-add-todo nil)
+                ("d" ar/org-add-done nil)
+                ("q" nil nil :color blue))
 
-  (defun ar/hydra-open-dwim ()
-    "Choose \"open\" hydra based on current mode."
-    (interactive)
-    (cond ((derived-mode-p 'c-mode) (hydra-open-c-mode/body))
-          ((derived-mode-p 'prog-mode) (hydra-open-prog-mode/body))
-          (t (hydra-open/body))))
+              (defun ar/hydra-open-dwim ()
+                "Choose \"open\" hydra based on current mode."
+                (interactive)
+                (cond ((derived-mode-p 'c-mode) (hydra-open-c-mode/body))
+                      ((derived-mode-p 'prog-mode) (hydra-open-prog-mode/body))
+                      (t (hydra-open/body))))
 
-  (defhydra hydra-open-c-mode (:color blue)
-    "open"
-    ("o" ff-find-other-file "other")
-    ("e" ar/platform-open-in-external-app "externally")
-    ("u" ar/platform-open-file-at-point "url at point")
-    ("b" ar/file-open-closest-build-file "build file")
-    ("q" nil "cancel"))
+              (defhydra hydra-open-c-mode (:color blue)
+                "open"
+                ("o" ff-find-other-file "other")
+                ("e" ar/platform-open-in-external-app "externally")
+                ("u" ar/platform-open-file-at-point "url at point")
+                ("b" ar/file-open-closest-build-file "build file")
+                ("q" nil "cancel"))
 
-  (defhydra hydra-open (:color blue)
-    "
+              (defhydra hydra-open (:color blue)
+                "
 Open: _p_oint _e_xternally
 "
-    ("e" ar/platform-open-in-external-app nil)
-    ("p" ar/platform-open-file-at-point nil)
-    ("q" nil "cancel"))
+                ("e" ar/platform-open-in-external-app nil)
+                ("p" ar/platform-open-file-at-point nil)
+                ("q" nil "cancel"))
 
-  (defhydra hydra-open-prog-mode (:color blue)
-    "open"
-    ("o" ff-find-other-file "other")
-    ("e" ar/platform-open-in-external-app "externally")
-    ("u" ar/platform-open-file-at-point "url at point")
-    ("b" ar/file-open-closest-build-file "build file")
-    ("q" nil "cancel"))
+              (defhydra hydra-open-prog-mode (:color blue)
+                "open"
+                ("o" ff-find-other-file "other")
+                ("e" ar/platform-open-in-external-app "externally")
+                ("u" ar/platform-open-file-at-point "url at point")
+                ("b" ar/file-open-closest-build-file "build file")
+                ("q" nil "cancel"))
 
-  (defhydra hydra-git-gutter (:pre (git-gutter-mode +1))
-    "
+              (defhydra hydra-git-gutter (:pre (git-gutter-mode +1))
+                "
 Git: _n_ext     _s_tage  _d_iff
      _p_revious _k_ill _q_uit
 "
-    ("n" git-gutter:next-hunk nil)
-    ("p" git-gutter:previous-hunk nil)
-    ("s" git-gutter:stage-hunk nil)
-    ("k" (lambda ()
-           (interactive)
-           (git-gutter:revert-hunk)
-           (call-interactively #'git-gutter:next-hunk)) nil)
-    ("d" git-gutter:popup-hunk nil)
-    ("q" nil nil :color blue))
-  :bind (("C-c s" . hydra-search/body)
-         ("C-c x" . hydra-quick-insert/body)
-         ("C-c o" . ar/hydra-open-dwim)
-         ("C-c g" . hydra-git-gutter/body)))
+                ("n" git-gutter:next-hunk nil)
+                ("p" git-gutter:previous-hunk nil)
+                ("s" git-gutter:stage-hunk nil)
+                ("k" (lambda ()
+                       (interactive)
+                       (git-gutter:revert-hunk)
+                       (call-interactively #'git-gutter:next-hunk)) nil)
+                ("d" git-gutter:popup-hunk nil)
+                ("q" nil nil :color blue))
+              :bind (("C-c s" . hydra-search/body)
+                     ("C-c x" . hydra-quick-insert/body)
+                     ("C-c o" . ar/hydra-open-dwim)
+                     ("C-c g" . hydra-git-gutter/body)))))
 ;;;; Hydra END
 
 ;;;; Buffers START
@@ -884,8 +893,8 @@ Git: _n_ext     _s_tage  _d_iff
 
       ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
       (when (boundp 'company-begin-commands)
-       (setq-local company-begin-commands
-                  (append company-begin-commands (list 'comint-magic-space))))
+        (setq-local company-begin-commands
+                    (append company-begin-commands (list 'comint-magic-space))))
 
       (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
     :config
