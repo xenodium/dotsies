@@ -403,6 +403,8 @@ line instead."
          (term-exec . with-editor-export-editor)
          (shell-mode . with-editor-export-editor)))
 
+;;;; Ivy START
+
 ;; Ivy equivalents to Emacs commands.
 (use-package counsel
   :ensure t
@@ -413,6 +415,10 @@ line instead."
     :ensure t)
   (counsel-mode +1))
 
+(use-package counsel-projectile
+  :ensure t
+  :bind ("C-x f" . counsel-projectile-find-file))
+
 (use-package ivy
   :ensure t
   :defer 0.1
@@ -422,6 +428,8 @@ line instead."
   (vsetq ivy-use-virtual-buffers t)
   (vsetq enable-recursive-minibuffers t)
   (ivy-mode +1))
+
+;;;; Ivy END
 
 ;;;; Navigation START
 (use-package isearch
