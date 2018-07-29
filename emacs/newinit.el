@@ -359,6 +359,10 @@ line instead."
   :ensure t
   :config (global-hungry-delete-mode))
 
+(use-package ar-text
+  :bind (("C-c c" . ar/text-capitalize-word-toggle)
+         ("C-c r" . set-rectangular-region-anchor)))
+
 ;;;; Editing END
 
 (use-package magit
