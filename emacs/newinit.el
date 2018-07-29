@@ -761,10 +761,27 @@ Quick insert: _w_eb bookmark _b_acklog bookmark
 
 ;;;; Org END
 
+;;;; Hammerspoon START
+
+(use-package ar-hammerspoon-org-modal
+  :defer 5)
+
+;;;; Hammerspoon END
+
+
+;;;; Mail START
+
 (use-package ar-mu4e
   :if (locate-library "ar-mu4e")
   :bind (:map global-map
               ("M-m" . ar/mu4e--view-unread-messages)))
+;;;; Mail END
+
+(use-package server
+  :defer 10
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (add-hook 'emacs-startup-hook
           (lambda ()

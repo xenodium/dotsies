@@ -79,11 +79,23 @@ function emacsExecute(activate, elisp)
       })
    end
 
-   output,success = hs.execute("~/homebrew/bin/emacsclient -ne \""..elisp.."\" -s /tmp/emacs*/server")
-   if not success then
-      hs.alert.show("Emacs did not execute: "..elisp)
+   local socket, found = emacsSocketPath()
+   if not found then
+      hs.alert.show("Could not get emacs socket path")
+      return "", false
    end
 
+   local output,success = hs.execute("~/homebrew/bin/emacsclient -ne \""..elisp.."\" -s "..socket)
+   if not success then
+      hs.alert.show("Emacs did not execute: "..elisp)
+      return "", false
+   end
+
+   return output, success
+end
+
+function emacsSocketPath()
+   local output,success = hs.execute("~/local/bin/emacssocket")
    return output, success
 end
 
