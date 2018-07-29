@@ -378,6 +378,12 @@ line instead."
   :ensure t
   :config (global-hungry-delete-mode))
 
+(use-package delsel
+  :defer 5
+  :config
+  ;; Override selection with new text.
+  (delete-selection-mode +1))
+
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))
