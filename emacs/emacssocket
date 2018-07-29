@@ -1,0 +1,5 @@
+#!/bin/bash
+set -o nounset
+set -o errexit
+
+lsof -c Emacs | grep server | tr -s " " | cut -d' ' -f 8
