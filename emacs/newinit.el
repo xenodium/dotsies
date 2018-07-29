@@ -115,6 +115,14 @@
   :config
   (defalias 'vsetq 'validate-setq))
 
+;; https://oremacs.com/2015/01/17/setting-up-ediff
+;; Macro for setting custom variables.
+;; Similar to custom-set-variables, but more like setq.
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set)
+                'set-default)
+            ',variable ,value))
+
 ;;;; Init helpers END
 
 ;;;; Appearance START
@@ -257,7 +265,8 @@
   :defer 0.01
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
-         (prog-mode . smartparens-strict-mode))
+         (prog-mode . smartparens-strict-mode)
+         (eshell-mode . smartparens-strict-mode))
   :config
   (require 'smartparens-config)
   (require 'smartparens-html)
@@ -382,6 +391,11 @@ line instead."
   (add-to-list 'magit-no-confirm 'stage-all-changes)
   (message "magit")
   (fullframe magit-status magit-mode-quit-window))
+
+(use-package with-editor :ensure t
+  :hook ((eshell-mode . with-editor-export-editor)
+         (term-exec . with-editor-export-editor)
+         (shell-mode . with-editor-export-editor)))
 
 ;; Ivy equivalents to Emacs commands.
 (use-package counsel
@@ -646,9 +660,11 @@ Quick insert: _w_eb bookmark _b_acklog bookmark
 ;;;; Hydra END
 
 ;;;; Buffers START
+
 (use-package menu-bar
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
+
 ;;;; Buffers END
 
 ;;;; Org START
@@ -767,6 +783,96 @@ Quick insert: _w_eb bookmark _b_acklog bookmark
      (sqlite . t))))
 
 ;;;; Org END
+
+;;;; Eshell START
+
+(use-package shell-pop
+  :ensure t
+  :config
+
+  (use-package eshell
+    :hook (eshell-mode . ar/eshell-mode-hook-function)
+    :init
+    (defun ar/eshell-mode-hook-function ()
+      ;; Turn off semantic-mode in eshell buffers.
+      (semantic-mode -1)
+
+      (eshell-smart-initialize)
+
+      (setq-local global-hl-line-mode nil)
+
+      (add-to-list 'eshell-visual-commands "ssh")
+      (add-to-list 'eshell-visual-commands "tail")
+      (add-to-list 'eshell-visual-commands "top")
+
+      ;; TODO: Enable company.
+      ;; (setq-local company-backends '((company-projectile-cd company-escaped-files)))
+
+      ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
+      (when (boundp 'company-begin-commands)
+       (setq-local company-begin-commands
+                  (append company-begin-commands (list 'comint-magic-space))))
+
+      (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
+    :config
+    (use-package em-hist)
+    (use-package em-glob)
+
+    (use-package esh-mode
+      :config
+      ;; Why is validate-setq not finding it?
+      (setq eshell-scroll-to-bottom-on-input 'all))
+
+    (use-package em-dirs)
+    (use-package em-smart)
+
+    ;; Avoid "WARNING: terminal is not fully functional."
+    ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
+    (setenv "PAGER" "cat")
+
+    (vsetq eshell-where-to-jump 'begin)
+    (vsetq eshell-review-quick-commands nil)
+    (vsetq eshell-smart-space-goes-to-end t)
+
+    (vsetq eshell-history-size (* 10 1024))
+    (vsetq eshell-hist-ignoredups t)
+    (vsetq eshell-error-if-no-glob t)
+    (vsetq eshell-glob-case-insensitive t)
+    (vsetq eshell-list-files-after-cd nil)
+
+    (defun ar/eshell-cd-to-parent ()
+      (interactive)
+      (goto-char (point-max))
+      (insert "cd ..")
+      (eshell-send-input nil t))
+
+    (use-package ar-eshell-config))
+
+  ;; Must use custom set for these.
+  (csetq shell-pop-window-position "full")
+  (csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
+                                                      (eshell))))
+  (csetq shell-pop-term-shell "eshell")
+
+  (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
+    "Shell pop with arg to cd to working dir. Else use existing location."
+    (interactive "P")
+    ;; shell-pop-autocd-to-working-dir is defined in shell-pop.el.
+    ;; Using lexical binding to override.
+    (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
+        (shell-pop-out)
+      (shell-pop-up shell-pop-last-shell-buffer-index)))
+
+  ;; (csetq shell-pop-term-shell "/bin/bash")
+
+  ;; (csetq shell-pop-shell-type '("ansi-term"
+  ;;                              "terminal"
+  ;;                              (lambda
+  ;;                                nil (ansi-term shell-pop-term-shell))))
+
+  :bind (([f5] . ar/shell-pop)))
+
+;;;; Eshell END
 
 ;;;; Hammerspoon START
 
