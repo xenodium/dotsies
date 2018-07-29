@@ -605,13 +605,13 @@ already narrowed."
       (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
       (indent-for-tab-command))
     (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
-                                                      :init 'helm-ag--do-ag-set-command
-                                                      :candidates-process 'helm-ag--do-ag-candidate-process
-                                                      :action 'ar/insert-candidate
-                                                      :nohighlight t
-                                                      :requires-pattern 3
-                                                      :candidate-number-limit 9999
-                                                      :keymap helm-do-ag-map)))
+                               :init 'helm-ag--do-ag-set-command
+                               :candidates-process 'helm-ag--do-ag-candidate-process
+                               :action 'ar/insert-candidate
+                               :nohighlight t
+                               :requires-pattern 3
+                               :candidate-number-limit 9999
+                               :keymap helm-do-ag-map)))
       (call-interactively #'ar/helm-ag)))
 
   (defun ar/helm-ag (arg)
@@ -767,6 +767,12 @@ Git: _n_ext     _s_tage  _d_iff
            "OBSOLETE"
            "CANCELLED")))
 
+  (use-package org-bullets :ensure t
+    :hook (org-mode . org-bullets-mode)
+    :config
+    (validate-setq org-bullets-bullet-list
+                   '("◉" "◎" "⚫" "○" "►" "◇")))
+
   (use-package org-faces
     :config
     (vsetq org-todo-keyword-faces
@@ -838,6 +844,32 @@ Git: _n_ext     _s_tage  _d_iff
   :commands (ar/org-add-todo
              ar/org-add-done))
 
+(use-package ar-ox-html
+  :config
+  (use-package ob-plantuml
+    :config
+    (use-package org-src)
+
+    ;; Use fundamental mode when editing plantuml blocks with C-c '
+    (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+
+    ;; We explicitly want org babel confirm evaluations.
+    (vsetq org-confirm-babel-evaluate t)
+
+    (cond ((string-equal system-type "darwin")
+           (vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
+           (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+          (t
+           (message "Warning: Could not find plantuml.8018.jar")
+           (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
+
+  (use-package ox-html)
+
+  (ar/ox-html-setup)
+
+  :bind (:map org-mode-map
+              ([f6] . ar/ox-html-export)))
+
 (use-package ob
   :after org
   :bind (:map org-mode-map
@@ -903,7 +935,7 @@ Git: _n_ext     _s_tage  _d_iff
 
     (use-package esh-mode
       :config
-      ;; Why is validate-setq not finding it?
+      ;; Why is vsetq not finding it?
       (setq eshell-scroll-to-bottom-on-input 'all))
 
     (use-package em-dirs)
