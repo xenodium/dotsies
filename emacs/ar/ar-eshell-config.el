@@ -16,8 +16,8 @@
 
 (defun ar/eshell-config--prompt-char ()
   "Return shell config character, based on current OX. For example, an  for MacOS."
-  (let ((os-char (cond ((ar/osx-p) "")
-                       ((ar/linux-p) "🐧")
+  (let ((os-char (cond ((string-equal system-type "darwin") "")
+                       ((string-equal system-type "gnu/linux") "🐧")
                        (t "?"))))
     (format "%s %s" os-char (if (= (user-uid) 0)
                                 "#"

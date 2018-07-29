@@ -1,4 +1,5 @@
 (require 'ar-org-iter)
+(require 's)
 
 (defvar ar/modal-ivy--bookmarks-source nil)
 
