@@ -27,9 +27,6 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 ;; No Alarms.
 (setq ring-bell-function 'ignore)
-;; Empty buffer loads faster than scratch as default.
-(setq initial-buffer-choice (lambda ()
-                              (get-buffer-create "welcome")))
 
 ;; Additional load paths.
 (add-to-list 'load-path "~/.emacs.d/ar")
@@ -57,6 +54,13 @@
 
 (require 'cl)
 (require 'package)
+
+;; Don't auto-initialize!
+(setq package-enable-at-startup nil)
+
+;; Don't add that `custom-set-variables' block to initl.
+(setq package--init-file-ensured t)
+
 (require 'tls)
 
 (assert (executable-find "gnutls-cli") nil
@@ -114,6 +118,11 @@
 ;;;; Init helpers END
 
 ;;;; Appearance START
+
+;; Get rid of splash screens.
+;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
+(vsetq inhibit-splash-screen t)
+(vsetq initial-scratch-message nil)
 
 (when (display-graphic-p)
   ;; Enable if you'd like to start as fullscreen.
