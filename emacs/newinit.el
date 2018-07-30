@@ -495,10 +495,14 @@ line instead."
   (message "magit")
   (fullframe magit-status magit-mode-quit-window))
 
-(use-package with-editor :ensure t
+(use-package with-editor
+  :ensure t
   :hook ((eshell-mode . with-editor-export-editor)
          (term-exec . with-editor-export-editor)
          (shell-mode . with-editor-export-editor)))
+
+(use-package ar-git
+  :defer 2)
 
 ;;;; Ivy START
 
