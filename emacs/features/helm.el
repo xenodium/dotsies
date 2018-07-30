@@ -46,7 +46,7 @@
 
 (use-package helm-ag
   :ensure t
-  :bind ("C-i" . ar/helm-ag-insert)
+  :bind ("H-i" . ar/helm-ag-insert)
   :commands (ar/helm-ag
              ar/helm-ag-insert)
   :config
