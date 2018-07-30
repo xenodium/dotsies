@@ -1072,6 +1072,13 @@ Git: _n_ext     _s_tage  _d_iff
 ;;;; Dired START
 
 (add-hook! 'emacs-startup-hook
+  (use-package projectile
+    :ensure t
+    :defer 2
+    :config
+    (vsetq projectile-enable-caching t)
+    (projectile-mode))
+
   (use-package dired
     :hook (dired-mode . dired-hide-details-mode)
     :bind (:map global-map
