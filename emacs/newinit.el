@@ -212,6 +212,10 @@ Body forms can access the hook's arguments through the let-bound variable
 (vsetq inhibit-splash-screen t)
 (vsetq initial-scratch-message nil)
 
+;; Use y/n instead of yes/no confirms.
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (when (display-graphic-p)
   ;; Enable if you'd like to start as fullscreen.
   ;; (set-frame-parameter nil 'fullscreen 'fullboth)
@@ -505,6 +509,9 @@ line instead."
   :config
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
   (use-package smex
+    :ensure t)
+  ;; Wgrep is used by counsel-ag (to make writeable).
+  (use-package wgrep
     :ensure t)
   (counsel-mode +1))
 
