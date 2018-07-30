@@ -1195,6 +1195,7 @@ Git: _n_ext     _s_tage  _d_iff
     (vsetq elfeed-feeds
                    '(
                      ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
+                     ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
                      ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
                      ("http://blog.davep.org/feed.xml" blog emacs tech davep)
                      ("http://blog.josephholsten.com/feed.xml" blog hammerspoon tech Libera-Ideoj)
@@ -1202,6 +1203,7 @@ Git: _n_ext     _s_tage  _d_iff
                      ("http://cmsj.net/feed.xml" blog hammerspoon tech Chris-Jones)
                      ("http://dangrover.com/feed.xml" blog dangrover emacs tech)
                      ("http://emacsredux.com/atom.xml" blog emacs emacs-redux)
+                     ("http://emacsworld.blogspot.com/feeds/posts/default?alt=rss" blog emacs EmacsWorld)
                      ("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
                      ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld)
                      ("http://feeds.feedburner.com/japaneseruleof7" blog japan japanese-rule-of-7)
@@ -1246,6 +1248,7 @@ Git: _n_ext     _s_tage  _d_iff
                      ("https://news.ycombinator.com/rss" news hackernews tech)
                      ("https://ogbe.net/blog.xml" blog emacs tech DennisOgbe)
                      ("https://piware.de/post/index.xml" blog tech)
+                     ("https://sam217pa.github.io/index.xml" blog emacs BacterialFinches)
                      ("https://sciencebasedmedicine.org/feed" blog medicine ScienceBasedMedicine)
                      ("https://scripter.co/posts/index.xml" blog emacs tech dev)
                      ("https://swiftnews.curated.co/issues.rss" blog swift tech ShiftNewsCurated)
@@ -1259,7 +1262,6 @@ Git: _n_ext     _s_tage  _d_iff
                      ("https://www.ogre.com/blog/feed" blog dev Ogre)
                      ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)
                      ("https://ytrss.co/feed/UCxkMDXQ5qzYOgXPRnOBrp1w" youtube emacs Zamansky)
-                     ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
                      ))
 
     (defun ar/elfeed-view-filtered (filter)
