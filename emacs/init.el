@@ -772,6 +772,11 @@
 (use-package dired
   :hook (dired-mode . dired-hide-details-mode)
   :commands dired-mode
+  :init
+  (defun ar/file-find-alternate-parent-dir ()
+    "Open parent dir."
+    (interactive)
+    (find-alternate-file ".."))
   :config
   ;; For dired-jump.
   (use-package dired-x)
