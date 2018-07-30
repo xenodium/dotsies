@@ -173,6 +173,21 @@ line instead."
   ;; Override selection with new text.
   (delete-selection-mode +1))
 
+;; Highlight matching parenthesis.
+(use-package paren
+  :ensure t
+  :defer 5
+  :config
+  (show-paren-mode +1)
+  ;; Without this matching parens aren't highlighted in region.
+  (vsetq show-paren-priority -50)
+  (vsetq show-paren-delay 0)
+  ;; Highlight entire bracket expression.
+  (vsetq show-paren-style 'expression)
+  (set-face-attribute 'show-paren-match nil
+                      :background "default"
+                      :foreground "#FA009A"))
+
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)))

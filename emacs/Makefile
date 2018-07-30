@@ -22,6 +22,7 @@ newinit:
 	cp emacssocket ~/local/bin/
 	make -C ar
 	make -C external
+	make -C features
 
 pylint:
 	cp -i python/pylintrc ~/.pylintrc
