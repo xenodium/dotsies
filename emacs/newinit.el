@@ -247,19 +247,35 @@ Body forms can access the hook's arguments through the let-bound variable
 
 ;;;; Appearance END
 
-;; Additional load paths.
-(add-to-list 'load-path "~/.emacs.d/ar")
-(add-to-list 'load-path "~/.emacs.d/local")
-(add-to-list 'load-path "~/.emacs.d/external")
-
 (add-hook! 'emacs-startup-hook
+  ;; Undo GC values post init.el.
+  (vsetq gc-cons-threshold 16777216
+         gc-cons-percentage 0.1)
+  (run-with-idle-timer 5 t #'garbage-collect)
+  (vsetq garbage-collection-messages t)
+  (setq file-name-handler-alist ar/init--file-name-handler-alist)
+
+  (message "Emacs ready in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                    (time-subtract after-init-time before-init-time)))
+           gcs-done)
+
+  ;; Additional load paths.
+  (add-to-list 'load-path "~/.emacs.d/ar")
+  (add-to-list 'load-path "~/.emacs.d/local")
+  (add-to-list 'load-path "~/.emacs.d/external")
+
+
   (use-package server
     :defer 10
     :config
-    (use-package s
-      :ensure t)
     (unless (server-running-p)
       (server-start)))
+
+  (use-package s
+    :ensure t)
+
   ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
   ;; We do this early on as we assert binaries are installed throughout
   ;; init.
@@ -289,28 +305,6 @@ Body forms can access the hook's arguments through the let-bound variable
   (load "~/.emacs.d/features/mail.el")
   (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
     (load file)))
-
-;; Use a hook so the message doesn't get clobbered by other messages.
-;; From https://zzamboni.org/post/my-emacs-configuration-with-commentary
-(add-hook! 'emacs-startup-hook
-  ;; Now set GC values post init.el.
-  (vsetq gc-cons-threshold 16777216
-         gc-cons-percentage 0.1)
-  (run-with-idle-timer 5 t #'garbage-collect)
-  (vsetq garbage-collection-messages t)
-
-  (message "Emacs ready in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time
-                    (time-subtract after-init-time before-init-time)))
-           gcs-done))
-
-;; Undo GC values post init.el.
-(vsetq gc-cons-threshold 16777216
-       gc-cons-percentage 0.1)
-(run-with-idle-timer 5 t #'garbage-collect)
-(vsetq garbage-collection-messages t)
-(setq file-name-handler-alist ar/init--file-name-handler-alist)
 
 (provide 'init)
 ;;; init.el ends here
