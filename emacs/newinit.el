@@ -694,6 +694,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package helm-ag
   :ensure t
+  :bind ("C-i" . ar/helm-ag-insert)
   :commands (ar/helm-ag
              ar/helm-ag-insert)
   :config
