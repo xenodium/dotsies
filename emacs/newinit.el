@@ -684,8 +684,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package helm-ag
   :ensure t
   :commands (ar/helm-ag
-             ar/find-dired-current-dir
-             ar/find-all-dired-current-dir
              ar/helm-ag-insert)
   :config
   (defun ar/helm-ag-insert (arg)
@@ -718,19 +716,6 @@ Repeated invocations toggle between the two most recently open buffers."
       (vsetq ar/helm-ag--default-locaction
              (read-directory-name "search in: " default-directory nil t)))
     (helm-do-ag ar/helm-ag--default-locaction))
-
-  (defun ar/find-dired-current-dir ()
-    "Find files from current location."
-    (interactive)
-    (helm-find t))
-
-  (defun ar/find-all-dired-current-dir ()
-    "Invokes `find-dired' for current dir."
-    (interactive)
-    (let ((dir (if buffer-file-name
-                   (file-name-directory buffer-file-name)
-                 ".")))
-      (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
 
 
   (cond ((executable-find "rg")
@@ -1101,15 +1086,27 @@ Git: _n_ext     _s_tage  _d_iff
                 ("i" . dired-hide-details-mode)
                 ("C-l". dired-jump)
                 ("M" . ar/dired-mark-all))
-    :commands dired-mode
+    :commands (dired-mode
+               ar/find-all-dired-current-dir
+               ar/dired-mark-all
+               ar/file-find-alternate-parent-dir)
     :init
     (defun ar/file-find-alternate-parent-dir ()
       "Open parent dir."
       (interactive)
       (find-alternate-file ".."))
+
     (defun ar/dired-mark-all ()
       (interactive)
       (dired-mark-files-regexp ""))
+
+    (defun ar/find-all-dired-current-dir ()
+      "Invokes `find-dired' for current dir."
+      (interactive)
+      (let ((dir (if buffer-file-name
+                     (file-name-directory buffer-file-name)
+                   ".")))
+        (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
     :config
     ;; For dired-jump.
     (use-package dired-x)
