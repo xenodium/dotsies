@@ -56,24 +56,13 @@
 
 (require 'tls)
 
-(assert (executable-find "gnutls-cli") nil
-        "Need brew install gnutls or apt-get install gnutls-bin")
-
-(assert (eq 0 (call-process-shell-command "python -c \"import certifi\"")) nil
-        "Need python -m pip install --user certifi")
-
-(let ((trustfile
-       (replace-regexp-in-string
-        "\\\\" "/"
-        (replace-regexp-in-string
-         "\n" ""
-         (shell-command-to-string "python -m certifi")))))
-  (setq tls-program
-        (list
-         (format "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)))
-  (setq gnutls-trustfiles (list trustfile)))
-
-(setq tls-checktrust t)
+;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
+(setq gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+      tls-checktrust gnutls-verify-error
+      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                        ;; compatibility fallbacks
+                        "gnutls-cli -p %p %h"
+                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
 (setq package-archives `(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
