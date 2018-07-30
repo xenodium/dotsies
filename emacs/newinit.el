@@ -6,13 +6,13 @@
 (defvar ar/init--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
-;; Match theme color early on, so loading experience is smoother.
-(set-background-color "#1b181b")
-
 ;; Transparent titlebar on
 (when (memq window-system '(mac ns))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; nil for dark text
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+
+;; Match theme color early on, so loading experience is smoother.
+(set-background-color "#1b181b")
 
 ;; Hide UI (early on).
 
@@ -20,13 +20,16 @@
 (setq mode-line-format nil)
 
 ;; No scrollbar by default.
-(when (fboundp 'toggle-scroll-bar) (toggle-scroll-bar -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;; No nenubar by default.
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;; No toolbar by default.
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+;; No tooltip by default.
+(when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
 ;; No Alarms.
 (setq ring-bell-function 'ignore)
@@ -89,7 +92,7 @@
 ;; set before requiring use-package.
 (setq use-package-enable-imenu-support t)
 (require 'use-package)
-(setq use-package-verbose t)
+;; (setq use-package-verbose t)
 
 (use-package async
   :ensure t
@@ -206,9 +209,7 @@ Body forms can access the hook's arguments through the let-bound variable
 (vsetq initial-scratch-message nil)
 
 (when (display-graphic-p)
-  ;; Enable if you'd like to start as fullscreen.
-  ;; (set-frame-parameter nil 'fullscreen 'fullboth)
-  ;; Don't want titles in frames.
+  (setq ns-use-proxy-icon nil)
   (vsetq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
 (use-package base16-theme
