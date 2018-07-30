@@ -1153,6 +1153,36 @@ Git: _n_ext     _s_tage  _d_iff
 
 ;;;; Dired END
 
+;;;; Development START
+
+(defun ar/comment-dwim ()
+  "Comment current line or region."
+  (interactive)
+  (let ((start (line-beginning-position))
+        (end (line-end-position)))
+    (when (region-active-p)
+      (validate-setq start (save-excursion
+                             (goto-char (region-beginning))
+                             (beginning-of-line)
+                             (point))
+                     end (save-excursion
+                           (goto-char (region-end))
+                           (end-of-line)
+                           (point))))
+    (comment-or-uncomment-region start end)))
+
+(bind-key "M-;" #'ar/comment-dwim)
+
+(defun ar/comment-dwim-next-line ()
+  "Like `ar/comment-dwim', but also move to next line."
+  (interactive)
+  (call-interactively #'ar/comment-dwim)
+  (next-line))
+
+(bind-key "C-M-;" #'ar/comment-dwim-next-line)
+
+;;;; Development END
+
 ;;;; Company completion START
 
 (use-package company
@@ -1204,12 +1234,17 @@ Git: _n_ext     _s_tage  _d_iff
     (unless (boundp 'objc-mode-hook-did-run)
       (set-fill-column 100)
       (company-mode +1)
+      (subword-mode +1)
       (setq-local company-backends '((company-files
                                       company-keywords)))
+      (add-hook 'before-save-hook #'clang-format-buffer t t)
       (setq-local objc-mode-hook-did-run t)))
   :hook (objc-mode . ar/objc-mode-hook-function)
   :bind (:map objc-mode-map
-              ([f6] . recompile)))
+              ([f6] . recompile))
+  :config
+  (use-package clang-format
+    :ensure t))
 
 ;;;; Objective-C END
 
