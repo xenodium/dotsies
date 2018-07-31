@@ -132,6 +132,7 @@
    (ar/idle-load "~/.emacs.d/features/elfeed.el")
    (ar/idle-load "~/.emacs.d/features/modal.el")
    (ar/idle-load "~/.emacs.d/features/mail.el")
+   (ar/idle-load "~/.emacs.d/features/general.el")
 
    (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
      (ar/idle-load file))
