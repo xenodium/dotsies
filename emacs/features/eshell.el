@@ -33,7 +33,16 @@
     (use-package esh-mode
       :config
       ;; Why is vsetq not finding it?
-      (setq eshell-scroll-to-bottom-on-input 'all))
+      (setq eshell-scroll-to-bottom-on-input 'all)
+
+      ;; Override existing clear function. I like this one better.
+      ;; Also there's a bug in Emacs 26:
+      ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2018-05/msg00141.html
+      (defun eshell/clear (&optional scrollback)
+        "Alias to clear (destructive) eshell content."
+        (interactive)
+        (let ((inhibit-read-only t))
+          (erase-buffer))))
 
     (use-package em-dirs)
     (use-package em-smart)
