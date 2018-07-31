@@ -2828,7 +2828,12 @@ already narrowed."
   (use-package esh-mode
     :config
     ;; Why is validate-setq not finding it?
-    (csetq eshell-scroll-to-bottom-on-input 'all))
+    (csetq eshell-scroll-to-bottom-on-input 'all)
+    (defun eshell/clear ()
+      "Alias to clear (destructive) eshell content."
+      (interactive)
+      (let ((inhibit-read-only t))
+        (erase-buffer))))
   (use-package em-dirs)
   (use-package em-smart)
 
