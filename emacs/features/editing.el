@@ -151,17 +151,6 @@ line instead."
      (message "Copied line")
      (list (line-beginning-position) (line-end-position)))))
 
-(defun ar/duplicate-line ()
-  "Duplicate current line and paste below."
-  (interactive)
-  (let ((line-text (buffer-substring (line-beginning-position)
-                                     (line-end-position))))
-    (end-of-line)
-    (newline)
-    (insert line-text)))
-
-(bind-key "C-x C-d" #'ar/duplicate-line)
-
 (use-package hungry-delete
   :defer 5
   :ensure t
@@ -190,4 +179,7 @@ line instead."
 
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
-         ("C-c r" . set-rectangular-region-anchor)))
+         ("C-c r" . set-rectangular-region-anchor)
+         ("M-DEL" . ar/backward-delete-subword)
+         ("<C-backspace>" . ar/backward-delete-subword)
+         ("C-x C-d" . ar/duplicate-line)))
