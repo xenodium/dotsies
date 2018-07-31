@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(require 'subword)
+
 (defun ar/text-char-upcasep (letter)
   "Check if LETTER is uppercase."
   (eq letter (upcase letter)))
@@ -63,6 +65,26 @@
                         'downcase-region
                       'upcase-region)
                     beg end)))))
+
+;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
+(defun ar/backward-delete-subword (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument ARG, do this that many times."
+  (interactive "p")
+  (delete-region (point)
+                 (progn
+                   (subword-backward arg)
+                   (point))))
+
+(defun ar/duplicate-line ()
+  "Duplicate current line and paste below."
+  (interactive)
+  (let ((line-text (buffer-substring (line-beginning-position)
+                                     (line-end-position))))
+    (end-of-line)
+    (newline)
+    (insert line-text)))
+
 
 (provide 'ar-text)
 
