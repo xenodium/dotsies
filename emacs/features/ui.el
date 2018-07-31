@@ -53,3 +53,8 @@
 (use-package menu-bar
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
+
+;; #noncore
+(use-package face-remap
+  :bind(("C-+" . text-scale-increase)
+        ("C--" . text-scale-decrease)))
