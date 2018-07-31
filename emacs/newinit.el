@@ -69,10 +69,6 @@
 
 (package-initialize)
 
-;;;; Set up package tls END
-
-;;;; Set up use-package START
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -83,92 +79,17 @@
 (require 'use-package)
 ;; (setq use-package-verbose t)
 
-(use-package async
-  :ensure t
-  :config
-  (async-bytecomp-package-mode +1))
-
-(use-package use-package-ensure-system-package
-  :ensure t)
-
-(use-package use-package-chords
-  :ensure t
-  :config
-  (key-chord-mode 1))
-
-;;;; Set up use-package END
-
-;;;; Init helpers START
-
-(use-package validate
-  :ensure t
-  :config
-  (defalias 'vsetq 'validate-setq))
-
-;; https://oremacs.com/2015/01/17/setting-up-ediff
-;; Macro for setting custom variables.
-;; Similar to custom-set-variables, but more like setq.
-(defmacro csetq (variable value)
-  `(funcall (or (get ',variable 'custom-set)
-                'set-default)
-            ',variable ,value))
-
-;;;; Init helpers END
-
-;;;; Appearance START
-
 ;; Get rid of splash screens.
 ;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
-(vsetq inhibit-splash-screen t)
-(vsetq initial-scratch-message nil)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
 
 (when (display-graphic-p)
   (setq ns-use-proxy-icon nil)
-  (vsetq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
-
-(use-package base16-theme
-  :ensure t
-  :config
-  (load-theme 'base16-atelier-heath t)
-  (let ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line          nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :underline  line)
-    (set-face-attribute 'mode-line          nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#695d69")))
+  (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
 ;; No color for fringe, blends with the rest of the window.
 (set-face-attribute 'fringe nil :background nil)
-
-;; Ensure window is maximized after window setup.
-(use-package maxframe
-  :ensure t
-  :hook (window-setup . maximize-frame))
-
-(use-package moody
-  :ensure t
-  :config
-  (vsetq x-underline-at-descent-line t)
-
-  (setq-default mode-line-format
-                '(" "
-                  mode-line-front-space
-                  mode-line-client
-                  mode-line-frame-identification
-                  mode-line-buffer-identification " " mode-line-position
-                  (vc-mode vc-mode)
-                  (multiple-cursors-mode mc/mode-line)
-                  " " mode-line-modes
-                  mode-line-end-spaces))
-
-  (use-package minions
-    :ensure t
-    :config
-    (minions-mode +1))
-
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode))
 
 ;;;; Appearance END
 
@@ -176,10 +97,10 @@
  'emacs-startup-hook
  (lambda ()
    ;; Undo GC values post init.el.
-   (vsetq gc-cons-threshold 16777216
-          gc-cons-percentage 0.1)
+   (setq gc-cons-threshold 16777216
+         gc-cons-percentage 0.1)
    (run-with-idle-timer 5 t #'garbage-collect)
-   (vsetq garbage-collection-messages t)
+   (setq garbage-collection-messages t)
    (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
    (message "Emacs ready in %s with %d garbage collections."
@@ -187,6 +108,33 @@
                     (float-time
                      (time-subtract after-init-time before-init-time)))
             gcs-done)
+
+   (use-package async
+     :ensure t
+     :config
+     (async-bytecomp-package-mode +1))
+
+   ;; https://oremacs.com/2015/01/17/setting-up-ediff
+   ;; Macro for setting custom variables.
+   ;; Similar to custom-set-variables, but more like setq.
+   (defmacro csetq (variable value)
+     `(funcall (or (get ',variable 'custom-set)
+                   'set-default)
+               ',variable ,value))
+
+
+   (use-package validate
+     :ensure t
+     :config
+     (defalias 'vsetq 'validate-setq))
+
+   (use-package use-package-ensure-system-package
+     :ensure t)
+
+   (use-package use-package-chords
+     :ensure t
+     :config
+     (key-chord-mode 1))
 
    ;; Additional load paths.
    (add-to-list 'load-path "~/.emacs.d/ar")
