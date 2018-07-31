@@ -18,6 +18,7 @@
 (use-package ivy
   :ensure t
   :defer 0.1
+  :bind ("C-x C-b" . ivy-switch-buffer)
   :config
   (vsetq ivy-height 40)
   (vsetq ivy-count-format "")
