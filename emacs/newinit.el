@@ -1,20 +1,19 @@
-;;; Init.el GC values (undone at end).
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Init.el GC values (faster loading) ;;;;
+
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
 
-;;; Temprarily avoid loading modes during init (undone at end).
+;;; Temporarily avoid loading any modes during init (undone at end).
 (defvar ar/init--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
-;; Transparent titlebar on
-(when (memq window-system '(mac ns))
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
-
-;; Match theme color early on, so loading experience is smoother.
+;; Match theme color early on (smoother transition).
+;; Theme loaded in features/ui.el.
 (set-background-color "#1b181b")
 
-;; Hide UI (early on).
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Hide UI (early on) ;;;;
 
 ;; Don't want a mode line while loading init.
 (setq mode-line-format nil)
@@ -31,21 +30,20 @@
 ;; No tooltip by default.
 (when (fboundp 'tooltip-mode) (tooltip-mode -1))
 
-;; No Alarms.
+;; No Alarms by default.
 (setq ring-bell-function 'ignore)
 
-;; macOS basics.
-(when (string-equal system-type "darwin")
-  (menu-bar-mode 1)
-  ;; Fixes mode line separator issues on macOS.
-  (setq ns-use-srgb-colorspace nil)
-  (setq mac-command-modifier 'meta)
-  (setq exec-path (append exec-path '("~/homebrew/bin"
-                                      "~/homebrew/Cellar/llvm/HEAD/bin"
-                                      "/usr/local/bin"))))
-;;;; Set up package tls START
+;; Get rid of splash screens.
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
 
-(require 'cl)
+;; Set a fun frame title.
+(when (display-graphic-p)
+  (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Set up package tls ;;;;
+
 (require 'package)
 
 ;; Don't auto-initialize.
@@ -79,16 +77,8 @@
 (require 'use-package)
 ;; (setq use-package-verbose t)
 
-;; Get rid of splash screens.
-;; From http://www.emacswiki.org/emacs/EmacsNiftyTricks
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
-
-(when (display-graphic-p)
-  (setq ns-use-proxy-icon nil)
-  (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
-
-;;;; Appearance END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Now kick off non-essential loading ;;;;
 
 (add-hook
  'emacs-startup-hook
@@ -100,82 +90,54 @@
    (setq garbage-collection-messages t)
    (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
+   ;; Done loading core init.el. Announce it and let the real loading begin.
    (message "Emacs ready in %s with %d garbage collections."
-            (format "%.2f seconds"
-                    (float-time
+            (format "%.2f seconds" (float-time
                      (time-subtract after-init-time before-init-time)))
             gcs-done)
 
-   (use-package async
-     :ensure t
-     :config
-     (async-bytecomp-package-mode +1))
-
-   ;; https://oremacs.com/2015/01/17/setting-up-ediff
-   ;; Macro for setting custom variables.
-   ;; Similar to custom-set-variables, but more like setq.
-   (defmacro csetq (variable value)
-     `(funcall (or (get ',variable 'custom-set)
-                   'set-default)
-               ',variable ,value))
-
-
-   (use-package validate
-     :ensure t
-     :config
-     (defalias 'vsetq 'validate-setq))
-
-   (use-package use-package-ensure-system-package
-     :ensure t)
-
-   (use-package use-package-chords
-     :ensure t
-     :config
-     (key-chord-mode 1))
+   ;; Need these loaded ASAP (many subsequent libraries depend on them).
+   (load "~/.emacs.d/features/package-extensions.el")
+   (load "~/.emacs.d/features/libs.el")
+   (load "~/.emacs.d/features/mac.el")
+   (load "~/.emacs.d/features/ui.el")
 
    ;; Additional load paths.
    (add-to-list 'load-path "~/.emacs.d/ar")
    (add-to-list 'load-path "~/.emacs.d/local")
    (add-to-list 'load-path "~/.emacs.d/external")
 
-   (use-package server
-     :defer 10
-     :config
-     (unless (server-running-p)
-       (server-start)))
+   (defmacro ar/idle-load (library)
+     `(run-with-idle-timer 0.5 nil
+                           (lambda ()
+                             (load ,library))))
 
-   (use-package s
-     :ensure t)
+   ;; Load all others on idle.
+   (ar/idle-load "~/.emacs.d/features/maintenance.el")
+   (ar/idle-load "~/.emacs.d/features/ivy.el")
+   (ar/idle-load "~/.emacs.d/features/files.el")
+   (ar/idle-load "~/.emacs.d/features/editing.el")
+   (ar/idle-load "~/.emacs.d/features/git.el")
+   (ar/idle-load "~/.emacs.d/features/navigation.el")
+   (ar/idle-load "~/.emacs.d/features/platform.el")
+   (ar/idle-load "~/.emacs.d/features/helm.el")
+   (ar/idle-load "~/.emacs.d/features/file.el")
+   (ar/idle-load "~/.emacs.d/features/hydra.el")
+   (ar/idle-load "~/.emacs.d/features/eshell.el")
+   (ar/idle-load "~/.emacs.d/features/org.el")
+   (ar/idle-load "~/.emacs.d/features/dired.el")
+   (ar/idle-load "~/.emacs.d/features/dev.el")
+   (ar/idle-load "~/.emacs.d/features/company.el")
+   (ar/idle-load "~/.emacs.d/features/objc.el")
+   (ar/idle-load "~/.emacs.d/features/elfeed.el")
+   (ar/idle-load "~/.emacs.d/features/modal.el")
+   (ar/idle-load "~/.emacs.d/features/mail.el")
 
-   ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
-   ;; We do this early on as we assert binaries are installed throughout
-   ;; init.
-   (use-package exec-path-from-shell
-     :ensure t
-     :config
-     (exec-path-from-shell-initialize))
-   (load "~/.emacs.d/features/ivy.el")
-   (load "~/.emacs.d/features/maintenance.el")
-   (load "~/.emacs.d/features/ui.el")
-   (load "~/.emacs.d/features/files.el")
-   (load "~/.emacs.d/features/editing.el")
-   (load "~/.emacs.d/features/git.el")
-   (load "~/.emacs.d/features/navigation.el")
-   (load "~/.emacs.d/features/platform.el")
-   (load "~/.emacs.d/features/helm.el")
-   (load "~/.emacs.d/features/file.el")
-   (load "~/.emacs.d/features/hydra.el")
-   (load "~/.emacs.d/features/eshell.el")
-   (load "~/.emacs.d/features/org.el")
-   (load "~/.emacs.d/features/dired.el")
-   (load "~/.emacs.d/features/dev.el")
-   (load "~/.emacs.d/features/company.el")
-   (load "~/.emacs.d/features/objc.el")
-   (load "~/.emacs.d/features/elfeed.el")
-   (load "~/.emacs.d/features/modal.el")
-   (load "~/.emacs.d/features/mail.el")
    (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
-     (load file))))
+     (ar/idle-load file))
+
+   ;; Start Emacs server.
+   (ar/idle-load "~/.emacs.d/features/server.el")))
 
 (provide 'init)
 ;;; init.el ends here
