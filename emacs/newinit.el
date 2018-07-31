@@ -88,9 +88,6 @@
   (setq ns-use-proxy-icon nil)
   (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
 
-;; No color for fringe, blends with the rest of the window.
-(set-face-attribute 'fringe nil :background nil)
-
 ;;;; Appearance END
 
 (add-hook
