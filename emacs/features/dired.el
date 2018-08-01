@@ -1,8 +1,10 @@
+(require 'ar-vsetq)
+
 (use-package projectile
     :ensure t
     :defer 2
     :config
-    (vsetq projectile-enable-caching t)
+    (ar/vsetq projectile-enable-caching t)
     (projectile-mode))
 
   (use-package dired

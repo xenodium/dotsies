@@ -18,4 +18,4 @@
 (use-package validate
   :ensure t
   :config
-  (defalias 'vsetq 'validate-setq))
+  (use-package ar-vsetq))

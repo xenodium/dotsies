@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 ;; Ivy equivalents to Emacs commands.
 (use-package counsel
   :ensure t
@@ -20,8 +22,8 @@
   :defer 0.1
   :bind ("C-x C-b" . ivy-switch-buffer)
   :config
-  (vsetq ivy-height 40)
-  (vsetq ivy-count-format "")
-  (vsetq ivy-use-virtual-buffers t)
-  (vsetq enable-recursive-minibuffers t)
+  (ar/vsetq ivy-height 40)
+  (ar/vsetq ivy-count-format "")
+  (ar/vsetq ivy-use-virtual-buffers t)
+  (ar/vsetq enable-recursive-minibuffers t)
   (ivy-mode +1))

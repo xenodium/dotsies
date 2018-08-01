@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package company
   :ensure t
   :commands (company-mode
@@ -19,17 +21,17 @@
   :config
   (use-package company-dabbrev
     :config
-    (vsetq company-dabbrev-downcase nil)
-    (vsetq company-dabbrev-ignore-case nil))
+    (ar/vsetq company-dabbrev-downcase nil)
+    (ar/vsetq company-dabbrev-ignore-case nil))
 
   (use-package company-dabbrev-code
     :config
-    (vsetq company-dabbrev-code-ignore-case nil))
+    (ar/vsetq company-dabbrev-code-ignore-case nil))
 
-  (vsetq company-idle-delay 0.2)
-  (vsetq company-show-numbers t)
-  (vsetq company-minimum-prefix-length 2)
-  (vsetq company-tooltip-align-annotations t)
+  (ar/vsetq company-idle-delay 0.2)
+  (ar/vsetq company-show-numbers t)
+  (ar/vsetq company-minimum-prefix-length 2)
+  (ar/vsetq company-tooltip-align-annotations t)
 
   ;; Disable all company backends by default.
   (csetq company-backends '()))

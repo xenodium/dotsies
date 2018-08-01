@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
@@ -27,10 +29,10 @@
   (use-package savehist
     :defer 2
     :config
-    (vsetq savehist-file "~/.emacs.d/savehist")
-    (vsetq savehist-save-minibuffer-history t)
-    (vsetq history-length 1000)
-    (vsetq savehist-additional-variables
+    (ar/vsetq savehist-file "~/.emacs.d/savehist")
+    (ar/vsetq savehist-save-minibuffer-history t)
+    (ar/vsetq history-length 1000)
+    (ar/vsetq savehist-additional-variables
            '(kill-ring
              search-ring
              regexp-search-ring))
@@ -42,11 +44,11 @@
            (prog-mode . whitespace-mode))
     :config
     ;; When nil, fill-column is used instead.
-    (vsetq whitespace-line-column nil)
+    (ar/vsetq whitespace-line-column nil)
     ;; Highlight empty lines, TABs, blanks at beginning/end, lines
     ;; longer than fill-column, and trailing blanks.
-    (vsetq whitespace-style '(face empty tabs lines-tail trailing))
-    (vsetq show-trailing-whitespace t)
+    (ar/vsetq whitespace-style '(face empty tabs lines-tail trailing))
+    (ar/vsetq show-trailing-whitespace t)
     (set-face-attribute 'whitespace-line nil
                         :foreground "DarkOrange1"
                         :background "default"))
@@ -169,10 +171,10 @@ line instead."
   :config
   (show-paren-mode +1)
   ;; Without this matching parens aren't highlighted in region.
-  (vsetq show-paren-priority -50)
-  (vsetq show-paren-delay 0)
+  (ar/vsetq show-paren-priority -50)
+  (ar/vsetq show-paren-delay 0)
   ;; Highlight entire bracket expression.
-  (vsetq show-paren-style 'expression)
+  (ar/vsetq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
                       :background "default"
                       :foreground "#FA009A"))

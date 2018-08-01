@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (defun ar/open-youtube-url (url)
     "Download and open youtube URL."
     ;; Check for URLs like:
@@ -23,13 +25,13 @@
     :init
     (defun ar/elfeed-set-style ()
       ;; Separate elfeed lines for readability.
-      (vsetq line-spacing 25))
+      (ar/vsetq line-spacing 25))
     :config
     (use-package elfeed-goodies :ensure t
       :after elfeed
       :config
-      (vsetq elfeed-goodies/entry-pane-position 'bottom)
-      (vsetq elfeed-goodies/tag-column-width 35)
+      (ar/vsetq elfeed-goodies/entry-pane-position 'bottom)
+      (ar/vsetq elfeed-goodies/tag-column-width 35)
       (elfeed-goodies/setup))
 
     (defun ar/elfeed-open-youtube-video ()
@@ -38,7 +40,7 @@
         (when link
           (ar/open-youtube-url link))))
 
-    (vsetq elfeed-feeds
+    (ar/vsetq elfeed-feeds
                    '(
                      ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
                      ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)

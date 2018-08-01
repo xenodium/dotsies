@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package helm
   ;; Save current position to mark ring when jumping to a different place
   :hook  (helm-goto-line-before . helm-save-current-pos-to-mark-ring)
@@ -7,12 +9,12 @@
   (use-package helm-elisp)
 
   ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
-  (vsetq helm-show-completion-display-function #'helm-default-display-buffer)
-  (vsetq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
-  (vsetq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
-  (vsetq helm-split-window-default-side 'below) ;; open helm buffer below.
-  (vsetq helm-split-window-in-side-p t)
-  (vsetq helm-candidate-number-limit 200)
+  (ar/vsetq helm-show-completion-display-function #'helm-default-display-buffer)
+  (ar/vsetq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
+  (ar/vsetq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
+  (ar/vsetq helm-split-window-default-side 'below) ;; open helm buffer below.
+  (ar/vsetq helm-split-window-in-side-p t)
+  (ar/vsetq helm-candidate-number-limit 200)
 
   (use-package helm-config)
 
@@ -77,19 +79,19 @@
     (interactive "P")
     (defvar ar/helm-ag--default-locaction nil)
     (when (or arg (not ar/helm-ag--default-locaction))
-      (vsetq ar/helm-ag--default-locaction
+      (ar/vsetq ar/helm-ag--default-locaction
              (read-directory-name "search in: " default-directory nil t)))
     (helm-do-ag ar/helm-ag--default-locaction))
 
 
   (cond ((executable-find "rg")
-         (vsetq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
+         (ar/vsetq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
         ((executable-find "pt")
-         (vsetq helm-ag-base-command "pt -e --nocolor --nogroup"))
+         (ar/vsetq helm-ag-base-command "pt -e --nocolor --nogroup"))
         ((executable-find "ag")
-         (vsetq helm-ag-base-command "ag --nocolor --nogroup"))
+         (ar/vsetq helm-ag-base-command "ag --nocolor --nogroup"))
         (t
-         (vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
+         (ar/vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
 
 (use-package ar-helm-org
   :commands (ar/helm-org-add-bookmark

@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package shell-pop
   :ensure t
   :bind (([f5] . ar/shell-pop))
@@ -51,15 +53,15 @@
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
     (setenv "PAGER" "cat")
 
-    (vsetq eshell-where-to-jump 'begin)
-    (vsetq eshell-review-quick-commands nil)
-    (vsetq eshell-smart-space-goes-to-end t)
+    (ar/vsetq eshell-where-to-jump 'begin)
+    (ar/vsetq eshell-review-quick-commands nil)
+    (ar/vsetq eshell-smart-space-goes-to-end t)
 
-    (vsetq eshell-history-size (* 10 1024))
-    (vsetq eshell-hist-ignoredups t)
-    (vsetq eshell-error-if-no-glob t)
-    (vsetq eshell-glob-case-insensitive t)
-    (vsetq eshell-list-files-after-cd nil)
+    (ar/vsetq eshell-history-size (* 10 1024))
+    (ar/vsetq eshell-hist-ignoredups t)
+    (ar/vsetq eshell-error-if-no-glob t)
+    (ar/vsetq eshell-glob-case-insensitive t)
+    (ar/vsetq eshell-list-files-after-cd nil)
 
     (defun ar/eshell-cd-to-parent ()
       (interactive)

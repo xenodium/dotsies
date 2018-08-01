@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package isearch
   :commands (isearch-forward isearch-backward)
   :defer 5
@@ -6,7 +8,7 @@
   :config
   (use-package char-fold)
 
-  (vsetq search-default-mode #'char-fold-to-regexp)
+  (ar/vsetq search-default-mode #'char-fold-to-regexp)
 
   ;; Prepopulate isearch with selectionn.
   ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
@@ -95,5 +97,5 @@ Repeated invocations toggle between the two most recently open buffers."
   (set-face-attribute 'highlight-symbol-face nil
                       :background "default"
                       :foreground "yellow")
-  (vsetq highlight-symbol-idle-delay 0.2)
-  (vsetq highlight-symbol-on-navigation-p t))
+  (ar/vsetq highlight-symbol-idle-delay 0.2)
+  (ar/vsetq highlight-symbol-on-navigation-p t))
