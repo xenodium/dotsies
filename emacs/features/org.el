@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package org
   :ensure t
   :hook ((org-mode . ar/org-mode-hook-function)
@@ -21,7 +23,7 @@
 
   (use-package org-faces
     :config
-    (vsetq org-todo-keyword-faces
+    (ar/vsetq org-todo-keyword-faces
            '(("TODO" . (:foreground "red" :weight bold))
              ("STARTED" . (:foreground "yellow" :weight bold))
              ("DONE" . (:foreground "green" :weight bold))
@@ -45,7 +47,7 @@
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
     (org-display-inline-images)
-    (vsetq show-trailing-whitespace t)
+    (ar/vsetq show-trailing-whitespace t)
     (set-fill-column 1000))
 
   ;; Look into font-locking email addresses.
@@ -55,36 +57,36 @@
   (setq org-refile-targets '((nil . (:regexp . "Week of"))
                              (nil . (:regexp . "RESOLVED"))))
 
-  (vsetq org-ellipsis "…")
-  (vsetq org-fontify-emphasized-text t)
+  (ar/vsetq org-ellipsis "…")
+  (ar/vsetq org-fontify-emphasized-text t)
 
   ;; Fontify code in code blocks.
-  (vsetq org-src-fontify-natively t)
+  (ar/vsetq org-src-fontify-natively t)
 
   ;; When exporting anything, do not insert in kill ring.
   (setq org-export-copy-to-kill-ring nil)
 
   ;; Display images inline when running in GUI.
-  (vsetq org-startup-with-inline-images (display-graphic-p))
-  (vsetq org-src-tab-acts-natively t)
+  (ar/vsetq org-startup-with-inline-images (display-graphic-p))
+  (ar/vsetq org-src-tab-acts-natively t)
 
   ;; Prevent inadvertently editing invisible areas in Org.
-  (vsetq org-catch-invisible-edits 'error)
-  (vsetq org-cycle-separator-lines 2)
-  (vsetq org-image-actual-width nil)
-  (vsetq org-hide-emphasis-markers t)
+  (ar/vsetq org-catch-invisible-edits 'error)
+  (ar/vsetq org-cycle-separator-lines 2)
+  (ar/vsetq org-image-actual-width nil)
+  (ar/vsetq org-hide-emphasis-markers t)
 
   ;; All Org leading stars become invisible.
-  (vsetq org-hide-leading-stars t)
+  (ar/vsetq org-hide-leading-stars t)
 
   ;; Skip Org's odd indentation levels (1, 3, ...).
-  (vsetq org-odd-levels-only t)
+  (ar/vsetq org-odd-levels-only t)
 
   ;; Disable auto isearch within org-goto.
-  (vsetq org-goto-auto-isearch nil)
+  (ar/vsetq org-goto-auto-isearch nil)
 
   ;; Enable RET to follow Org links.
-  (vsetq org-return-follows-link t))
+  (ar/vsetq org-return-follows-link t))
 
 (use-package ar-org
   :commands (ar/org-add-todo
@@ -100,10 +102,10 @@
     (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
     ;; We explicitly want org babel confirm evaluations.
-    (vsetq org-confirm-babel-evaluate t)
+    (ar/vsetq org-confirm-babel-evaluate t)
 
     (cond ((string-equal system-type "darwin")
-           (vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
+           (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
            (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
           (t
            (message "Warning: Could not find plantuml.8018.jar")
@@ -121,7 +123,7 @@
   :bind (:map org-mode-map
               ("C-c C-c" . org-ctrl-c-ctrl-c))
   :config
-  (vsetq org-export-babel-evaluate nil)
+  (ar/vsetq org-export-babel-evaluate nil)
 
   (use-package ob-objc)
 

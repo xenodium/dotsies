@@ -1,8 +1,10 @@
+(require 'ar-vsetq)
+
 (use-package hydra
   :ensure t
   :defer 5
   :config
-  (vsetq hydra-is-helpful t)
+  (ar/vsetq hydra-is-helpful t)
   (defhydra hydra-search (:color blue)
     "search"
     ("d" ar/helm-ag "search directory")

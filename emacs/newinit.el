@@ -96,16 +96,16 @@
                      (time-subtract after-init-time before-init-time)))
             gcs-done)
 
+   ;; Additional load paths.
+   (add-to-list 'load-path "~/.emacs.d/ar")
+   (add-to-list 'load-path "~/.emacs.d/local")
+   (add-to-list 'load-path "~/.emacs.d/external")
+
    ;; Need these loaded ASAP (many subsequent libraries depend on them).
    (load "~/.emacs.d/features/package-extensions.el")
    (load "~/.emacs.d/features/libs.el")
    (load "~/.emacs.d/features/mac.el")
    (load "~/.emacs.d/features/ui.el")
-
-   ;; Additional load paths.
-   (add-to-list 'load-path "~/.emacs.d/ar")
-   (add-to-list 'load-path "~/.emacs.d/local")
-   (add-to-list 'load-path "~/.emacs.d/external")
 
    (defmacro ar/idle-load (library)
      `(run-with-idle-timer 0.5 nil
