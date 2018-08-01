@@ -93,7 +93,7 @@
    ;; Done loading core init.el. Announce it and let the real loading begin.
    (message "Emacs ready in %s with %d garbage collections."
             (format "%.2f seconds" (float-time
-                     (time-subtract after-init-time before-init-time)))
+                                    (time-subtract after-init-time before-init-time)))
             gcs-done)
 
    ;; Additional load paths.
@@ -107,6 +107,7 @@
    (load "~/.emacs.d/features/mac.el")
    (load "~/.emacs.d/features/ui.el")
 
+   ;; Only use with string literal paths.
    (defmacro ar/idle-load (library)
      `(run-with-idle-timer 0.5 nil
                            (lambda ()
@@ -134,8 +135,12 @@
    (ar/idle-load "~/.emacs.d/features/mail.el")
    (ar/idle-load "~/.emacs.d/features/general.el")
 
-   (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
-     (ar/idle-load file))
+   (run-with-idle-timer
+    0.5 nil
+    (lambda ()
+      (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
+        ;; Not using ar/idle-load explicit paths not known.
+        (load file))))
 
    ;; Start Emacs server.
    (ar/idle-load "~/.emacs.d/features/server.el")))
