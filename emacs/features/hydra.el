@@ -2,9 +2,16 @@
 
 (use-package hydra
   :ensure t
-  :defer 5
+  :hook (vc-git-log-edit-mode . hydra-vc-log-edit/body)
+  :bind (("C-c s" . hydra-search/body)
+         ("C-c x" . hydra-quick-insert/body)
+         ("C-c o" . ar/hydra-open-dwim)
+         ("C-c g" . hydra-git-gutter/body))
   :config
   (ar/vsetq hydra-is-helpful t)
+
+  (use-package vc-git)
+
   (defhydra hydra-search (:color blue)
     "search"
     ("d" ar/helm-ag "search directory")
@@ -67,7 +74,22 @@ Git: _n_ext     _s_tage  _d_iff
            (call-interactively #'git-gutter:next-hunk)) nil)
     ("d" git-gutter:popup-hunk nil)
     ("q" nil nil :color blue))
-  :bind (("C-c s" . hydra-search/body)
-         ("C-c x" . hydra-quick-insert/body)
-         ("C-c o" . ar/hydra-open-dwim)
-         ("C-c g" . hydra-git-gutter/body)))
+
+  (defhydra hydra-vc-log-edit (:color blue :hint nil)
+    "
+_u_pdate _r_eview comments
+_t_ypo
+"
+    ("u" (lambda ()
+           (interactive)
+           (insert "Updating")
+           (log-edit-done)))
+    ("t" (lambda ()
+           (interactive)
+           (insert "Fixing typo")
+           (log-edit-done)))
+    ("r" (lambda ()
+           (interactive)
+           (insert "Addressing review comments")
+           (log-edit-done)))
+    ("q" nil "quit")))
