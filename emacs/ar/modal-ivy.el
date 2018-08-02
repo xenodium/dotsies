@@ -5,6 +5,47 @@
 
 (defface modal-ivy--col1-face '((t :foreground "grey80" )) "Column 1 face")
 
+(defun ar/modal-ivy-frame (buffer-name f)
+  (with-current-buffer (get-buffer-create buffer-name)
+    (let ((frame (make-frame '((auto-raise . t)
+                               (background-color . "DeepSkyBlue3")
+                               (cursor-color . "MediumPurple1")
+                               (font . "Menlo 15")
+                               (foreground-color . "#eeeeec")
+                               (height . 20)
+                               (internal-border-width . 20)
+                               (left . 0.33)
+                               (left-fringe . 0)
+                               (line-spacing . 3)
+                               (menu-bar-lines . 0)
+                               (minibuffer . only)
+                               (right-fringe . 0)
+                               (tool-bar-lines . 0)
+                               (top . 200)
+                               (undecorated . t)
+                               (unsplittable . t)
+                               (vertical-scroll-bars . nil)
+                               (width . 110)))))
+      (set-face-attribute 'minibuffer-prompt frame
+                          :foreground "pink")
+      (set-face-attribute 'ivy-minibuffer-match-face-1 frame
+                          :background nil
+                          :foreground nil)
+      (set-face-attribute 'ivy-minibuffer-match-face-2 frame
+                          :background nil
+                          :foreground "orange1")
+      (set-face-attribute 'ivy-minibuffer-match-face-3 frame
+                          :background nil
+                          :foreground "orange1")
+      (set-face-attribute 'ivy-minibuffer-match-face-4 frame
+                          :background nil
+                          :foreground "orange1")
+      (set-face-attribute 'ivy-current-match frame
+                          :background "#ffc911"
+                          :foreground "red")
+      ;; Workaround: Cannot get ivy-read to render properly in frame without delay.
+      (run-with-timer 0.001 nil f))))
+
 (defun ar/modal-ivy--load-bookmarks-source ()
   (ar/org-iter-with-org-file
    "~/stuff/active/blog/index.org"
@@ -45,44 +86,10 @@
         (ar/modal-ivy--load-bookmarks-source))
   (message "Bookmarks reloaded"))
 
-(defun ar/modal-ivy-search-bookmarks ()
-  (with-current-buffer (get-buffer-create "*modal-ivy*")
-    (let ((frame (make-frame '((auto-raise . t)
-                               (background-color . "DeepSkyBlue3")
-                               (cursor-color . "MediumPurple1")
-                               (font . "Menlo 15")
-                               (foreground-color . "#eeeeec")
-                               (height . 20)
-                               (internal-border-width . 20)
-                               (left . 0.33)
-                               (left-fringe . 0)
-                               (line-spacing . 3)
-                               (menu-bar-lines . 0)
-                               (minibuffer . only)
-                               (right-fringe . 0)
-                               (tool-bar-lines . 0)
-                               (top . 48)
-                               (undecorated . t)
-                               (unsplittable . t)
-                               (vertical-scroll-bars . nil)
-                               (width . 110)))))
-      (set-face-attribute 'ivy-minibuffer-match-face-1 frame
-                          :background nil
-                          :foreground nil)
-      (set-face-attribute 'ivy-minibuffer-match-face-2 frame
-                          :background nil
-                          :foreground "orange1")
-      (set-face-attribute 'ivy-minibuffer-match-face-3 frame
-                          :background nil
-                          :foreground "orange1")
-      (set-face-attribute 'ivy-minibuffer-match-face-4 frame
-                          :background nil
-                          :foreground "orange1")
-      (set-face-attribute 'ivy-current-match frame
-                          :background "#ffc911"
-                          :foreground "red")
-      ;; Workaround: Cannot get ivy-read to render properly in frame without delay.
-      (run-with-timer 0.001 nil
+
+(defun ar/modal-ivy-search-org-links ()
+  "Search all my org links."
+  (ar/modal-ivy-frame "*modal-ivy*"
                       (lambda ()
                         (let ((ivy-height 20)
                               (ivy-count-format ""))
@@ -99,6 +106,6 @@
                                               ;; refocus another frame after deleting the current frame.
                                               (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacs()'")
                                               (delete-frame)
-                                              (other-window 1)))))))))
+                                              (other-window 1)))))))
 
 (provide 'modal-ivy)
