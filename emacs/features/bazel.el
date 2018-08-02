@@ -4,8 +4,7 @@
   :init
   (defun ar/bazel-mode-hook-fun ()
     (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
-    (setq-local company-backends '(company-bazel company-rfiles))
-    (company-mode +1))
+    (setq-local company-backends '(company-bazel company-rfiles)))
   :config
   (use-package ar-bazel)
   (use-package company-bazel))
