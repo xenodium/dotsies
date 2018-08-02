@@ -112,7 +112,7 @@ end
 
 function searchEmacsBrowserBookmarks()
    appRequestingEmacs = hs.application.frontmostApplication()
-   emacsExecute(false, "(ar/modal-ivy-search-bookmarks)")
+   emacsExecute(false, "(ar/modal-ivy-search-org-links)")
    activateFirstOf({
             {
                bundleID="org.gnu.Emacs",
