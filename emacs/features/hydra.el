@@ -6,7 +6,8 @@
   :bind (("C-c s" . hydra-search/body)
          ("C-c x" . hydra-quick-insert/body)
          ("C-c o" . ar/hydra-open-dwim)
-         ("C-c g" . hydra-git-gutter/body))
+         ("C-c g" . hydra-git-gutter/body)
+         ("<" . ar/org-insert-char-dwim))
   :config
   (ar/vsetq hydra-is-helpful t)
 
@@ -92,4 +93,43 @@ _t_ypo
            (interactive)
            (insert "Addressing review comments")
            (log-edit-done)))
-    ("q" nil "quit")))
+    ("q" nil "quit"))
+
+  ;; From http://oremacs.com/2015/03/07/hydra-org-templates
+(defun ar/org-expand (str)
+  "Expand org template STR."
+  (insert str)
+  (org-try-structure-completion))
+
+(defhydra hydra-org-template (:color blue :hint nil)
+  "
+_c_enter  _q_uote    _L_aTeX:
+_l_atex   _e_xample  _i_ndex:
+_a_scii   _v_erse    _I_NCLUDE:
+_s_rc     ^ ^        _H_TML:
+_h_tml    ^ ^        _A_SCII:
+_y_outube
+"
+  ("s" (ar/org-expand "<s"))
+  ("e" (ar/org-expand "<e"))
+  ("q" (ar/org-expand "<q"))
+  ("v" (ar/org-expand "<v"))
+  ("c" (ar/org-expand "<c"))
+  ("l" (ar/org-expand "<l"))
+  ("h" (ar/org-expand "<h"))
+  ("a" (ar/org-expand "<a"))
+  ("L" (ar/org-expand "<L"))
+  ("i" (ar/org-expand "<i"))
+  ("I" (ar/org-expand "<I"))
+  ("H" (ar/org-expand "<H"))
+  ("A" (ar/org-expand "<A"))
+  ("y" (ar/org-insert-youtube-video))
+  ("<" self-insert-command "ins")
+  ("o" nil "quit"))
+
+(defun ar/org-insert-char-dwim ()
+  (interactive)
+  ;; Display hydra-org-template if < inserted at BOL.
+  (if (looking-back "^")
+        (hydra-org-template/body)
+      (self-insert-command 1))))
