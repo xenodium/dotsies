@@ -129,13 +129,14 @@
    (ar/idle-load "~/.emacs.d/features/dired.el")
    (ar/idle-load "~/.emacs.d/features/dev.el")
    (ar/idle-load "~/.emacs.d/features/company.el")
-   (ar/idle-load "~/.emacs.d/features/objc.el")
    (ar/idle-load "~/.emacs.d/features/elfeed.el")
    (ar/idle-load "~/.emacs.d/features/modal.el")
    (ar/idle-load "~/.emacs.d/features/mail.el")
    (ar/idle-load "~/.emacs.d/features/general.el")
    (ar/idle-load "~/.emacs.d/features/compile.el")
+   (ar/idle-load "~/.emacs.d/features/prog.el")
    (ar/idle-load "~/.emacs.d/features/bazel.el")
+   (ar/idle-load "~/.emacs.d/features/objc.el")
 
    (run-with-idle-timer
     0.5 nil

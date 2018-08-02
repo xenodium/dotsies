@@ -10,7 +10,6 @@
       ;; Company backends for Objective-C.
       (setq-local company-backends '((company-files
                                       company-keywords)))
-      (company-mode +1)
 
       ;; Userful for camel-case Objective-C.
       (subword-mode +1)
