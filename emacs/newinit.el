@@ -134,6 +134,8 @@
    (ar/idle-load "~/.emacs.d/features/modal.el")
    (ar/idle-load "~/.emacs.d/features/mail.el")
    (ar/idle-load "~/.emacs.d/features/general.el")
+   (ar/idle-load "~/.emacs.d/features/compile.el")
+   (ar/idle-load "~/.emacs.d/features/bazel.el")
 
    (run-with-idle-timer
     0.5 nil
