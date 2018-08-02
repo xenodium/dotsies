@@ -137,6 +137,7 @@
    (ar/idle-load "~/.emacs.d/features/prog.el")
    (ar/idle-load "~/.emacs.d/features/bazel.el")
    (ar/idle-load "~/.emacs.d/features/objc.el")
+   (ar/idle-load "~/.emacs.d/features/flyspell.el")
 
    (run-with-idle-timer
     0.5 nil

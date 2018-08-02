@@ -1,5 +1,5 @@
 (use-package prog-mode
-  :init
-  (defun ar/prog-mode-hook ()
-    (company-mode +1))
-  :hook (prog-mode . ar/prog-mode-hook))
+  :hook ((prog-mode . company-mode)
+         (prog-mode . flyspell-prog-mode))
+  :config
+  (use-package flyspell))
