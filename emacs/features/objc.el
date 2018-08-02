@@ -24,7 +24,10 @@
               ([f6] . recompile))
   :config
   (use-package clang-format
-    :ensure t))
+    :ensure t)
+  (use-package company)
+  (use-package simple)
+  (use-package subword))
 
 ;; Recognize .h headers can also be Objective-C (enable objc-mode for them).
 (use-package dummy-h-mode
