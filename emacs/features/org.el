@@ -89,7 +89,8 @@
   (ar/vsetq org-return-follows-link t))
 
 (use-package ar-org
-  :commands (ar/org-add-todo
+  :commands (ar/org-short-links-json
+             ar/org-add-todo
              ar/org-add-done))
 
 (use-package ar-ox-html
