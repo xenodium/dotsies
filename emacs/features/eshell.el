@@ -27,14 +27,18 @@
         (setq-local company-begin-commands
                     (append company-begin-commands (list 'comint-magic-space))))
 
+      (bind-key "M-r" #'helm-eshell-history eshell-mode-map)
       (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
     :config
-    (use-package company)
-    (use-package company-escaped-files)
-    (use-package company-projectile-cd)
+    (require 'company)
+    (require 'helm-eshell)
 
-    (use-package em-hist)
-    (use-package em-glob)
+
+    (require 'company-escaped-files)
+    (require 'company-projectile-cd)
+
+    (require 'em-hist)
+    (require 'em-glob)
 
     (use-package esh-mode
       :config
