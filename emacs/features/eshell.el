@@ -19,8 +19,8 @@
       (add-to-list 'eshell-visual-commands "tail")
       (add-to-list 'eshell-visual-commands "top")
 
-      ;; TODO: Enable company.
-      ;; (setq-local company-backends '((company-projectile-cd company-escaped-files)))
+      (setq-local company-backends '((company-projectile-cd company-escaped-files)))
+      (company-mode +1)
 
       ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
       (when (boundp 'company-begin-commands)
@@ -29,6 +29,10 @@
 
       (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
     :config
+    (use-package company)
+    (use-package company-escaped-files)
+    (use-package company-projectile-cd)
+
     (use-package em-hist)
     (use-package em-glob)
 

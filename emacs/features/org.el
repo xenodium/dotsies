@@ -24,11 +24,11 @@
   (use-package org-faces
     :config
     (ar/vsetq org-todo-keyword-faces
-           '(("TODO" . (:foreground "red" :weight bold))
-             ("STARTED" . (:foreground "yellow" :weight bold))
-             ("DONE" . (:foreground "green" :weight bold))
-             ("OBSOLETE" . (:foreground "blue" :weight bold))
-             ("CANCELLED" . (:foreground "gray" :weight bold)))))
+              '(("TODO" . (:foreground "red" :weight bold))
+                ("STARTED" . (:foreground "yellow" :weight bold))
+                ("DONE" . (:foreground "green" :weight bold))
+                ("OBSOLETE" . (:foreground "blue" :weight bold))
+                ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
@@ -86,70 +86,67 @@
   (ar/vsetq org-goto-auto-isearch nil)
 
   ;; Enable RET to follow Org links.
-  (ar/vsetq org-return-follows-link t))
+  (ar/vsetq org-return-follows-link t)
 
-(use-package ar-org
-  :commands (ar/org-short-links-json
-             ar/org-add-todo
-             ar/org-add-done))
-
-(use-package ar-ox-html
-  :config
-  (use-package ob-plantuml
+  (use-package ar-ox-html
+    :bind (:map org-mode-map
+                ([f6] . ar/ox-html-export))
     :config
-    (use-package org-src)
+    (use-package ob-plantuml
+      :config
+      (use-package org-src)
 
-    ;; Use fundamental mode when editing plantuml blocks with C-c '
-    (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+      ;; Use fundamental mode when editing plantuml blocks with C-c '
+      (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
-    ;; We explicitly want org babel confirm evaluations.
-    (ar/vsetq org-confirm-babel-evaluate t)
+      ;; We explicitly want org babel confirm evaluations.
+      (ar/vsetq org-confirm-babel-evaluate t)
 
-    (cond ((string-equal system-type "darwin")
-           (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
-           (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
-          (t
-           (message "Warning: Could not find plantuml.8018.jar")
-           (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
+      (cond ((string-equal system-type "darwin")
+             (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
+             (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+            (t
+             (message "Warning: Could not find plantuml.8018.jar")
+             (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
-  (use-package ox-html)
+    (use-package ox-html)
 
-  (ar/ox-html-setup)
+    (ar/ox-html-setup))
 
-  :bind (:map org-mode-map
-              ([f6] . ar/ox-html-export)))
+  (use-package ar-org
+    :commands (ar/org-add-todo
+               ar/org-add-done))
 
-(use-package ob
-  :after org
-  :bind (:map org-mode-map
-              ("C-c C-c" . org-ctrl-c-ctrl-c))
-  :config
-  (ar/vsetq org-export-babel-evaluate nil)
+  (use-package ob
+    :bind (:map org-mode-map
+                ("C-c C-c" . org-ctrl-c-ctrl-c))
+    :config
+    (ar/vsetq org-export-babel-evaluate nil)
 
-  (use-package ob-objc)
+    (use-package ob-objc)
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (ditaa . t)
-     (dot . t)
-     (emacs-lisp . t)
-     (gnuplot . t)
-     (haskell . nil)
-     (ocaml . nil)
-     (python . t)
-     (ruby . t)
-     (screen . nil)
-     (objc . t)
-     (shell . t)
-     (js . t)
-     (sql . nil)
-     (sqlite . t))))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((R . t)
+       (ditaa . t)
+       (dot . t)
+       (emacs-lisp . t)
+       (gnuplot . t)
+       (haskell . nil)
+       (ocaml . nil)
+       (python . t)
+       (ruby . t)
+       (screen . nil)
+       (objc . t)
+       (shell . t)
+       (js . t)
+       (sql . nil)
+       (sqlite . t))))
 
-(use-package org-crypt
-  :config
-  (org-crypt-use-before-save-magic)
-  (csetq org-crypt-disable-auto-save nil)
-  (csetq org-tags-exclude-from-inheritance (quote ("crypt")))
-  ;;  Set to nil to use symmetric encryption.
-  (csetq org-crypt-key nil))
+  (use-package org-crypt
+    :config
+    (org-crypt-use-before-save-magic)
+    (csetq org-crypt-disable-auto-save nil)
+    (csetq org-tags-exclude-from-inheritance (quote ("crypt")))
+    ;;  Set to nil to use symmetric encryption.
+    (csetq org-crypt-key nil)))

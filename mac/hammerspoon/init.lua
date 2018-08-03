@@ -112,7 +112,18 @@ end
 
 function searchEmacsBrowserBookmarks()
    appRequestingEmacs = hs.application.frontmostApplication()
-   emacsExecute(false, "(ar/modal-ivy-search-bookmarks)")
+   emacsExecute(false, "(ar/modal-ivy-search-org-links)")
+   activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
+end
+
+function launchEmacsKeybindingI()
+   appRequestingEmacs = hs.application.frontmostApplication()
+   emacsExecute(false, "(ar/modal-key-binding-i)")
    activateFirstOf({
             {
                bundleID="org.gnu.Emacs",
@@ -178,6 +189,7 @@ end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
 hs.hotkey.bind({"alt"}, "W", searchEmacsBrowserBookmarks)
+hs.hotkey.bind({"alt"}, "I", launchEmacsKeybindingI)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 
 hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({
