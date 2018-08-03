@@ -22,3 +22,6 @@
   (ar/csetq auto-revert-verbose nil)
 
   (global-auto-revert-mode))
+
+;; Avoid creating lock files (ie. .#some-file.el)
+(setq create-lockfiles nil)
