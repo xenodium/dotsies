@@ -558,7 +558,6 @@
 (use-package company-hammerspoon
   :after company)
 
-(use-package ar-ping)
 (use-package ar-shell)
 (use-package ar-sudo)
 
@@ -568,8 +567,7 @@
   (use-package enlive :ensure t))
 
 (use-package ar-osx
-  :demand
-  :commands (ar/osx-convert-plist-to-xml))
+  :commands ar/osx-convert-plist-to-xml)
 
 (use-package ar-platform
   :demand
@@ -638,6 +636,7 @@
 ;; underscore -> UPCASE -> CamelCase conversion of names
 (use-package string-inflection :ensure t)
 
+;; Migation Marker
 (use-package interaction-log :ensure t
   :defer t
   :commands ar/interation-log-show
