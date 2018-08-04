@@ -1,3 +1,11 @@
+;;; init.el --- This is my init.
+
+;;; Commentary:
+;; There is where my Emacs config starts.
+
+
+;;; Code:
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Init.el GC values (faster loading) ;;;;
 
@@ -164,7 +172,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-
-;; Local Variables:
-;; compile-command: "make newinit"
-;; End:
