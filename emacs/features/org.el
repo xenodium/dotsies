@@ -18,7 +18,7 @@
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
     :config
-    (validate-setq org-bullets-bullet-list
+    (ar/vsetq org-bullets-bullet-list
                    '("◉" "◎" "⚫" "○" "►" "◇")))
 
   (use-package org-faces

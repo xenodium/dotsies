@@ -105,6 +105,7 @@
    (load "~/.emacs.d/features/package-extensions.el")
    (load "~/.emacs.d/features/libs.el")
    (load "~/.emacs.d/features/mac.el")
+   (load "~/.emacs.d/features/linux.el")
    (load "~/.emacs.d/features/ui.el")
 
    ;; Only use with string literal paths.
@@ -139,6 +140,10 @@
    (ar/idle-load "~/.emacs.d/features/flyspell.el")
    (ar/idle-load "~/.emacs.d/features/flycheck.el")
    (ar/idle-load "~/.emacs.d/features/swift.el")
+   (ar/idle-load "~/.emacs.d/features/elisp.el")
+   (ar/idle-load "~/.emacs.d/features/images.el")
+   (ar/idle-load "~/.emacs.d/features/ios.el")
+   (ar/idle-load "~/.emacs.d/features/web.el")
 
    (run-with-idle-timer
     0.5 nil

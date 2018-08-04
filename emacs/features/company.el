@@ -28,6 +28,10 @@
     :config
     (ar/vsetq company-dabbrev-code-ignore-case nil))
 
+  (use-package company-grep)
+  (use-package company-rfiles)
+  (use-package company-projectile-cd)
+
   (ar/vsetq company-idle-delay 0.2)
   (ar/vsetq company-show-numbers t)
   (ar/vsetq company-minimum-prefix-length 2)

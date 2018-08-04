@@ -3,8 +3,13 @@
   :bind ("C-x g" . magit-status)
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
-  (message "magit")
-  (fullframe magit-status magit-mode-quit-window))
+
+  (fullframe magit-status magit-mode-quit-window)
+
+  (defun ar/magit-soft-reset-head~1 ()
+    "Soft reset current git repo to HEAD~1."
+    (interactive)
+    (magit-reset-soft "HEAD~1")))
 
 (use-package with-editor
   :ensure t

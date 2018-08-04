@@ -23,3 +23,11 @@
   (setq exec-path (append exec-path '("~/homebrew/bin"
                                       "~/homebrew/Cellar/llvm/HEAD/bin"
                                       "/usr/local/bin"))))
+
+;; macOS color picker.
+(use-package color-picker
+  :commands color-picker)
+
+;; Convert binary plists to xml using host utilities.
+(use-package ar-osx
+  :commands ar/osx-convert-plist-to-xml)
