@@ -32,8 +32,11 @@ global:
 
 yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
-	cd yasnippets/personal && python ../generate-xcode-yasnippets.py
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
+
+yasxcode:
+	mkdir -p ~/.emacs.d/yasnippets
+	cd yasnippets/personal && python ../generate-xcode-yasnippets.py
 
 emaxcode:
 	curl https://raw.githubusercontent.com/ShingoFukuyama/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
