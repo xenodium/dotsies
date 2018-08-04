@@ -27,3 +27,11 @@
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq enable-recursive-minibuffers t)
   (ivy-mode +1))
+
+;; Displays yasnippet previous inline when cycling through results.
+(use-package ivy-yasnippet
+  :ensure t
+  :commands ivy-yasnippet
+  :config
+  (require 'yasnippet)
+  (yas-minor-mode))
