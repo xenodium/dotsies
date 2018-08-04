@@ -4,7 +4,7 @@
   (let ((start (line-beginning-position))
         (end (line-end-position)))
     (when (region-active-p)
-      (validate-setq start (save-excursion
+      (ar/vsetq start (save-excursion
                              (goto-char (region-beginning))
                              (beginning-of-line)
                              (point))

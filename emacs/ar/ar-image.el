@@ -16,7 +16,7 @@
 (defun ar/image-open-html-for-dir-path (dir-path image-percentage-size &optional use-base-64)
   "Open generated HTML page for DIR-PATH, IMAGE-PERCENTAGE-SIZE, and IMAGE-EXTENSION.  For example: (ar/image-open-html-for-dir-path \"path/to/images/\" 10 \"jpg\")."
   (let ((body-html-template "<html><header><title>{{dir-path}}</title></header><body><h1>{{dir-path}}<h1/>{{images}}</body></html>")
-        (image-html-template (format "<img width='%d%%' src='{{image-path}}'/>" image-percentage-size))
+        (image-html-template (format "<a href='{{image-path}}'><img width='%d%%' src='{{image-path}}'/></a>" image-percentage-size))
         (images-html "")
         (images-paths (directory-files (expand-file-name dir-path) t "\\(PNG\\|JPG\\|BMP\\|GIF\\|png\\|jpg\\|bmp\\|gif\\)$"))
         (output-file-path (format "/tmp/%d.html" (random 9999))))
