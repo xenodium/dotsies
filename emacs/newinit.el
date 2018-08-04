@@ -144,6 +144,7 @@
    (ar/idle-load "~/.emacs.d/features/images.el")
    (ar/idle-load "~/.emacs.d/features/ios.el")
    (ar/idle-load "~/.emacs.d/features/web.el")
+   (ar/idle-load "~/.emacs.d/features/yasnippet.el")
 
    (run-with-idle-timer
     0.5 nil

@@ -3,10 +3,12 @@
 (use-package org
   :ensure t
   :hook ((org-mode . ar/org-mode-hook-function)
-         (org-mode . visual-line-mode))
+         (org-mode . visual-line-mode)
+         (org-mode . yas-minor-mode))
   :bind (:map org-mode-map
               ("C-c C-l" . ar/org-insert-link-dwim))
   :config
+
   (setq org-todo-keywords
         '((sequence
            "TODO"
