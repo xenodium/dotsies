@@ -12,16 +12,6 @@ init:
 	cp emacssocket ~/local/bin/
 	make -C ar
 	make -C external
-
-newinit:
-	mkdir -p ~/.emacs.d
-	python ../installer/copy_into.py newinit.el ~/.emacs.d/init.el "my-emacs" ";;"
-	mkdir -p ~/.emacs.d/downloads/exec-path-from-shell
-	curl https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el -o ~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el || echo "No internet connection... skipping exec-path-from-shell.el install."
-	mkdir -p ~/local/bin/
-	cp emacssocket ~/local/bin/
-	make -C ar
-	make -C external
 	make -C features
 
 pylint:
