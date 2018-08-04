@@ -2,11 +2,18 @@
 
 (use-package org
   :ensure t
+  :bind (:map org-mode-map
+              ("C-c C-l" . ar/org-insert-link-dwim))
+  :init
+  (defun ar/org-mode-hook-function ()
+    (toggle-truncate-lines 0)
+    (org-display-inline-images)
+    (ar/vsetq show-trailing-whitespace t)
+    (set-fill-column 1000)
+    (use-package ar-org))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode))
-  :bind (:map org-mode-map
-              ("C-c C-l" . ar/org-insert-link-dwim))
   :config
 
   (setq org-todo-keywords
@@ -45,12 +52,6 @@
                           (current-kill 0)
                           region-content)))
       (call-interactively 'org-insert-link)))
-
-  (defun ar/org-mode-hook-function ()
-    (toggle-truncate-lines 0)
-    (org-display-inline-images)
-    (ar/vsetq show-trailing-whitespace t)
-    (set-fill-column 1000))
 
   ;; Look into font-locking email addresses.
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
@@ -114,10 +115,6 @@
     (use-package ox-html)
 
     (ar/ox-html-setup))
-
-  (use-package ar-org
-    :commands (ar/org-add-todo
-               ar/org-add-done))
 
   (use-package ob
     :bind (:map org-mode-map
