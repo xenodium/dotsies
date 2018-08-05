@@ -7,11 +7,19 @@
          ("C-c x" . hydra-quick-insert/body)
          ("C-c o" . ar/hydra-open-dwim)
          ("C-c g" . hydra-git-gutter/body)
-         ("<" . ar/org-insert-char-dwim))
+         ("<" . ar/org-insert-char-dwim)
+         ("C-c 1" . hydra-profile/body))
   :config
   (ar/vsetq hydra-is-helpful t)
 
   (use-package vc-git)
+
+  (defhydra hydra-profile (:color blue)
+    "profiling"
+    ("b" ar/profiler-start-cpu "begin")
+    ("r" profiler-report "report")
+    ("e" profiler-stop "end")
+    ("q" nil "quit"))
 
   (defhydra hydra-search (:color blue)
     "search"
