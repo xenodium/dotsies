@@ -99,3 +99,14 @@ Repeated invocations toggle between the two most recently open buffers."
                       :foreground "yellow")
   (ar/vsetq highlight-symbol-idle-delay 0.2)
   (ar/vsetq highlight-symbol-on-navigation-p t))
+
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . ace-window))
+  :config
+  (ar/vsetq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  ;; Use larger characters for ace window shortcuts.
+  ;; From http://oremacs.com/2015/02/27/ace-window-leading-char
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 3.0))))))
