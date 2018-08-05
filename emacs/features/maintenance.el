@@ -17,6 +17,14 @@
   :ensure t
   :commands macrostep-expand)
 
+(use-package profiler
+  :commands ar/profiler-start-cpu
+  :init
+  (defun ar/profiler-start-cpu ()
+    "Start cpu profiler."
+    (interactive)
+    (profiler-start 'cpu)))
+
 ;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/autoload/debug.el#L57
 (defun ar/am-i-secure ()
   "Test to see if your root certificates are securely configured in emacs."
@@ -39,4 +47,4 @@
                     (if (or (not status) (plist-member status :error))
                         (warn "Something went wrong.\n\n%s" (pp-to-string status))
                       (message "Your trust roots are set up properly.\n\n%s" (pp-to-string status))
-t)))))
+                      t)))))
