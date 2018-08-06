@@ -1,8 +1,12 @@
+(require 'ar-csetq)
+
 (use-package flyspell
   :bind (:map
          flyspell-mode-map
          ("C-M-i" . ar/auto-correct-word-then-abbrev))
   :init
+  ;; TODO: Figure out why it's not defined.
+  (ar/csetq flyspell-delayed-commands nil)
   ;; From http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
   (defun ar/auto-correct-word-then-abbrev (p)
     "Call `ispell-word', then create an abbrev for it.
