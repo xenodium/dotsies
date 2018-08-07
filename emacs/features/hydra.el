@@ -26,6 +26,7 @@
     ("d" ar/helm-ag "search directory")
     ("a" ar/find-all-dired-current-dir "find all files")
     ("i" ar/helm-ag-insert "insert match")
+    ("m" mu4e-headers-search "search email")
     ("q" nil "quit"))
   (defhydra hydra-quick-insert (:color blue)
     "
