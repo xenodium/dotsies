@@ -77,6 +77,15 @@
       (insert "cd ..")
       (eshell-send-input nil t))
 
+    (defun eshell/a ()
+      "Change PWD to active dir."
+      (eshell/cd "~/stuff/active"))
+
+    (defun eshell/c ()
+      "Change PWD to active dir."
+      (eshell/cd "~/stuff/active/code/"))
+
+
     (use-package ar-eshell-config))
 
   ;; (csetq shell-pop-term-shell "/bin/bash")
