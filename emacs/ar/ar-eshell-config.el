@@ -76,20 +76,7 @@
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
 
 (defalias 'eshell/e 'eshell/emacs)
-
-(defun eshell/ec (&rest args)
-  "Compile a file (ARGS) in Emacs.  Use `compile' to do background make."
-  (if (eshell-interactive-output-p)
-      (let ((compilation-process-setup-function
-             (list 'lambda nil
-                   (list 'setq 'process-environment
-                         (list 'quote (eshell-copy-environment))))))
-        (compile (eshell-flatten-and-stringify args))
-        (pop-to-buffer compilation-last-buffer))
-    (throw 'eshell-replace-command
-           (let ((l (eshell-stringify-list (eshell-flatten-list args))))
-             (eshell-parse-command (car l) (cdr l))))))
-(put 'eshell/ec 'eshell-no-numeric-conversions t)
+(defalias 'eshell/ec 'eshell/emacs)
 
 (defun eshell-view-file (file)
   "View FILE.  A version of `view-file' which properly rets the eshell prompt."
