@@ -153,6 +153,7 @@
    (ar/idle-load "~/.emacs.d/features/ios.el")
    (ar/idle-load "~/.emacs.d/features/web.el")
    (ar/idle-load "~/.emacs.d/features/yasnippet.el")
+   (ar/idle-load "~/.emacs.d/features/info.el")
 
    (run-with-idle-timer
     0.5 nil
