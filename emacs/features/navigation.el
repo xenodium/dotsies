@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 (use-package isearch
   :commands (isearch-forward isearch-backward)
@@ -110,3 +111,12 @@ Repeated invocations toggle between the two most recently open buffers."
   (custom-set-faces
    '(aw-leading-char-face
      ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+
+(use-package smart-jump
+  :ensure t
+  :commands smart-jump-go
+  :config
+  (smart-jump-setup-default-registers)
+  (ar/csetq dumb-jump-selector 'popup)
+  ;; (setq dumb-jump-selector 'ivy)
+  :bind ("M-." . smart-jump-go))
