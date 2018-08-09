@@ -66,14 +66,11 @@ already narrowed."
          ("C-e" . mwim-end-of-code-or-line)))
 
 (use-package centered-cursor-mode
-  :defer 0.1
   :ensure t
-  :pin melpa
+  :commands (centered-cursor-mode global-centered-cursor-mode)
   :init
   ;; Workaround to use centered-cursor-mode in --nw.
-  (defvar mouse-wheel-mode nil)
-  :config
-  (global-centered-cursor-mode +1))
+  (defvar mouse-wheel-mode nil))
 
 (use-package window
   :chords (("BB" . other-window)
