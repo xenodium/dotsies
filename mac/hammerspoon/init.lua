@@ -217,6 +217,16 @@ hs.hotkey.bind({"cmd", "ctrl"}, "L", function()
       hs.caffeinate.startScreensaver()
 end)
 
+hs.hotkey.bind({"cmd", "ctrl"}, "E", function()
+      emacsExecute(false, "(new-frame)")
+      activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
+end)
+
 hs.hotkey.bind({"alt"}, "B", function() activateFirstOf({
             {
                bundleID="org.mozilla.firefox",
