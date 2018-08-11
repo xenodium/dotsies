@@ -238,6 +238,24 @@ Version 2015-02-07."
       (when (> (length results) 0)
         results))))
 
+;; From http://ergoemacs.org/emacs/emacs_copy_file_path.html
+(defun ar/buffer-copy-file-path (&optional φdir-path-only-p)
+  "Copy the current buffer's file path or dired path to `kill-ring'.
+If `universal-argument' is called, copy only the dir path.
+Version 2015-01-14
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
+  (interactive "P")
+  (let ((fPath
+         (if (equal major-mode 'dired-mode)
+             default-directory
+           (buffer-file-name))))
+    (kill-new
+     (if (equal φdir-path-only-p nil)
+         fPath
+       (file-name-directory fPath)))
+    (message "File path copied: %s" fPath)))
+
 (defun ar/buffer-groups-of (re)
   "Return a list of any RE consecutive match separated by two or more newlines.
 
