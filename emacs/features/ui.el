@@ -60,7 +60,11 @@
   ;; No need to confirm killing buffers.
   :bind ("C-x k" . kill-this-buffer))
 
-;; #noncore
 (use-package face-remap
   :bind(("C-+" . text-scale-increase)
         ("C--" . text-scale-decrease)))
+
+(use-package nyan-mode :ensure t
+  :if (display-graphic-p)
+  :config
+  (nyan-mode +1))
