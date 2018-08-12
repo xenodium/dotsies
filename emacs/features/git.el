@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
@@ -25,3 +27,19 @@
 
 (use-package ar-git
   :defer 2)
+
+(use-package log-edit
+  :config
+  ;; Let's remember more commit messages.
+  (ar/vsetq log-edit-comment-ring (make-ring 1000)))
+
+(use-package git-commit
+  :ensure t
+  :bind (:map git-commit-mode-map
+              ("M-r" . ar/M-r-commit-message-history))
+  :init
+  (defun ar/M-r-commit-message-history ()
+    "Search and insert commit message from history."
+    (interactive)
+    (insert (completing-read "Commit message: "
+                             (ring-elements log-edit-comment-ring)))))

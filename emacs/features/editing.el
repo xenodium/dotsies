@@ -46,7 +46,8 @@
     (ar/vsetq savehist-additional-variables
            '(kill-ring
              search-ring
-             regexp-search-ring))
+             regexp-search-ring
+             log-edit-comment-ring))
     (savehist-mode +1))
   (use-package whitespace
     :defer 5
