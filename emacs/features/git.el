@@ -42,4 +42,7 @@
     "Search and insert commit message from history."
     (interactive)
     (insert (completing-read "History: "
-                             (ring-elements log-edit-comment-ring)))))
+                             ;; Remove unnecessary newlines (at beg and end).
+                             (mapcar (lambda (text)
+                                       (string-trim text))
+                                     (ring-elements log-edit-comment-ring))))))
