@@ -41,5 +41,5 @@
   (defun ar/M-r-commit-message-history ()
     "Search and insert commit message from history."
     (interactive)
-    (insert (completing-read "Commit message: "
+    (insert (completing-read "History: "
                              (ring-elements log-edit-comment-ring)))))
