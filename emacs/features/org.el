@@ -91,6 +91,10 @@
   ;; Enable RET to follow Org links.
   (ar/vsetq org-return-follows-link t)
 
+  (use-package ar-org-blog
+    :commands (ar/org-blog-insert-image
+               ar/org-blog-insert-resized-image))
+
   (use-package ar-ox-html
     :bind (:map org-mode-map
                 ([f6] . ar/ox-html-export))
