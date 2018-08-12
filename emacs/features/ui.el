@@ -18,6 +18,12 @@
 ;; No color for fringe, blends with the rest of the window.
 (set-face-attribute 'fringe nil :background nil)
 
+;; Hardcode region theme color.
+(set-face-attribute 'region nil
+                    :background "#3f464c"
+                    :foreground "#eeeeec"
+                    :underline nil)
+
 (use-package moody
   :ensure t
   :config
