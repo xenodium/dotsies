@@ -81,7 +81,10 @@ already narrowed."
     "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
     (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1))))
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+  :config
+  ;; Prefer horizontal window splits.
+  (ar/vsetq split-width-threshold nil))
 
 ;; In addition to highlighting, we get navigation between
 (use-package highlight-symbol
