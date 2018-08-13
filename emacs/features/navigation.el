@@ -73,6 +73,8 @@ already narrowed."
   (defvar mouse-wheel-mode nil))
 
 (use-package window
+  :bind (("C-x 2" . ar/vsplit-last-buffer)
+         ("C-x 3" . ar/hsplit-last-buffer))
   :chords (("BB" . other-window)
            ("JJ" . ar/switch-to-previous-buffer))
   :init
@@ -82,6 +84,22 @@ already narrowed."
 Repeated invocations toggle between the two most recently open buffers."
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
+  ;; From http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
+
+  (defun ar/vsplit-last-buffer ()
+    "Vertically splitting the screen and open the previous buffer instead of identical buffers."
+    (interactive)
+    (split-window-vertically)
+    (other-window
+     1 nil)
+    (switch-to-next-buffer))
+
+  (defun ar/hsplit-last-buffer ()
+    "Horizontally splitting the screen and open the previous buffer instead of identical buffers."
+    (interactive)
+    (split-window-horizontally)
+    (other-window 1 nil)
+    (switch-to-next-buffer))
   :config
   ;; Prefer horizontal window splits.
   (ar/vsetq split-width-threshold nil))
