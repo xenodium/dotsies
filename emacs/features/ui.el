@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
@@ -68,3 +70,8 @@
   :if (display-graphic-p)
   :config
   (nyan-mode +1))
+
+(use-package window
+  :config
+  ;; Prefer horizontal window splits.
+  (ar/vsetq split-width-threshold nil))
