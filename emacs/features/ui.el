@@ -1,3 +1,5 @@
+(require 'ar-vsetq)
+
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
