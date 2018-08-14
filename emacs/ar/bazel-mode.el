@@ -18,6 +18,7 @@
 (add-hook 'bazel-mode-hook #'bazel-mode--hook-fun)
 
 (add-to-list 'auto-mode-alist '("BUILD\\'" . bazel-mode))
+(add-to-list 'auto-mode-alist '("\\.bzl\\'" . bazel-mode))
 
 (provide 'bazel-mode)
 
