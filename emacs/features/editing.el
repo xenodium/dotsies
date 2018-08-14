@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -201,4 +202,17 @@ line instead."
 (use-package simple
   :config
   ;; Save external clipboard before killing other text in Emacs.
-  (ar/vsetq save-interprogram-paste-before-kill t))
+  (ar/vsetq save-interprogram-paste-before-kill t)
+
+  ;; Don't bother saving things to the kill-ring twice, remove duplicates.
+  (ar/csetq kill-do-not-save-duplicates t)
+
+  ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
+  (ar/csetq idle-update-delay 2)
+
+  ;; Increase mark ring size.
+  (ar/csetq global-mark-ring-max 500))
+
+;; Open rc files with conf-mode.
+(use-package conf-mode
+  :mode ("rc$" . conf-mode))
