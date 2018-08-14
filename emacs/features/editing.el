@@ -197,3 +197,8 @@ line instead."
          ("M-DEL" . ar/backward-delete-subword)
          ("<C-backspace>" . ar/backward-delete-subword)
          ("C-x C-d" . ar/duplicate-line)))
+
+(use-package simple
+  :config
+  ;; Save external clipboard before killing other text in Emacs.
+  (ar/vsetq save-interprogram-paste-before-kill t))
