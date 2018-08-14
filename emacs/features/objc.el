@@ -25,7 +25,6 @@
   (use-package clang-format
     :ensure t)
   (use-package company)
-  (use-package simple)
   (use-package subword))
 
 ;; Recognize .h headers can also be Objective-C (enable objc-mode for them).

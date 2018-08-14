@@ -13,7 +13,7 @@ def load_raw_xcode_snippets_plist():
       "/Applications/Xcode.app/Contents/Frameworks/IDEKit.framework/Versions/A/Resources/SystemCodeSnippets.codesnippets")
 
 
-def parse_raw_xcode_yasnippet(xcode_snippet):
+def parse_raw_xcode_snippet(xcode_snippet):
   XcodeSnippet = namedtuple('XcodeSnippet',
                             'prefix title summary language content')
   return XcodeSnippet(xcode_snippet["IDECodeSnippetCompletionPrefix"],
@@ -46,7 +46,7 @@ def convert_xcode_to_yasnippet(xcode_snippet):
 def convert_to_yasnippets():
   raw_xcode_snippets = load_raw_xcode_snippets_plist()
   for raw_xcode_snippet in raw_xcode_snippets:
-    xcode_snippet = parse_raw_xcode_yasnippet(raw_xcode_snippet)
+    xcode_snippet = parse_raw_xcode_snippet(raw_xcode_snippet)
     if not xcode_snippet.language or not xcode_snippet.prefix:
       continue
     language_to_emacs_mode = {
