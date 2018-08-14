@@ -1,5 +1,6 @@
 (use-package bazel-mode
-  :mode ("BUILD\\'" . bazel-mode)
+  :mode (("\\.bzl\\'" . bazel-mode)
+         ("BUILD\\'" . bazel-mode))
   :hook (bazel-mode . ar/bazel-mode-hook-fun)
   :init
   (defun ar/bazel-mode-hook-fun ()

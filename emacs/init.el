@@ -158,6 +158,7 @@
    (ar/idle-load "~/.emacs.d/features/ledger.el")
    (ar/idle-load "~/.emacs.d/features/help.el")
    (ar/idle-load "~/.emacs.d/features/alert.el")
+   (ar/idle-load "~/.emacs.d/features/protobuf.el")
 
    (run-with-idle-timer
     0.5 nil
