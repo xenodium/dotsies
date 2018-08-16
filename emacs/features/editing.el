@@ -77,6 +77,14 @@
     (require 'smartparens-html)
     (require 'smartparens-python)
 
+    (defun ar/create-newline-and-enter-sexp (&rest _ignored)
+      "Open a new brace or bracket expression, with relevant newlines and indent. "
+      (newline)
+      (indent-according-to-mode)
+      (forward-line -1)
+      (indent-according-to-mode))
+
+    (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
     (defun ar/kill-region-advice-fun (orig-fun &rest r)
       "Advice function around `kill-region' (ORIG-FUN and R)."
       (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
