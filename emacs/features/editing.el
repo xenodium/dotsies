@@ -125,6 +125,13 @@
   :config
   (region-bindings-mode-enable))
 
+;; Display chars/lines or row/columns in the region.
+(use-package region-state
+  :ensure t
+  :defer 2
+  :config
+  (region-state-mode))
+
 (use-package multiple-cursors :ensure t
   :after region-bindings-mode
   :init
