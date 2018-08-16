@@ -77,6 +77,11 @@
     (require 'smartparens-html)
     (require 'smartparens-python)
 
+    ;; Removes \\(
+    (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
+    (sp-local-pair 'swift-mode "\\(" ")")
+    (sp-local-pair 'swift-mode "<" ">")
+
     (defun ar/create-newline-and-enter-sexp (&rest _ignored)
       "Open a new brace or bracket expression, with relevant newlines and indent. "
       (newline)
