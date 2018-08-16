@@ -7,8 +7,9 @@
          ("C-c x" . hydra-quick-insert/body)
          ("C-c o" . ar/hydra-open-dwim)
          ("C-c g" . hydra-git-gutter/body)
-         ("<" . ar/org-insert-char-dwim)
-         ("C-c 1" . hydra-profile/body))
+         ("C-c 1" . hydra-profile/body)
+         :map org-mode-map
+         ("<" . ar/org-insert-char-dwim))
   :config
   (ar/vsetq hydra-is-helpful t)
 
