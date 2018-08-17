@@ -90,6 +90,8 @@
       (indent-according-to-mode))
 
     (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+    (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+    (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
     (defun ar/kill-region-advice-fun (orig-fun &rest r)
       "Advice function around `kill-region' (ORIG-FUN and R)."
       (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
