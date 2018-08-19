@@ -78,74 +78,90 @@
     (set-face-attribute 'whitespace-line nil
                         :foreground "DarkOrange1"
                         :background "default"))
-  (use-package smartparens
-    :ensure t
-    :defer 0.01
-    ;; Add to minibuffer also.
-    :hook ((minibuffer-setup . smartparens-mode)
-           (prog-mode . smartparens-strict-mode)
-           (eshell-mode . smartparens-strict-mode))
-    :config
-    (require 'smartparens-config)
-    (require 'smartparens-html)
-    (require 'smartparens-python)
 
-    ;; Removes \\(
-    (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
-    (sp-local-pair 'swift-mode "\\(" ")")
-    (sp-local-pair 'swift-mode "<" ">")
+(use-package smartparens
+  :ensure t
+  :bind
+  (:map
+   smartparens-strict-mode-map
+   ;; I prefer keeping C-w to DWIM kill, provided by
+   ;; `ar/kill-region-advice-fun'. Removing remap.
+   ([remap kill-region] . kill-region)
+   :map objc-mode-map
+   ("M-]" . ar/smartparens-wrap-square-bracket)
+   :map smartparens-mode-map
+   ([remap kill-region] . kill-region)
+   ("M-[" . sp-rewrap-sexp)
+   ("C-M-f" . sp-forward-sexp)
+   ("C-M-b" . sp-backward-sexp)
+   ("C-M-n" . sp-forward-sexp)
+   ("C-M-p" . sp-backward-sexp)
+   ("C-M-a" . sp-beginning-of-sexp)
+   ("C-M-e" . sp-end-of-sexp)
+   ("C-M-u" . sp-backward-up-sexp)
+   ("C-M-d" . sp-down-sexp)
+   ("C-M-t" . sp-transpose-sexp)
+   ("C-M-k" . sp-kill-sexp)
+   ("C-M-w" . sp-copy-sexp)
+   ("C-<right>" . sp-forward-slurp-sexp)
+   ("C-<left>" . sp-forward-barf-sexp)
+   ("C-M-<left>" . sp-backward-slurp-sexp)
+   ("C-M-<right>" . sp-backward-barf-sexp)
+   ("M-f" . sp-forward-symbol)
+   ("M-b" . sp-backward-symbol))
+  ;; Add to minibuffer also.
+  :hook ((minibuffer-setup . smartparens-mode)
+         (prog-mode . smartparens-strict-mode)
+         (eshell-mode . smartparens-strict-mode))
+  :config
+  (require 'smartparens-config)
+  (require 'smartparens-html)
+  (require 'smartparens-python)
 
-    (defun ar/create-newline-and-enter-sexp (&rest _ignored)
-      "Open a new brace or bracket expression, with relevant newlines and indent. "
-      (newline)
-      (indent-according-to-mode)
-      (forward-line -1)
-      (indent-according-to-mode))
+  ;; Removes \\(
+  (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
+  (sp-local-pair 'swift-mode "\\(" ")")
+  (sp-local-pair 'swift-mode "<" ">")
 
-    (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-    (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-    (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-    (defun ar/kill-region-advice-fun (orig-fun &rest r)
-      "Advice function around `kill-region' (ORIG-FUN and R)."
-      (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
-              mark-active)
-          (apply orig-fun r)
-        ;; Kill entire line.
-        (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
-              (offset (- (point)
-                         (line-beginning-position))))
-          (apply orig-fun (list (line-beginning-position)
-                                (line-end-position)
-                                nil))
-          (delete-char 1)
-          (forward-char (min offset
-                             (- (line-end-position)
-                                (line-beginning-position)))))))
+  (defun ar/create-newline-and-enter-sexp (&rest _ignored)
+    "Open a new brace or bracket expression, with relevant newlines and indent. "
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
 
-    (advice-add 'kill-region
-                :around
-                'ar/kill-region-advice-fun)
+  (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+  (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+  (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+  (defun ar/kill-region-advice-fun (orig-fun &rest r)
+    "Advice function around `kill-region' (ORIG-FUN and R)."
+    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
+            mark-active)
+        (apply orig-fun r)
+      ;; Kill entire line.
+      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
+            (offset (- (point)
+                       (line-beginning-position))))
+        (apply orig-fun (list (line-beginning-position)
+                              (line-end-position)
+                              nil))
+        (delete-char 1)
+        (forward-char (min offset
+                           (- (line-end-position)
+                              (line-beginning-position)))))))
 
-    ;; I prefer keeping C-w to DWIM kill, provided by
-    ;; `ar/kill-region-advice-fun'. Removing remap.
-    ;;   (define-key smartparens-strict-mode-map [remap kill-region] nil)
+  (advice-add 'kill-region
+              :around
+              'ar/kill-region-advice-fun)
 
-    (defun ar/smartparens-wrap-square-bracket (arg)
-      "[] equivalent of `paredit-wrap-round'."
-      (interactive "P")
-      (save-excursion
-        (unless (sp-point-in-symbol)
-          (backward-char))
-        (sp-wrap-with-pair "["))
-      (insert " "))
-
-    :bind (:map smartparens-strict-mode-map
-                ([remap kill-region] . kill-region)
-                ("C-c <right>" . sp-forward-slurp-sexp)
-                ("C-c <left>" . sp-forward-barf-sexp)
-                ("M-[" . sp-rewrap-sexp)
-                :map smartparens-mode-map
-                ("M-]" . ar/smartparens-wrap-square-bracket)))
+  (defun ar/smartparens-wrap-square-bracket (arg)
+    "[] equivalent of `paredit-wrap-round'."
+    (interactive "P")
+    (save-excursion
+      (unless (sp-point-in-symbol)
+        (backward-char))
+      (sp-wrap-with-pair "["))
+    (insert " ")))
 
 (use-package region-bindings-mode
   :ensure t
