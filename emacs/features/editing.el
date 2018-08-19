@@ -13,7 +13,20 @@
 
 (use-package expand-region
   :ensure t
-  :bind ("C-c w" . er/expand-region))
+  :bind ("C-c w" . er/expand-region)
+  :config
+  ;; (ar/csetq expand-region-smart-cursor t)
+  (defun ar/kill-ring-save--expand-region-advice (orig-fun &rest r)
+    "Remember point location prior to expanding region with an advice around `kill-ring-save' (ORIG-FUN and R)."
+    (apply orig-fun r)
+    (when (eq last-command 'er/expand-region)
+      (pop-to-mark-command)
+      (pop-to-mark-command)
+      (message "Restored location prior to 'er/expand-region")))
+
+  (advice-add 'kill-ring-save
+              :around
+              'ar/kill-ring-save--expand-region-advice))
 
 (use-package dabbrev
   :config
