@@ -18,9 +18,19 @@
       (add-hook 'before-save-hook #'clang-format-buffer t t)
 
       (setq-local objc-mode-hook-did-run t)))
+  (defun ar/smartparens-wrap-square-bracket (arg)
+    "[] equivalent of `paredit-wrap-round'."
+    (interactive "P")
+    (save-excursion
+      (unless (sp-point-in-symbol)
+        ;; (sp-skip-backward-to-symbol)
+        (sp-backward-parallel-sexp)
+        ;; (sp-backward-down-sexp)
+        )
+      (sp-wrap-with-pair "[")))
   :hook (objc-mode . ar/objc-mode-hook-function)
   :bind (:map objc-mode-map
-              ([f6] . recompile))
+              ("M-]" . ar/smartparens-wrap-square-bracket))
   :config
   (use-package clang-format
     :ensure t)
