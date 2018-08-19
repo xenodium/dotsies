@@ -87,8 +87,6 @@
    ;; I prefer keeping C-w to DWIM kill, provided by
    ;; `ar/kill-region-advice-fun'. Removing remap.
    ([remap kill-region] . kill-region)
-   :map objc-mode-map
-   ("M-]" . ar/smartparens-wrap-square-bracket)
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
    ("M-[" . sp-rewrap-sexp)
@@ -152,16 +150,7 @@
 
   (advice-add 'kill-region
               :around
-              'ar/kill-region-advice-fun)
-
-  (defun ar/smartparens-wrap-square-bracket (arg)
-    "[] equivalent of `paredit-wrap-round'."
-    (interactive "P")
-    (save-excursion
-      (unless (sp-point-in-symbol)
-        (backward-char))
-      (sp-wrap-with-pair "["))
-    (insert " ")))
+              'ar/kill-region-advice-fun))
 
 (use-package region-bindings-mode
   :ensure t

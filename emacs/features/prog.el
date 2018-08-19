@@ -1,4 +1,7 @@
 (use-package prog-mode
+  :bind (:map
+         prog-mode-map
+         ([f6] . recompile))
   :hook ((prog-mode . company-mode)
          (prog-mode . flycheck-mode)
          (prog-mode . flyspell-prog-mode)
