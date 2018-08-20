@@ -26,6 +26,10 @@
 
   (advice-add 'kill-ring-save
               :around
+              'ar/kill-ring-save--expand-region-advice)
+
+  (advice-add 'indent-for-tab-command
+              :around
               'ar/kill-ring-save--expand-region-advice))
 
 (use-package dabbrev
