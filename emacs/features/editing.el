@@ -255,7 +255,19 @@ line instead."
   (ar/csetq idle-update-delay 2)
 
   ;; Increase mark ring size.
-  (ar/csetq global-mark-ring-max 500))
+  (ar/csetq global-mark-ring-max 500)
+
+  (defun ar/kill-ring-save--mark-whole-buffer (orig-fun &rest r)
+    "Remember point location prior to `mark-whole-buffer' with an advice around `kill-ring-save' (ORIG-FUN and R)."
+    (apply orig-fun r)
+    (when (eq last-command 'mark-whole-buffer)
+      (pop-to-mark-command)
+      (pop-to-mark-command)
+      (message "Restored location prior to 'mark-whole-buffer")))
+
+  (advice-add 'kill-ring-save
+              :around
+              'ar/kill-ring-save--mark-whole-buffer))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode

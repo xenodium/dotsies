@@ -115,6 +115,7 @@
    (load "~/.emacs.d/features/mac.el")
    (load "~/.emacs.d/features/linux.el")
    (load "~/.emacs.d/features/ui.el")
+   (load "~/.emacs.d/features/scratch.el")
 
    ;; Only use with string literal paths.
    (defmacro ar/idle-load (library)
