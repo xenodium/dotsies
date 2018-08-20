@@ -54,34 +54,34 @@
          ("M-<down>" . drag-stuff-down)))
 
 ;; Remember history of things across launches (ie. kill ring).
-  ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
-  (use-package savehist
-    :defer 2
-    :config
-    (ar/vsetq savehist-file "~/.emacs.d/savehist")
-    (ar/vsetq savehist-save-minibuffer-history t)
-    (ar/vsetq history-length 1000)
-    (ar/vsetq savehist-additional-variables
-           '(kill-ring
-             search-ring
-             regexp-search-ring
-             log-edit-comment-ring))
-    (savehist-mode +1))
-  (use-package whitespace
-    :defer 5
-    ;; Automatically remove whitespace on saving.
-    :hook ((before-save . whitespace-cleanup)
-           (prog-mode . whitespace-mode))
-    :config
-    ;; When nil, fill-column is used instead.
-    (ar/vsetq whitespace-line-column nil)
-    ;; Highlight empty lines, TABs, blanks at beginning/end, lines
-    ;; longer than fill-column, and trailing blanks.
-    (ar/vsetq whitespace-style '(face empty tabs lines-tail trailing))
-    (ar/vsetq show-trailing-whitespace t)
-    (set-face-attribute 'whitespace-line nil
-                        :foreground "DarkOrange1"
-                        :background "default"))
+;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+(use-package savehist
+  :defer 2
+  :config
+  (ar/vsetq savehist-file "~/.emacs.d/savehist")
+  (ar/vsetq savehist-save-minibuffer-history t)
+  (ar/vsetq history-length 1000)
+  (ar/vsetq savehist-additional-variables
+            '(kill-ring
+              search-ring
+              regexp-search-ring
+              log-edit-comment-ring))
+  (savehist-mode +1))
+(use-package whitespace
+  :defer 5
+  ;; Automatically remove whitespace on saving.
+  :hook ((before-save . whitespace-cleanup)
+         (prog-mode . whitespace-mode))
+  :config
+  ;; When nil, fill-column is used instead.
+  (ar/vsetq whitespace-line-column nil)
+  ;; Highlight empty lines, TABs, blanks at beginning/end, lines
+  ;; longer than fill-column, and trailing blanks.
+  (ar/vsetq whitespace-style '(face empty tabs lines-tail trailing))
+  (ar/vsetq show-trailing-whitespace t)
+  (set-face-attribute 'whitespace-line nil
+                      :foreground "DarkOrange1"
+                      :background "default"))
 
 (use-package smartparens
   :ensure t
@@ -266,6 +266,10 @@ line instead."
       (message "Restored location prior to 'mark-whole-buffer")))
 
   (advice-add 'kill-ring-save
+              :around
+              'ar/kill-ring-save--mark-whole-buffer)
+
+  (advice-add 'indent-for-tab-command
               :around
               'ar/kill-ring-save--mark-whole-buffer))
 
