@@ -1,6 +1,7 @@
 (require 'ar-csetq)
 
 (use-package compile
+  :hook ((compilation-mode . goto-address-mode))
   :commands compile
   :config
   (defun ar/compile-autoclose (buffer string)
