@@ -7,7 +7,8 @@
          (prog-mode . flyspell-prog-mode)
          (prog-mode . yas-minor-mode)
          (prog-mode . centered-cursor-mode)
-         (prog-mode . rainbow-mode))
+         (prog-mode . rainbow-mode)
+         (prog-mode . goto-address-prog-mode))
   :config
   (require 'flyspell)
   (require 'flycheck)

@@ -5,7 +5,8 @@
   :bind (([f5] . ar/shell-pop))
   :config
   (use-package eshell
-    :hook (eshell-mode . ar/eshell-mode-hook-function)
+    :hook ((eshell-mode . goto-address-mode)
+           (eshell-mode . ar/eshell-mode-hook-function))
     :init
     (defun ar/eshell-mode-hook-function ()
       ;; Turn off semantic-mode in eshell buffers.
