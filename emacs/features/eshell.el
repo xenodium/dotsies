@@ -137,3 +137,7 @@
     (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
         (shell-pop-out)
       (shell-pop-up shell-pop-last-shell-buffer-index))))
+
+(use-package shell
+  ;; Mostly for `async-shell-command'.
+  :hook (shell-mode . goto-address-mode))
