@@ -161,6 +161,7 @@
    (ar/idle-load "~/.emacs.d/features/alert.el")
    (ar/idle-load "~/.emacs.d/features/protobuf.el")
    (ar/idle-load "~/.emacs.d/features/paradox.el")
+   (ar/idle-load "~/.emacs.d/features/golang.el")
 
    (run-with-idle-timer
     0.5 nil
