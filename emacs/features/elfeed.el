@@ -5,8 +5,8 @@
     ;; Check for URLs like:
     ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
     ;; https://youtu.be/rzQEIRRJ2T0
-    (assert (string-match-p "^https://\\(www\\.\\)?youtu\\(\\.be\\|be\\.com\\)" url)
-            nil "Not a youtube URL: %s" url)
+    (assert (string-match-p "^https://\\(www\\.\\)?\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
+            nil "Not a downloadable URL: %s" url)
     (message "Downloading: %s" url)
     (async-start
      `(lambda ()
@@ -74,6 +74,7 @@
               ("http://sachachua.com/blog/feed" blog emacs tech sachachua)
               ("http://sdegutis.com/blog/atom.xml" blog tech StevenDegutis)
               ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
+              ("http://www.arcadianvisions.com/blog/rss.xml" blog tech emacs arcadianvisions)
               ("http://www.badykov.com/feed.xml" blog emacs KrakenOfThought)
               ("http://www.brool.com/index.xml" blog emacs Brool)
               ("http://www.gonsie.com/blorg/feed.xml" blog emacs dev)
@@ -82,6 +83,7 @@
               ("http://www.sastibe.de/index.xml" blog emacs SebastianSchweer)
               ("http://www.thisiscolossal.com/feed" blog tech Colossal)
               ("http://zzamboni.org/index.xml" blog hammerspoon tech Diego-Martín-Zamboni)
+              ("https://ambrevar.xyz/rss.xml" blog ambrevar)
               ("https://babbagefiles.blogspot.com/feeds/posts/default" blog emacs tech)
               ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
               ("https://changelog.complete.org/feed" blog emacs tech JohnGoerzen)
@@ -90,6 +92,7 @@
               ("https://dmolina.github.io/index.xml" blog emacs DanielMolina)
               ("https://dschrempf.github.io/index.xml" blog emacs DominikSchrempf)
               ("https://elephly.net/feed.xml" blog emacs Elephly)
+              ("https://emacs-doctor.com/feed.xml" blog emacs emacs-doctor)
               ("https://emacsist.github.io/index.xml" blog emacs tech emacsist)
               ("https://emacsnotes.wordpress.com/feed" blog tech emacs)
               ("https://feeds.feedburner.com/codinghorror" blog tech Coding-Horror)

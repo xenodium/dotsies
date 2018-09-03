@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 (use-package projectile
   :ensure t
@@ -71,3 +72,18 @@
   ;; Hide some files
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
   (setq dired-omit-mode t))
+
+(use-package openwith
+  :ensure t
+  :config
+  (ar/csetq openwith-associations
+            (cond
+             ((string-equal system-type "darwin")
+              '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
+                 "open" (file))
+                ("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+                 "open" ("-a" "VLC" file))))
+             ((string-equal system-type "gnu/linux")
+              '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+                 "xdg-open" (file))))))
+  (openwith-mode +1))
