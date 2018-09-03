@@ -38,6 +38,7 @@ Quick insert: _w_eb bookmark _b_acklog bookmark
     ("b" ar/helm-org-add-backlog-link nil)
     ("t" ar/org-add-todo nil)
     ("d" ar/org-add-done nil)
+    ("r" ar/org-mark-done nil)
     ("q" nil nil :color blue))
 
   (defun ar/hydra-open-dwim ()

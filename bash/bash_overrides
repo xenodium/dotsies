@@ -6,7 +6,7 @@ if [[ -z $STUFF_DIR ]]; then
    export STUFF_DIR=~/stuff
 fi
 
-export PATH=~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
+export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
 
 ### Environment variables ### end
 

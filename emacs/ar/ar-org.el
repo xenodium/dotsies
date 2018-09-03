@@ -352,6 +352,16 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
   (ar/org-update-drawer "MODIFIED"
                         (format-time-string "[%Y-%m-%d %a]")))
 
+(defun ar/org-mark-done ()
+  "Mark current item as DONE and refile."
+  (interactive)
+  (save-excursion
+    (org-todo "DONE")
+    (end-of-line)
+    (insert " ")
+    (org-insert-time-stamp (current-time))
+    (org-refile)))
+
 (provide 'ar-org)
 
 ;;; ar-org.el ends here

@@ -19,6 +19,9 @@
       (add-to-list 'eshell-visual-commands "ssh")
       (add-to-list 'eshell-visual-commands "tail")
       (add-to-list 'eshell-visual-commands "top")
+      (add-to-list 'eshell-visual-commands "htop")
+      (add-to-list 'eshell-visual-commands "prettyping")
+      (add-to-list 'eshell-visual-commands "ncdu")
 
       (setq-local company-backends '((company-projectile-cd company-escaped-files)))
       (company-mode +1)

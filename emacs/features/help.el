@@ -10,3 +10,8 @@
   :bind  (("C-h f" . helpful-callable)
           ("C-h v" . helpful-variable)
           ("C-h k" . helpful-key)))
+
+(use-package tldr
+  :ensure
+  :commands (tldr
+             tldr-update-docs))
