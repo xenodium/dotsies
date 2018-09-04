@@ -1,6 +1,7 @@
 (use-package protobuf-mode
   :ensure t
   :mode (("\\.proto\\'" . protobuf-mode))
+  :hook ((protobuf-mode . goto-address-prog-mode))
   :config
   (defun ar/reindex-proto-fields ()
     "From within a proto message, reindex all proto field tags."
