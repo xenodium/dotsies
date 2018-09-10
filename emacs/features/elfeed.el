@@ -118,6 +118,7 @@
               ("https://stingh711.github.io/feed.xml" blog emacs StringsNote)
               ("https://swiftnews.curated.co/issues.rss" blog swift tech ShiftNewsCurated)
               ("https://swiftweekly.github.io/feed.xml" blog swift tech SwiftWeekly)
+              ("https://vicarie.in/archive.xml" blog emacs NarendraJoshi)
               ("https://webgefrickel.de/blog/feed" blog tech dev SteffenRademacker)
               ("https://wincent.com/blog.rss" blog tech dev wincent)
               ("https://writequit.org/posts.xml" blog tech emacs writequit)
