@@ -47,6 +47,7 @@
 
   (ar/vsetq elfeed-feeds
             '(
+              ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
               ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
               ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
