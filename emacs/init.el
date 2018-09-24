@@ -52,6 +52,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Set up package tls ;;;;
 
+;; Do not load outdated byte code files.
+(setq load-prefer-newer t)
+
 (require 'package)
 
 ;; Don't auto-initialize.
