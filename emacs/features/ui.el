@@ -1,5 +1,9 @@
 (require 'ar-vsetq)
 
+;; Set font face height. Value is 1/10pt.
+(set-face-attribute 'default nil
+                    :height 180)
+
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
