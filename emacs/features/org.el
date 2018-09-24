@@ -127,6 +127,8 @@
     (ar/vsetq org-export-babel-evaluate nil)
 
     (use-package ob-objc)
+    (use-package ob-swift
+      :ensure t)
 
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -136,15 +138,16 @@
        (emacs-lisp . t)
        (gnuplot . t)
        (haskell . nil)
+       (js . t)
+       (objc . t)
        (ocaml . nil)
        (python . t)
        (ruby . t)
        (screen . nil)
-       (objc . t)
        (shell . t)
-       (js . t)
        (sql . nil)
-       (sqlite . t))))
+       (sqlite . t)
+       (swift . t))))
 
   (use-package org-crypt
     :config
