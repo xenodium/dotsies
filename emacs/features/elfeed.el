@@ -5,7 +5,7 @@
     ;; Check for URLs like:
     ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
     ;; https://youtu.be/rzQEIRRJ2T0
-    (assert (string-match-p "^https://\\(www\\.\\)?\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
+    (assert (string-match-p "^https://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
             nil "Not a downloadable URL: %s" url)
     (message "Downloading: %s" url)
     (async-start
