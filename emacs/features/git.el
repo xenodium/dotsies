@@ -23,7 +23,10 @@
   :hook (prog-mode . git-gutter-mode)
   :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
-         ("C-c <down>" . git-gutter:next-hunk)))
+         ("C-c <down>" . git-gutter:next-hunk))
+  :config
+  (ar/vsetq
+   git-gutter:handled-backends '(git hg bzr svn)))
 
 (use-package ar-git
   :defer 2)
