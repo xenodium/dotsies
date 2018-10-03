@@ -6,6 +6,17 @@
   :defer 2
   :config
   (ar/vsetq projectile-enable-caching t)
+  (ar/vsetq projectile-completion-system 'ivy)
+  ;; fd is super fast. Use it if available.
+  (when (executable-find "fd")
+    (let ((fd-command "fd . --print0 --absolute-path"))
+      (ar/vsetq projectile-hg-command fd-command)
+      (ar/vsetq projectile-git-command fd-command)
+      (ar/vsetq projectile-fossil-command fd-command)
+      (ar/vsetq projectile-bzr-command fd-command)
+      (ar/vsetq projectile-darcs-command fd-command)
+      (ar/vsetq projectile-svn-command fd-command)
+      (ar/vsetq projectile-generic-command fd-command)))
   (projectile-mode))
 
 (use-package dired
