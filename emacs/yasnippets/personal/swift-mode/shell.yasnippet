@@ -1,0 +1,21 @@
+#name : Shell
+#key : shell
+# --
+@discardableResult
+func shell(_ args: String...) -> (String, Int32) {
+  let pipe = Pipe()
+  pipe.fileHandleForReading.waitForDataInBackgroundAndNotify()
+
+  let process = Process()
+  process.standardOutput = pipe
+  process.arguments = args
+  process.launchPath = "/usr/bin/env"
+  process.waitUntilExit()
+  process.launch()
+
+  let data = pipe.fileHandleForReading.availableData
+  let output = String(data: data, encoding: String.Encoding.utf8) ?? ""
+  return (output, process.terminationStatus)
+}
+
+$0

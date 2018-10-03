@@ -1,0 +1,12 @@
+#name : Shell temporary directory
+#key : tempDir
+# --
+func tempDir() -> String? {
+  let (output, exitCode) = shell("mktemp", "-d")
+  if exitCode != 0 {
+    return nil
+  }
+  return output.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+}
+
+$0
