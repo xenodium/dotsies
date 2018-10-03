@@ -166,6 +166,8 @@
    (ar/idle-load "~/.emacs.d/features/paradox.el")
    (ar/idle-load "~/.emacs.d/features/golang.el")
 
+   (ar/idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
+
    (run-with-idle-timer
     0.5 nil
     (lambda ()
