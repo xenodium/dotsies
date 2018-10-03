@@ -1,6 +1,10 @@
-#name : Shell script arguments
-#key : shellArgs
+#name : Swift shell script skeleton
+#key : script
 # --
+#!/usr/bin/swift
+
+import Foundation
+
 struct Script {
   let fileName: String
   let arguments: Arguments
@@ -21,4 +25,13 @@ struct Script {
   }
 }
 
-$0
+func main() {
+  let script = Script()
+
+  $0
+
+  print("Hello world with argument: \\(script.arguments.$1)")
+}
+
+
+main()
