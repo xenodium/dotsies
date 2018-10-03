@@ -10,14 +10,14 @@ struct Script {
   let arguments: Arguments
 
   struct Arguments {
-    let $1: String
+    let $1: $2
   }
 
   init() {
     fileName = CommandLine.arguments[0]
 
     if CommandLine.arguments.count < 2 {
-      fputs("Usage: \\(fileName) $2", stderr)
+      fputs("Usage: \\(fileName) $3", stderr)
       exit(1)
     }
 
