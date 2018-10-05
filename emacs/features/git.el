@@ -20,7 +20,8 @@
          (shell-mode . with-editor-export-editor)))
 
 (use-package git-gutter
-  :hook (prog-mode . git-gutter-mode)
+  :hook ((prog-mode . git-gutter-mode)
+         (protobuf-mode . git-gutter-mode))
   :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk))
