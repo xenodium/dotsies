@@ -11,6 +11,10 @@
 ;; No need to keep duplicates in prompt history.
 (setq history-delete-duplicates t)
 
+(use-package simple
+  :config
+  (ar/vsetq kill-ring-max 1000))
+
 (use-package expand-region
   :ensure t
   :bind ("C-c w" . er/expand-region)
