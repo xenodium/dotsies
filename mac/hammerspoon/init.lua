@@ -132,6 +132,17 @@ function launchEmacsKeybindingI()
       })
 end
 
+function launchEmacsKeybindingV()
+   appRequestingEmacs = hs.application.frontmostApplication()
+   emacsExecute(false, "(ar/modal-ivy-clipboard)")
+   activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
+end
+
 function backFromEmacs()
    if appRequestingEmacs == nil then
       hs.alert("Emacs not previously requested")
@@ -190,6 +201,7 @@ end
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
 hs.hotkey.bind({"alt"}, "W", searchEmacsBrowserBookmarks)
 hs.hotkey.bind({"alt"}, "I", launchEmacsKeybindingI)
+hs.hotkey.bind({"alt"}, "V", launchEmacsKeybindingV)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 
 hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({

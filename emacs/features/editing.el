@@ -247,6 +247,12 @@ line instead."
          ("<C-backspace>" . ar/backward-delete-subword)
          ("C-x C-d" . ar/duplicate-line)))
 
+;; Monitor system clipboard and append kill ring.
+(use-package clipmon
+  :ensure t
+  :config
+  (clipmon-mode))
+
 (use-package simple
   :config
   ;; Save external clipboard before killing other text in Emacs.
