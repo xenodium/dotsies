@@ -253,6 +253,10 @@ line instead."
   :config
   (clipmon-mode))
 
+;; Make kill ring persistent across sessions.
+(use-package savekill
+  :ensure t)
+
 (use-package simple
   :config
   ;; Save external clipboard before killing other text in Emacs.
