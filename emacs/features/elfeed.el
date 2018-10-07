@@ -25,10 +25,17 @@
 (use-package elfeed :ensure t
   :commands elfeed
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
+  :bind (:map elfeed-search-mode-map
+              ("R" . ar/elfeed-mark-all-as-read))
   :init
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (ar/vsetq line-spacing 25))
+  (defun ar/elfeed-mark-all-as-read ()
+    "Mark all entries in search as read."
+      (interactive)
+      (mark-whole-buffer)
+      (elfeed-search-untag-all-unread))
   :config
   (use-package elfeed-goodies :ensure t
     :after elfeed
