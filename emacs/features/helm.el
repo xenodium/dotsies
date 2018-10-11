@@ -6,10 +6,11 @@
   :ensure t
   :config
   (use-package helm-utils)
-  (use-package helm-elisp)
+  (use-package helm-elisp
+    :config
+    ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
+    (ar/vsetq helm-show-completion-display-function #'helm-default-display-buffer))
 
-  ;; Helm now defaults to 'helm-display-buffer-in-own-frame. Override this behavior.
-  (ar/vsetq helm-show-completion-display-function #'helm-default-display-buffer)
   (ar/vsetq helm-scroll-amount 4) ; scroll 4 lines other window using M-<next>/M-<prior>
   (ar/vsetq helm-input-idle-delay 0.01) ; be idle for this many seconds, before updating candidate buffer
   (ar/vsetq helm-split-window-default-side 'below) ;; open helm buffer below.
