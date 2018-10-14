@@ -29,7 +29,7 @@
                (expand-file-name "~/stuff/active/code/gopath/bin"))
 
   (add-to-list 'exec-path
-               (expand-file-name "~/stuff/go/bin"))
+               (expand-file-name "~/go/bin"))
 
   (ar/csetq gofmt-command "goimports")
 
