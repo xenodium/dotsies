@@ -237,7 +237,7 @@ line instead."
   ;; Highlight entire bracket expression.
   (ar/vsetq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
-                      :background "default"
+                      :background nil
                       :foreground "#FA009A"))
 
 (use-package ar-text

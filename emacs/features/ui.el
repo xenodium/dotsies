@@ -9,17 +9,48 @@
   :ensure t
   :hook (window-setup . maximize-frame))
 
-(use-package base16-theme
+(use-package material-theme
   :ensure t
   :config
-  (load-theme 'base16-atelier-heath t)
+  (load-theme 'material t)
+
+  ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
+  (custom-set-faces
+   '(default ((t (:inherit nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
+                           :family "Iosevka"
+                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal
+                           :width normal :foundry "nil"))))
+   '(font-lock-constant-face ((t (:foreground "#C792EA"))))
+   '(eshell-prompt ((t (:foreground "#C3E88D"))))
+   '(font-lock-keyword-face ((t (:foreground "#2BA3FF" :slant italic))))
+   '(font-lock-preprocessor-face ((t (:inherit bold :foreground "#2BA3FF" :slant italic :weight normal))))
+   '(font-lock-string-face ((t (:foreground "#C3E88D"))))
+   '(font-lock-type-face ((t (:foreground "#FFCB6B"))))
+   '(org-level-1 ((t (:background nil :box nil))))
+   '(org-level-2 ((t (:background nil :box nil))))
+   '(org-level-3 ((t (:background nil :box nil))))
+   '(org-level-4 ((t (:background nil :box nil))))
+   '(org-level-5 ((t (:background nil :box nil))))
+   '(org-level-6 ((t (:background nil :box nil))))
+   '(org-level-7 ((t (:background nil :box nil))))
+   '(org-level-8 ((t (:background nil :box nil))))
+   '(org-block-begin-line ((t (:background nil :box nil))))
+   '(org-block-end-line ((t (:background nil :box nil))))
+   '(org-block ((t (:background nil :box nil))))
+   '(font-lock-variable-name-face ((t (:foreground "#FF5370"))))
+   '(helm-rg-active-arg-face ((t (:foreground "LightGreen"))))
+   '(helm-rg-file-match-face ((t (:foreground "LightGreen" :underline t))))
+   '(helm-rg-preview-line-highlight ((t (:background "LightGreen" :foreground "black"))))
+   '(mode-line ((t (:background "#191919" :box nil))))
+   '(term ((t (:foreground "#fafafa")))))
+
   (let ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line          nil :overline   line)
+    (set-face-attribute 'mode-line nil :overline   line)
     (set-face-attribute 'mode-line-inactive nil :overline   line)
     (set-face-attribute 'mode-line-inactive nil :underline  line)
-    (set-face-attribute 'mode-line          nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#695d69")))
+    (set-face-attribute 'mode-line nil :box nil)
+    (set-face-attribute 'mode-line-inactive nil :box nil)
+    (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
 ;; No color for fringe, blends with the rest of the window.
 (set-face-attribute 'fringe nil :background nil)
