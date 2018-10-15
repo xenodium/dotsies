@@ -45,9 +45,9 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
-;; Set a fun frame title.
+;; No title for frame.
 (when (display-graphic-p)
-  (setq frame-title-format '("Ⓔ ⓜ ⓐ ⓒ ⓢ")))
+  (setq frame-title-format nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Set up package tls ;;;;
