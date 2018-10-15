@@ -24,13 +24,18 @@
 
 (use-package elfeed :ensure t
   :commands elfeed
-  :after centered-cursor-mode
-  :hook ((elfeed-search-mode . centered-cursor-mode)
-         (elfeed-search-mode . ar/elfeed-set-style))
+  :hook ((elfeed-search-mode . ar/elfeed-set-style))
+  :bind (:map elfeed-search-mode-map
+              ("R" . ar/elfeed-mark-all-as-read))
   :init
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (ar/vsetq line-spacing 25))
+  (defun ar/elfeed-mark-all-as-read ()
+    "Mark all entries in search as read."
+      (interactive)
+      (mark-whole-buffer)
+      (elfeed-search-untag-all-unread))
   :config
   (use-package elfeed-goodies :ensure t
     :after elfeed
@@ -60,8 +65,9 @@
               ("http://emacsredux.com/atom.xml" blog emacs emacs-redux)
               ("http://emacsworld.blogspot.com/feeds/posts/default?alt=rss" blog emacs EmacsWorld)
               ("http://evgeni.io/categories/posts/index.xml" blog emacs Evgeni)
-              ("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK)
-              ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld)
+              ("http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk" news BBCUK bbc)
+              ("http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk" news BBCWorld bbc)
+              ("http://feeds.feedblitz.com/atomicspin&x=1" blog dev emacs AtomicObject)
               ("http://feeds.feedburner.com/japaneseruleof7" blog japan japanese-rule-of-7)
               ("http://francismurillo.github.io/hacker/feed.xml" blog tech emacs francismurillo)
               ("http://francismurillo.github.io/watcher/feed.xml" blog anime francismurillo)
@@ -90,6 +96,7 @@
               ("https://babbagefiles.blogspot.com/feeds/posts/default" blog emacs tech)
               ("https://blog.burntsushi.net/index.xml" blog dev BurnedSushi)
               ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
+              ("https://blog.moneysavingexpert.com/blog.rss" blog finance MoneySavingExpert MartinLewis)
               ("https://changelog.complete.org/feed" blog emacs tech JohnGoerzen)
               ("https://colelyman.com/index.xml" blog emacs ColeLyman)
               ("https://copyninja.info/feeds/all.atom.xml" blog tech dev copyninja)
@@ -130,7 +137,8 @@
               ("https://www.baty.net/index.xml" blog emacs JackBaty)
               ("https://www.bytedude.com/feed.xml" blog emacs MarcinS)
               ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
-              ("https://www.johndcook.com/blog/comments/feed" blog emacs JohnDCook)
+              ("https://www.johndcook.com/blog/feed" blog emacs JohnDCook)
+              ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog finance MoneySavingExpert news)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
               ("https://ytrss.co/feed/UCkRmQ_G_NbdbCQMpALg6UPg" youtube emacs EmacsRocks)

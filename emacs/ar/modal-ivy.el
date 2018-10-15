@@ -109,4 +109,24 @@
                                               (delete-frame)
                                               (other-window 1)))))))
 
+(defun ar/modal-ivy-clipboard ()
+  "Search all my org links."
+  (ar/modal-ivy-frame "*modal-ivy*"
+                      (lambda ()
+                        (let ((ivy-height 20)
+                              (ivy-count-format ""))
+                          (ivy-read "" (mapcar 'substring-no-properties
+                                               (counsel--yank-pop-kills))
+                                    :require-match t
+                                    :action (lambda (item)
+                                              (let ((select-enable-clipboard t))
+                                                (kill-new item t)
+                                                (alert "copied" :title "clipboard")))
+                                    :unwind (lambda ()
+                                              ;; Unless we first switch to another macOS app, Emacs will
+                                              ;; refocus another frame after deleting the current frame.
+                                              (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacs()'")
+                                              (delete-frame)
+                                              (other-window 1)))))))
+
 (provide 'modal-ivy)

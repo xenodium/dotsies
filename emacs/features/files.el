@@ -46,5 +46,5 @@
                                    "/sudo:"
                                    "/scp:"))
   (ar/vsetq recentf-max-saved-items 1000
-                 recentf-max-menu-items 50)
+            recentf-max-menu-items 50)
   (recentf-mode))
