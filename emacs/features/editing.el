@@ -11,6 +11,10 @@
 ;; No need to keep duplicates in prompt history.
 (setq history-delete-duplicates t)
 
+(use-package simple
+  :config
+  (ar/vsetq kill-ring-max 1000))
+
 (use-package expand-region
   :ensure t
   :bind ("C-c w" . er/expand-region)
@@ -242,6 +246,16 @@ line instead."
          ("M-DEL" . ar/backward-delete-subword)
          ("<C-backspace>" . ar/backward-delete-subword)
          ("C-x C-d" . ar/duplicate-line)))
+
+;; Monitor system clipboard and append kill ring.
+(use-package clipmon
+  :ensure t
+  :config
+  (clipmon-mode))
+
+;; Make kill ring persistent across sessions.
+(use-package savekill
+  :ensure t)
 
 (use-package simple
   :config
