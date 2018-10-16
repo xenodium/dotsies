@@ -45,9 +45,9 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
-;; No title for frame.
+;; Set momentary title.
 (when (display-graphic-p)
-  (setq frame-title-format nil))
+  (setq frame-title-format "loading..."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Set up package tls ;;;;
