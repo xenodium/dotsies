@@ -4,6 +4,7 @@
 (use-package counsel
   :ensure t
   :defer 0.1
+  :bind (("C-c i" . counsel-semantic-or-imenu))
   :config
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
   (use-package smex
