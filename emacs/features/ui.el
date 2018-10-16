@@ -17,7 +17,7 @@
   ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
   (custom-set-faces
    '(default ((t (:inherit nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
-                           :family "mononoki"
+                           :family "mononoki" ;; https://madmalik.github.io/mononoki/
                            :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal
                            :width normal :foundry "nil"))))
    '(font-lock-constant-face ((t (:foreground "#C792EA"))))
