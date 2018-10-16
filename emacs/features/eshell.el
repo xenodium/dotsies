@@ -9,6 +9,9 @@
            (eshell-mode . ar/eshell-mode-hook-function))
     :init
     (defun ar/eshell-mode-hook-function ()
+      (setq-local imenu-generic-expression
+                  '(("Prompt" " $ \\(.*\\)" 1)))
+
       ;; Turn off semantic-mode in eshell buffers.
       (semantic-mode -1)
 
