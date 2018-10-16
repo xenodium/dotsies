@@ -1,5 +1,9 @@
 (require 'ar-vsetq)
 
+;; No title. See init.el for initial value.
+(when (display-graphic-p)
+  (setq frame-title-format nil))
+
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil
                     :height 180)
