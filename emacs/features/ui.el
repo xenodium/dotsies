@@ -19,35 +19,46 @@
   (load-theme 'material t)
 
   ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
-  (custom-set-faces
-   '(default ((t (:inherit nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
-                           :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
-                           :family "mononoki" ;; https://madmalik.github.io/mononoki/
-                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal
-                           :width normal :foundry "nil"))))
-   '(font-lock-constant-face ((t (:foreground "#C792EA"))))
-   '(eshell-prompt ((t (:foreground "#C3E88D"))))
-   '(font-lock-keyword-face ((t (:foreground "#2BA3FF" :slant italic))))
-   '(font-lock-preprocessor-face ((t (:inherit bold :foreground "#2BA3FF" :slant italic :weight normal))))
-   '(font-lock-string-face ((t (:foreground "#C3E88D"))))
-   '(font-lock-type-face ((t (:foreground "#FFCB6B"))))
-   '(org-level-1 ((t (:background nil :box nil))))
-   '(org-level-2 ((t (:background nil :box nil))))
-   '(org-level-3 ((t (:background nil :box nil))))
-   '(org-level-4 ((t (:background nil :box nil))))
-   '(org-level-5 ((t (:background nil :box nil))))
-   '(org-level-6 ((t (:background nil :box nil))))
-   '(org-level-7 ((t (:background nil :box nil))))
-   '(org-level-8 ((t (:background nil :box nil))))
-   '(org-block-begin-line ((t (:background nil :box nil))))
-   '(org-block-end-line ((t (:background nil :box nil))))
-   '(org-block ((t (:background nil :box nil))))
-   '(font-lock-variable-name-face ((t (:foreground "#FF5370"))))
-   '(helm-rg-active-arg-face ((t (:foreground "LightGreen"))))
-   '(helm-rg-file-match-face ((t (:foreground "LightGreen" :underline t))))
-   '(helm-rg-preview-line-highlight ((t (:background "LightGreen" :foreground "black"))))
-   '(mode-line ((t (:background "#191919" :box nil))))
-   '(term ((t (:foreground "#fafafa")))))
+  (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
+                      ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
+                      :family "mononoki" ;; https://madmalik.github.io/mononoki/
+                      :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
+                      :width 'normal :foundry "nil")
+
+  (eval-after-load 'font-lock
+    (progn
+      (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
+      (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
+      (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
+      (set-face-attribute 'font-lock-string-face nil :foreground "#C3E88D")
+      (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
+      (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370")))
+
+  (eval-after-load 'eshell
+    (progn
+      (require 'em-prompt)
+      (set-face-attribute 'eshell-prompt nil :foreground "#C3E88D")))
+
+  (eval-after-load 'faces
+    (progn
+      ;; Hardcode region theme color.
+      (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
+      (set-face-attribute 'mode-line nil :background "#191919" :box nil)))
+
+  (eval-after-load 'org
+    (progn
+      (require 'org-faces)
+      (set-face-attribute 'org-level-1 nil :background nil :box nil)
+      (set-face-attribute 'org-level-2 nil :background nil :box nil)
+      (set-face-attribute 'org-level-3 nil :background nil :box nil)
+      (set-face-attribute 'org-level-4 nil :background nil :box nil)
+      (set-face-attribute 'org-level-5 nil :background nil :box nil)
+      (set-face-attribute 'org-level-6 nil :background nil :box nil)
+      (set-face-attribute 'org-level-7 nil :background nil :box nil)
+      (set-face-attribute 'org-level-8 nil :background nil :box nil)
+      (set-face-attribute 'org-block-begin-line nil :background nil :box nil)
+      (set-face-attribute 'org-block-end-line nil :background nil :box nil)
+      (set-face-attribute 'org-block nil :background nil :box nil)))
 
   (let ((line (face-attribute 'mode-line :underline)))
     (set-face-attribute 'mode-line nil :overline   line)
@@ -58,13 +69,11 @@
     (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
 ;; No color for fringe, blends with the rest of the window.
-(set-face-attribute 'fringe nil :background nil)
-
-;; Hardcode region theme color.
-(set-face-attribute 'region nil
-                    :background "#3f464c"
-                    :foreground "#eeeeec"
-                    :underline nil)
+(eval-after-load 'fringe
+  (progn
+    (set-face-attribute 'fringe nil
+                        :foreground (face-foreground 'default)
+                        :background (face-background 'default))))
 
 (use-package moody
   :ensure t
