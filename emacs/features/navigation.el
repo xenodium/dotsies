@@ -114,7 +114,7 @@ Repeated invocations toggle between the two most recently open buffers."
                ("M-p" . highlight-symbol-prev)))
   :config
   (set-face-attribute 'highlight-symbol-face nil
-                      :background "default"
+                      :background nil
                       :foreground "yellow")
   (ar/vsetq highlight-symbol-idle-delay 0.2)
   (ar/vsetq highlight-symbol-on-navigation-p t))
