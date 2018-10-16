@@ -79,7 +79,14 @@
 
 (defun ar/bazel-workspace-build-files ()
   "Get all BUILD files in bazel project."
-  (process-lines "find" (ar/bazel-workspace-path) "-name" "BUILD"))
+  ;; If using projectile is found, try finding the whitelist of directories.
+  (let ((dirs (if (fboundp 'projectile-parse-dirconfig-file)
+                  (mapcar (lambda (path)
+                                 (concat (projectile-project-root)
+                                         path))
+                          (car (projectile-parse-dirconfig-file)))
+                (ar/bazel-workspace-path))))
+    (apply 'process-lines (nconc '("find") dirs '("-name" "BUILD")))))
 
 (defun ar/bazel-workspace-build-rules ()
   "Get all workspace qualified rules."
