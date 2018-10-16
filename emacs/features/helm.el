@@ -36,8 +36,7 @@
         (call-interactively 'helm-delete-minibuffer-contents)
       (helm-keyboard-quit)))
 
-  :bind (("C-c i" . helm-semantic-or-imenu)
-         :map helm-map
+  :bind (:map helm-map
          ("C-i" . helm-execute-persistent-action) ; make TAB works in terminal
          ("C-z" . helm-select-action) ; list actions using C-z
          ("M-p" . helm-previous-source)
