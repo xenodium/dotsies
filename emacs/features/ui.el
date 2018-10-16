@@ -37,7 +37,7 @@
   (eval-after-load 'eshell
     (progn
       (require 'em-prompt)
-      (set-face-attribute 'eshell-prompt nil :foreground "#C3E88D")))
+      (set-face-attribute 'eshell-prompt nil :foreground "#eeffff")))
 
   (eval-after-load 'faces
     (progn
