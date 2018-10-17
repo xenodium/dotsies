@@ -8,6 +8,10 @@
   :ensure t
   :commands restart-emacs)
 
+;; Safely delete packages without breaking depending packages.
+(use-package package-safe-delete
+  :ensure t)
+
 (use-package esup
   :ensure t
   :commands esup)
