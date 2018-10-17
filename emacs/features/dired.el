@@ -7,6 +7,9 @@
   :config
   (ar/vsetq projectile-enable-caching t)
   (ar/vsetq projectile-completion-system 'ivy)
+  ;; Use alien since turbo-alien ignores .projectile file, which is
+  ;; handy for very large repositories.
+  (ar/vsetq projectile-indexing-method 'alien)
   ;; fd is super fast. Use it if available.
   (when (executable-find "fd")
     (let ((fd-command "fd . --print0 --absolute-path"))
