@@ -18,13 +18,6 @@
   :config
   (load-theme 'material t)
 
-  ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
-  (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
-                      ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
-                      :family "mononoki" ;; https://madmalik.github.io/mononoki/
-                      :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
-                      :width 'normal :foundry "nil")
-
   (eval-after-load 'font-lock
     (progn
       (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
@@ -41,6 +34,14 @@
 
   (eval-after-load 'faces
     (progn
+      ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
+      (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
+                          ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
+                          :family "mononoki" ;; https://madmalik.github.io/mononoki/
+                          :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
+                          :width 'normal :foundry "nil")
+
+
       ;; Hardcode region theme color.
       (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
       (set-face-attribute 'mode-line nil :background "#191919" :box nil)))
