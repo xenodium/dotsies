@@ -12,7 +12,7 @@
   (ar/vsetq projectile-indexing-method 'alien)
   ;; fd is super fast. Use it if available.
   (when (executable-find "fd")
-    (let ((fd-command "fd . --print0 --absolute-path"))
+    (let ((fd-command "fd . --print0"))
       (ar/vsetq projectile-hg-command fd-command)
       (ar/vsetq projectile-git-command fd-command)
       (ar/vsetq projectile-fossil-command fd-command)
