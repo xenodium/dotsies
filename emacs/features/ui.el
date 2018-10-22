@@ -18,60 +18,57 @@
   :config
   (load-theme 'material t)
 
-  (eval-after-load 'font-lock
-    (progn
-      (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
-      (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
-      (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
-      (set-face-attribute 'font-lock-string-face nil :foreground "#C3E88D")
-      (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
-      (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370")))
+  (with-eval-after-load 'font-lock
+    (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
+    (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
+    (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
+    (set-face-attribute 'font-lock-string-face nil :foreground "#C3E88D")
+    (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
+    (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370"))
 
-  (eval-after-load 'eshell
-    (progn
-      (require 'em-prompt)
-      (set-face-attribute 'eshell-prompt nil :foreground "#eeffff")))
+  (with-eval-after-load 'eshell
+    (require 'em-prompt)
+    (set-face-attribute 'eshell-prompt nil :foreground "#eeffff"))
 
-  (eval-after-load 'faces
-    (progn
-      ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
-      (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
-                          ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
-                          :family "mononoki" ;; https://madmalik.github.io/mononoki/
-                          :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
-                          :width 'normal :foundry "nil")
+  (with-eval-after-load 'faces
+    ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
+    (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
+                        ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
+                        :family "mononoki" ;; https://madmalik.github.io/mononoki/
+                        :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
+                        :width 'normal :foundry "nil")
 
+    ;; Hardcode region theme color.
+    (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
+    (set-face-attribute 'mode-line nil :background "#191919" :box nil)
 
-      ;; Hardcode region theme color.
-      (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
-      (set-face-attribute 'mode-line nil :background "#191919" :box nil)))
+    ;; Styling moody https://github.com/tarsius/moody
+    (let ((line (face-attribute 'mode-line :underline)))
+      (set-face-attribute 'mode-line nil :overline   line)
+      (set-face-attribute 'mode-line-inactive nil :overline   line)
+      (set-face-attribute 'mode-line-inactive nil :underline  line)
+      (set-face-attribute 'mode-line nil :box nil)
+      (set-face-attribute 'mode-line-inactive nil :box nil)
+      (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
-  (eval-after-load 'org
-    (progn
-      (require 'org-faces)
-      (set-face-attribute 'org-level-1 nil :background nil :box nil)
-      (set-face-attribute 'org-level-2 nil :background nil :box nil)
-      (set-face-attribute 'org-level-3 nil :background nil :box nil)
-      (set-face-attribute 'org-level-4 nil :background nil :box nil)
-      (set-face-attribute 'org-level-5 nil :background nil :box nil)
-      (set-face-attribute 'org-level-6 nil :background nil :box nil)
-      (set-face-attribute 'org-level-7 nil :background nil :box nil)
-      (set-face-attribute 'org-level-8 nil :background nil :box nil)
-      (set-face-attribute 'org-block-begin-line nil :background nil :box nil)
-      (set-face-attribute 'org-block-end-line nil :background nil :box nil)
-      (set-face-attribute 'org-block nil :background nil :box nil)))
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-level-1 nil :background nil :box nil)
+    (set-face-attribute 'org-level-2 nil :background nil :box nil)
+    (set-face-attribute 'org-level-3 nil :background nil :box nil)
+    (set-face-attribute 'org-level-4 nil :background nil :box nil)
+    (set-face-attribute 'org-level-5 nil :background nil :box nil)
+    (set-face-attribute 'org-level-6 nil :background nil :box nil)
+    (set-face-attribute 'org-level-7 nil :background nil :box nil)
+    (set-face-attribute 'org-level-8 nil :background nil :box nil)
+    (set-face-attribute 'org-block-begin-line nil :background nil :box nil)
+    (set-face-attribute 'org-block-end-line nil :background nil :box nil)
+    (set-face-attribute 'org-block nil :background nil :box nil))
 
-  (let ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :underline  line)
-    (set-face-attribute 'mode-line nil :box nil)
-    (set-face-attribute 'mode-line-inactive nil :box nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
+  (with-eval-after-load 'mu4e-vars
+    (set-face-attribute 'mu4e-unread-face nil :inherit 'default :weight 'bold :foreground "#2BA3FF" :underline nil))
 
-;; No color for fringe, blends with the rest of the window.
-(eval-after-load 'fringe
-  (progn
+  ;; No color for fringe, blends with the rest of the window.
+  (with-eval-after-load 'fringe
     (set-face-attribute 'fringe nil
                         :foreground (face-foreground 'default)
                         :background (face-background 'default))))
