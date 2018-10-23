@@ -11,6 +11,9 @@
   ;; handy for very large repositories.
   (ar/vsetq projectile-indexing-method 'alien)
   ;; fd is super fast. Use it if available.
+  (ar/vsetq projectile-project-root-files-functions
+            '(projectile-root-local
+              projectile-root-bottom-up))
   (when (executable-find "fd")
     (let ((fd-command "fd . --print0"))
       (ar/vsetq projectile-hg-command fd-command)
