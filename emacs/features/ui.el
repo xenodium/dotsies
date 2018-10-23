@@ -26,8 +26,7 @@
     (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
     (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370"))
 
-  (with-eval-after-load 'eshell
-    (require 'em-prompt)
+  (with-eval-after-load 'em-prompt
     (set-face-attribute 'eshell-prompt nil :foreground "#eeffff"))
 
   (with-eval-after-load 'faces
