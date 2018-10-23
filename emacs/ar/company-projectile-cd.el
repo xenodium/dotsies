@@ -35,7 +35,6 @@
 
 (defun company-projectile-cd--candidates (input)
   "Return candidates for given INPUT."
-  (company-projectile-cd--reset-root)
   (when (consp input)
     (let ((search-term (substring-no-properties
                         (car input) 0 (length (car input))))
@@ -75,12 +74,6 @@
               ;; Quote if spaces found.
               (format "\"%s\"" path)
             path)))
-
-(defun company-projectile-cd--reset-root ()
-  "Reset project root. Useful when cd'ing in and out of projects."
-  (projectile-reset-cached-project-root)
-  (when (projectile-project-p)
-    (projectile-project-root)))
 
 (provide 'company-projectile-cd)
 
