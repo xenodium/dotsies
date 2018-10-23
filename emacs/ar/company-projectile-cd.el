@@ -40,7 +40,7 @@
                         (car input) 0 (length (car input))))
           (prefix-found (cdr input)))
       (when prefix-found
-        (if (projectile-project-p)
+        (if (projectile-project-p default-directory)
             (company-projectile-cd--projectile search-term)
           (company-projectile-cd--find-fallback search-term))))))
 
@@ -70,10 +70,26 @@
 (defun company-projectile-cd--expand-inserted-path (path)
   "Replace relative PATH insertion with its absolute equivalent if needed."
   (delete-region (point) (- (point) (length path)))
-  (insert (if (s-contains-p " " path)
-              ;; Quote if spaces found.
-              (format "\"%s\"" path)
-            path)))
+  (insert (company-projectile-cd--resolve path)))
+
+(defun company-projectile-cd--resolve (path)
+  "Resolve PATH to either relative or absolute when needed (projectile)."
+  (cond  ((f-exists-p (company-projectile-cd--quote path))
+          (company-projectile-cd--quote path))
+         ((and (projectile-project-p default-directory)
+               (f-exists-p (company-projectile-cd--quote (concat (projectile-project-root)
+                                                                 path))))
+          (company-projectile-cd--quote (concat (projectile-project-root)
+                                                path)))
+         (t
+          (error "could not resolve: %s" path))))
+
+(defun company-projectile-cd--quote (path)
+  "Wrap PATH with quotes if needed."
+  (if (s-contains-p " " path)
+      ;; Quote if spaces found.
+      (format "\"%s\"" path)
+    path))
 
 (provide 'company-projectile-cd)
 
