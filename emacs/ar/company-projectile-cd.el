@@ -68,9 +68,9 @@
                        (format "\*%s\*" search-term))))))
 
 (defun company-projectile-cd--expand-inserted-path (path)
-  "Replace relative PATH insertion with its absolute equivalent if needed."
+  "Replace relative PATH insertion with its relative equivalent."
   (delete-region (point) (- (point) (length path)))
-  (insert (company-projectile-cd--resolve path)))
+  (insert (file-relative-name (company-projectile-cd--resolve path) default-directory)))
 
 (defun company-projectile-cd--resolve (path)
   "Resolve PATH to either relative or absolute when needed (projectile)."
