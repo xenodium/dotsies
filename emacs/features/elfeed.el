@@ -5,7 +5,7 @@
     ;; Check for URLs like:
     ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
     ;; https://youtu.be/rzQEIRRJ2T0
-    (assert (string-match-p "^https://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
+    (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
             nil "Not a downloadable URL: %s" url)
     (message "Downloading: %s" url)
     (async-start
@@ -96,7 +96,7 @@
               ("https://babbagefiles.blogspot.com/feeds/posts/default" blog emacs tech)
               ("https://blog.burntsushi.net/index.xml" blog dev BurnedSushi)
               ("https://blog.danielgempesaw.com/rss" blog emacs tech DanielGempesaw)
-              ("https://blog.moneysavingexpert.com/blog.rss" blog finance MoneySavingExpert MartinLewis)
+              ("https://blog.moneysavingexpert.com/blog.rss" blog money MoneySavingExpert MartinLewis)
               ("https://changelog.complete.org/feed" blog emacs tech JohnGoerzen)
               ("https://colelyman.com/index.xml" blog emacs ColeLyman)
               ("https://copyninja.info/feeds/all.atom.xml" blog tech dev copyninja)
@@ -143,7 +143,7 @@
               ("https://www.hasecke.eu/index.xml" blog emacs tech hasecke)
               ("https://www.ict4g.net/adolfo/site.atom" blog tech dev Adolfo)
               ("https://www.johndcook.com/blog/feed" blog emacs JohnDCook)
-              ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog finance MoneySavingExpert news)
+              ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog money MoneySavingExpert news)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
               ("https://www.reddit.com/r/UKPersonalFinance/.rss" social reddit UKPersonalFinance)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
