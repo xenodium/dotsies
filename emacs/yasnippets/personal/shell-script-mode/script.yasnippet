@@ -1,0 +1,14 @@
+#name : Bash shell script skeleton
+#key : script
+# --
+#!/bin/bash
+
+while getopts ${1:char}: option
+do
+case "\${option}" in
+$1)  readonly ${2:VARNAME}=\${OPTARG};;
+\?) exit 1;;
+esac
+done
+
+echo \$$2 $0
