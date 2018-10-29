@@ -3,7 +3,8 @@
 (use-package org
   :ensure t
   :bind (:map org-mode-map
-              ("C-c C-l" . ar/org-insert-link-dwim))
+              ("C-c C-l" . ar/org-insert-link-dwim)
+              ("<" . ar/org-insert-char-dwim))
   :init
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
