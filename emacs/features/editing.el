@@ -20,6 +20,8 @@
   :bind ("C-c w" . er/expand-region)
   :config
   ;; (ar/csetq expand-region-smart-cursor t)
+  ;; Skip marking word. Most of the time, I want symbol.
+  (ar/vsetq er/try-expand-list (remq 'er/mark-word er/try-expand-list))
   (defun ar/kill-ring-save--expand-region-advice (orig-fun &rest r)
     "Remember point location prior to expanding region with an advice around `kill-ring-save' (ORIG-FUN and R)."
     (apply orig-fun r)
