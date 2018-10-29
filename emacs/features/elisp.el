@@ -1,6 +1,17 @@
 (use-package elisp-mode
   :commands emacs-lisp-mode
-  :hook (emacs-lisp-mode . pcre-mode)
+  :hook ((emacs-lisp-mode . pcre-mode)
+         (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function))
+  :init
+  (defun ar/emacs-lisp-mode-hook-function ()
+    "Called when entering `emacs-lisp-mode'."
+    ;; Pretty print output to *Pp Eval Output*.
+    (local-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
+    (setq-local company-backends '((company-yasnippet
+                                    company-dabbrev-code
+                                    company-keywords
+                                    company-files
+                                    company-capf))))
   :config
   (require 'simple)
   (require 'ar-csetq)
