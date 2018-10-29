@@ -52,7 +52,19 @@
 
   (ar/vsetq elfeed-feeds
             '(
+              ("https://ryanholiday.net/feed/" blog meditation RyanHoliday)
+              ("https://ryanholiday.net/comments/feed/" blog meditation RyanHolidayComments)
+              ("https://www.madfientist.com/feed/" blog money MadFientist)
+              ("https://www.madfientist.com/comments/feed/" blog money MadFientistComments)
+              ("https://www.getrichslowly.org/feed" blog money GetRichSlowly)
+              ("https://www.choosefi.com/feed/" blog money Choosefi)
+              ("https://www.choosefi.com/category/podcast-episodes/feed" blog money ChoosefiPodcasts)
+              ("https://affordanything.com/blog/feed" blog money AffordAnything)
+              ("https://affordanything.com/comments/feed/" blog money AffordAnything)
+              ("http://feeds.feedburner.com/AffordAnythingFeed" blog money AffordAnything)
               ("http://200ok.ch/atom.xml" blog emacs tech 200ok)
+              ("https://changelog.com/feed" blog tech news)
+              ("http://tangent.libsyn.com" blog money  ChristopherRyan)
               ("http://akkartik.name/feeds.xml" blog tech KartikAgaram)
               ("http://ben-evans.com/benedictevans?format=RSS" blog tech Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
