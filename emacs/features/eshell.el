@@ -26,10 +26,8 @@
       (add-to-list 'eshell-visual-commands "prettyping")
       (add-to-list 'eshell-visual-commands "ncdu")
 
-      (if (boundp 'ar/alt-mode)
-          (setq-local company-backends '((company-async-files)))
-        (setq-local company-backends '((company-projectile-cd
-                                        company-escaped-files))))
+      (setq-local company-backends '((company-projectile-cd
+                                      company-escaped-files)))
 
       (company-mode +1)
 
