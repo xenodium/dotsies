@@ -26,7 +26,8 @@
   :commands elfeed
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
   :bind (:map elfeed-search-mode-map
-              ("R" . ar/elfeed-mark-all-as-read))
+              ("R" . ar/elfeed-mark-all-as-read)
+              ("v" . ar/mark-visible-as-read))
   :init
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
@@ -36,6 +37,12 @@
       (interactive)
       (mark-whole-buffer)
       (elfeed-search-untag-all-unread))
+  (defun ar/mark-visible-as-read ()
+    (interactive)
+    (ar/with-marked-visible-buffer
+     (lambda ()
+       (elfeed-search-untag-all-unread)
+       (elfeed-search-update--force))))
   :config
   (use-package elfeed-goodies :ensure t
     :after elfeed

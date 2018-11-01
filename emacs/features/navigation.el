@@ -138,3 +138,19 @@ Repeated invocations toggle between the two most recently open buffers."
   (ar/csetq dumb-jump-selector 'popup)
   ;; (setq dumb-jump-selector 'ivy)
   :bind ("M-." . smart-jump-go))
+
+;; Programmatically get the visible end of window.
+(use-package window-end-visible
+  :ensure t
+  :config
+  (defmacro ar/with-marked-visible-buffer (f)
+    "Mark all visible lines in buffer. Unlike `mark-whole-buffer',
+ invisible lines are not marked."
+    (interactive)
+    ;; Delay, in case invoking via helm/ivy and window is temporarily smaller.
+    `(run-with-timer 0.001 nil
+                    (lambda ()
+                      (set-mark (window-start))
+                      (goto-char (window-end-visible))
+                      (activate-mark)
+                      (funcall ,f)))))
