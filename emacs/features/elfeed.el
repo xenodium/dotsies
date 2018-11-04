@@ -119,6 +119,7 @@
               ("https://emacs-doctor.com/feed.xml" blog emacs emacs-doctor)
               ("https://emacsist.github.io/index.xml" blog emacs tech emacsist)
               ("https://emacsnotes.wordpress.com/feed" blog tech emacs EmacsNotes)
+              ("https://ericasadun.com/feed" blog swift EricaSadun)
               ("https://feeds.feedburner.com/codinghorror" blog tech Coding-Horror)
               ("https://ghuntley.com/rss" blog tech ghuntley ghuntley)
               ("https://github.crookster.org/feed.xml" blog dev emacs Crook)
