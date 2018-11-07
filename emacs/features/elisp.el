@@ -11,7 +11,8 @@
                                     company-dabbrev-code
                                     company-keywords
                                     company-files
-                                    company-capf))))
+                                    company-capf)))
+    (fontify-face-mode +1))
   :config
   (require 'simple)
   (require 'ar-csetq)
@@ -21,9 +22,15 @@
   (ar/csetq eval-expression-print-level nil)
 
   ;; make ELisp regular expressions more readable.
-  (use-package easy-escape :ensure t
+  (use-package easy-escape
+    :ensure t
     :hook (emacs-lisp-mode . easy-escape-minor-mode)
     :config
     ;; TODO: Figure out why face foreground isn't displayed.
     (set-face-attribute 'easy-escape-face nil :foreground "red")
-    (ar/vsetq easy-escape-character ?⑊)))
+    (ar/vsetq easy-escape-character ?⑊))
+
+  ;; Apply face to face symbols themselves.
+  (use-package fontify-face
+    :ensure t
+    :commands fontify-face-mode))
