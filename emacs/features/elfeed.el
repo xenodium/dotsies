@@ -1,21 +1,21 @@
 (require 'ar-vsetq)
 
 (defun ar/open-youtube-url (url)
-    "Download and open youtube URL."
-    ;; Check for URLs like:
-    ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
-    ;; https://youtu.be/rzQEIRRJ2T0
-    (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
-            nil "Not a downloadable URL: %s" url)
-    (message "Downloading: %s" url)
-    (async-start
-     `(lambda ()
-        (shell-command-to-string
-         (format "youtube-dl --newline --exec \"open -a VLC {}\" -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
-     `(lambda (output)
-        (if (string-match-p "ERROR:" output)
-            (message "%s" output)
-          (message "Opened: %s" ,url)))))
+  "Download and open youtube URL."
+  ;; Check for URLs like:
+  ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
+  ;; https://youtu.be/rzQEIRRJ2T0
+  (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
+          nil "Not a downloadable URL: %s" url)
+  (message "Downloading: %s" url)
+  (async-start
+   `(lambda ()
+      (shell-command-to-string
+       (format "youtube-dl --newline --exec \"open -a VLC {}\" -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
+   `(lambda (output)
+      (if (string-match-p "ERROR:" output)
+          (message "%s" output)
+        (message "Opened: %s" ,url)))))
 
 (defun ar/open-youtube-clipboard-url ()
   "Download youtube video from url in clipboard."
@@ -34,9 +34,9 @@
     (ar/vsetq line-spacing 25))
   (defun ar/elfeed-mark-all-as-read ()
     "Mark all entries in search as read."
-      (interactive)
-      (mark-whole-buffer)
-      (elfeed-search-untag-all-unread))
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread))
   (defun ar/mark-visible-as-read ()
     (interactive)
     (ar/with-marked-visible-buffer
@@ -78,6 +78,7 @@
               ("http://feeds.feedburner.com/AffordAnythingFeed" blog money AffordAnything)
               ("http://feeds.feedburner.com/FinancialSamurai" blog money FinancialSamurai)
               ("http://feeds.feedburner.com/japaneseruleof7" blog japan japanese-rule-of-7)
+              ("http://feeds2.feedburner.com/Monevatorcom" blog money Monevator)
               ("http://francismurillo.github.io/hacker/feed.xml" blog tech emacs francismurillo)
               ("http://francismurillo.github.io/watcher/feed.xml" blog anime francismurillo)
               ("http://irreal.org/blog/?feed=rss2" blog emacs tech Irreal)
@@ -92,11 +93,13 @@
               ("http://sdegutis.com/blog/atom.xml" blog tech StevenDegutis)
               ("http://tangent.libsyn.com" blog money  ChristopherRyan)
               ("http://tech.memoryimprintstudio.com/feed" blog emacs tech MemoryImprintStudio)
+              ("http://thefirestarter.co.uk/feed" blog money FireStarter)
               ("http://www.arcadianvisions.com/blog/rss.xml" blog tech emacs arcadianvisions)
               ("http://www.badykov.com/feed.xml" blog emacs KrakenOfThought)
               ("http://www.brool.com/index.xml" blog emacs Brool)
               ("http://www.gonsie.com/blorg/feed.xml" blog emacs dev)
               ("http://www.modernemacs.com/index.xml" blog emacs tech ModernEmacs)
+              ("http://www.msziyou.com/feed/" blog money ZiYou)
               ("http://www.sastibe.de/index.xml" blog emacs SebastianSchweer)
               ("http://www.thisiscolossal.com/feed" blog tech Colossal)
               ("http://zzamboni.org/index.xml" blog hammerspoon tech Diego-Martín-Zamboni)
@@ -114,6 +117,7 @@
               ("https://copyninja.info/feeds/all.atom.xml" blog tech dev copyninja)
               ("https://dev.to/feed" blog dev DevTo)
               ("https://dmolina.github.io/index.xml" blog emacs DanielMolina)
+              ("https://drfire.co.uk/feed" blog money DrFire)
               ("https://dschrempf.github.io/index.xml" blog emacs DominikSchrempf)
               ("https://elephly.net/feed.xml" blog emacs Elephly)
               ("https://emacs-doctor.com/feed.xml" blog emacs emacs-doctor)
@@ -168,6 +172,7 @@
               ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog money MoneySavingExpert news)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
               ("https://www.reddit.com/r/UKPersonalFinance/.rss" social reddit UKPersonalFinance)
+              ("https://www.romanzolotarev.com/rss.xml" blog bsd tech RomanZolotarev)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
               ))
 
@@ -190,53 +195,50 @@
     (interactive)
     (ar/elfeed-view-filtered "@6-months-ago +unread +news")))
 
-(require 'cl-macs)
-
 (use-package org-web-tools
-  :ensure t)
-
-(use-package esxml
   :ensure t
-  :config)
+  :config
+  (use-package esxml
+    :ensure t)
 
-(require 'cl-macs)
+  (require 'cl-macs)
 
-;; From https://github.com/alphapapa/unpackaged.el#feed-for-url
-(cl-defun ar/feed-for-url-in-clipboard (url &key (prefer 'atom) (all nil))
-  "Return feed URL for web page at URL.
+  ;; From https://github.com/alphapapa/unpackaged.el#feed-for-url
+  (cl-defun ar/feed-for-url-in-clipboard (url &key (prefer 'atom) (all nil))
+    "Return feed URL for web page at URL.
 Interactively, insert the URL at point.  PREFER may be
 `atom' (the default) or `rss'.  When ALL is non-nil, return all
 feed URLs of all types; otherwise, return only one feed URL,
 preferring the preferred type."
-  (interactive (list (org-web-tools--get-first-url)))
-  (require 'esxml-query)
-  (require 'org-web-tools)
-  (cl-flet ((feed-p (type)
-                    ;; Return t if TYPE appears to be an RSS/ATOM feed
-                    (string-match-p (rx "application/" (or "rss" "atom") "+xml")
-                                    type)))
-    (let* ((preferred-type (format "application/%s+xml" (symbol-name prefer)))
-           (html (org-web-tools--get-url url))
-           (dom (with-temp-buffer
-                  (insert html)
-                  (libxml-parse-html-region (point-min) (point-max))))
-           (potential-feeds (esxml-query-all "link[rel=alternate]" dom))
-           (return (if all
-                       ;; Return all URLs
-                       (cl-loop for (tag attrs) in potential-feeds
-                                when (feed-p (alist-get 'type attrs))
-                                collect (url-expand-file-name (alist-get 'href attrs) url))
-                     (or
-                      ;; Return the first URL of preferred type
-                      (cl-loop for (tag attrs) in potential-feeds
-                               when (equal preferred-type (alist-get 'type attrs))
-                               return (url-expand-file-name (alist-get 'href attrs) url))
-                      ;; Return the first URL of non-preferred type
-                      (cl-loop for (tag attrs) in potential-feeds
-                               when (feed-p (alist-get 'type attrs))
-                               return (url-expand-file-name (alist-get 'href attrs) url))))))
-      (if (called-interactively-p)
-          (insert (if (listp return)
-                      (s-join " " return)
-                    return))
-        return))))
+    (interactive (list (org-web-tools--get-first-url)))
+    (require 'esxml-query)
+    (require 'org-web-tools)
+    (cl-flet ((feed-p (type)
+                      ;; Return t if TYPE appears to be an RSS/ATOM feed
+                      (string-match-p (rx "application/" (or "rss" "atom") "+xml")
+                                      type)))
+      (let* ((preferred-type (format "application/%s+xml" (symbol-name prefer)))
+             (html (org-web-tools--get-url url))
+             (dom (with-temp-buffer
+                    (insert html)
+                    (libxml-parse-html-region (point-min) (point-max))))
+             (potential-feeds (esxml-query-all "link[rel=alternate]" dom))
+             (return (if all
+                         ;; Return all URLs
+                         (cl-loop for (tag attrs) in potential-feeds
+                                  when (feed-p (alist-get 'type attrs))
+                                  collect (url-expand-file-name (alist-get 'href attrs) url))
+                       (or
+                        ;; Return the first URL of preferred type
+                        (cl-loop for (tag attrs) in potential-feeds
+                                 when (equal preferred-type (alist-get 'type attrs))
+                                 return (url-expand-file-name (alist-get 'href attrs) url))
+                        ;; Return the first URL of non-preferred type
+                        (cl-loop for (tag attrs) in potential-feeds
+                                 when (feed-p (alist-get 'type attrs))
+                                 return (url-expand-file-name (alist-get 'href attrs) url))))))
+        (if (called-interactively-p)
+            (insert (if (listp return)
+                        (s-join " " return)
+                      return))
+          return)))))
