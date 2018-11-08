@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 ;; No title. See init.el for initial value.
 (when (display-graphic-p)
@@ -92,6 +93,25 @@
     :ensure t
     :config
     (minions-mode +1))
+
+  (use-package time
+    :config
+    (ar/csetq display-time-24hr-format t)
+    (ar/csetq display-time-day-and-date t)
+    (ar/csetq display-time-world-list '(("Europe/Paris" "Paris")
+                                        ("Europe/London" "London")
+                                        ("America/Los_Angeles" "Los Angeles")))
+    (ar/csetq display-time-string-forms
+            '((format "%s %s%s %s:%s"
+                      dayname
+                      monthname day
+                      24-hours minutes)))
+    (display-time))
+
+  (ar/vsetq global-mode-string (remove 'display-time-string global-mode-string))
+  (ar/vsetq mode-line-end-spaces
+            (list (propertize " " 'display '(space :align-to (- right 17)))
+                  'display-time-string))
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
