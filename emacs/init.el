@@ -157,7 +157,7 @@
    (ar/idle-load "~/.emacs.d/features/compile.el")
    (ar/idle-load "~/.emacs.d/features/prog.el")
    (ar/idle-load "~/.emacs.d/features/bazel.el")
-   (ar/idle-load "~/.emacs.d/features/objc.el")
+   (ar/idle-load "~/.emacs.d/features/cc.el")
    (ar/idle-load "~/.emacs.d/features/flyspell.el")
    (ar/idle-load "~/.emacs.d/features/flycheck.el")
    (ar/idle-load "~/.emacs.d/features/swift.el")

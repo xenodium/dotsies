@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 (use-package company
   :ensure t
@@ -41,4 +42,4 @@
   (ar/vsetq company-tooltip-align-annotations t)
 
   ;; Disable all company backends by default.
-  (csetq company-backends '()))
+  (ar/csetq company-backends '()))

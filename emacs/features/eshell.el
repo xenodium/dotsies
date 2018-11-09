@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 (use-package shell-pop
   :ensure t
@@ -125,17 +126,17 @@
 
     (use-package ar-eshell-config))
 
-  ;; (csetq shell-pop-term-shell "/bin/bash")
-  ;; (csetq shell-pop-shell-type '("ansi-term"
+  ;; (ar/csetq shell-pop-term-shell "/bin/bash")
+  ;; (ar/csetq shell-pop-shell-type '("ansi-term"
   ;;                              "terminal"
   ;;                              (lambda
   ;;                                nil (ansi-term shell-pop-term-shell))))
 
   ;; Must use custom set for these.
-  (csetq shell-pop-window-position "full")
-  (csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
+  (ar/csetq shell-pop-window-position "full")
+  (ar/csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
                                                       (eshell))))
-  (csetq shell-pop-term-shell "eshell")
+  (ar/csetq shell-pop-term-shell "eshell")
 
   (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
     "Shell pop with arg to cd to working dir. Else use existing location."

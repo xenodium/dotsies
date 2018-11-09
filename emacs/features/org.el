@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 (use-package org
   :ensure t
@@ -153,7 +154,7 @@
   (use-package org-crypt
     :config
     (org-crypt-use-before-save-magic)
-    (csetq org-crypt-disable-auto-save nil)
-    (csetq org-tags-exclude-from-inheritance (quote ("crypt")))
+    (ar/csetq org-crypt-disable-auto-save nil)
+    (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
-    (csetq org-crypt-key nil)))
+    (ar/csetq org-crypt-key nil)))

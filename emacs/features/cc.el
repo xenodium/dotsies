@@ -1,4 +1,8 @@
-(use-package objc-mode
+(use-package cc-mode
+  :mode ("\\.m\\'" . objc-mode)
+  :hook (objc-mode . ar/objc-mode-hook-function)
+  :bind (:map objc-mode-map
+              ("M-]" . ar/smartparens-wrap-square-bracket))
   :init
   (defun ar/objc-mode-hook-function ()
     "Called when entering `objc-mode'."
@@ -28,9 +32,6 @@
         ;; (sp-backward-down-sexp)
         )
       (sp-wrap-with-pair "[")))
-  :hook (objc-mode . ar/objc-mode-hook-function)
-  :bind (:map objc-mode-map
-              ("M-]" . ar/smartparens-wrap-square-bracket))
   :config
   (use-package clang-format
     :ensure t)

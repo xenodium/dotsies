@@ -1,3 +1,5 @@
+(require 'ar-csetq)
+
 (use-package ediff
   :commands (ediff-backup
              ediff-buffers
@@ -56,8 +58,8 @@
     (jump-to-register ar/ediff-bwin-reg))
 
   :config
-  (csetq ediff-window-setup-function #'ediff-setup-windows-plain)
-  (csetq ediff-split-window-function #'split-window-horizontally)
+  (ar/csetq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (ar/csetq ediff-split-window-function #'split-window-horizontally)
 
   (use-package outline
     :after outline
