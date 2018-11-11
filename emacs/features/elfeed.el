@@ -27,24 +27,60 @@
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
   :bind (:map elfeed-search-mode-map
               ("R" . ar/elfeed-mark-all-as-read)
-              ("v" . ar/mark-visible-as-read))
+              ("v" . ar/mark-visible-as-read)
+              ("<tab>" . ar/elfeed-completing-filter))
   :init
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (ar/vsetq line-spacing 25))
+
   (defun ar/elfeed-mark-all-as-read ()
     "Mark all entries in search as read."
     (interactive)
     (mark-whole-buffer)
     (elfeed-search-untag-all-unread))
+
   (defun ar/mark-visible-as-read ()
     (interactive)
     (ar/with-marked-visible-buffer
      (lambda ()
        (elfeed-search-untag-all-unread)
-       (elfeed-search-update--force)
-       (goto-char 0)
-       )))
+       (elfeed-search-update--force))))
+
+  (defun ar/elfeed-filter-count (search-filter)
+    "Count results for SEARCH-FILTER."
+    (let* ((filter (elfeed-search-parse-filter search-filter))
+           (head (list nil))
+           (tail head)
+           (count 0))
+      (let ((lexical-binding t)
+            (func (byte-compile (elfeed-search-compile-filter filter))))
+        (with-elfeed-db-visit (entry feed)
+          (when (funcall func entry feed count)
+            (setf (cdr tail) (list entry)
+                  tail (cdr tail)
+                  count (1+ count)))))
+      count))
+
+  (defun ar/elfeed-completing-filter ()
+    "Completing filter."
+    (interactive)
+    (let ((categories (-filter
+                       (lambda (item)
+                         (> (ar/elfeed-filter-count (cdr item))
+                            0))
+                       (list
+                        (cons "All" "@6-months-ago +unread")
+                        (cons "BBC" "@6-months-ago +unread +bbc")
+                        (cons "Dev" "@6-months-ago +unread +dev")
+                        (cons "Emacs" "@6-months-ago +unread +emacs")
+                        (cons "Health" "@6-months-ago +unread +health")
+                        (cons "Hacker News" "@6-months-ago +unread +hackernews")
+                        (cons "iOS" "@6-months-ago +unread +ios")
+                        (cons "Money" "@6-months-ago +unread +money")))))
+      (if (> (length categories) 0)
+          (ar/elfeed-view-filtered (cdr (assoc (completing-read "Categories" categories) categories)))
+        (message "All caught up \\o/"))))
   :config
   (use-package elfeed-goodies :ensure t
     :after elfeed
@@ -63,6 +99,7 @@
             '(
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
+              ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://blog.davep.org/feed.xml" blog emacs davep)
@@ -185,27 +222,7 @@
     (unwind-protect
         (let ((elfeed-search-filter-active :live))
           (setq elfeed-search-filter filter))
-      (elfeed-search-update :force)))
-
-  (defun ar/elfeed-view-emacs ()
-    "Filter the elfeed-search buffer to show emacs-tagged feeds."
-    (interactive)
-    (ar/elfeed-view-filtered "@6-months-ago +unread +emacs"))
-
-  (defun ar/elfeed-view-bbc ()
-    "Filter the elfeed-search buffer to show news-tagged feeds."
-    (interactive)
-    (ar/elfeed-view-filtered "@6-months-ago +unread +bbc"))
-
-  (defun ar/elfeed-view-hackernews ()
-    "Filter the elfeed-search buffer to show news-tagged feeds."
-    (interactive)
-    (ar/elfeed-view-filtered "@6-months-ago +unread +hackernews"))
-
-  (defun ar/elfeed-view-money ()
-    "Filter the elfeed-search buffer to show news-tagged feeds."
-    (interactive)
-    (ar/elfeed-view-filtered "@6-months-ago +unread +money")))
+      (elfeed-search-update :force))))
 
 (use-package org-web-tools
   :ensure t
