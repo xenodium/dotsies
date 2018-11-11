@@ -149,8 +149,11 @@ Repeated invocations toggle between the two most recently open buffers."
     (interactive)
     ;; Delay, in case invoking via helm/ivy and window is temporarily smaller.
     `(run-with-timer 0.001 nil
-                    (lambda ()
-                      (set-mark (window-start))
-                      (goto-char (window-end-visible))
-                      (activate-mark)
-                      (funcall ,f)))))
+                     (lambda ()
+                       (save-excursion
+                         (save-restriction
+                           (set-mark (window-start))
+                           (goto-char (window-end-visible))
+                           (activate-mark)
+                           (funcall ,f)
+                           (deactivate-mark)))))))
