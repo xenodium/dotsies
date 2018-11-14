@@ -65,7 +65,9 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
   "Export blog to HTML."
   (interactive)
   (let ((whitespace-line-foreground (face-attribute 'whitespace-line :foreground))
-        (whitespace-line-background (face-attribute 'whitespace-line :background)))
+        (whitespace-line-background (face-attribute 'whitespace-line :background))
+        ;; Disables fontify-face-mode while exporting.
+        (fontify-face-keywords '()))
     ;; Unset face (disable whitespace mode prior to export).
     (set-face-attribute 'whitespace-line nil
                         :foreground nil
