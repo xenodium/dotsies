@@ -27,7 +27,7 @@
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
   :bind (:map elfeed-search-mode-map
               ("R" . ar/elfeed-mark-all-as-read)
-              ("v" . ar/mark-visible-as-read)
+              ("v" . ar/elfeed-mark-visible-as-read)
               ("<tab>" . ar/elfeed-completing-filter))
   :init
   (defun ar/elfeed-set-style ()
@@ -39,13 +39,6 @@
     (interactive)
     (mark-whole-buffer)
     (elfeed-search-untag-all-unread))
-
-  (defun ar/mark-visible-as-read ()
-    (interactive)
-    (ar/with-marked-visible-buffer
-     (lambda ()
-       (elfeed-search-untag-all-unread)
-       (elfeed-search-update--force))))
 
   (defun ar/elfeed-filter-count (search-filter)
     "Count results for SEARCH-FILTER."
@@ -82,6 +75,15 @@
           (ar/elfeed-view-filtered (cdr (assoc (completing-read "Categories" categories) categories)))
         (message "All caught up \\o/"))))
   :config
+  (defun ar/elfeed-mark-visible-as-read ()
+    (interactive)
+    (set-mark (window-start))
+    (goto-char (window-end-visible))
+    (activate-mark)
+    (elfeed-search-untag-all-unread)
+    (elfeed-search-update--force)
+    (deactivate-mark))
+
   (use-package elfeed-goodies :ensure t
     :after elfeed
     :config
