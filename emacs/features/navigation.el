@@ -65,6 +65,9 @@ already narrowed."
   :bind (("C-a" . mwim-beginning-of-code-or-line)
          ("C-e" . mwim-end-of-code-or-line)))
 
+;; Centers text, distributing blank space.
+(use-package olivetti :ensure t)
+
 (use-package centered-cursor-mode
   :ensure t
   :commands (centered-cursor-mode global-centered-cursor-mode)
