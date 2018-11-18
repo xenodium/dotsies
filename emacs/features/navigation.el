@@ -140,7 +140,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (smart-jump-setup-default-registers)
   (ar/csetq dumb-jump-selector 'popup)
   ;; (ar/csetq dumb-jump-selector 'ivy)
-  (ar/csetq dumb-jump-force-searcher 'rg)
+  (ar/csetq dumb-jump-force-searcher 'ag)
 
   (defun ar/dumb-jump-run-command-advice (run-command-fun &rest r)
     "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
