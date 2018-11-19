@@ -149,7 +149,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (unless (-contains-p exclude-args proj)
         (apply run-command-fun r))))
 
-  ;; This advice is handy for very large repositories. As it enables whitelisting
+  ;; This advice is handy for very large repositories, as it enables whitelisting
   ;; only relevant directories. It ignores repository root if explicitly excluded
   ;; and thus operates only on explicit additions.
   ;;
