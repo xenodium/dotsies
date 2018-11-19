@@ -11,8 +11,7 @@
                                     company-dabbrev-code
                                     company-keywords
                                     company-files
-                                    company-capf)))
-    (fontify-face-mode +1))
+                                    company-capf))))
   :config
   (require 'simple)
   (require 'ar-csetq)

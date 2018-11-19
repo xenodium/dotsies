@@ -27,7 +27,7 @@
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
   :bind (:map elfeed-search-mode-map
               ("R" . ar/elfeed-mark-all-as-read)
-              ("v" . ar/mark-visible-as-read)
+              ("v" . ar/elfeed-mark-visible-as-read)
               ("<tab>" . ar/elfeed-completing-filter))
   :init
   (defun ar/elfeed-set-style ()
@@ -40,14 +40,7 @@
     (mark-whole-buffer)
     (elfeed-search-untag-all-unread))
 
-  (defun ar/mark-visible-as-read ()
-    (interactive)
-    (ar/with-marked-visible-buffer
-     (lambda ()
-       (elfeed-search-untag-all-unread)
-       (elfeed-search-update--force))))
-
-  (defun ar/elfeed-filter-count (search-filter)
+  (defun ar/elfeed-filter-results-count (search-filter)
     "Count results for SEARCH-FILTER."
     (let* ((filter (elfeed-search-parse-filter search-filter))
            (head (list nil))
@@ -67,27 +60,44 @@
     (interactive)
     (let ((categories (-filter
                        (lambda (item)
-                         (> (ar/elfeed-filter-count (cdr item))
+                         (> (ar/elfeed-filter-results-count (cdr item))
                             0))
-                       (list
-                        (cons "All" "@6-months-ago +unread")
-                        (cons "BBC" "@6-months-ago +unread +bbc")
-                        (cons "Dev" "@6-months-ago +unread +dev")
-                        (cons "Emacs" "@6-months-ago +unread +emacs")
-                        (cons "Health" "@6-months-ago +unread +health")
-                        (cons "Hacker News" "@6-months-ago +unread +hackernews")
-                        (cons "iOS" "@6-months-ago +unread +ios")
-                        (cons "Money" "@6-months-ago +unread +money")))))
+                       '(("[All]" . "@6-months-ago +unread")
+                         ("Art" . "@6-months-ago +unread +art")
+                         ("BBC" . "@6-months-ago +unread +bbc")
+                         ("Dev" . "@6-months-ago +unread +dev")
+                         ("Emacs" . "@6-months-ago +unread +emacs")
+                         ("Health" . "@6-months-ago +unread +health")
+                         ("Hacker News" . "@6-months-ago +unread +hackernews")
+                         ("iOS" . "@6-months-ago +unread +ios")
+                         ("Money" . "@6-months-ago +unread +money")
+                         ("Travel" . "@6-months-ago +unread +travel")))))
       (if (> (length categories) 0)
-          (ar/elfeed-view-filtered (cdr (assoc (completing-read "Categories" categories) categories)))
+          (progn
+           (ar/elfeed-view-filtered (cdr (assoc (completing-read "Categories: " categories)
+                                                categories)))
+           (goto-char (window-start)))
         (message "All caught up \\o/"))))
+
   :config
-  (use-package elfeed-goodies :ensure t
-    :after elfeed
-    :config
-    (ar/vsetq elfeed-goodies/entry-pane-position 'bottom)
-    (ar/vsetq elfeed-goodies/tag-column-width 35)
-    (elfeed-goodies/setup))
+  (defun ar/elfeed-mark-visible-as-read ()
+    (interactive)
+    (set-mark (window-start))
+    (goto-char (window-end-visible))
+    (activate-mark)
+    (elfeed-search-untag-all-unread)
+    (elfeed-search-update--force)
+    (deactivate-mark)
+    (goto-char (window-start)))
+
+  ;; Going back to defaults for a little while.
+  ;; (use-package elfeed-goodies :ensure t
+  ;;   :after elfeed
+  ;;   :config
+  ;;   (ar/vsetq elfeed-goodies/entry-pane-position 'bottom)
+  ;;   (ar/vsetq elfeed-goodies/feed-source-column-width 30)
+  ;;   (ar/vsetq elfeed-goodies/tag-column-width 35)
+  ;;   (elfeed-goodies/setup))
 
   (defun ar/elfeed-open-youtube-video ()
     (interactive)
@@ -97,9 +107,9 @@
 
   (ar/vsetq elfeed-feeds
             '(
+              ("")
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
-              ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://blog.davep.org/feed.xml" blog emacs davep)
@@ -125,14 +135,17 @@
               ("http://nullprogram.com/feed" blog emacs Chris-Wellons)
               ("http://petercheng.net/index.xml" blog emacs PeterCheng)
               ("http://planet.emacsen.org/atom.xml" blog emacs emacsen)
+              ("http://pragmaticemacs.com/feed" blog emacs PragmaticEmacs)
               ("http://prodissues.com/feeds/all.atom.xml" blog emacs Prodissues)
+              ("http://quietlysaving.co.uk/feed" blog money QuietlySaving)
               ("http://reddit.com/r/emacs/.rss" social reddit emacs)
-              ("http://rubyronin.com/wp-feed.php" blog japan the-ruby-ronin)
+              ("http://rubyronin.com/wp-feed.php" blog japan travel the-ruby-ronin)
               ("http://sachachua.com/blog/feed" blog emacs sachachua)
               ("http://sdegutis.com/blog/atom.xml" blog dev StevenDegutis)
               ("http://tangent.libsyn.com" blog money  ChristopherRyan)
               ("http://tech.memoryimprintstudio.com/feed" blog emacs MemoryImprintStudio)
               ("http://thefirestarter.co.uk/feed" blog money FireStarter)
+              ("http://ukfipod.space/feed" blog money UKFIPod)
               ("http://www.arcadianvisions.com/blog/rss.xml" blog emacs arcadianvisions)
               ("http://www.badykov.com/feed.xml" blog emacs KrakenOfThought)
               ("http://www.brool.com/index.xml" blog emacs Brool)
@@ -140,12 +153,13 @@
               ("http://www.modernemacs.com/index.xml" blog emacs ModernEmacs)
               ("http://www.msziyou.com/feed/" blog money ZiYou)
               ("http://www.sastibe.de/index.xml" blog emacs SebastianSchweer)
-              ("http://www.thisiscolossal.com/feed" blog Colossal)
+              ("http://www.thisiscolossal.com/feed" blog art Colossal)
               ("http://zzamboni.org/index.xml" blog hammerspoon dev Diego-Martín-Zamboni)
               ("https://affordanything.com/blog/feed" blog money AffordAnything)
               ("https://affordanything.com/comments/feed/" blog money AffordAnything)
               ("https://ambrevar.xyz/rss.xml" blog emacs PierreNeidhardt)
               ("https://babbagefiles.xyz/index.xml" blog emacs BabbageFiles)
+              ("https://blog.aaronbieber.com/feed.xml" blog emacs AaronBieber)
               ("https://blog.burntsushi.net/index.xml" blog dev BurnedSushi)
               ("https://blog.danielgempesaw.com/rss" blog emacs DanielGempesaw)
               ("https://blog.moneysavingexpert.com/blog.rss" blog money MoneySavingExpert MartinLewis)
@@ -163,6 +177,7 @@
               ("https://emacsnotes.wordpress.com/feed" blog emacs EmacsNotes)
               ("https://ericasadun.com/feed" blog swift ios EricaSadun)
               ("https://feeds.feedburner.com/codinghorror" blog dev Coding-Horror)
+              ("https://firevlondon.com/feed/" blog money FIREvsLondon)
               ("https://ghuntley.com/rss" blog dev ghuntley)
               ("https://github.crookster.org/feed.xml" blog dev emacs Crook)
               ("https://hacks.mozilla.org/feed" blog dev Mozilla)
@@ -185,7 +200,7 @@
               ("https://ryanholiday.net/feed/" blog meditation health RyanHoliday)
               ("https://ryanholiday.net/feed/atom" blog emacs StringsNote)
               ("https://sam217pa.github.io/index.xml" blog emacs BacterialFinches)
-              ("https://sciencebasedmedicine.org/feed" blog medicine ScienceBasedMedicine)
+              ("https://sciencebasedmedicine.org/feed" blog medicine health ScienceBasedMedicine)
               ("https://scripter.co/posts/index.xml" blog emacs dev)
               ("https://swiftnews.curated.co/issues.rss" blog swift ios ShiftNewsCurated)
               ("https://swiftweekly.github.io/feed.xml" blog swift ios SwiftWeekly)
@@ -210,9 +225,9 @@
               ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog money MoneySavingExpert news)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
               ("https://www.reddit.com/r/UKPersonalFinance/.rss" social reddit money UKPersonalFinance)
-              ("https://firevlondon.com/feed/" blog money FIREvsLondon)
               ("https://www.romanzolotarev.com/rss.xml" blog bsd dev RomanZolotarev)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
+              ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
               ))
 
   (defun ar/elfeed-view-filtered (filter)

@@ -65,6 +65,9 @@ already narrowed."
   :bind (("C-a" . mwim-beginning-of-code-or-line)
          ("C-e" . mwim-end-of-code-or-line)))
 
+;; Centers text, distributing blank space.
+(use-package olivetti :ensure t)
+
 (use-package centered-cursor-mode
   :ensure t
   :commands (centered-cursor-mode global-centered-cursor-mode)
@@ -136,7 +139,29 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (smart-jump-setup-default-registers)
   (ar/csetq dumb-jump-selector 'popup)
-  ;; (setq dumb-jump-selector 'ivy)
+  ;; (ar/csetq dumb-jump-selector 'ivy)
+  (ar/csetq dumb-jump-force-searcher 'ag)
+
+  (defun ar/dumb-jump-run-command-advice (run-command-fun &rest r)
+    "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
+    (let ((proj (nth 1 r))
+          (exclude-args (nth 4 r)))
+      (unless (-contains-p exclude-args proj)
+        (apply run-command-fun r))))
+
+  ;; This advice is handy for very large repositories, as it enables whitelisting
+  ;; only relevant directories. It ignores repository root if explicitly excluded
+  ;; and thus operates only on explicit additions.
+  ;;
+  ;; For example, in .dumbjump file:
+  ;; -.
+  ;; +sub1
+  ;; +sub2
+
+  (advice-add 'dumb-jump-run-command
+              :around
+              'ar/dumb-jump-run-command-advice)
+
   :bind ("M-." . smart-jump-go))
 
 ;; Programmatically get the visible end of window.
