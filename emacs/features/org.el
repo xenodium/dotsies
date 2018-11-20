@@ -101,23 +101,6 @@
     :bind (:map org-mode-map
                 ([f6] . ar/ox-html-export))
     :config
-    (use-package ob-plantuml
-      :config
-      (use-package org-src)
-
-      ;; Use fundamental mode when editing plantuml blocks with C-c '
-      (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
-
-      ;; We explicitly want org babel confirm evaluations.
-      (ar/vsetq org-confirm-babel-evaluate t)
-
-      (cond ((string-equal system-type "darwin")
-             (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
-             (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
-            (t
-             (message "Warning: Could not find plantuml.8018.jar")
-             (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
-
     (use-package ox-html)
 
     (ar/ox-html-setup))
@@ -128,9 +111,26 @@
     :config
     (ar/vsetq org-export-babel-evaluate nil)
 
+    ;; We explicitly want org babel confirm evaluations.
+    (ar/vsetq org-confirm-babel-evaluate t)
+
     (use-package ob-objc)
     (use-package ob-swift
       :ensure t)
+
+    (use-package ob-plantuml
+      :config
+      (use-package org-src)
+
+      ;; Use fundamental mode when editing plantuml blocks with C-c '
+      (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+
+      (cond ((string-equal system-type "darwin")
+             (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
+             (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+            (t
+             (message "Warning: Could not find plantuml.8018.jar")
+             (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
     (org-babel-do-load-languages
      'org-babel-load-languages
