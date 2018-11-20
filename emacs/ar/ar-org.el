@@ -362,6 +362,28 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
     (org-insert-time-stamp (current-time))
     (org-refile)))
 
+(defun ar/org--preprocess-url-title (url-title)
+  "Reformat page URL-TITLE For example:
+HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
+  (string-match "^\\(.*\\)\\( | \\)\\(.*\\)$" url-title)
+  (let ((site (match-string 3 url-title))
+        (description (match-string 1 url-title)))
+    (if (and site description)
+        (format "%s (%s)" description site)
+      url-title)))
+
+(defun ar/org-insert-clipboard-link ()
+  "Insert a bookmark link from clipboard."
+  (interactive)
+  (assert (string-match-p "^http" (current-kill 0)) nil "Not URL in clipboard")
+  (org-cliplink-retrieve-title
+   (current-kill 0)
+   (lambda (url default-description)
+     (insert (format "%s."
+                     (ar/org-build-link url
+                                        (read-string "Description: " (ar/org--preprocess-url-title
+                                                                      default-description))))))))
+
 (provide 'ar-org)
 
 ;;; ar-org.el ends here
