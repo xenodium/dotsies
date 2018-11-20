@@ -107,7 +107,6 @@
 
   (ar/vsetq elfeed-feeds
             '(
-              ("")
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
@@ -132,6 +131,7 @@
               ("http://francismurillo.github.io/watcher/feed.xml" blog anime francismurillo)
               ("http://irreal.org/blog/?feed=rss2" blog emacs Irreal)
               ("http://kundeveloper.com/feed" blog emacs KunDeveloper)
+              ("http://mbork.pl?action=rss" blog emacs MarcinBorkowski)
               ("http://nullprogram.com/feed" blog emacs Chris-Wellons)
               ("http://petercheng.net/index.xml" blog emacs PeterCheng)
               ("http://planet.emacsen.org/atom.xml" blog emacs emacsen)

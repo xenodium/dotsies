@@ -6,10 +6,10 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Show keystrokes earlier (ie. C-x)
-(setq echo-keystrokes 0.1)
+(ar/vsetq echo-keystrokes 0.1)
 
 ;; No need to keep duplicates in prompt history.
-(setq history-delete-duplicates t)
+(ar/vsetq history-delete-duplicates t)
 
 (use-package simple
   :config
