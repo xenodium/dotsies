@@ -77,7 +77,8 @@ already narrowed."
 
 (use-package window
   :bind (("C-x 2" . ar/vsplit-last-buffer)
-         ("C-x 3" . ar/hsplit-last-buffer))
+         ("C-x 3" . ar/hsplit-last-buffer)
+         ("C-<tab>" . other-window))
   :chords (("BB" . other-window)
            ("JJ" . ar/switch-to-previous-buffer))
   :init
