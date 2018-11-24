@@ -105,8 +105,8 @@
                                    ;; Indent to current level.
                                    ;; (call-interactively (global-key-binding "\t"))
                                    (insert (format "- %s.\n" ,(ar/org-build-link url
-                                                                                 (read-string "Description: "
-                                                                                              (ar/org-insert-clipboard-link default-description)))))
+                                                                                 (read-string "Description: " (ar/org--preprocess-url-title
+                                                                                                               default-description)))))
                                    (org-sort-list nil ?a)
                                    (ar/org-timestamp-at-point)
                                    (hide-other)
