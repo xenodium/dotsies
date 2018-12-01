@@ -13,11 +13,18 @@
 (load "~/.emacs.d/features/org.el")
 (load "~/.emacs.d/ar/ar-ox-html.el")
 
-(use-package 'whitespace)
+(use-package whitespace)
 
 (use-package github-theme
   :ensure t
   :config
-  (load-theme 'github t))
+  (load-theme 'github t)
+
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-link nil :underline nil)
+    ;; Disable whitespace mode.
+    (set-face-attribute 'whitespace-line nil
+                        :foreground nil
+                        :background nil)))
 
 (ar/ox-html-export)
