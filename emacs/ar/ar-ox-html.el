@@ -61,6 +61,14 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
+(defun ar/ox-export-async ()
+  (interactive)
+  (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
+                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el && ")
+                               "open " (format "file:%s" (expand-file-name
+                                                          "~/stuff/active/blog/index.html")))
+                       "*org html export*"))
+
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
