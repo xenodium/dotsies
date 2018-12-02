@@ -246,8 +246,7 @@ line instead."
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)
          ("M-DEL" . ar/backward-delete-subword)
-         ("<C-backspace>" . ar/backward-delete-subword)
-         ("C-x C-d" . ar/duplicate-line)))
+         ("<C-backspace>" . ar/backward-delete-subword)))
 
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon
