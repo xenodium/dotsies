@@ -62,7 +62,6 @@
   (ar/csetq ediff-split-window-function #'split-window-horizontally)
 
   (use-package outline
-    :after outline
     ;; Ensure ediff expands org files.
     :hook (ediff-prepare-buffer . outline-show-all))
 
@@ -130,4 +129,64 @@ Else call `ediff-buffers'."
         (call-interactively #'vc-ediff))
        ;; Else call `ediff-buffers'
        (t
-        (call-interactively #'ediff-buffers))))))
+        (call-interactively #'ediff-buffers)))))
+
+  (defun ar/ediff-dir-content-file-sizes ()
+    (interactive)
+    "Diff two directories file sizes."
+    (ar/ediff--dir-content-sizes-with-command "find . -type f -exec stat -f '%N %z' '{}' \\; | sort"))
+
+  (defun ar/ediff-dir-content-dir-sizes ()
+    "Diff two directories for subdirectory sizes."
+    (interactive)
+    (ar/ediff--zip-content-sizes-with-command "find . -type d | sort | du -h"))
+
+  (defun ar/ediff-zip-content-file-sizes ()
+    "Diff two zip files file sizes."
+    (interactive)
+    (ar/ediff--zip-content-sizes-with-command "find . -type f -exec stat -f '%N %z' '{}' \\; | sort"))
+
+  (defun ar/ediff-zip-content-dir-sizes ()
+    "Diff two zip files for subdirectory sizes."
+    (interactive)
+    (ar/ediff--zip-content-sizes-with-command "find . -type d | sort | du -h"))
+
+  (defun ar/ediff--dir-content-sizes-with-command (find-cmd)
+    "Diff all subdirectories (sizes only) in two directories and list content using FIND-CMD."
+    (let* ((dir1-path (read-directory-name "Dir 1: "))
+           (dir2-path (read-directory-name "Dir 2: "))
+           (buf1 (get-buffer-create (format "*Dir 1 (%s)*" (f-base dir1-path))))
+           (buf2 (get-buffer-create (format "*Dir 2 (%s)*" (f-base dir2-path)))))
+      (with-current-buffer buf1
+        (read-only-mode -1)
+        (erase-buffer)
+        (shell-command (format "cd \"%s\"; %s" dir1-path find-cmd) buf1)
+        (read-only-mode +1))
+      (with-current-buffer buf2
+        (read-only-mode -1)
+        (erase-buffer)
+        (shell-command (format "cd \"%s\"; %s" dir2-path find-cmd) buf2)
+        (read-only-mode +1))
+      (ediff-buffers buf1 buf2)))
+
+  (defun ar/ediff--zip-content-sizes-with-command (find-cmd)
+    "Diff all subdirectories (sizes only) in two zip files and list content using FIND-CMD."
+    (let* ((zip1-path (read-file-name "Zip 1: "))
+           (zip2-path (read-file-name "Zip 2: "))
+           (dir1-path (nth 0 (process-lines "mktemp"  "-d" "-t" "zip1.XXXXXX")))
+           (dir2-path (nth 0 (process-lines "mktemp"  "-d" "-t" "zip2.XXXXXX")))
+           (buf1 (get-buffer-create (format "*zip diff (%s)*" (f-filename zip1-path))))
+           (buf2 (get-buffer-create (format "*zip diff (%s)*" (f-filename zip2-path)))))
+      (with-current-buffer buf1
+        (read-only-mode -1)
+        (erase-buffer)
+        (shell-command (format "cd \"%s\"; unzip \"%s\"" dir1-path zip1-path) "*zip diff*")
+        (shell-command (format "cd \"%s\"; %s" dir1-path find-cmd) buf1)
+        (read-only-mode +1))
+      (with-current-buffer buf2
+        (read-only-mode -1)
+        (erase-buffer)
+        (shell-command (format "cd \"%s\"; unzip \"%s\"" dir2-path zip2-path) "*zip diff*")
+        (shell-command (format "cd \"%s\"; %s" dir2-path find-cmd) buf2)
+        (read-only-mode +1))
+      (ediff-buffers buf1 buf2))))
