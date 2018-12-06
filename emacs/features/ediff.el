@@ -139,17 +139,17 @@ Else call `ediff-buffers'."
   (defun ar/ediff-dir-content-dir-sizes ()
     "Diff two directories for subdirectory sizes."
     (interactive)
-    (ar/ediff--zip-content-sizes-with-command "find . -type d | sort | du -h"))
+    (ar/ediff--dir-content-sizes-with-command "find . -type d | sort | du -h"))
 
-  (defun ar/ediff-zip-content-file-sizes ()
-    "Diff two zip files file sizes."
+  (defun ar/ediff-archive-content-file-sizes ()
+    "Diff two archives, looking at file sizes."
     (interactive)
-    (ar/ediff--zip-content-sizes-with-command "find . -type f -exec stat -f '%N %z' '{}' \\; | sort"))
+    (ar/ediff--archive-content-sizes-with-command "find . -type f -exec stat -f '%N %z' '{}' \\; | sort"))
 
-  (defun ar/ediff-zip-content-dir-sizes ()
-    "Diff two zip files for subdirectory sizes."
+  (defun ar/ediff-archive-content-dir-sizes ()
+    "Diff two archives, looking at subdirectory sizes."
     (interactive)
-    (ar/ediff--zip-content-sizes-with-command "find . -type d | sort | du -h"))
+    (ar/ediff--archive-content-sizes-with-command "find . -type d | sort | du -h"))
 
   (defun ar/ediff--dir-content-sizes-with-command (find-cmd)
     "Diff all subdirectories (sizes only) in two directories and list content using FIND-CMD."
@@ -169,24 +169,53 @@ Else call `ediff-buffers'."
         (read-only-mode +1))
       (ediff-buffers buf1 buf2)))
 
-  (defun ar/ediff--zip-content-sizes-with-command (find-cmd)
-    "Diff all subdirectories (sizes only) in two zip files and list content using FIND-CMD."
-    (let* ((zip1-path (read-file-name "Zip 1: "))
-           (zip2-path (read-file-name "Zip 2: "))
-           (dir1-path (nth 0 (process-lines "mktemp"  "-d" "-t" "zip1.XXXXXX")))
-           (dir2-path (nth 0 (process-lines "mktemp"  "-d" "-t" "zip2.XXXXXX")))
-           (buf1 (get-buffer-create (format "*zip diff (%s)*" (f-filename zip1-path))))
-           (buf2 (get-buffer-create (format "*zip diff (%s)*" (f-filename zip2-path)))))
+  (defun ar/ediff--archive-content-sizes-with-command (find-cmd)
+    "Diff all subdirectories (sizes only) in two archives and list content using FIND-CMD."
+    (let* ((arch1-path (read-file-name "Archive 1: "))
+           (arch2-path (read-file-name "Archive 2: "))
+           (dir1-path (nth 0 (process-lines "mktemp"  "-d" "-t" "arch1.XXXXXX")))
+           (dir2-path (nth 0 (process-lines "mktemp"  "-d" "-t" "arch2.XXXXXX")))
+           (buf1 (get-buffer-create (format "*archive diff (%s)*" (f-filename arch1-path))))
+           (buf2 (get-buffer-create (format "*archive diff (%s)*" (f-filename arch2-path))))
+           (expand-cmd-fun (lambda (file)
+                            (cond ((string-match-p ".*\.tar.bz2" file)
+                                   "tar --strip-components=1 -x -z -f")
+                                  ((string-match-p ".*\.tar.gz" file)
+                                   "tar --strip-components=1 -x -z -f")
+                                  ((string-match-p ".*\.bz2" file)
+                                   "bunarch2")
+                                  ((string-match-p ".*\.rar" file)
+                                   "unrar x")
+                                  ((string-match-p ".*\.gz" file)
+                                   "gunzip")
+                                  ((string-match-p ".*\.tar" file)
+                                   "tar xf --strip-components")
+                                  ((string-match-p ".*\.tbz2" file)
+                                   "tar xjf --strip-components")
+                                  ((string-match-p ".*\.tgz" file)
+                                   "tar --strip-components=1 -x -z -f")
+                                  ((string-match-p ".*\.zip" file)
+                                   "unzip")
+                                  ((string-match-p ".*\.jar" file)
+                                   "unzip")
+                                  ((string-match-p ".*\.Z" file)
+                                   "uncompress")
+                                  (t
+                                   (error "Don't know how to extract %s" file))))))
       (with-current-buffer buf1
         (read-only-mode -1)
         (erase-buffer)
-        (shell-command (format "cd \"%s\"; unzip \"%s\"" dir1-path zip1-path) "*zip diff*")
+        (shell-command (format "cd \"%s\"; %s \"%s\"" dir1-path (apply expand-cmd-fun
+                                                                       (list arch1-path)) arch1-path)
+                       "*archive diff*")
         (shell-command (format "cd \"%s\"; %s" dir1-path find-cmd) buf1)
         (read-only-mode +1))
       (with-current-buffer buf2
         (read-only-mode -1)
         (erase-buffer)
-        (shell-command (format "cd \"%s\"; unzip \"%s\"" dir2-path zip2-path) "*zip diff*")
+        (shell-command (format "cd \"%s\"; %s \"%s\"" dir2-path (apply expand-cmd-fun
+                                                                       (list arch2-path)) arch2-path)
+                       "*archive diff*")
         (shell-command (format "cd \"%s\"; %s" dir2-path find-cmd) buf2)
         (read-only-mode +1))
       (ediff-buffers buf1 buf2))))
