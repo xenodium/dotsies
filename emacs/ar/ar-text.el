@@ -76,15 +76,6 @@ With argument ARG, do this that many times."
                    (subword-backward arg)
                    (point))))
 
-(defun ar/duplicate-line ()
-  "Duplicate current line and paste below."
-  (interactive)
-  (let ((line-text (buffer-substring (line-beginning-position)
-                                     (line-end-position))))
-    (end-of-line)
-    (newline)
-    (insert line-text)))
-
 
 (provide 'ar-text)
 

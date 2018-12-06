@@ -33,3 +33,9 @@
   (use-package fontify-face
     :ensure t
     :commands fontify-face-mode))
+
+(use-package auto-compile
+  :ensure t
+  :config
+  (auto-compile-on-load-mode +1)
+  (auto-compile-on-save-mode +1))

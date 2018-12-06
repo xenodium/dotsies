@@ -61,36 +61,34 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
+(defun ar/ox-export-async ()
+  (interactive)
+  (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
+                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el && ")
+                               "open " (format "file:%s" (expand-file-name
+                                                          "~/stuff/active/blog/index.html")))
+                       "*org html export*"))
+
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
-  (let ((whitespace-line-foreground (face-attribute 'whitespace-line :foreground))
-        (whitespace-line-background (face-attribute 'whitespace-line :background)))
-    ;; Unset face (disable whitespace mode prior to export).
-    (set-face-attribute 'whitespace-line nil
-                        :foreground nil
-                        :background nil)
-    (ar/file-assert-file-exists org-plantuml-jar-path)
-    (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
-    (with-current-buffer (find-file-noselect (expand-file-name
-                                              "~/stuff/active/blog/index.org"))
-      (let ((org-time-stamp-custom-formats
-             '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
-            (org-display-custom-times 't))
-        (unwind-protect
-            (progn
-              (advice-add 'org-timestamp-translate
-                          :around
-                          'ar/ox-html--timestamp-translate-advice-fun)
-              (org-html-export-to-html))
-          (advice-remove 'org-timestamp-translate
-                         'ar/ox-html--timestamp-translate-advice-fun))
-        (browse-url (format "file:%s" (expand-file-name
-                                       "~/stuff/active/blog/index.html")))))
-    ;; Restore face (enable whitespace mode after export)
-    (set-face-attribute 'whitespace-line nil
-                        :foreground whitespace-line-foreground
-                        :background whitespace-line-background)))
+  (ar/file-assert-file-exists org-plantuml-jar-path)
+  (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
+  (with-current-buffer (find-file-noselect (expand-file-name
+                                            "~/stuff/active/blog/index.org"))
+    (let ((org-time-stamp-custom-formats
+           '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
+          (org-display-custom-times 't))
+      (unwind-protect
+          (progn
+            (advice-add 'org-timestamp-translate
+                        :around
+                        'ar/ox-html--timestamp-translate-advice-fun)
+            (org-html-export-to-html))
+        (advice-remove 'org-timestamp-translate
+                       'ar/ox-html--timestamp-translate-advice-fun))
+      (browse-url (format "file:%s" (expand-file-name
+                                     "~/stuff/active/blog/index.html"))))))
 
 (setq org-html-head-extra
       "<style type='text/css'>
@@ -175,6 +173,11 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            color: rgb(51, 51, 51);
            font-size: 1em;
            text-align: right;
+         }
+
+         .org-src-container {
+           background-color: #fbfbfb;
+           border-radius: 10px;
          }
 
          #contact-header {
@@ -281,6 +284,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
 
          .example {
            white-space: pre-wrap;
+           background-color: #f8ffe1;
          }
        </style>
 

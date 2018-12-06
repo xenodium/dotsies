@@ -99,7 +99,7 @@
 
   (use-package ar-ox-html
     :bind (:map org-mode-map
-                ([f6] . ar/ox-html-export))
+                ([f6] . ar/ox-export-async))
     :config
     (use-package ox-html)
 
