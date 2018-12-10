@@ -22,12 +22,23 @@
   :ensure t
   :defer 0.1
   :bind (("C-x C-b" . ivy-switch-buffer)
-         ("C-c C-r" . ivy-resume))
+         ("C-c C-r" . ivy-resume)
+         :map ivy-minibuffer-map
+         ("C-g" . ar/ivy-keybqoard-quit-dwim))
   :config
   (ar/vsetq ivy-height 40)
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq enable-recursive-minibuffers t)
+  (defun ar/ivy-keybqoard-quit-dwim ()
+    "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
+    (interactive)
+    (cond ((and delete-selection-mode (region-active-p))
+           (setq deactivate-mark t))
+          ((> (length ivy-text) 0)
+           (delete-minibuffer-contents))
+          (t
+           (minibuffer-keyboard-quit))))
   (ivy-mode +1))
 
 ;; Displays yasnippet previous inline when cycling through results.
