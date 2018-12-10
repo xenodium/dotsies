@@ -243,6 +243,8 @@
               ("https://www.madfientist.com/feed/" blog money MadFientist)
               ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog money MoneySavingExpert news)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
+              ("https://zudepr.co.uk/feed" blog money Zude)
+              ("https://www.raptitude.com/feed" blog lifestyle Rapititude)
               ("https://www.reddit.com/r/UKPersonalFinance/.rss" social reddit money UKPersonalFinance)
               ("https://www.romanzolotarev.com/rss.xml" blog bsd dev RomanZolotarev)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
