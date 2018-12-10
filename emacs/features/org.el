@@ -2,7 +2,7 @@
 (require 'ar-csetq)
 
 (use-package org
-  :ensure t
+  :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
