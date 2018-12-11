@@ -110,6 +110,7 @@
             '(
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
+              ("http://buddhistinspiration.blogspot.com/feeds/posts/default" blog mindful BuddistInspiration)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://blog.davep.org/feed.xml" blog emacs davep)
