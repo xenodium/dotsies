@@ -291,3 +291,9 @@ line instead."
 ;; Open rc files with conf-mode.
 (use-package conf-mode
   :mode ("rc$" . conf-mode))
+
+;; Handles escaping regexes from input. For example: no need for \(\)
+(use-package pcre2el
+  :ensure t
+  :config
+  (pcre-mode +1))

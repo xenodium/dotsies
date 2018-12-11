@@ -93,6 +93,9 @@
   ;; Enable RET to follow Org links.
   (ar/vsetq org-return-follows-link t)
 
+  (use-package org-cliplink
+    :ensure t)
+
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image
                ar/org-blog-insert-resized-image))
