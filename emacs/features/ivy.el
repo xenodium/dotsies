@@ -24,13 +24,13 @@
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
          :map ivy-minibuffer-map
-         ("C-g" . ar/ivy-keybqoard-quit-dwim))
+         ("C-g" . ar/ivy-keyboard-quit-dwim))
   :config
   (ar/vsetq ivy-height 40)
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq enable-recursive-minibuffers t)
-  (defun ar/ivy-keybqoard-quit-dwim ()
+  (defun ar/ivy-keyboard-quit-dwim ()
     "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
     (interactive)
     (cond ((and delete-selection-mode (region-active-p))
