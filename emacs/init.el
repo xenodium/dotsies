@@ -67,6 +67,10 @@
 ;; Don't add that `custom-set-variables' block to init.
 (setq package--init-file-ensured t)
 
+;; Save custom vars to separate file from init.el.
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
 (require 'tls)
 
 ;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
