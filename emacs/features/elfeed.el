@@ -109,6 +109,7 @@
   (ar/vsetq elfeed-feeds
             '(
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
+              ("https://www.producthunt.com/feed" blog products ProductHunt)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://buddhistinspiration.blogspot.com/feeds/posts/default" blog mindful BuddistInspiration)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
