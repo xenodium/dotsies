@@ -1,9 +1,11 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
 
-;; No title. See init.el for initial value.
 (when (display-graphic-p)
-  (setq frame-title-format nil))
+  ;; No title. See init.el for initial value.
+  (setq frame-title-format nil)
+  ;; Avoid native dialogs.
+  (setq use-dialog-box nil))
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil
@@ -104,7 +106,7 @@
                                         ("Europe/London" "London")
                                         ("America/Los_Angeles" "Los Angeles")))
     (ar/csetq display-time-string-forms
-            '((format "%s %s%s %s:%s"
+            '((format "%s %s %s, %s:%s"
                       dayname
                       monthname day
                       24-hours minutes)))
@@ -112,7 +114,7 @@
 
   (ar/vsetq global-mode-string (remove 'display-time-string global-mode-string))
   (ar/vsetq mode-line-end-spaces
-            (list (propertize " " 'display '(space :align-to (- right 17)))
+            (list (propertize " " 'display '(space :align-to (- right 19)))
                   'display-time-string))
 
   (moody-replace-mode-line-buffer-identification)

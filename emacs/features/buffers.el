@@ -15,3 +15,6 @@
   :config
   (ar/vsetq uniquify-buffer-name-style
             'forward))
+
+(use-package discover-my-major
+  :ensure t)
