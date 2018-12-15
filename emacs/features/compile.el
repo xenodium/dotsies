@@ -33,7 +33,7 @@
            (message "Compilation exited abnormally: %s" string))))
 
   ;; Automatically hide successful builds window.
-  (ar/vsetq compilation-finish-functions #'ar/compile-autoclose)
+  (setq compilation-finish-functions #'ar/compile-autoclose)
 
   ;; Automatically scroll build output.
   (ar/csetq compilation-scroll-output t))
