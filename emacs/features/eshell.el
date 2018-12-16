@@ -50,6 +50,9 @@
     (require 'em-hist)
     (require 'em-glob)
 
+    (use-package shrink-path
+      :ensure t)
+
     (use-package esh-mode
       :config
       ;; Why is vsetq not finding it?
