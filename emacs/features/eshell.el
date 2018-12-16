@@ -53,6 +53,12 @@
     (use-package shrink-path
       :ensure t)
 
+    (use-package esh-help
+      :ensure t
+      :config
+      ;; Eldoc support.
+      (setup-esh-help-eldoc))
+
     (use-package esh-mode
       :config
       ;; Why is vsetq not finding it?
@@ -138,7 +144,7 @@
   ;; Must use custom set for these.
   (ar/csetq shell-pop-window-position "full")
   (ar/csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
-                                                      (eshell))))
+                                                         (eshell))))
   (ar/csetq shell-pop-term-shell "eshell")
 
   (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
