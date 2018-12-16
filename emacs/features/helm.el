@@ -46,9 +46,6 @@
 ;; Differentiate C-i key binding from TAB.
 (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 
-(use-package helm-eshell
-  :commands helm-eshell-history)
-
 (use-package helm-ag
   :ensure t
   :bind ("H-i" . ar/helm-ag-insert)

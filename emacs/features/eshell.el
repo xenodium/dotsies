@@ -37,11 +37,11 @@
         (setq-local company-begin-commands
                     (append company-begin-commands (list 'comint-magic-space))))
 
-      (bind-key "M-r" #'helm-eshell-history eshell-mode-map)
+      (bind-key "M-r" #'counsel-esh-history eshell-mode-map)
       (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
     :config
     (require 'company)
-    (require 'helm-eshell)
+    (require 'counsel)
 
 
     (require 'company-escaped-files)
