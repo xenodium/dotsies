@@ -37,8 +37,10 @@
         (setq-local company-begin-commands
                     (append company-begin-commands (list 'comint-magic-space))))
 
-      (bind-key "M-r" #'counsel-esh-history eshell-mode-map)
-      (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
+      (bind-keys :map eshell-mode-map
+                 ("M-r" . counsel-esh-history)
+                 ([remap eshell-pcomplete] . completion-at-point)
+                 ("C-l" . ar/eshell-cd-to-parent)))
     :config
     (require 'company)
     (require 'counsel)
@@ -49,6 +51,18 @@
 
     (require 'em-hist)
     (require 'em-glob)
+
+    (use-package pcmpl-homebrew
+      :ensure t)
+
+    (use-package pcmpl-git
+      :ensure t)
+
+    (use-package pcmpl-args
+      :ensure t)
+
+    (use-package pcomplete-extension
+      :ensure t)
 
     (use-package shrink-path
       :ensure t)
