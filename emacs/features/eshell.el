@@ -45,12 +45,25 @@
     (require 'company)
     (require 'counsel)
 
-
     (require 'company-escaped-files)
     (require 'company-projectile-cd)
 
     (require 'em-hist)
     (require 'em-glob)
+
+    (use-package em-banner
+      :ensure eshell
+      :config
+      (ar/csetq eshell-banner-message "
+
+                         _/                  _/  _/
+      _/_/      _/_/_/  _/_/_/      _/_/    _/  _/
+   _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/
+  _/            _/_/  _/    _/  _/        _/  _/
+   _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/
+
+
+"))
 
     (use-package pcmpl-homebrew
       :ensure t)
