@@ -1,0 +1,5 @@
+* Another dot files repo
+
+But really, it's mostly my emacs config
+
+[[file:README.org.res/emacs.png][Emacs screenshot]]
