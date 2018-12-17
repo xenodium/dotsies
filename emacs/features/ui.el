@@ -9,7 +9,7 @@
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil
-                    :height 180)
+                    :height 120)
 
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
@@ -96,6 +96,8 @@
   (use-package minions
     :ensure t
     :config
+    (ar/csetq minions-mode-line-lighter "…")
+    (ar/csetq minions-mode-line-delimiters '("" . ""))
     (minions-mode +1))
 
   (use-package time
@@ -139,4 +141,5 @@
 (use-package nyan-mode :ensure t
   :if (display-graphic-p)
   :config
+  (ar/csetq nyan-bar-length 10)
   (nyan-mode +1))
