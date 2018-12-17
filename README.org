@@ -2,4 +2,4 @@
 
 But really, it's mostly my emacs config
 
-[[file:README.org.res/emacs.png][Emacs screenshot]]
+[[file:README.org.res/emacs.png]]
