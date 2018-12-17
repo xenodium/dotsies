@@ -118,7 +118,7 @@
    (setq garbage-collection-messages t)
    (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
-   ;; Done loading core init.el. Announce it and let the real loading begin.
+   ;; Done loading core init.el. Announce it and let the heavy loading begin.
    (message "Emacs ready in %s with %d garbage collections."
             (format "%.2f seconds" (float-time
                                     (time-subtract after-init-time before-init-time)))
