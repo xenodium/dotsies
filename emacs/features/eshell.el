@@ -55,13 +55,13 @@
       :ensure eshell
       :config
       (ar/csetq eshell-banner-message "
+  Welcome to the Emacs
 
                          _/                  _/  _/
       _/_/      _/_/_/  _/_/_/      _/_/    _/  _/
    _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/
   _/            _/_/  _/    _/  _/        _/  _/
    _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/
-
 
 "))
 
