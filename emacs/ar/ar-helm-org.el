@@ -99,18 +99,19 @@
      (helm :sources `(((name . "Blog bookmarks")
                        (candidates . ar/helm-org--blog-bookmark-candidates)
                        (action . (lambda (candidate)
-                                   (helm-org-goto-marker candidate)
-                                   (org-show-subtree)
-                                   (org-end-of-meta-data t)
-                                   ;; Indent to current level.
-                                   ;; (call-interactively (global-key-binding "\t"))
-                                   (insert (format "- %s.\n" ,(ar/org-build-link url
-                                                                                 (read-string "Description: " (ar/org--preprocess-url-title
-                                                                                                               default-description)))))
-                                   (org-sort-list nil ?a)
-                                   (ar/org-timestamp-at-point)
-                                   (hide-other)
-                                   (save-buffer)))))))))
+                                   (let ((marker (point-marker)))
+                                     (helm-org-goto-marker candidate)
+                                     (org-show-subtree)
+                                     (org-end-of-meta-data t)
+                                     (insert (format "- %s.\n" ,(ar/org-build-link url
+                                                                                   (read-string "Description: " (ar/org--preprocess-url-title
+                                                                                                                 default-description)))))
+                                     (org-sort-list nil ?a)
+                                     (ar/org-timestamp-at-point)
+                                     (hide-other)
+                                     (save-buffer)
+                                     ;; Restore location.
+                                     (switch-to-buffer (marker-buffer marker)))))))))))
 
 (defun ar/helm-org-format-candidates (helm-candidates)
   "Format and sort HELM-CANDIDATES.  For each candidate:
