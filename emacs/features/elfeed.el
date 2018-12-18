@@ -238,6 +238,7 @@
               ("https://www.drweil.com/blog/health-tips/feed" blog health healthTips DrWeil)
               ("https://www.drweil.com/blog/spontaneous-happiness/feed" blog health happinessTips DrWeil)
               ("https://www.foxymonkey.com/feed" blog money FoxMonkey)
+              ("https://www.fugue.co/blog/rss.xml" blog emacs Fugue)
               ("https://www.getrichslowly.org/feed" blog money GetRichSlowly)
               ("https://www.hasecke.eu/index.xml" blog emacs hasecke)
               ("https://www.ict4g.net/adolfo/site.atom" blog dev Adolfo)
