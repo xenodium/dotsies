@@ -235,6 +235,7 @@
               ("https://www.campfirefinance.com/feed" blog money CampFireFinance)
               ("https://www.choosefi.com/category/podcast-episodes/feed" blog money ChoosefiPodcasts)
               ("https://www.choosefi.com/feed/" blog money Choosefi)
+              ("https://www.designboom.com/feed" blog art DesignBoom)
               ("https://www.drweil.com/blog/health-tips/feed" blog health healthTips DrWeil)
               ("https://www.drweil.com/blog/spontaneous-happiness/feed" blog health happinessTips DrWeil)
               ("https://www.foxymonkey.com/feed" blog money FoxMonkey)
