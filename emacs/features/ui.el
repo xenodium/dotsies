@@ -16,6 +16,10 @@
   :ensure t
   :hook (window-setup . maximize-frame))
 
+;; Used when exporting org source blocks.
+;; (use-package github-theme
+;;   :ensure t)
+
 (use-package material-theme
   :ensure t
   :config
