@@ -9,6 +9,7 @@
 (require 'ar-string)
 (require 'files)
 (require 'simple)
+(require 'cl)
 
 (defun ar/file-file-p (path)
   "Return t if PATH is file.  nil otherwise."
