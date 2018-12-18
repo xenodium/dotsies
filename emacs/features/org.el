@@ -105,6 +105,9 @@
                 ([f6] . ar/ox-export-async))
     :config
     (use-package ox-html)
+    ;; Required by code block syntax highlighting.
+    (use-package htmlize
+      :ensure t)
 
     (ar/ox-html-setup))
 
