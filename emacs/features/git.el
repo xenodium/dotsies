@@ -59,3 +59,7 @@
 (use-package gitignore-mode
   :ensure t
   :mode "\\.?gitignore.?.*\\'")
+
+(use-package git-timemachine
+  :command git-timemachine
+  :ensure t)
