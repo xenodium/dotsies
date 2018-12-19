@@ -1,4 +1,4 @@
-;;; init.el --- This is my init.
+;;; init.el --- This is my init.    -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; There is where my Emacs config starts.
