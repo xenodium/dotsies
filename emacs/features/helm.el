@@ -92,7 +92,3 @@
          (ar/vsetq helm-ag-base-command "ag --nocolor --nogroup"))
         (t
          (ar/vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
-
-(use-package ar-helm-org
-  :commands (ar/helm-org-add-bookmark
-             ar/helm-org-add-backlog-link))

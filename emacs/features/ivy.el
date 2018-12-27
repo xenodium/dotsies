@@ -48,3 +48,7 @@
   :config
   (require 'yasnippet)
   (yas-minor-mode))
+
+(use-package ar-ivy-org
+  :commands (ar/ivy-org-add-bookmark
+             ar/ivy-org-add-backlog-link))
