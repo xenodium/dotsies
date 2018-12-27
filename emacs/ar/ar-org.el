@@ -402,9 +402,8 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                             do (jit-lock-fontify-now beg end)
                             for level = (length (match-string 1))
                             for heading = (funcall match-fn 4)
-                            if (eq level (if target-level
-                                             target-level
-                                           1))
+                            if (or (null target-level)
+                                   (eq level target-level))
                             collect `(,(funcall match-fn 0)
                                       . ,(point-marker)))))))))
 
