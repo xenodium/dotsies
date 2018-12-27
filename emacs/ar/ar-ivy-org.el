@@ -1,10 +1,12 @@
 ;;; ar-ivy-org.el --- This is my init.    -*- lexical-binding: t; -*-
 
-(require 'f)
-(require 'dash)
 (require 'ar-org)
+(require 'cl)
+(require 'dash)
+(require 'f)
+(require 'org)
+(require 'org-element)
 (require 's)
-(require 'org-cliplink)
 
 (defun ar/ivy-org-add-bookmark ()
   "Add a bookmark to blog."
@@ -49,8 +51,8 @@
   "Add a link to blog."
   (interactive)
   (ar/ivy-org-add-backlog-url (if (string-match-p "^http" (current-kill 0))
-                                   (current-kill 0)
-                                 (read-string "URL: "))))
+                                  (current-kill 0)
+                                (read-string "URL: "))))
 
 (defun ar/ivy-org-add-backlog-url (url)
   "Add a bookmark to blog."
@@ -99,5 +101,35 @@
            (ar/org-get-headings-in-file filename needle))
    (lambda (a b)
      (string< (car a) (car b)))))
+
+(defun ar/ivy-org-my-todos ()
+  "Navigate to TODO or mark as done."
+  (interactive)
+  (ivy-set-actions 'ar/ivy-org-my-todos
+                   '(("d" (lambda (item)
+                            "Mark ITEM with (title . marker) cons as done."
+                            (let ((marker (cdr item)))
+                              (with-current-buffer (marker-buffer marker)
+                                (save-excursion
+                                  (goto-char (marker-position marker))
+                                  (ar/org-mark-done)))))
+                      "mark DONE")))
+  (ivy-read "TODOs: "
+            (sort
+             (mapcar (lambda (item)
+                       ;;  ********* TODO Emacs London meetup bookmarks
+                       ;; <--- remove --->
+                       (cons (substring (replace-regexp-in-string "[* ]*TODO[ ]*" ""
+                                                                  (car item)))
+                             (cdr item)))
+                     (ar/org-get-headings-in-file (ar/org-get-daily-file-path) "TODO"))
+             (lambda (a b)
+               (string< (car a) (car b))))
+            :require-match t
+            :caller 'ar/ivy-org-my-todos
+            :action (lambda (item)
+                      (let ((marker (cdr item)))
+                        (org-goto-marker-or-bmk marker)
+                        (org-show-siblings)))))
 
 (provide 'ar-ivy-org)

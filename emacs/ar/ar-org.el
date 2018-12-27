@@ -241,23 +241,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                               cl-number)))
     (insert rendered-cl)))
 
-(defun ar/org-entry-child-headings (id)
-  "Get org child headings for entry with ID."
-  (save-excursion
-    (org-open-link-from-string (format "[[#%s]]" id))
-    (org-end-of-meta-data t)
-    (let ((child-headings '())
-          (child-heading))
-      (when (org-at-heading-p)
-        ;; Extract first child.
-        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-        (add-to-list 'child-headings child-heading)
-        ;; Now handle remaining siblings.
-        (while (org-get-next-sibling)
-          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-          (add-to-list 'child-headings child-heading) ))
-      child-headings)))
-
 (defmacro ar/org-with-file-location (file-path item-id &rest body)
   "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
   (declare (indent 1))
@@ -362,7 +345,8 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
     (end-of-line)
     (insert " ")
     (org-insert-time-stamp (current-time))
-    (org-refile)))
+    (org-refile nil (current-buffer))
+    (save-buffer)))
 
 (defun ar/org--preprocess-url-title (url-title)
   "Reformat page URL-TITLE For example:
@@ -386,13 +370,13 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                                         (read-string "Description: " (ar/org--preprocess-url-title
                                                                       default-description))))))))
 
-(defun ar/org-get-headings-in-file (filename &optional needle)
-  "Return a list of cons: heading and marker for FILENAME."
+(defun ar/org-get-headings-in-file (filename &optional needle target-level)
+  "Return a list of cons: (heading . marker) for FILENAME searching matching NEEDLE if set.  Ignored otherwise."
   ;; This method is mostly distilled from `helm-org--get-candidates-in-file'.
   (with-current-buffer (pcase filename
                          ((pred bufferp) filename)
                          ((pred stringp) (find-file-noselect filename t)))
-    (let ((match-fn #'match-string-no-properties)
+    (let ((match-fn #'match-string)
           (search-fn (lambda ()
                        (re-search-forward
                         org-complex-heading-regexp nil t))))
@@ -416,9 +400,11 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                             when (null (text-property-any
                                         beg end 'fontified t))
                             do (jit-lock-fontify-now beg end)
-                            for level = (length (match-string-no-properties 1))
+                            for level = (length (match-string 1))
                             for heading = (funcall match-fn 4)
-                            if (eq level 1)
+                            if (eq level (if target-level
+                                             target-level
+                                           1))
                             collect `(,(funcall match-fn 0)
                                       . ,(point-marker)))))))))
 
