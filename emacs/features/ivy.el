@@ -51,4 +51,5 @@
 
 (use-package ar-ivy-org
   :commands (ar/ivy-org-add-bookmark
-             ar/ivy-org-add-backlog-link))
+             ar/ivy-org-add-backlog-link
+             ar/ivy-org-my-todos))
