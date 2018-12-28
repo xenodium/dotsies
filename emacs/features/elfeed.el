@@ -161,6 +161,7 @@
               ("http://www.moneyforthemoderngirl.org/feed" blog money MoneyForTheModernGirl)
               ("http://www.msziyou.com/feed/" blog money ZiYou)
               ("http://www.sastibe.de/index.xml" blog emacs SebastianSchweer)
+              ("https://etienne.depar.is/a-ecrit/feed/atom" blog emacs EtienneDeparis)
               ("http://www.thefrugalcottage.com/feed" blog money FrugalCottage)
               ("http://www.thisiscolossal.com/feed" blog art Colossal)
               ("http://zzamboni.org/index.xml" blog hammerspoon dev Diego-Martín-Zamboni)
@@ -269,6 +270,8 @@
               ("https://youngfiguy.com/feed" blog money YoungFIGuy)
               ("https://zudepr.co.uk/feed" blog money Zude)
               ))
+
+  (ar/csetq elfeed-search-title-max-width 120)
 
   (defun ar/elfeed-view-filtered (filter)
     "Filter the elfeed-search buffer to show feeds tagged with FILTER."
