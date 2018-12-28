@@ -108,8 +108,7 @@
         (ar/open-youtube-url link))))
 
   (ar/vsetq elfeed-feeds
-            '(
-              ("http://200ok.ch/atom.xml" blog emacs 200ok)
+            '(("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
@@ -146,6 +145,8 @@
               ("http://quietlysaving.co.uk/feed" blog money QuietlySaving)
               ("http://reddit.com/r/emacs/.rss" social reddit emacs)
               ("http://rubyronin.com/wp-feed.php" blog japan travel the-ruby-ronin)
+              ("https://jarss.github.io/TAONAW/index.xml" blog emacs Jarss)
+              ("https://aqeel.cc/feed.xml" blog emacs AqeelAkber)
               ("http://sachachua.com/blog/feed" blog emacs sachachua)
               ("http://sdegutis.com/blog/atom.xml" blog dev StevenDegutis)
               ("http://tangent.libsyn.com" blog money  ChristopherRyan)
