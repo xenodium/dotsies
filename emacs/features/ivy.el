@@ -39,7 +39,13 @@
            (delete-minibuffer-contents))
           (t
            (minibuffer-keyboard-quit))))
-  (ivy-mode +1))
+  (ivy-mode +1)
+
+  (use-package ivy-posframe
+    :ensure t
+    :config
+    (setq ivy-display-function #'ivy-posframe-display-at-window-center)
+    (ivy-posframe-enable)))
 
 ;; Displays yasnippet previous inline when cycling through results.
 (use-package ivy-yasnippet
