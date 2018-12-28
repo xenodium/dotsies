@@ -32,8 +32,8 @@
 Quick insert: _w_eb bookmark _b_acklog bookmark
               _t_odo _d_one
 "
-    ("w" ar/helm-org-add-bookmark nil)
-    ("b" ar/helm-org-add-backlog-link nil)
+    ("w" ar/ivy-org-add-bookmark nil)
+    ("b" ar/ivy-org-add-backlog-link nil)
     ("t" ar/org-add-todo nil)
     ("d" ar/org-add-done nil)
     ("r" ar/org-mark-done nil)
