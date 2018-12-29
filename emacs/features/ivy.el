@@ -12,12 +12,17 @@
          :map counsel-ag-map
          ("C-c C-e" . ar/ivy-occur)
          :map wgrep-mode-map
-         ("C-c C-c" . ar/wgrep-finish-edit))
+         ("C-c C-c" . ar/wgrep-finish-edit)
+         ("C-c C-k" . ar/wgrep-abort-changes))
   :init
-  ;; `ar/ivy-occur',`ar/counsel-ag', and `ar/wgrep-finish-edit' replicate a more
+  ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
+
   (defun ar/ivy-occur ()
     (interactive)
+    (defvar ar/ivy-occur--win-config)
+    (setq ar/ivy-occur--win-config
+          (current-window-configuration))
     (if (not (window-minibuffer-p))
         (user-error "No completion session is active")
       (let* ((caller (ivy-state-caller ivy-last))
@@ -44,7 +49,9 @@
           (setq-local ivy--directory ivy--directory)
           (ivy-wgrep-change-to-wgrep-mode))
         (ivy-exit-with-action
-         (lambda (_) (pop-to-buffer buffer))))))
+         (lambda (_)
+           (pop-to-buffer buffer)
+           (delete-other-windows))))))
 
   (defun ar/counsel-ag (arg)
     (interactive "P")
@@ -55,22 +62,29 @@
       (ar/vsetq ar/counsel-ag--default-locaction
                 (read-directory-name "search in: " default-directory nil t)))
     (cond ((executable-find "rg")
-           ;; (ar/vsetq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case")
            (counsel-rg nil ar/counsel-ag--default-locaction))
           ((executable-find "pt")
-           ;; (ar/vsetq helm-ag-base-command "pt -e --nocolor --nogroup")
            (counsel-pt nil ar/counsel-ag--default-locaction))
           ((executable-find "ag")
            (counsel-ag nil ar/counsel-ag--default-locaction))
           (t
-           ;; (ar/vsetq helm-ag-base-command "ack --nocolor --nogroup")
            (counsel-ack nil ar/counsel-ag--default-locaction))))
 
   (defun ar/wgrep-finish-edit ()
     (interactive)
     (let ((wgrep-auto-save-buffer t))
       (wgrep-finish-edit))
-    (quit-window))
+    (quit-window)
+    (set-window-configuration ar/ivy-occur--win-config)
+    (select-window (nth 0 (window-list))))
+
+  (defun ar/wgrep-abort-changes ()
+    (interactive)
+    (wgrep-abort-changes)
+    (quit-window)
+    (set-window-configuration ar/ivy-occur--win-config)
+    (select-window (nth 0 (window-list))))
+
   :config
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
   (use-package smex
@@ -114,11 +128,13 @@
            (minibuffer-keyboard-quit))))
   (ivy-mode +1)
 
-  (use-package ivy-posframe
-    :ensure t
-    :config
-    (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-    (ivy-posframe-enable)))
+  ;; Unsure about this one.
+  ;; (use-package ivy-posframe
+  ;;   :ensure t
+  ;;   :config
+  ;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+  ;;   (ivy-posframe-enable))
+  )
 
 ;; Displays yasnippet previous inline when cycling through results.
 (use-package ivy-yasnippet
