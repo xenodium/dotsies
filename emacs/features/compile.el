@@ -3,6 +3,12 @@
 (use-package compile
   :hook ((compilation-mode . goto-address-mode))
   :commands compile
+  :bind (:map
+         compilation-mode-map
+         ("p" . previous-error-no-select)
+         ("n" . next-error-no-select)
+         ("{" . compilation-previous-file)
+         ("}" . compilation-next-file))
   :config
 
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
