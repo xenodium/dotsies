@@ -1,0 +1,5 @@
+* Another dot files repo
+
+But really, it's mostly my [[https://www.gnu.org/software/emacs/][Emacs]] config.
+
+[[file:README.org.res/emacs.png]]

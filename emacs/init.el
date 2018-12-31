@@ -1,4 +1,4 @@
-;;; init.el --- This is my init.
+;;; init.el --- This is my init.    -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; There is where my Emacs config starts.
@@ -119,7 +119,7 @@
    (setq garbage-collection-messages t)
    (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
-   ;; Done loading core init.el. Announce it and let the real loading begin.
+   ;; Done loading core init.el. Announce it and let the heavy loading begin.
    (message "Emacs ready in %s with %d garbage collections."
             (format "%.2f seconds" (float-time
                                     (time-subtract after-init-time before-init-time)))
@@ -144,47 +144,50 @@
                            (lambda ()
                              (load ,library))))
 
-   ;; Load all others on idle.
+   ;; Load before remaining. Useful for debugging init.el issues.
    (ar/idle-load "~/.emacs.d/features/maintenance.el")
-   (ar/idle-load "~/.emacs.d/features/ivy.el")
-   (ar/idle-load "~/.emacs.d/features/files.el")
-   (ar/idle-load "~/.emacs.d/features/editing.el")
-   (ar/idle-load "~/.emacs.d/features/git.el")
-   (ar/idle-load "~/.emacs.d/features/navigation.el")
-   (ar/idle-load "~/.emacs.d/features/platform.el")
-   (ar/idle-load "~/.emacs.d/features/helm.el")
-   (ar/idle-load "~/.emacs.d/features/file.el")
-   (ar/idle-load "~/.emacs.d/features/hydra.el")
-   (ar/idle-load "~/.emacs.d/features/eshell.el")
-   (ar/idle-load "~/.emacs.d/features/org.el")
-   (ar/idle-load "~/.emacs.d/features/dired.el")
-   (ar/idle-load "~/.emacs.d/features/dev.el")
-   (ar/idle-load "~/.emacs.d/features/company.el")
-   (ar/idle-load "~/.emacs.d/features/elfeed.el")
-   (ar/idle-load "~/.emacs.d/features/modal.el")
-   (ar/idle-load "~/.emacs.d/features/buffers.el")
-   (ar/idle-load "~/.emacs.d/features/compile.el")
-   (ar/idle-load "~/.emacs.d/features/prog.el")
+
+   ;; Load all others on idle. Alphabetically listed.
+   (ar/idle-load "~/.emacs.d/features/alert.el")
    (ar/idle-load "~/.emacs.d/features/bazel.el")
+   (ar/idle-load "~/.emacs.d/features/buffers.el")
    (ar/idle-load "~/.emacs.d/features/cc.el")
-   (ar/idle-load "~/.emacs.d/features/flyspell.el")
-   (ar/idle-load "~/.emacs.d/features/flycheck.el")
-   (ar/idle-load "~/.emacs.d/features/swift.el")
+   (ar/idle-load "~/.emacs.d/features/company.el")
+   (ar/idle-load "~/.emacs.d/features/compile.el")
+   (ar/idle-load "~/.emacs.d/features/crux.el")
+   (ar/idle-load "~/.emacs.d/features/dev.el")
+   (ar/idle-load "~/.emacs.d/features/dired.el")
+   (ar/idle-load "~/.emacs.d/features/ediff.el")
+   (ar/idle-load "~/.emacs.d/features/editing.el")
+   (ar/idle-load "~/.emacs.d/features/elfeed.el")
    (ar/idle-load "~/.emacs.d/features/elisp.el")
+   (ar/idle-load "~/.emacs.d/features/eshell.el")
+   (ar/idle-load "~/.emacs.d/features/file.el")
+   (ar/idle-load "~/.emacs.d/features/files.el")
+   (ar/idle-load "~/.emacs.d/features/flycheck.el")
+   (ar/idle-load "~/.emacs.d/features/flyspell.el")
+   (ar/idle-load "~/.emacs.d/features/git.el")
+   (ar/idle-load "~/.emacs.d/features/golang.el")
+   (ar/idle-load "~/.emacs.d/features/helm.el")
+   (ar/idle-load "~/.emacs.d/features/help.el")
+   (ar/idle-load "~/.emacs.d/features/hydra.el")
    (ar/idle-load "~/.emacs.d/features/images.el")
+   (ar/idle-load "~/.emacs.d/features/info.el")
    (ar/idle-load "~/.emacs.d/features/ios.el")
+   (ar/idle-load "~/.emacs.d/features/ivy.el")
+   (ar/idle-load "~/.emacs.d/features/ledger.el")
+   (ar/idle-load "~/.emacs.d/features/modal.el")
+   (ar/idle-load "~/.emacs.d/features/navigation.el")
+   (ar/idle-load "~/.emacs.d/features/org.el")
+   (ar/idle-load "~/.emacs.d/features/paradox.el")
+   (ar/idle-load "~/.emacs.d/features/platform.el")
+   (ar/idle-load "~/.emacs.d/features/proced.el")
+   (ar/idle-load "~/.emacs.d/features/prog.el")
+   (ar/idle-load "~/.emacs.d/features/protobuf.el")
+   (ar/idle-load "~/.emacs.d/features/python.el")
+   (ar/idle-load "~/.emacs.d/features/swift.el")
    (ar/idle-load "~/.emacs.d/features/web.el")
    (ar/idle-load "~/.emacs.d/features/yasnippet.el")
-   (ar/idle-load "~/.emacs.d/features/info.el")
-   (ar/idle-load "~/.emacs.d/features/ediff.el")
-   (ar/idle-load "~/.emacs.d/features/ledger.el")
-   (ar/idle-load "~/.emacs.d/features/help.el")
-   (ar/idle-load "~/.emacs.d/features/alert.el")
-   (ar/idle-load "~/.emacs.d/features/protobuf.el")
-   (ar/idle-load "~/.emacs.d/features/paradox.el")
-   (ar/idle-load "~/.emacs.d/features/golang.el")
-   (ar/idle-load "~/.emacs.d/features/python.el")
-   (ar/idle-load "~/.emacs.d/features/crux.el")
 
    (ar/idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
 

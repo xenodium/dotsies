@@ -1,18 +1,24 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
 
-;; No title. See init.el for initial value.
 (when (display-graphic-p)
-  (setq frame-title-format nil))
+  ;; No title. See init.el for initial value.
+  (setq frame-title-format nil)
+  ;; Avoid native dialogs.
+  (setq use-dialog-box nil))
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil
-                    :height 180)
+                    :height 120)
 
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
   :hook (window-setup . maximize-frame))
+
+;; Used when exporting org source blocks.
+;; (use-package github-theme
+;;   :ensure t)
 
 (use-package material-theme
   :ensure t
@@ -94,6 +100,8 @@
   (use-package minions
     :ensure t
     :config
+    (ar/csetq minions-mode-line-lighter "…")
+    (ar/csetq minions-mode-line-delimiters '("" . ""))
     (minions-mode +1))
 
   (use-package time
@@ -104,7 +112,7 @@
                                         ("Europe/London" "London")
                                         ("America/Los_Angeles" "Los Angeles")))
     (ar/csetq display-time-string-forms
-            '((format "%s %s%s %s:%s"
+            '((format "%s %s %s, %s:%s"
                       dayname
                       monthname day
                       24-hours minutes)))
@@ -112,7 +120,7 @@
 
   (ar/vsetq global-mode-string (remove 'display-time-string global-mode-string))
   (ar/vsetq mode-line-end-spaces
-            (list (propertize " " 'display '(space :align-to (- right 17)))
+            (list (propertize " " 'display '(space :align-to (- right 19)))
                   'display-time-string))
 
   (moody-replace-mode-line-buffer-identification)
@@ -137,4 +145,5 @@
 (use-package nyan-mode :ensure t
   :if (display-graphic-p)
   :config
+  (ar/csetq nyan-bar-length 10)
   (nyan-mode +1))

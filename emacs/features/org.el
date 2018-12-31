@@ -105,6 +105,9 @@
                 ([f6] . ar/ox-export-async))
     :config
     (use-package ox-html)
+    ;; Required by code block syntax highlighting.
+    (use-package htmlize
+      :ensure t)
 
     (ar/ox-html-setup))
 
@@ -129,6 +132,7 @@
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
       (cond ((string-equal system-type "darwin")
+             ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
              (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
              (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
             (t

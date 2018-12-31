@@ -297,3 +297,8 @@ line instead."
   :ensure t
   :config
   (pcre-mode +1))
+
+(use-package re-builder
+  :config
+  ;; No double escaping needed.
+  (ar/csetq reb-re-syntax 'string))

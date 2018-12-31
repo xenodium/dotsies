@@ -7,7 +7,6 @@
 ;;; Code:
 
 (require 'ar-dired)
-(require 'ar-helm-org)
 (require 'ar-org)
 (require 'helm-buffers)
 (require 'helm-for-files)
@@ -43,14 +42,14 @@
     (candidates . ,(ar/helm-org-candidates "~/stuff/active/blog/index.org"
                                            "^\\* \\["))
     (action . (lambda (candidate)
-                (ar/helm-org-goto-marker candidate)))))
+                (ar/org-goto-marker candidate)))))
 
 (defvar ar/helm-hotspots-config--private-source
   `((name . "Private")
     (candidates . ,(ar/helm-org-candidates "~/stuff/active/non-public/private.org"
                                            "^\\* \\["))
     (action . (lambda (candidate)
-                (ar/helm-org-goto-marker candidate)))))
+                (ar/org-goto-marker candidate)))))
 ;; Append with:
 ;; (ar/alist-append-to-value ar/helm-hotspots-config--web-source
 ;;                           'candidates

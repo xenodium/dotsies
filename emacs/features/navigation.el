@@ -55,10 +55,6 @@ already narrowed."
 
 (bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
 
-(use-package swiper
-  :ensure t
-  :bind ("M-i" . swiper))
-
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t

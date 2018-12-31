@@ -71,6 +71,11 @@
         (dired (concat "/sudo::" dir)))))
 
   :config
+  (use-package wdired
+    :config
+    (ar/csetq wdired-create-parent-directories t)
+    (ar/csetq dired-allow-to-change-permission t))
+
   ;; For dired-jump.
   (use-package dired-x)
 

@@ -22,7 +22,7 @@
 
   (defhydra hydra-search (:color blue)
     "search"
-    ("d" ar/helm-ag "search directory")
+    ("d" ar/counsel-ag "search directory")
     ("a" ar/find-all-dired-current-dir "find all files")
     ("i" ar/helm-ag-insert "insert match")
     ("m" mu4e-headers-search "search email")
@@ -32,8 +32,8 @@
 Quick insert: _w_eb bookmark _b_acklog bookmark
               _t_odo _d_one
 "
-    ("w" ar/helm-org-add-bookmark nil)
-    ("b" ar/helm-org-add-backlog-link nil)
+    ("w" ar/ivy-org-add-bookmark nil)
+    ("b" ar/ivy-org-add-backlog-link nil)
     ("t" ar/org-add-todo nil)
     ("d" ar/org-add-done nil)
     ("r" ar/org-mark-done nil)
