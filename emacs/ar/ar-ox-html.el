@@ -217,7 +217,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            color: #3A4145;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
-           font-size: 1.2rem;
+           font-size: 1em;
            font-style: normal;
            font-weight: 300;
            letter-spacing: 0.01rem;
@@ -232,18 +232,19 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          }
 
          h1 {
-           font-size: 4em;
+           font-size: 2em;
          }
 
          h2 {
-           font-size: 3em;
+           font-size: 1.6em;
            letter-spacing: -0.02em;
            margin-bottom: 0px;
            text-indent: -3px;
+           cursor: pointer;
          }
 
          h3 {
-           font-size: 1.6em;
+           font-size: 1.2em;
          }
 
          #preamble {
@@ -279,7 +280,10 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          }
 
          .outline-2 {
-           margin-bottom: 50px;
+         }
+
+         .default-visibility, .outline-text-2, .outline-3, .outline-4, .outline-5, .outline-6, .org-ul {
+           display: none;
          }
 
          .example {
@@ -299,6 +303,49 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          woopra.track();
        </script>
        <!-- End of Woopra Code -->
+
+       <script>
+         function getClosest(elem, selector) {
+             for ( ; elem && elem !== document; elem = elem.parentNode ) {
+         	if ( elem.matches( selector ) ) return elem;
+             }
+             return null;
+         };
+
+
+         function setNodeVisible (node, visible) {
+             for (var i = 0; i < node.childNodes.length; i++) {
+                 var child = node.childNodes[i];
+                 if (node.classList.contains('outline-text-2') ||
+                     node.classList.contains('outline-3') ||
+                     node.classList.contains('outline-4') ||
+                     node.classList.contains('outline-5') ||
+                     node.classList.contains('outline-6')) {
+                     node.style.display = visible ? 'inline' : 'none';
+                 } else if (node.classList.contains('org-ul')) {
+                     node.style.display = visible ? 'block' : 'none';
+                  }
+                 setNodeVisible(child, visible);
+             }
+         }
+
+         window.onload = function() {
+             var parts = document.URL.split('#');
+             if (parts.length > 1) {
+                 var entry = getClosest(document.getElementById(parts[1]), '.outline-2');
+                 setNodeVisible(entry, true)
+             }
+
+             document.body.onclick = function(e){
+                 if (e.target.tagName.toLowerCase() === 'h2') {
+                     var entry = getClosest(e.target, '.outline-2');
+                     var elements = entry.getElementsByClassName('outline-text-2');
+                     setNodeVisible(entry, elements[0].style.display !== 'inline');
+                 }
+             };
+         };
+       </script>
+
 ")
 
 (provide 'ar-ox-html)
