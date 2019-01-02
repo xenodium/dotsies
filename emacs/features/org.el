@@ -26,6 +26,11 @@
            "OBSOLETE"
            "CANCELLED")))
 
+  (use-package org-goto
+    :config
+    ;; Disable auto isearch within org-goto.
+    (ar/vsetq org-goto-auto-isearch nil))
+
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
     :config
@@ -86,9 +91,6 @@
 
   ;; Skip Org's odd indentation levels (1, 3, ...).
   (ar/vsetq org-odd-levels-only t)
-
-  ;; Disable auto isearch within org-goto.
-  (ar/vsetq org-goto-auto-isearch nil)
 
   ;; Enable RET to follow Org links.
   (ar/vsetq org-return-follows-link t)
