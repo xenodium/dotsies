@@ -17,41 +17,45 @@
   :init
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
-
   (defun ar/ivy-occur ()
-    (interactive)
+  "This is a copy of ivy-occur, with a few small mods."
+  (interactive)
+  (if (not (window-minibuffer-p))
+      (user-error "No completion session is active")
+    ;; ar addition start.
     (defvar ar/ivy-occur--win-config)
     (setq ar/ivy-occur--win-config
           (current-window-configuration))
-    (if (not (window-minibuffer-p))
-        (user-error "No completion session is active")
-      (let* ((caller (ivy-state-caller ivy-last))
-             (occur-fn (plist-get ivy--occurs-list caller))
-             (buffer
-              (generate-new-buffer
-               (format "*ivy-occur%s \"%s\"*"
-                       (if caller
-                           (concat " " (prin1-to-string caller))
-                         "")
-                       ivy-text))))
-        (with-current-buffer buffer
-          (let ((inhibit-read-only t))
-            (erase-buffer)
-            (if occur-fn
-                (funcall occur-fn)
-              (ivy-occur-mode)
-              (insert (format "%d candidates:\n" (length ivy--old-cands)))
-              (read-only-mode)
-              (ivy--occur-insert-lines
-               ivy--old-cands)))
-          (setf (ivy-state-text ivy-last) ivy-text)
-          (setq ivy-occur-last ivy-last)
-          (setq-local ivy--directory ivy--directory)
-          (ivy-wgrep-change-to-wgrep-mode))
-        (ivy-exit-with-action
-         (lambda (_)
-           (pop-to-buffer buffer)
-           (delete-other-windows))))))
+    ;; ar addition end.
+    (let* ((caller (ivy-state-caller ivy-last))
+           (occur-fn (plist-get ivy--occurs-list caller))
+           (buffer
+            (generate-new-buffer
+             (format "*ivy-occur%s \"%s\"*"
+                     (if caller
+                         (concat " " (prin1-to-string caller))
+                       "")
+                     ivy-text))))
+      (with-current-buffer buffer
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (if occur-fn
+              (funcall occur-fn)
+            (ivy-occur-mode)
+            (insert (format "%d candidates:\n" (length ivy--old-cands)))
+            (read-only-mode)
+            (ivy--occur-insert-lines
+             ivy--old-cands)))
+        (setf (ivy-state-text ivy-last) ivy-text)
+        (setq ivy-occur-last ivy-last)
+        (setq-local ivy--directory ivy--directory)
+        ;; ar addition.
+        (ivy-wgrep-change-to-wgrep-mode))
+      (ivy-exit-with-action
+       (lambda (_)
+         (pop-to-buffer buffer)
+         ;; ar addition.
+         (delete-other-windows))))))
 
   (defun ar/counsel-ag (arg)
     (interactive "P")

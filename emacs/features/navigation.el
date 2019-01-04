@@ -180,3 +180,7 @@ Repeated invocations toggle between the two most recently open buffers."
                            (activate-mark)
                            (funcall ,f)
                            (deactivate-mark)))))))
+
+(use-package avy
+  :ensure t
+  :bind (("M-e" . avy-goto-char-timer)))
