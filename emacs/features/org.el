@@ -15,7 +15,8 @@
     (use-package ar-org))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
-         (org-mode . yas-minor-mode))
+         (org-mode . yas-minor-mode)
+         (org-mode . smartparens-mode))
   :config
 
   (setq org-todo-keywords
