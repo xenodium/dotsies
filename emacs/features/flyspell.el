@@ -37,4 +37,12 @@ be global."
         (user-error "No typo at or before point"))))
   :config
   (use-package abbrev)
-  (use-package ispell))
+  (use-package ispell
+    :ensure-system-package aspell
+    :config
+    (ar/csetq ispell-program-name "aspell")))
+
+(use-package auto-dictionary
+  :commands adict-change-dictionary
+  :ensure t
+  :hook (message-mode . auto-dictionary-mode))
