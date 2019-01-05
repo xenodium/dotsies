@@ -188,6 +188,7 @@
    (ar/idle-load "~/.emacs.d/features/swift.el")
    (ar/idle-load "~/.emacs.d/features/web.el")
    (ar/idle-load "~/.emacs.d/features/yasnippet.el")
+   (ar/idle-load "~/.emacs.d/features/pdf.el")
 
    (ar/idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
 
