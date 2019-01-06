@@ -33,18 +33,21 @@
 (use-package recentf
   :config
   (ar/vsetq recentf-exclude '("/auto-install/"
-                                   ".recentf"
-                                   "/repos/"
-                                   "/elpa/"
-                                   "\\.mime-example"
-                                   "\\.ido.last"
-                                   "COMMIT_EDITMSG"
-                                   ".gz"
-                                   "~$"
-                                   "/tmp/"
-                                   "/ssh:"
-                                   "/sudo:"
-                                   "/scp:"))
+                              ".recentf"
+                              "/repos/"
+                              "/elpa/"
+                              "\\.mime-example"
+                              "\\.ido.last"
+                              "COMMIT_EDITMSG"
+                              ".gz"
+                              "~$"
+                              "/ssh:"
+                              "/sudo:"
+                              "/scp:"))
   (ar/vsetq recentf-max-saved-items 1000
             recentf-max-menu-items 50)
-  (recentf-mode))
+
+  (use-package recentf-ext
+    :ensure t)
+
+  (recentf-mode +1))
