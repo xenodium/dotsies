@@ -19,18 +19,15 @@
          (org-mode . smartparens-mode))
   :config
 
-  (setq org-todo-keywords
-        '((sequence
-           "TODO"
-           "STARTED"
-           "DONE"
-           "OBSOLETE"
-           "CANCELLED")))
+  (ar/csetq org-todo-keywords
+            '((sequence
+               "TODO"
+               "STARTED"
+               "DONE"
+               "OBSOLETE"
+               "CANCELLED")))
 
-  (use-package org-goto
-    :config
-    ;; Disable auto isearch within org-goto.
-    (ar/vsetq org-goto-auto-isearch nil))
+  (ar/csetq org-goto-auto-isearch nil)
 
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
