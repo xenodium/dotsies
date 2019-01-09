@@ -1,5 +1,6 @@
 ;;; ivy.el -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
+(require 'ar-csetq)
 
 ;; Ivy equivalents to Emacs commands.
 (use-package counsel
@@ -132,11 +133,24 @@
            (minibuffer-keyboard-quit))))
   (ivy-mode +1)
 
+  (use-package ivy-rich
+    :ensure t
+    :config
+    (setq ivy-rich--display-transformers-list
+          '(counsel-M-x
+            (:columns
+             ((counsel-M-x-transformer (:width 80))  ; thr original transfomer
+              (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))))
+    (ivy-rich-mode +1))
+
   ;; Unsure about this one.
   ;; (use-package ivy-posframe
   ;;   :ensure t
   ;;   :config
-  ;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+  ;;   ;; (push '(counsel-M-x . ivy-posframe-display-at-frame-center) ivy-display-functions-alist)
+  ;;   ;; (push '(ivy-switch-buffer . ivy-posframe-display-at-frame-center) ivy-display-functions-alist)
+  ;;   ;; (push '(t . ivy-posframe-display) ivy-display-functions-alist)
+  ;;   (setq ivy-display-function #'ivy-posframe-display)
   ;;   (ivy-posframe-enable))
   )
 
