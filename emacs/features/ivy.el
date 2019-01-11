@@ -6,6 +6,7 @@
 (use-package counsel
   :ensure t
   :defer 0.1
+  :commands ar/counsel-ag
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
@@ -15,7 +16,7 @@
          :map wgrep-mode-map
          ("C-c C-c" . ar/wgrep-finish-edit)
          ("C-c C-k" . ar/wgrep-abort-changes))
-  :init
+  :config
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
   (defun ar/ivy-occur ()
@@ -97,7 +98,6 @@ There is no limit on the number of *ivy-occur* buffers."
     (set-window-configuration ar/ivy-occur--win-config)
     (select-window (nth 0 (window-list))))
 
-  :config
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
   (use-package smex
     :ensure t)
