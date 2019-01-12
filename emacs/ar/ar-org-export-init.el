@@ -6,6 +6,10 @@
 (add-to-list 'load-path "~/.emacs.d/local")
 (add-to-list 'load-path "~/.emacs.d/external")
 
+;; Temporary fix for exporting error:
+;; Symbol’s value as variable is void: org-src-lang-modes
+(defvar org-src-lang-modes nil)
+
 (load "~/.emacs.d/features/package-extensions.el")
 (load "~/.emacs.d/features/libs.el")
 (load "~/.emacs.d/features/mac.el")
