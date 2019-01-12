@@ -22,7 +22,7 @@
    (lambda (url default-description)
      (setq default-description
            (ar/org--preprocess-url-title
-            (read-string "Description: " default-description)))
+            (read-string "Description: " (ar/ivy-org--decode-entities default-description))))
      (ivy-read "Heading: "
                (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "bookmarks")
                :action (lambda (item)
@@ -46,6 +46,12 @@
 
                            (switch-to-buffer (marker-buffer breadcrumb-marker)))
                          (message "Added: \"%s\"" url))))))
+
+(defun ar/ivy-org--decode-entities (html)
+  "Decode HTML entities."
+  (with-temp-buffer
+    (save-excursion (insert html))
+    (xml-parse-string)))
 
 (defun ar/ivy-org-add-backlog-link ()
   "Add a link to blog."
