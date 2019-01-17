@@ -56,10 +56,6 @@ already narrowed."
 
 (bind-key "C-x n n" #'ar/narrow-or-widen-dwim)
 
-(use-package swiper
-  :ensure t
-  :bind ("M-i" . swiper))
-
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t
@@ -78,7 +74,8 @@ already narrowed."
 
 (use-package window
   :bind (("C-x 2" . ar/vsplit-last-buffer)
-         ("C-x 3" . ar/hsplit-last-buffer))
+         ("C-x 3" . ar/hsplit-last-buffer)
+         ("C-<tab>" . other-window))
   :chords (("BB" . other-window)
            ("JJ" . ar/switch-to-previous-buffer))
   :init
@@ -185,9 +182,6 @@ Repeated invocations toggle between the two most recently open buffers."
                            (funcall ,f)
                            (deactivate-mark)))))))
 
-(defun ar/dumb-jump-run-command-advice (run-command-fun &rest r)
-    "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
-    (let ((proj (nth 1 r))
-          (exclude-args (nth 4 r)))
-      (unless (-contains-p exclude-args proj)
-        (apply run-command-fun r))))
+(use-package avy
+  :ensure t
+  :bind (("M-e" . avy-goto-char-timer)))

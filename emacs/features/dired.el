@@ -60,7 +60,22 @@
                    (file-name-directory buffer-file-name)
                  ".")))
       (find-dired dir "'(' -name .svn -o -name .git ')' -prune -o -type f")))
+
+  ;; https://oremacs.com/2015/02/15/sudo-stuffs/
+  (defun ar/sudired ()
+    (interactive)
+    (require 'tramp)
+    (let ((dir (expand-file-name default-directory)))
+      (if (string-match "^/sudo:" dir)
+          (user-error "Already in sudo")
+        (dired (concat "/sudo::" dir)))))
+
   :config
+  (use-package wdired
+    :config
+    (ar/csetq wdired-create-parent-directories t)
+    (ar/csetq dired-allow-to-change-permission t))
+
   ;; For dired-jump.
   (use-package dired-x)
 

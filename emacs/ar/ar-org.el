@@ -9,6 +9,8 @@
 (require 'ar-time)
 (require 'ar-buffer)
 (require 'org)
+(require 'dash)
+(require 's)
 
 (defvar ar/org-short-link-regex "^http://goo.gl")
 
@@ -239,23 +241,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                               cl-number)))
     (insert rendered-cl)))
 
-(defun ar/org-entry-child-headings (id)
-  "Get org child headings for entry with ID."
-  (save-excursion
-    (org-open-link-from-string (format "[[#%s]]" id))
-    (org-end-of-meta-data t)
-    (let ((child-headings '())
-          (child-heading))
-      (when (org-at-heading-p)
-        ;; Extract first child.
-        (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-        (add-to-list 'child-headings child-heading)
-        ;; Now handle remaining siblings.
-        (while (org-get-next-sibling)
-          (setq child-heading (substring-no-properties (org-get-heading 'no-tags)))
-          (add-to-list 'child-headings child-heading) ))
-      child-headings)))
-
 (defmacro ar/org-with-file-location (file-path item-id &rest body)
   "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
   (declare (indent 1))
@@ -360,7 +345,8 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
     (end-of-line)
     (insert " ")
     (org-insert-time-stamp (current-time))
-    (org-refile)))
+    (org-refile nil (current-buffer))
+    (save-buffer)))
 
 (defun ar/org--preprocess-url-title (url-title)
   "Reformat page URL-TITLE For example:
@@ -383,6 +369,77 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                      (ar/org-build-link url
                                         (read-string "Description: " (ar/org--preprocess-url-title
                                                                       default-description))))))))
+
+(defun ar/org-get-headings-in-file (filename &optional needle target-level)
+  "Return a list of cons: (heading . marker) for FILENAME searching matching NEEDLE if set.  Ignored otherwise."
+  ;; This method is mostly distilled from `helm-org--get-candidates-in-file'.
+  (with-current-buffer (pcase filename
+                         ((pred bufferp) filename)
+                         ((pred stringp) (find-file-noselect filename t)))
+    (let ((match-fn #'match-string)
+          (search-fn (lambda ()
+                       (re-search-forward
+                        org-complex-heading-regexp nil t))))
+      (save-excursion
+        (save-restriction
+          (unless (and (bufferp filename)
+                       (buffer-base-buffer filename))
+            ;; Only widen direct buffers, not indirect ones.
+            (widen))
+          (goto-char (point-min))
+          (and (boundp 'org-outline-path-cache)
+               (setq org-outline-path-cache nil))
+          (-filter (lambda (item)
+                     (if needle
+                         (s-contains-p needle (car item))
+                       t))
+                   (cl-loop with width = 1000
+                            while (funcall search-fn)
+                            for beg = (point-at-bol)
+                            for end = (point-at-eol)
+                            when (null (text-property-any
+                                        beg end 'fontified t))
+                            do (jit-lock-fontify-now beg end)
+                            for level = (length (match-string 1))
+                            for heading = (funcall match-fn 4)
+                            if (or (null target-level)
+                                   (eq level target-level))
+                            collect `(,(funcall match-fn 0)
+                                      . ,(point-marker)))))))))
+
+(defun ar/org-entry-child-headings (path id)
+  "Get org child headings for entry with PATH and ID."
+  (with-current-buffer (find-file-noselect (expand-file-name path))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
+                (format "Cannot find %s#%s" path id))
+        (goto-char (ar/buffer-first-match-beginning))
+        (org-end-of-meta-data t)
+        (let ((child-headings '())
+              (child-heading))
+          (when (org-at-heading-p)
+            ;; Extract first child.
+            (add-to-list 'child-headings
+                         (cons (org-get-heading 'no-tags)
+                               (copy-marker (point))))
+            (while (org-get-next-sibling)
+              (add-to-list 'child-headings
+                           (cons (org-get-heading 'no-tags)
+                                 (copy-marker (point))))))
+          child-headings)))))
+
+(defun ar/org-goto-marker (marker)
+  "Go to org file MARKER."
+  (switch-to-buffer (marker-buffer marker))
+  (goto-char (marker-position marker))
+  (org-show-context)
+  (re-search-backward "^\\*+ " nil t)
+  (org-show-entry)
+  (org-show-subtree)
+  (recenter-top-bottom 3))
 
 (provide 'ar-org)
 

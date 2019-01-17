@@ -15,3 +15,8 @@
   :ensure
   :commands (tldr
              tldr-update-docs))
+
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))

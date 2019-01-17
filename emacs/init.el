@@ -1,4 +1,4 @@
-;;; init.el --- This is my init.
+;;; init.el --- This is my init.    -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; There is where my Emacs config starts.
@@ -14,6 +14,10 @@
 
 ;;; Temporarily avoid loading any modes during init (undone at end).
 (defvar ar/init--file-name-handler-alist file-name-handler-alist)
+
+;;; Set to t to debug (load synchronously).
+(defvar ar/init-debug-init nil)
+
 (setq file-name-handler-alist nil)
 
 ;; Match theme color early on (smoother transition).
@@ -67,6 +71,11 @@
 ;; Don't add that `custom-set-variables' block to init.
 (setq package--init-file-ensured t)
 
+;; Save custom vars to separate file from init.el.
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 (require 'tls)
 
 ;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
@@ -89,7 +98,8 @@
         ("org" . 2)
         ("gnu" . 1)))
 
-(package-initialize)
+(unless package--initialized
+  (package-initialize))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -104,9 +114,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Now kick off non-essential loading ;;;;
 
-(add-hook
- 'emacs-startup-hook
- (lambda ()
+(defun ar/load-non-core-init ()
    ;; Undo GC values post init.el.
    (setq gc-cons-threshold 16777216
          gc-cons-percentage 0.1)
@@ -114,7 +122,7 @@
    (setq garbage-collection-messages t)
    (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
-   ;; Done loading core init.el. Announce it and let the real loading begin.
+   ;; Done loading core init.el. Announce it and let the heavy loading begin.
    (message "Emacs ready in %s with %d garbage collections."
             (format "%.2f seconds" (float-time
                                     (time-subtract after-init-time before-init-time)))
@@ -133,69 +141,14 @@
    (load "~/.emacs.d/features/ui.el")
    (load "~/.emacs.d/features/scratch.el")
 
-   ;; Only use with string literal paths.
-   (defmacro ar/idle-load (library)
-     `(run-with-idle-timer 0.5 nil
-                           (lambda ()
-                             (load ,library))))
+   ;; Load non-core features.
+   (load "~/.emacs.d/features/features.el"))
 
-   ;; Load all others on idle.
-   (ar/idle-load "~/.emacs.d/features/maintenance.el")
-   (ar/idle-load "~/.emacs.d/features/ivy.el")
-   (ar/idle-load "~/.emacs.d/features/files.el")
-   (ar/idle-load "~/.emacs.d/features/editing.el")
-   (ar/idle-load "~/.emacs.d/features/git.el")
-   (ar/idle-load "~/.emacs.d/features/navigation.el")
-   (ar/idle-load "~/.emacs.d/features/platform.el")
-   (ar/idle-load "~/.emacs.d/features/helm.el")
-   (ar/idle-load "~/.emacs.d/features/file.el")
-   (ar/idle-load "~/.emacs.d/features/hydra.el")
-   (ar/idle-load "~/.emacs.d/features/eshell.el")
-   (ar/idle-load "~/.emacs.d/features/org.el")
-   (ar/idle-load "~/.emacs.d/features/dired.el")
-   (ar/idle-load "~/.emacs.d/features/dev.el")
-   (ar/idle-load "~/.emacs.d/features/company.el")
-   (ar/idle-load "~/.emacs.d/features/elfeed.el")
-   (ar/idle-load "~/.emacs.d/features/modal.el")
-   (ar/idle-load "~/.emacs.d/features/buffers.el")
-   (ar/idle-load "~/.emacs.d/features/compile.el")
-   (ar/idle-load "~/.emacs.d/features/prog.el")
-   (ar/idle-load "~/.emacs.d/features/bazel.el")
-   (ar/idle-load "~/.emacs.d/features/cc.el")
-   (ar/idle-load "~/.emacs.d/features/flyspell.el")
-   (ar/idle-load "~/.emacs.d/features/flycheck.el")
-   (ar/idle-load "~/.emacs.d/features/swift.el")
-   (ar/idle-load "~/.emacs.d/features/elisp.el")
-   (ar/idle-load "~/.emacs.d/features/images.el")
-   (ar/idle-load "~/.emacs.d/features/ios.el")
-   (ar/idle-load "~/.emacs.d/features/web.el")
-   (ar/idle-load "~/.emacs.d/features/yasnippet.el")
-   (ar/idle-load "~/.emacs.d/features/info.el")
-   (ar/idle-load "~/.emacs.d/features/ediff.el")
-   (ar/idle-load "~/.emacs.d/features/ledger.el")
-   (ar/idle-load "~/.emacs.d/features/help.el")
-   (ar/idle-load "~/.emacs.d/features/alert.el")
-   (ar/idle-load "~/.emacs.d/features/protobuf.el")
-   (ar/idle-load "~/.emacs.d/features/paradox.el")
-   (ar/idle-load "~/.emacs.d/features/golang.el")
-
-   (ar/idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
-
-   (run-with-idle-timer
-    0.5 nil
-    (lambda ()
-      ;; Load local elisp.
-      (dolist (file (file-expand-wildcards "~/.emacs.d/local/*.el"))
-        ;; Not using ar/idle-load explicit paths not known.
-        (load file))
-
-      ;; Load work elisp.
-      (dolist (file (file-expand-wildcards "~/.emacs.d/work/*.el"))
-        ;; Not using ar/idle-load explicit paths not known.
-        (load file))))
-
-   ;; Start Emacs server.
-   (ar/idle-load "~/.emacs.d/features/server.el")))
+(if ar/init-debug-init
+    (ar/load-non-core-init)
+  (add-hook
+   'emacs-startup-hook
+   #'ar/load-non-core-init))
 
 (provide 'init)
 ;;; init.el ends here

@@ -10,3 +10,12 @@
               ("M-<RET>" . newline))
   :commands (goto-address-prog-mode
              goto-address-mode))
+
+(use-package css-mode
+  :mode (("\\.css\\'" . css-mode)
+         ("\\.rasi\\'" . css-mode)))
+
+(use-package auto-rename-tag
+  :hook ((nxml-mode . auto-rename-tag-mode)
+         (html-mode . auto-rename-tag-mode))
+  :ensure t)

@@ -10,3 +10,8 @@
   :ensure t
   :config
   (use-package ar-vsetq))
+
+;; flet is no longer available. Use noflet as a replacement.
+(use-package noflet
+  :ensure t
+  :after dash)

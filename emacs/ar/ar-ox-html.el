@@ -61,36 +61,34 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
+(defun ar/ox-export-async ()
+  (interactive)
+  (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
+                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el && ")
+                               "open " (format "file:%s" (expand-file-name
+                                                          "~/stuff/active/blog/index.html")))
+                       "*org html export*"))
+
 (defun ar/ox-html-export ()
   "Export blog to HTML."
   (interactive)
-  (let ((whitespace-line-foreground (face-attribute 'whitespace-line :foreground))
-        (whitespace-line-background (face-attribute 'whitespace-line :background)))
-    ;; Unset face (disable whitespace mode prior to export).
-    (set-face-attribute 'whitespace-line nil
-                        :foreground nil
-                        :background nil)
-    (ar/file-assert-file-exists org-plantuml-jar-path)
-    (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
-    (with-current-buffer (find-file-noselect (expand-file-name
-                                              "~/stuff/active/blog/index.org"))
-      (let ((org-time-stamp-custom-formats
-             '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
-            (org-display-custom-times 't))
-        (unwind-protect
-            (progn
-              (advice-add 'org-timestamp-translate
-                          :around
-                          'ar/ox-html--timestamp-translate-advice-fun)
-              (org-html-export-to-html))
-          (advice-remove 'org-timestamp-translate
-                         'ar/ox-html--timestamp-translate-advice-fun))
-        (browse-url (format "file:%s" (expand-file-name
-                                       "~/stuff/active/blog/index.html")))))
-    ;; Restore face (enable whitespace mode after export)
-    (set-face-attribute 'whitespace-line nil
-                        :foreground whitespace-line-foreground
-                        :background whitespace-line-background)))
+  (ar/file-assert-file-exists org-plantuml-jar-path)
+  (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
+  (with-current-buffer (find-file-noselect (expand-file-name
+                                            "~/stuff/active/blog/index.org"))
+    (let ((org-time-stamp-custom-formats
+           '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
+          (org-display-custom-times 't))
+      (unwind-protect
+          (progn
+            (advice-add 'org-timestamp-translate
+                        :around
+                        'ar/ox-html--timestamp-translate-advice-fun)
+            (org-html-export-to-html))
+        (advice-remove 'org-timestamp-translate
+                       'ar/ox-html--timestamp-translate-advice-fun))
+      (browse-url (format "file:%s" (expand-file-name
+                                     "~/stuff/active/blog/index.html"))))))
 
 (setq org-html-head-extra
       "<style type='text/css'>
@@ -177,6 +175,11 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            text-align: right;
          }
 
+         .org-src-container {
+           background-color: #fbfbfb;
+           border-radius: 10px;
+         }
+
          #contact-header {
            width: 100%;
          }
@@ -214,7 +217,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            color: #3A4145;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
-           font-size: 1.2rem;
+           font-size: 1em;
            font-style: normal;
            font-weight: 300;
            letter-spacing: 0.01rem;
@@ -229,18 +232,19 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          }
 
          h1 {
-           font-size: 4em;
+           font-size: 2em;
          }
 
          h2 {
-           font-size: 3em;
+           font-size: 1.6em;
            letter-spacing: -0.02em;
            margin-bottom: 0px;
            text-indent: -3px;
+           cursor: pointer;
          }
 
          h3 {
-           font-size: 1.6em;
+           font-size: 1.2em;
          }
 
          #preamble {
@@ -276,11 +280,15 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          }
 
          .outline-2 {
-           margin-bottom: 50px;
+         }
+
+         .default-visibility, .outline-text-2, .outline-3, .outline-4, .outline-5, .outline-6, .org-ul {
+           display: none;
          }
 
          .example {
            white-space: pre-wrap;
+           background-color: #f8ffe1;
          }
        </style>
 
@@ -295,6 +303,49 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          woopra.track();
        </script>
        <!-- End of Woopra Code -->
+
+       <script>
+         function getClosest(elem, selector) {
+             for ( ; elem && elem !== document; elem = elem.parentNode ) {
+         	if ( elem.matches( selector ) ) return elem;
+             }
+             return null;
+         };
+
+
+         function setNodeVisible (node, visible) {
+             for (var i = 0; i < node.childNodes.length; i++) {
+                 var child = node.childNodes[i];
+                 if (node.classList.contains('outline-text-2') ||
+                     node.classList.contains('outline-3') ||
+                     node.classList.contains('outline-4') ||
+                     node.classList.contains('outline-5') ||
+                     node.classList.contains('outline-6')) {
+                     node.style.display = visible ? 'inline' : 'none';
+                 } else if (node.classList.contains('org-ul')) {
+                     node.style.display = visible ? 'block' : 'none';
+                  }
+                 setNodeVisible(child, visible);
+             }
+         }
+
+         window.onload = function() {
+             var parts = document.URL.split('#');
+             if (parts.length > 1) {
+                 var entry = getClosest(document.getElementById(parts[1]), '.outline-2');
+                 setNodeVisible(entry, true)
+             }
+
+             document.body.onclick = function(e){
+                 if (e.target.tagName.toLowerCase() === 'h2') {
+                     var entry = getClosest(e.target, '.outline-2');
+                     var elements = entry.getElementsByClassName('outline-text-2');
+                     setNodeVisible(entry, elements[0].style.display !== 'inline');
+                 }
+             };
+         };
+       </script>
+
 ")
 
 (provide 'ar-ox-html)

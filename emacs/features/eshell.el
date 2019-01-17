@@ -37,18 +37,54 @@
         (setq-local company-begin-commands
                     (append company-begin-commands (list 'comint-magic-space))))
 
-      (bind-key "M-r" #'helm-eshell-history eshell-mode-map)
-      (bind-key "C-l" #'ar/eshell-cd-to-parent eshell-mode-map))
+      (bind-keys :map eshell-mode-map
+                 ("M-r" . counsel-esh-history)
+                 ([remap eshell-pcomplete] . completion-at-point)
+                 ("C-l" . ar/eshell-cd-to-parent)))
     :config
     (require 'company)
-    (require 'helm-eshell)
-
+    (require 'counsel)
 
     (require 'company-escaped-files)
     (require 'company-projectile-cd)
 
     (require 'em-hist)
     (require 'em-glob)
+
+    (use-package em-banner
+      :ensure eshell
+      :config
+      (ar/csetq eshell-banner-message "
+  Welcome to the Emacs
+
+                         _/                  _/  _/
+      _/_/      _/_/_/  _/_/_/      _/_/    _/  _/
+   _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/
+  _/            _/_/  _/    _/  _/        _/  _/
+   _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/
+
+"))
+
+    (use-package pcmpl-homebrew
+      :ensure t)
+
+    (use-package pcmpl-git
+      :ensure t)
+
+    (use-package pcmpl-args
+      :ensure t)
+
+    (use-package pcomplete-extension
+      :ensure t)
+
+    (use-package shrink-path
+      :ensure t)
+
+    (use-package esh-help
+      :ensure t
+      :config
+      ;; Eldoc support.
+      (setup-esh-help-eldoc))
 
     (use-package esh-mode
       :config
@@ -135,7 +171,7 @@
   ;; Must use custom set for these.
   (ar/csetq shell-pop-window-position "full")
   (ar/csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
-                                                      (eshell))))
+                                                         (eshell))))
   (ar/csetq shell-pop-term-shell "eshell")
 
   (defun ar/shell-pop (shell-pop-autocd-to-working-dir)

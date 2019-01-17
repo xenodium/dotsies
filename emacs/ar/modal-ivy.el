@@ -87,7 +87,6 @@
         (ar/modal-ivy--load-bookmarks-source))
   (message "Bookmarks reloaded"))
 
-
 (defun ar/modal-ivy-search-org-links ()
   "Search all my org links."
   (ar/modal-ivy-frame "*modal-ivy*"
@@ -105,7 +104,10 @@
                                     :unwind (lambda ()
                                               ;; Unless we first switch to another macOS app, Emacs will
                                               ;; refocus another frame after deleting the current frame.
-                                              (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacs()'")
+                                              (call-process "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs"
+                                                            nil nil nil
+                                                            "-c"
+                                                            "backFromEmacs()")
                                               (delete-frame)
                                               (other-window 1)))))))
 
@@ -125,7 +127,10 @@
                                     :unwind (lambda ()
                                               ;; Unless we first switch to another macOS app, Emacs will
                                               ;; refocus another frame after deleting the current frame.
-                                              (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacs()'")
+                                              (call-process "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs"
+                                                            nil nil nil
+                                                            "-c"
+                                                            "backFromEmacs()")
                                               (delete-frame)
                                               (other-window 1)))))))
 

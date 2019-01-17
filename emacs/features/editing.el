@@ -246,8 +246,7 @@ line instead."
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)
          ("M-DEL" . ar/backward-delete-subword)
-         ("<C-backspace>" . ar/backward-delete-subword)
-         ("C-x C-d" . ar/duplicate-line)))
+         ("<C-backspace>" . ar/backward-delete-subword)))
 
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon
@@ -292,3 +291,14 @@ line instead."
 ;; Open rc files with conf-mode.
 (use-package conf-mode
   :mode ("rc$" . conf-mode))
+
+;; Handles escaping regexes from input. For example: no need for \(\)
+(use-package pcre2el
+  :ensure t
+  :config
+  (pcre-mode +1))
+
+(use-package re-builder
+  :config
+  ;; No double escaping needed.
+  (ar/csetq reb-re-syntax 'string))

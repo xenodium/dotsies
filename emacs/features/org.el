@@ -2,7 +2,7 @@
 (require 'ar-csetq)
 
 (use-package org
-  :ensure t
+  :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
@@ -15,16 +15,19 @@
     (use-package ar-org))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
-         (org-mode . yas-minor-mode))
+         (org-mode . yas-minor-mode)
+         (org-mode . smartparens-mode))
   :config
 
-  (setq org-todo-keywords
-        '((sequence
-           "TODO"
-           "STARTED"
-           "DONE"
-           "OBSOLETE"
-           "CANCELLED")))
+  (ar/csetq org-todo-keywords
+            '((sequence
+               "TODO"
+               "STARTED"
+               "DONE"
+               "OBSOLETE"
+               "CANCELLED")))
+
+  (ar/csetq org-goto-auto-isearch nil)
 
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
@@ -87,11 +90,11 @@
   ;; Skip Org's odd indentation levels (1, 3, ...).
   (ar/vsetq org-odd-levels-only t)
 
-  ;; Disable auto isearch within org-goto.
-  (ar/vsetq org-goto-auto-isearch nil)
-
   ;; Enable RET to follow Org links.
   (ar/vsetq org-return-follows-link t)
+
+  (use-package org-cliplink
+    :ensure t)
 
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image
@@ -99,9 +102,12 @@
 
   (use-package ar-ox-html
     :bind (:map org-mode-map
-                ([f6] . ar/ox-html-export))
+                ([f6] . ar/ox-export-async))
     :config
     (use-package ox-html)
+    ;; Required by code block syntax highlighting.
+    (use-package htmlize
+      :ensure t)
 
     (ar/ox-html-setup))
 
@@ -126,6 +132,7 @@
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
       (cond ((string-equal system-type "darwin")
+             ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
              (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2018.5/libexec/plantuml.jar")
              (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
             (t

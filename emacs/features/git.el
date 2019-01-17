@@ -51,3 +51,15 @@
                               (mapcar (lambda (text)
                                         (string-trim text))
                                       (ring-elements log-edit-comment-ring)))))))
+
+(use-package gitconfig-mode
+  :ensure t
+  :mode "\\.?gitconfig.?.*\\'")
+
+(use-package gitignore-mode
+  :ensure t
+  :mode "\\.?gitignore.?.*\\'")
+
+(use-package git-timemachine
+  :commands git-timemachine
+  :ensure t)
