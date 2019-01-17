@@ -1,5 +1,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
+(require 'dash)
 
 (use-package isearch
   :commands (isearch-forward isearch-backward)
@@ -183,3 +184,10 @@ Repeated invocations toggle between the two most recently open buffers."
                            (activate-mark)
                            (funcall ,f)
                            (deactivate-mark)))))))
+
+(defun ar/dumb-jump-run-command-advice (run-command-fun &rest r)
+    "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
+    (let ((proj (nth 1 r))
+          (exclude-args (nth 4 r)))
+      (unless (-contains-p exclude-args proj)
+        (apply run-command-fun r))))
