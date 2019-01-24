@@ -219,6 +219,7 @@
               ("https://kdecherf.com/feeds/le-kdecherf.atom.xml" blog dev kdecherf)
               ("https://lars.ingebrigtsen.no/feed" blog emacs LarsIngebrigtsen)
               ("https://librelounge.org/rss-feed.rss" blog dev LibreLounge)
+              ("https://linuxhint.com/feed" blog emacs LinuxHint)
               ("https://lobste.rs/rss" blog dev Lobsters)
               ("https://manuel-uberti.github.io/feed.xml" blog emacs ManuelUberti)
               ("https://martinralbrecht.wordpress.com/feed" blog emacs MartinAlbrecht)
