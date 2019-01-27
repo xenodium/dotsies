@@ -1,4 +1,4 @@
-;;; ar-org.el --- Org support.
+;;; ar-org.el --- Org support. -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Org mode helpers.

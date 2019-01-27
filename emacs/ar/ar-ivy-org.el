@@ -1,12 +1,14 @@
 ;;; ar-ivy-org.el --- This is my init.    -*- lexical-binding: t; -*-
 
 (require 'ar-org)
+(require 'ar-string)
 (require 'cl)
 (require 'dash)
 (require 'f)
 (require 'org)
 (require 'org-element)
 (require 's)
+(require 'org-link)
 
 (defun ar/ivy-org-add-bookmark ()
   "Add a bookmark to blog."
@@ -16,94 +18,51 @@
                                  (read-string "URL: "))))
 
 (defun ar/ivy-org-add-bookmark-dwim ()
+  "Add a bookmark or TODO to backlog from clipboard."
   (interactive)
-  (ivy-read "Heading: "
-            (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "\\(bookmarks\\)\\|\\(backlog\\)")
-            :action (lambda (selection)
-                      (let ((breadcrumb-marker (point-marker))
-                            (marker (cdr selection))
-                            (addition))
-                        (cond ((s-matches-p "bookmarks" (car selection))
-                               (setq addition (ar/org-clipboard-url-or-title))
-                               (if (s-matches-p "^http" addition)
-                                   (org-cliplink-retrieve-title addition
-                                                                (lambda (url title)
-                                                                  (switch-to-buffer (marker-buffer marker))
-                                                                  (goto-char (marker-position marker))
-                                                                  (org-show-context)
-                                                                  (re-search-backward "^\\*+ " nil t)
-                                                                  (org-show-entry)
-                                                                  (org-show-subtree)
-                                                                  (org-end-of-meta-data t)
+  (org-link-resolved-clipboard-url-or-title
+   (lambda (link)
+     (ivy-read "Save to: "
+               (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "\\(bookmarks\\)\\|\\(backlog\\)")
+               :action (lambda (selection)
+                         (let ((breadcrumb-marker (point-marker))
+                               (category (car selection))
+                               (marker (cdr selection)))
+                           (switch-to-buffer (marker-buffer marker))
+                           (goto-char (marker-position marker))
+                           (org-show-context)
+                           (re-search-backward "^\\*+ " nil t)
+                           (org-show-entry)
+                           (org-show-subtree)
+                           (org-end-of-meta-data t)
 
-                                                                  (insert (format "- %s.\n" (ar/org-build-link url
-                                                                                                               title)))
-                                                                  (org-sort-list nil ?a)
-                                                                  (ar/org-timestamp-at-point)
+                           (cond ((s-matches-p "Bookmarks" category)
+                                  (if (org-link-url link)
+                                      (insert (format "- [[%s][%s]].\n" (org-link-url link) (org-link-title link)))
+                                    (insert (format "- %s.\n" (read-string "Bookmark: " (org-link-title link)))))
+                                  (org-sort-list nil ?a))
+                                 ((s-matches-p "backlog" category)
+                                  (org-insert-heading)
+                                  (if (org-link-url link)
+                                      (insert (format "TODO [[%s][%s]]." (org-link-url link) (org-link-title link)))
+                                    (insert (format "TODO %s." (read-string "TODO: " (org-link-title link)))))
+                                  (ar/org-timestamp-at-point)))
 
-                                                                  (hide-other)
-                                                                  (save-buffer)
-                                                                  (switch-to-buffer (marker-buffer breadcrumb-marker))
-                                                                  (message "Added: \"%s\"" addition)))
-                                 (switch-to-buffer (marker-buffer marker))
-                                 (goto-char (marker-position marker))
-                                 (org-show-context)
-                                 (re-search-backward "^\\*+ " nil t)
-                                 (org-show-entry)
-                                 (org-show-subtree)
-                                 (org-end-of-meta-data t)
+                           (ar/org-timestamp-at-point)
 
-                                 (insert (format "- %s.\n" addition))
-                                 (org-sort-list nil ?a)
-                                 (ar/org-timestamp-at-point)
-
-                                 (hide-other)
-                                 (save-buffer)
-                                 (switch-to-buffer (marker-buffer breadcrumb-marker))
-                                 (message "Added: \"%s\"" addition)))
-                              ((s-matches-p "backlog" (car selection))
-                               (setq addition (ar/org-clipboard-url-or-title))
-                               (if (s-matches-p "^http" addition)
-                                   (org-cliplink-retrieve-title addition
-                                                                (lambda (url title)
-                                                                  (switch-to-buffer (marker-buffer marker))
-                                                                  (goto-char (marker-position marker))
-                                                                  (org-show-context)
-                                                                  (re-search-backward "^\\*+ " nil t)
-                                                                  (org-show-entry)
-                                                                  (org-show-subtree)
-                                                                  (org-end-of-meta-data t)
-
-                                                                  (org-insert-heading)
-                                                                  (insert (format "TODO [[%s][%s]]." url title))
-                                                                  (ar/org-timestamp-at-point)
-
-                                                                  (hide-other)
-                                                                  (save-buffer)
-                                                                  (switch-to-buffer (marker-buffer breadcrumb-marker))
-                                                                  (message "Added: \"%s\"" addition)))
-                                 (switch-to-buffer (marker-buffer marker))
-                                 (goto-char (marker-position marker))
-                                 (org-show-context)
-                                 (re-search-backward "^\\*+ " nil t)
-                                 (org-show-entry)
-                                 (org-insert-heading)
-                                 (insert (format "TODO %s." addition))
-                                 (ar/org-timestamp-at-point)
-
-                                 (hide-other)
-                                 (save-buffer)
-                                 (switch-to-buffer (marker-buffer breadcrumb-marker))
-                                 (message "Added: \"%s\"" addition))))))))
+                           (hide-other)
+                           (save-buffer)
+                           (switch-to-buffer (marker-buffer breadcrumb-marker))
+                           (message "Added \"%s\" to \"%s\"" (org-link-title link) category)))))))
 
 (defun ar/ivy-org-add-bookmark-url (url)
-  "Add a bookmark to blog."
+  "Add a bookmark with URL to blog."
   (org-cliplink-retrieve-title
    url
    (lambda (url default-description)
      (setq default-description
            (ar/org--preprocess-url-title
-            (read-string "Description: " (ar/ivy-org--decode-entities default-description))))
+            (read-string "Description: " (ar/string-decode-html-entities default-description))))
      (ivy-read "Heading: "
                (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "bookmarks")
                ;; TODO: Make function DWIM.
@@ -129,12 +88,6 @@
 
                            (switch-to-buffer (marker-buffer breadcrumb-marker)))
                          (message "Added: \"%s\"" url))))))
-
-(defun ar/ivy-org--decode-entities (html)
-  "Decode HTML entities."
-  (with-temp-buffer
-    (save-excursion (insert html))
-    (xml-parse-string)))
 
 (defun ar/ivy-org-add-backlog-link ()
   "Add a link to blog."
