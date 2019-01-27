@@ -110,6 +110,7 @@
   (ar/vsetq elfeed-feeds
             '(
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
+              ("https://krsoninikhil.github.io/atom.xml" blog emacs NikhilSoni)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
@@ -246,6 +247,7 @@
               ("https://swiftweekly.github.io/feed.xml" blog swift ios SwiftWeekly)
               ("https://theescapeartist.me/feed/" blog money EscapeArtist)
               ("https://thesavingninja.com/feed" blog money SavingNinja)
+              ("https://two-wrongs.com/atom" blog emacs TwoWrongs)
               ("https://valignatev.com/index.xml" blog emacs ValentinIgnatev)
               ("https://vicarie.in/archive.xml" blog emacs NarendraJoshi)
               ("https://vxlabs.com/feed" blog emacs VXLabs)
