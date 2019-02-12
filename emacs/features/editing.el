@@ -129,7 +129,6 @@
   ;; Removes \\(
   (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
   (sp-local-pair 'swift-mode "\\(" ")")
-  (sp-local-pair 'swift-mode "<" ">")
 
   (defun ar/create-newline-and-enter-sexp (&rest _ignored)
     "Open a new brace or bracket expression, with relevant newlines and indent. "
@@ -199,6 +198,8 @@
          ;; not a comparison.
          ((eq action 'navigate)
           (and (not on-comparison) (not on-fn-return-type) (not on-match-branch))))))))
+
+  (sp-local-pair 'prog-mode "/*" "*/")
 
   (sp-local-pair 'prog-mode "<" ">"
                  :when '(ar/sp-prog-filter-angle-brackets)
