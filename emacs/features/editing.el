@@ -129,7 +129,6 @@
   ;; Removes \\(
   (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
   (sp-local-pair 'swift-mode "\\(" ")")
-  (sp-local-pair 'swift-mode "<" ">")
 
   (defun ar/create-newline-and-enter-sexp (&rest _ignored)
     "Open a new brace or bracket expression, with relevant newlines and indent. "
@@ -141,6 +140,71 @@
   (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
   (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
   (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+
+  (defun ar/sp-prog-skip-match-angle-bracket (_ms _mb me)
+    "Non-nil if we should ignore the bracket as valid delimiter."
+    (save-excursion
+      (goto-char me)
+      (let ((on-fn-return-type
+             (sp--looking-back-p (rx "->") nil))
+            (on-match-branch
+             (sp--looking-back-p (rx "=>") nil))
+            (on-comparison
+             (sp--looking-back-p (rx (or
+                                      (seq space "<")
+                                      (seq space ">")
+                                      (seq space "<<")
+                                      (seq space ">>")))
+                                 nil)))
+        (or on-comparison on-fn-return-type on-match-branch))))
+
+  (defun ar/sp-prog-filter-angle-brackets (_id action context)
+    "Non-nil if we should allow ID's ACTION in CONTEXT for angle brackets."
+    ;; See the docstring for `sp-pair' for the possible values of ID,
+    ;; ACTION and CONTEXT.
+    (cond
+     ;; Inside strings, don't do anything with < or >.
+     ((eq context 'string)
+      nil)
+     ;; Don't do any smart pairing inside comments either.
+     ((eq context 'comment)
+      nil)
+     ;; Otherwise, we're in code.
+     ((eq context 'code)
+      (let ((on-fn-return-type
+             (looking-back (rx "->") nil))
+            (on-match-branch
+             (looking-back (rx "=>") nil))
+            (on-comparison
+             (looking-back (rx (or
+                                (seq space "<")
+                                (seq space ">")
+                                (seq space "<<")
+                                (seq space ">>")))
+                           nil)))
+        (cond
+         ;; Only insert a matching > if we're not looking at a
+         ;; comparison.
+         ((eq action 'insert)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
+         ;; Always allow wrapping in a pair if the region is active.
+         ((eq action 'wrap)
+          (not on-match-branch))
+         ;; When pressing >, autoskip if we're not looking at a
+         ;; comparison.
+         ((eq action 'autoskip)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
+         ;; Allow navigation, highlighting and strictness checks if it's
+         ;; not a comparison.
+         ((eq action 'navigate)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch))))))))
+
+  (sp-local-pair 'prog-mode "/*" "*/")
+
+  (sp-local-pair 'prog-mode "<" ">"
+                 :when '(ar/sp-prog-filter-angle-brackets)
+                 :skip-match 'ar/sp-prog-skip-match-angle-bracket)
+
   (defun ar/kill-region-advice-fun (orig-fun &rest r)
     "Advice function around `kill-region' (ORIG-FUN and R)."
     (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).

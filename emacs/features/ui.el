@@ -9,7 +9,7 @@
 
 ;; Set font face height. Value is 1/10pt.
 (set-face-attribute 'default nil
-                    :height 120)
+                    :height 160)
 
 ;; Ensure window is maximized after window setup.
 (use-package maxframe

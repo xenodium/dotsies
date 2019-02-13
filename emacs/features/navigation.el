@@ -1,5 +1,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
+(require 'dash)
 
 (use-package isearch
   :commands (isearch-forward isearch-backward)

@@ -2,4 +2,4 @@
 set -o nounset
 set -o errexit
 
-lsof -c Emacs | grep server | tr -s " " | cut -d' ' -f 8
+lsof -c Emacs | grep server | grep unix | tr -s " " | cut -d' ' -f 8

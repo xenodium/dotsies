@@ -12,6 +12,7 @@ init:
 	curl https://raw.githubusercontent.com/CeleritasCelery/company-async-files/master/company-async-files.el -o ~/.emacs.d/downloads/company-async-files/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
 	mkdir -p ~/local/bin/
 	cp emacssocket ~/local/bin/
+	cp open_xcode_file_in_emacs.sh ~/local/bin/
 	make -C ar
 	make -C external
 	make -C features

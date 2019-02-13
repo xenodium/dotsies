@@ -48,6 +48,12 @@
         pairs)
   haystack)
 
+(defun ar/string-decode-html-entities (html)
+  "Decode HTML entities."
+  (with-temp-buffer
+    (save-excursion (insert html))
+    (xml-parse-string)))
+
 (provide 'ar-string)
 
 ;;; ar-string.el ends here

@@ -1,4 +1,4 @@
-;;; ar-org.el --- Org support.
+;;; ar-org.el --- Org support. -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Org mode helpers.
@@ -370,8 +370,15 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                                         (read-string "Description: " (ar/org--preprocess-url-title
                                                                       default-description))))))))
 
+(defun ar/org-clipboard-url-or-title ()
+  "Return URL if found in clipboard or query for title otherwise."
+  (let ((value (substring-no-properties (current-kill 0))))
+    (if (string-match-p "^http" value)
+        value
+      (read-string (format "(%s): " value) nil nil value))))
+
 (defun ar/org-get-headings-in-file (filename &optional needle target-level)
-  "Return a list of cons: (heading . marker) for FILENAME searching matching NEEDLE if set.  Ignored otherwise."
+  "Return a list of cons: (heading . marker) for FILENAME searching matching NEEDLE regexp and TARGET-LEVEL if set.  Ignored otherwise."
   ;; This method is mostly distilled from `helm-org--get-candidates-in-file'.
   (with-current-buffer (pcase filename
                          ((pred bufferp) filename)
@@ -391,7 +398,7 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
                (setq org-outline-path-cache nil))
           (-filter (lambda (item)
                      (if needle
-                         (s-contains-p needle (car item))
+                         (s-matches-p needle (car item))
                        t))
                    (cl-loop with width = 1000
                             while (funcall search-fn)

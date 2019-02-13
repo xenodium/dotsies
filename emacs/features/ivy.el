@@ -128,6 +128,8 @@ There is no limit on the number of *ivy-occur* buffers."
   (ar/vsetq ivy-height 40)
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
+  (ar/vsetq ivy-display-style 'fancy)
+  (ar/vsetq ivy-wrap t)
   (ar/vsetq enable-recursive-minibuffers t)
 
   (defun ar/ivy-keyboard-quit-dwim ()
@@ -158,7 +160,7 @@ There is no limit on the number of *ivy-occur* buffers."
     (setq ivy-rich--display-transformers-list
           '(counsel-M-x
             (:columns
-             ((counsel-M-x-transformer (:width 80))  ; thr original transfomer
+             ((counsel-M-x-transformer (:width 80))  ; the original transfomer
               (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))))
     (ivy-rich-mode +1))
 

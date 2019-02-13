@@ -29,11 +29,10 @@
     ("q" nil "quit"))
   (defhydra hydra-quick-insert (:color blue)
     "
-Quick insert: _w_eb bookmark _b_acklog bookmark
+Quick insert: _w_eb bookmark or backlog
               _t_odo _d_one
 "
-    ("w" ar/ivy-org-add-bookmark nil)
-    ("b" ar/ivy-org-add-backlog-link nil)
+    ("w" ar/ivy-org-add-bookmark-dwim nil)
     ("t" ar/org-add-todo nil)
     ("d" ar/org-add-done nil)
     ("r" ar/org-mark-done nil)
