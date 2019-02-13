@@ -4,18 +4,14 @@
   :init
   (defun ar/swift-mode-hook ()
     "Called when entering `swift-mode'."
-    ;; (add-to-list 'flycheck-checkers 'swiftlint)
-    ;; (setq-local flycheck-swiftlint-config-file
-    ;;             (concat (file-name-as-directory
-    ;;                      (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
-    ;; ".swiftlint.yml")
-
     (add-to-list 'flycheck-checkers 'swiftlint)
 
-    (setq-local flycheck-swiftlint-config-file
-                (concat (file-name-as-directory
-                         (locate-dominating-file (buffer-file-name) ".swiftlint.yml"))
-                        ".swiftlint.yml"))
+    (let ((lint-config-file (locate-dominating-file (buffer-file-name) ".swiftlint.yml")))
+      (when lint-config-file
+        (setq-local flycheck-swiftlint-config-file
+                    (concat (file-name-as-directory
+                             lint-config-file)
+                            ".swiftlint.yml"))))
 
     (setq-local company-backends '((company-sourcekit
                                     company-swimports
