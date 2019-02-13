@@ -129,6 +129,7 @@ There is no limit on the number of *ivy-occur* buffers."
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq enable-recursive-minibuffers t)
+
   (defun ar/ivy-keyboard-quit-dwim ()
     "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
     (interactive)
@@ -138,6 +139,17 @@ There is no limit on the number of *ivy-occur* buffers."
            (delete-minibuffer-contents))
           (t
            (minibuffer-keyboard-quit))))
+
+  (ar/vsetq ivy-initial-inputs-alist
+    '((org-refile . "^")
+      (org-agenda-refile . "^")
+      (org-capture-refile . "^")
+      (counsel-describe-function . "^")
+      (counsel-describe-variable . "^")
+      (counsel-org-capture . "^")
+      (Man-completion-table . "^")
+      (woman . "^")))
+
   (ivy-mode +1)
 
   (use-package ivy-rich
