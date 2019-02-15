@@ -123,7 +123,10 @@
                                     :action (lambda (item)
                                               (let ((select-enable-clipboard t))
                                                 (kill-new item t)
-                                                (alert "copied" :title "clipboard")))
+                                                (call-process "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs"
+                                                              nil 0 nil
+                                                              "-c"
+                                                              (format "hs.eventtap.keyStrokes(\"%s\")" item))))
                                     :unwind (lambda ()
                                               ;; Unless we first switch to another macOS app, Emacs will
                                               ;; refocus another frame after deleting the current frame.
