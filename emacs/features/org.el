@@ -44,6 +44,13 @@
                 ("OBSOLETE" . (:foreground "blue" :weight bold))
                 ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
+  (defun ar/org-insert-char-dwim ()
+    (interactive)
+    ;; Display org-insert-structure-template if < inserted at BOL.
+    (if (looking-back "^")
+        (call-interactively #'org-insert-structure-template)
+      (self-insert-command 1)))
+
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
     (interactive)
