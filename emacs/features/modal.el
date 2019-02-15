@@ -1,6 +1,8 @@
 ;; Search for things modally, using ivy.
 (use-package modal-ivy
   :commands (ar/modal-ivy-search-org-links
+             ar/modal-ivy-clipboard
+             ar/modal-key-binding-r
              ar/hammerspoon-org-modal-add-todo
              ar/modal-key-binding-i)
   :config
