@@ -120,8 +120,11 @@ There is no limit on the number of *ivy-occur* buffers."
 (use-package ivy
   :ensure t
   :defer 0.1
+  :init
+  (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
+         ("M-o" . ar/insert-current-file-name-at-point)
          :map ivy-minibuffer-map
          ("C-g" . ar/ivy-keyboard-quit-dwim))
   :config
@@ -131,6 +134,21 @@ There is no limit on the number of *ivy-occur* buffers."
   (ar/vsetq ivy-display-style 'fancy)
   (ar/vsetq ivy-wrap t)
   (ar/vsetq enable-recursive-minibuffers t)
+
+  ;; From http://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
+  (defun ar/insert-current-file-name-at-point (&optional full-path)
+    "Insert the current filename at point.
+With prefix argument, use full path."
+    (interactive "P")
+    (let* ((buffer
+	    (if (minibufferp)
+	        (window-buffer
+	         (minibuffer-selected-window))
+	      (current-buffer)))
+	   (filename (buffer-file-name buffer)))
+      (if filename
+	  (insert (if full-path filename (file-name-nondirectory filename)))
+        (error (format "Buffer %s is not visiting a file" (buffer-name buffer))))))
 
   (defun ar/ivy-keyboard-quit-dwim ()
     "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
@@ -143,14 +161,14 @@ There is no limit on the number of *ivy-occur* buffers."
            (minibuffer-keyboard-quit))))
 
   (ar/vsetq ivy-initial-inputs-alist
-    '((org-refile . "^")
-      (org-agenda-refile . "^")
-      (org-capture-refile . "^")
-      (counsel-describe-function . "^")
-      (counsel-describe-variable . "^")
-      (counsel-org-capture . "^")
-      (Man-completion-table . "^")
-      (woman . "^")))
+            '((org-refile . "^")
+              (org-agenda-refile . "^")
+              (org-capture-refile . "^")
+              (counsel-describe-function . "^")
+              (counsel-describe-variable . "^")
+              (counsel-org-capture . "^")
+              (Man-completion-table . "^")
+              (woman . "^")))
 
   (ivy-mode +1)
 
