@@ -57,5 +57,8 @@
   (use-package go-rename
     :ensure t)
 
+  (use-package ob-go
+    :ensure t)
+
   (use-package godoctor
     :ensure t))
