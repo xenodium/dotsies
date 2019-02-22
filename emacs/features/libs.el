@@ -4,7 +4,8 @@
 (use-package async
   :ensure t
   :config
-  (async-bytecomp-package-mode +1))
+  (async-bytecomp-package-mode +1)
+  (dired-async-mode +1))
 
 (use-package validate
   :ensure t
