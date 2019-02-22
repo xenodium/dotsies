@@ -115,6 +115,7 @@
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://blog.davep.org/feed.xml" blog emacs davep)
+              ("https://moneytothemasses.com/feed" money blog MoneyToTheMasses)
               ("http://blog.josephholsten.com/feed.xml" blog hammerspoon dev Libera-Ideoj)
               ("http://blog.nawaz.org/feeds/all.atom.xml" blog dev )
               ("http://buddhistinspiration.blogspot.com/feeds/posts/default" blog mindful BuddistInspiration)
