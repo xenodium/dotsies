@@ -15,6 +15,10 @@
   :config
   (ar/vsetq kill-ring-max 1000))
 
+;; Shows keyboard macros as Emacs lisp.
+(use-package elmacro
+  :ensure t)
+
 (use-package expand-region
   :ensure t
   :bind ("C-c w" . er/expand-region)

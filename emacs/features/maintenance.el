@@ -21,10 +21,6 @@
   :ensure t
   :commands macrostep-expand)
 
-;; Shows keyboard macros as Emacs lisp.
-(use-package elmacro
-  :ensure t)
-
 (use-package profiler
   :commands ar/profiler-start-cpu
   :init
