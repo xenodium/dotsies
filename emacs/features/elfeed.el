@@ -146,6 +146,7 @@
               ("http://mbork.pl?action=rss" blog emacs MarcinBorkowski)
               ("http://nullprogram.com/feed" blog emacs Chris-Wellons)
               ("http://petercheng.net/index.xml" blog emacs PeterCheng)
+              ("https://blog.laurentcharignon.com/post/index.xml" blog emacs LaurentCharingnon)
               ("http://planet.emacsen.org/atom.xml" blog emacs emacsen)
               ("http://pragmaticemacs.com/feed" blog emacs PragmaticEmacs)
               ("http://prodissues.com/feeds/all.atom.xml" blog emacs Prodissues)
