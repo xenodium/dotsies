@@ -52,6 +52,12 @@
     (read-only-mode +1)
     (switch-to-buffer (current-buffer))))
 
+(defun ar/url-sans-query (url)
+  "Remove query params from URL."
+  (let ((u (url-generic-parse-url url)))
+    (setf (url-filename u) (car (url-path-and-query u)))
+    (url-recreate-url u)))
+
 
 (provide 'ar-url)
 
