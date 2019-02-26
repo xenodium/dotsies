@@ -132,8 +132,7 @@
    ("C-M-t" . sp-transpose-sexp)
    ("M-t t" . sp-transpose-sexp)
    ("C-M-k" . sp-kill-sexp)
-   ("C-M-w" . sp-copy-sexp)
-   ("M-f" . sp-forward-symbol))
+   ("C-M-w" . sp-copy-sexp))
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
          (prog-mode . smartparens-strict-mode)
