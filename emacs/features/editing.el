@@ -93,6 +93,17 @@
                       :foreground "DarkOrange1"
                       :background nil))
 
+(use-package anchored-transpose
+  :ensure t
+  :commands anchored-transpose
+  :init
+  ;; which used to be transpose-words
+  (global-unset-key (kbd "M-t"))
+  :bind
+  (("M-t r" . anchored-transpose)
+   ("M-t l" . transpose-lines)
+   ("M-t w" . transpose-words)))
+
 (use-package smartparens
   :ensure t
   :bind
