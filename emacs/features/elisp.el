@@ -1,7 +1,11 @@
+(use-package ielm
+  :hook ((ielm-mode . company-mode)))
+
 (use-package elisp-mode
   :commands emacs-lisp-mode
   :hook ((emacs-lisp-mode . pcre-mode)
-         (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function))
+         (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
+         (ielm-mode . ar/emacs-lisp-mode-hook-function))
   :init
   (defun ar/emacs-lisp-mode-hook-function ()
     "Called when entering `emacs-lisp-mode'."

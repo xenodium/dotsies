@@ -127,6 +127,7 @@
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
          (prog-mode . smartparens-strict-mode)
+         (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
   (require 'smartparens-config)
