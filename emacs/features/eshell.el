@@ -117,10 +117,13 @@
     (ar/vsetq eshell-glob-case-insensitive t)
     (ar/vsetq eshell-list-files-after-cd nil)
 
-    (defun ar/eshell-cd-to-parent ()
-      (interactive)
+    (defun ar/eshell-cd-to-parent (projectile-root-p)
+      "Change directory to parent. With prefix PROJECTILE-ROOT, change to projectile root dir."
+      (interactive "P")
       (goto-char (point-max))
-      (insert "cd ..")
+      (insert (if projectile-root-p
+                  (projectile-project-root)
+                "cd .."))
       (eshell-send-input nil t))
 
     (defun eshell/a ()
