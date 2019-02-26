@@ -15,9 +15,6 @@
       (setq-local company-backends '((company-files
                                       company-keywords)))
 
-      ;; Userful for camel-case Objective-C.
-      (subword-mode +1)
-
       ;; Format files for me.
       (add-hook 'before-save-hook #'clang-format-buffer t t)
 
@@ -35,8 +32,7 @@
   :config
   (use-package clang-format
     :ensure t)
-  (use-package company)
-  (use-package subword))
+  (use-package company))
 
 ;; Recognize .h headers can also be Objective-C (enable objc-mode for them).
 (use-package dummy-h-mode

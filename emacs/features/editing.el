@@ -94,7 +94,6 @@
                       :background nil))
 
 (use-package anchored-transpose
-  :ensure t
   :commands anchored-transpose
   :init
   ;; which used to be transpose-words
@@ -134,8 +133,7 @@
    ("M-t t" . sp-transpose-sexp)
    ("C-M-k" . sp-kill-sexp)
    ("C-M-w" . sp-copy-sexp)
-   ("M-f" . sp-forward-symbol)
-   ("M-b" . sp-backward-symbol))
+   ("M-f" . sp-forward-symbol))
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
          (prog-mode . smartparens-strict-mode)

@@ -185,3 +185,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package avy
   :ensure t
   :bind (("M-e" . avy-goto-char-timer)))
+
+(use-package subword
+  :config
+  (global-subword-mode +1))
