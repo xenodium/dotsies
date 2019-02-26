@@ -131,6 +131,7 @@
    ("C-M-u" . sp-backward-up-sexp)
    ("C-M-d" . sp-down-sexp)
    ("C-M-t" . sp-transpose-sexp)
+   ("M-t t" . sp-transpose-sexp)
    ("C-M-k" . sp-kill-sexp)
    ("C-M-w" . sp-copy-sexp)
    ("M-f" . sp-forward-symbol)
