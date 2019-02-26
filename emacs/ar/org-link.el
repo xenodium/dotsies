@@ -9,6 +9,8 @@
 (require 'org)
 (require 's)
 (require 'cl)
+(require 'ar-url)
+(require 'ar-string)
 
 (cl-defstruct
     org-link
@@ -19,7 +21,7 @@
   "Return a link with URL if found in clipboard, else link with title."
   (let ((value (substring-no-properties (current-kill 0))))
     (make-org-link :url (when (s-matches-p "^http" value)
-                          value)
+                          (ar/url-sans-query value))
                    :title (unless (s-matches-p "^http" value)
                             value))))
 
@@ -31,7 +33,7 @@
                                      (lambda (url title)
                                        (funcall fn
                                                 (make-org-link :url url
-                                                               :title (read-string "Link title: " title)))))
+                                                               :title (read-string "Link title: " (ar/string-decode-html-entities title))))))
       (funcall fn link))))
 
 (provide 'org-link)
