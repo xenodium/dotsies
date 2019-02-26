@@ -27,6 +27,7 @@
   :hook ((elfeed-search-mode . ar/elfeed-set-style))
   :bind (:map elfeed-search-mode-map
               ("R" . ar/elfeed-mark-all-as-read)
+              ("d" . elfeed-search-untag-all-unread)
               ("v" . ar/elfeed-mark-visible-as-read)
               ("<tab>" . ar/elfeed-completing-filter))
   :init
