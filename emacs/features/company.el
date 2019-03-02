@@ -36,6 +36,13 @@
   (use-package company-rfiles)
   (use-package company-projectile-cd)
 
+  (when (display-graphic-p)
+    (use-package company-box
+      :ensure t
+      :hook (company-mode . company-box-mode)
+      :config
+      (ar/csetq company-box-enable-icon nil)))
+
   (ar/vsetq company-idle-delay 0.2)
   (ar/vsetq company-show-numbers t)
   (ar/vsetq company-minimum-prefix-length 2)
