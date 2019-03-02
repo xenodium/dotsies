@@ -1,5 +1,7 @@
 (require 'ar-vsetq)
 
+(require 'ar-string)
+
 (defun ar/open-youtube-url (url)
   "Download and open youtube URL."
   ;; Check for URLs like:
@@ -107,6 +109,37 @@
     (let ((link (elfeed-entry-link elfeed-show-entry)))
       (when link
         (ar/open-youtube-url link))))
+
+  (defun ar/elfeed-search-print-entry (entry)
+    "My preferred format for displaying each elfeed search result ENTRY.
+Based on `elfeed-search-print-entry--default'."
+    (let* ((date (elfeed-search-format-date (elfeed-entry-date entry)))
+           ;; Decode HTML entities (ie. &amp;)
+           (title (ar/string-decode-html-entities2 (or (elfeed-meta entry :title) (elfeed-entry-title entry) "")))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (mapconcat
+                      (lambda (s) (propertize s 'face 'elfeed-search-tag-face))
+                      tags ","))
+           (title-width (- (window-width) 10 elfeed-search-trailing-width))
+           (title-column (elfeed-format-column
+                          title (elfeed-clamp
+                                 elfeed-search-title-min-width
+                                 title-width
+                                 elfeed-search-title-max-width)
+                          :left)))
+      (insert (propertize date 'face 'elfeed-search-date-face) " ")
+      (insert (propertize title-column 'face title-faces 'kbd-help title) " ")
+      (when feed-title
+        (insert (propertize feed-title 'face 'elfeed-search-feed-face) " "))
+      (when tags
+        (insert "(" tags-str ")"))))
+
+  (ar/vsetq elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
 
   (ar/vsetq elfeed-feeds
             '(
