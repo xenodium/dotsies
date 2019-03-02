@@ -105,6 +105,9 @@
 
 (use-package smartparens
   :ensure t
+  :init
+  (when (display-graphic-p)
+    (define-key input-decode-map (kbd "C-[") [C-\[]))
   :bind
   (:map
    smartparens-strict-mode-map
@@ -114,6 +117,7 @@
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
    ("C-M-]" . sp-rewrap-sexp)
+   ("C-M-[" . sp-rewrap-sexp)
    ("M-[" . sp-backward-unwrap-sexp)
    ("M-]" . sp-unwrap-sexp)
    ("M-k" . sp-backward-kill-sexp)
@@ -136,6 +140,7 @@
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
          (prog-mode . smartparens-strict-mode)
+         (protobuf-mode . smartparens-strict-mode)
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
@@ -216,6 +221,7 @@
          ((eq action 'navigate)
           (and (not on-comparison) (not on-fn-return-type) (not on-match-branch))))))))
 
+  (sp-local-pair 'protobuf-mode "'" "'")
   (sp-local-pair 'prog-mode "/*" "*/")
 
   (sp-local-pair 'prog-mode "<" ">"
