@@ -75,10 +75,10 @@
 (defun danny--notify-callback (event)
   "Handle EVENT for file-notify events."
   (let ((event-type (nth 1 event))
-        (file-path (nth 2 event)))
+        (fpath (nth 2 event)))
     (when (and (eq event-type 'created)
-               (f-file-p file-path))
-      (danny--handle-file-created file-path))))
+               (f-file-p fpath))
+      (danny--choose-action fpath))))
 
 (defun danny--create-move-action-fun (src-fpath)
   (lambda (dst-dpath)
@@ -101,6 +101,24 @@
   (lambda (ignored)
     (find-file file-path)))
 
+(defun danny--choose-action (fpath)
+  (danny--framed-ivy-read
+   (list
+    (make-danny--framed-ivy-source :prompt (format "Action on (%s): " (f-filename fpath))
+                                   :collection (lambda (str pred v)
+                                                 '("Open"
+                                                   "Move"))
+                                   :action (lambda (item)
+                                             (cond ((equal item "Open")
+                                                    (unless (f-exists-p fpath)
+                                                      (error "File not found: %s" fpath))
+                                                    (find-file fpath))
+                                                   ((equal item "Move")
+                                                    (danny--handle-file-created fpath))))
+                                   :unwind (lambda ()
+                                             (delete-frame)
+                                             (other-window 1))))))
+
 (defun danny--handle-file-created (file-path)
   "Handle new file created at FILE-PATH."
   (with-current-buffer (get-buffer-create "*danny*")
@@ -108,11 +126,6 @@
                      (delete-frame)
                      (other-window 1))))
       (danny--framed-ivy-read (-concat (list
-                                        (make-danny--framed-ivy-source :prompt (format "Open? (%s) " (f-filename file-path))
-                                                                       :action (danny--create-open-action-fun file-path)
-                                                                       :collection (lambda (str pred v)
-                                                                                     '())
-                                                                       :unwind unwind)
                                         (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
                                                                        :action (danny--create-move-action-fun file-path)
                                                                        :collection (lambda (str pred v)
@@ -161,22 +174,21 @@
                                                                                          (1- index))
                                                                                 :initial-input ivy-text))))
     (with-current-buffer (get-buffer-create "*danny*")
-      (let* ((lines-count (length (funcall (danny--framed-ivy-source-collection source)
-                                           nil nil nil)))
+      (let* ((lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
+                             (length (funcall (danny--framed-ivy-source-collection source)
+                                              nil nil nil))))
              (frame (make-frame
                      (-concat danny--base-frame-params
-                              (list (cons 'height (if (> lines-count 0) 10
-                                                    1))
-                                    ;; Calculate a sensible width, based on longest path (in source).
-                                    (cons 'width (if (> lines-count 0)
-                                                     (+ 1
-                                                        lines-count
-                                                        (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
-                                                                                             nil nil nil)))
-                                                   (1+ (length (danny--framed-ivy-source-prompt source))))))))))
+                              (list (cons 'height (min (+ 2 lines-count)
+                                                       25))
+                                    ;; Calculate a sensible width, based on longest path or prompt.
+                                    (cons 'width (max (+ 10 (length (danny--framed-ivy-source-prompt source)))
+                                                      (+ 10 (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
+                                                                                                 nil nil nil))))))))))
         (x-focus-frame frame)
         (ivy-read (danny--framed-ivy-source-prompt source)
                   (danny--framed-ivy-source-collection source)
+                  :require-match t
                   :update-fn (lambda ()
                                ;; Forcing redisplay works around "Open" source not shown
                                ;; after having visited other sources (left/right keys).
