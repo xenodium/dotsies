@@ -1,6 +1,9 @@
 (use-package s
   :ensure t)
 
+(use-package ht
+  :ensure t)
+
 (use-package async
   :ensure t
   :config
