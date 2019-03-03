@@ -284,6 +284,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://seeknuance.com/feed" blog emacs SeekNuance)
               ("https://simplelivingsomerset.wordpress.com/feed/" blog money SimpleLivingSomerset)
               ("https://swiftnews.curated.co/issues.rss" blog swift ios ShiftNewsCurated)
+              ("https://curiousprogrammer.wordpress.com/feed" blog emacs ACuriousProgrammer)
               ("https://swiftweekly.github.io/feed.xml" blog swift ios SwiftWeekly)
               ("https://theescapeartist.me/feed/" blog money EscapeArtist)
               ("https://thesavingninja.com/feed" blog money SavingNinja)
