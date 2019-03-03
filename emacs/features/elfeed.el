@@ -115,7 +115,7 @@
 Based on `elfeed-search-print-entry--default'."
     (let* ((date (elfeed-search-format-date (elfeed-entry-date entry)))
            ;; Decode HTML entities (ie. &amp;)
-           (title (ar/string-decode-html-entities2 (or (elfeed-meta entry :title) (elfeed-entry-title entry) "")))
+           (title (ar/string-decode-html-entities (or (elfeed-meta entry :title) (elfeed-entry-title entry) "")))
            (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
            (feed (elfeed-entry-feed entry))
            (feed-title
