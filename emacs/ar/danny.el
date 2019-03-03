@@ -53,33 +53,44 @@
                (f-file-p file-path))
       (danny--handle-file-created file-path))))
 
+(defun danny--create-move-action-fun (file-path)
+  (lambda (destination-dir)
+    (let ((destination-file (f-join destination-dir
+                                    (danny--read-string (format "Save as (%s): " (f-filename file-path))
+                                                        (f-filename file-path)
+                                                        20))))
+      (if (f-exists-p destination-file)
+          (progn
+            (unless (danny--y-or-n (format "Override? %s\n" destination-file))
+              (error "Aborted"))
+            (rename-file file-path destination-file t)
+            (danny--add-destination-dir destination-dir))
+        (rename-file file-path destination-file t)
+        (danny--add-destination-dir destination-dir)))))
+
+(defun danny--create-open-action-fun (file-path)
+  (lambda (ignored)
+    (find-file file-path)))
+
 (defun danny--handle-file-created (file-path)
   "Handle new file created at FILE-PATH."
   (with-current-buffer (get-buffer-create "*danny*")
     (let* ((unwind (lambda ()
                      (delete-frame)
-                     (other-window 1)))
-           (action (lambda (destination-dir)
-                     (let ((destination-file (f-join destination-dir
-                                                     (danny--read-string (format "Save as (%s): " (f-filename file-path))
-                                                                         (f-filename file-path)
-                                                                         20))))
-                       (if (f-exists-p destination-file)
-                           (progn
-                             (unless (danny--y-or-n (format "Override? %s\n" destination-file))
-                               (error "Aborted"))
-                             (rename-file file-path destination-file t)
-                             (danny--add-destination-dir destination-dir))
-                         (rename-file file-path destination-file t)
-                         (danny--add-destination-dir destination-dir))))))
+                     (other-window 1))))
       (danny--framed-ivy-read (list
-                               (make-danny--framed-ivy-source :prompt (format "Recent (%s): " (f-filename file-path))
-                                                              :action action
+                               (make-danny--framed-ivy-source :prompt (format "Open? (%s) " (f-filename file-path))
+                                                              :action (danny--create-open-action-fun file-path)
+                                                              :collection (lambda (str pred v)
+                                                                            '())
+                                                              :unwind unwind)
+                               (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
+                                                              :action (danny--create-move-action-fun file-path)
                                                               :collection (lambda (str pred v)
                                                                             (danny--last-destinations))
                                                               :unwind unwind)
-                               (make-danny--framed-ivy-source :prompt (format "Downloads (%s): " (f-filename file-path))
-                                                              :action action
+                               (make-danny--framed-ivy-source :prompt (format "Save in Downloads (%s): " (f-filename file-path))
+                                                              :action (danny--create-move-action-fun file-path)
                                                               :collection (lambda (str pred v)
                                                                             (f-directories danny--destination-root))
                                                               :unwind unwind))))))
@@ -115,9 +126,12 @@
                                                                                          (1- index))
                                                                                 :initial-input ivy-text))))
     (with-current-buffer (get-buffer-create "*danny*")
-      (let* ((frame (make-frame `((auto-raise . t)
+      (let* ((lines-count (length (funcall (danny--framed-ivy-source-collection source)
+                                           nil nil nil)))
+             (frame (make-frame `((auto-raise . t)
                                   (font . "Menlo 15")
-                                  (height . 20)
+                                  (height . ,(if (> lines-count 0) 10
+                                               1))
                                   (internal-border-width . 20)
                                   (left . 0.33)
                                   (left-fringe . 0)
@@ -131,13 +145,18 @@
                                   (unsplittable . t)
                                   (vertical-scroll-bars . nil)
                                   ;; Calculate a sensible width, based on longest path (in source).
-                                  (width . ,(+ 1
-                                               (length (danny--framed-ivy-source-prompt source))
-                                               (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
-                                                                                    nil nil nil))))))))
-        (x-focus-frame frame)
+                                  (width . ,(if (> lines-count 0)
+                                                (+ 1
+                                                   lines-count
+                                                   (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
+                                                                                        nil nil nil)))
+                                              (1+ (length (danny--framed-ivy-source-prompt source)))))))))
         (ivy-read (danny--framed-ivy-source-prompt source)
                   (danny--framed-ivy-source-collection source)
+                  :update-fn (lambda ()
+                               ;; Forcing redisplay works around "Open" source not shown
+                               ;; after having visited other sources (left/right keys).
+                               (redisplay))
                   :action (danny--framed-ivy-source-action source)
                   :initial-input initial-input
                   :unwind (danny--framed-ivy-source-unwind source)
