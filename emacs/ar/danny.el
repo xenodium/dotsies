@@ -15,6 +15,12 @@
 
 (defvar danny-monitor-dir-path nil "Directory path to monitor.")
 
+(cl-defstruct
+    danny-destination-root
+  name
+  dpath
+  recursive)
+
 (defvar danny-destination-roots
   (list (make-danny-destination-root :name "Documents"
                                      :dpath "~/Documents"))
@@ -48,12 +54,6 @@
    (cons 'unsplittable t)
    (cons 'vertical-scroll-bars nil))
   "Base frame parameters.")
-
-(cl-defstruct
-    danny-destination-root
-  name
-  dpath
-  recursive)
 
 (defun danny-stop-monitoring ()
   (interactive)
@@ -117,6 +117,7 @@
                                                     (danny--handle-file-created fpath))))
                                    :unwind (lambda ()
                                              (delete-frame)
+                                             (kill-buffer "*danny*")
                                              (other-window 1))))))
 
 (defun danny--handle-file-created (file-path)
@@ -124,6 +125,7 @@
   (with-current-buffer (get-buffer-create "*danny*")
     (let* ((unwind (lambda ()
                      (delete-frame)
+                     (kill-buffer "*danny*")
                      (other-window 1))))
       (danny--framed-ivy-read (-concat (list
                                         (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
@@ -209,6 +211,7 @@
       (setq input (read-string prompt))
       (delete-frame)
       (other-window 1)
+      (kill-buffer "*danny*")
       (if (> (length input) 0)
           input
         default))))
@@ -226,6 +229,7 @@
       (setq input (yes-or-no-p prompt))
       (delete-frame)
       (other-window 1)
+      (kill-buffer "*danny*")
       input)))
 
 (defun danny--longest-line-length (lines)
@@ -245,7 +249,7 @@
 
 (defun danny--read-history-hashtable (hash-fpath)
   "Read history hash in HASH-FPATH."
-  (if (not (f-exists? hash-fpnath))
+  (if (not (f-exists? hash-fpath))
       (ht-create)
     (with-temp-buffer
       (insert-file-contents hash-fpath)
