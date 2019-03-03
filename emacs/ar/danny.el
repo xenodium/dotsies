@@ -15,18 +15,27 @@
 
 (defvar danny-monitor-dir-path nil "Directory path to monitor.")
 
+(defvar danny-destination-roots
+  (list (make-danny-destination-root :name "Documents"
+                                     :dpath "~/Documents"))
+  "Root destination directories. For example:
+
+  (list (make-danny-destination-root :name \"Documents\"
+                                     :dpath \"~/Documents\")
+        (make-danny-destination-root :name \"Stuff\"
+                                     :dpath \"~/Stuff\"))")
+
 (defvar danny--notify-descriptor nil "File notify descriptor.")
 
 (defvar danny--history-hash (ht) "History hashtable.")
-
-(defvar danny--destination-root "~/Downloads/Targets")
 
 (defvar danny--history-path "~/.danny")
 
 (cl-defstruct
     danny-destination-root
   name
-  path)
+  dpath
+  recursive)
 
 (defun danny-stop-monitoring ()
   (interactive)
@@ -56,9 +65,9 @@
 (defun danny--create-move-action-fun (src-fpath)
   (lambda (dst-dpath)
     (let ((dst-fpath (f-join dst-dpath
-                            (danny--read-string (format "Save as (%s): " (f-filename src-fpath))
-                                                (f-filename src-fpath)
-                                                20))))
+                             (danny--read-string (format "Save as (%s): " (f-filename src-fpath))
+                                                 (f-filename src-fpath)
+                                                 20))))
       (when (equal src-fpath dst-fpath)
         (error "Moving to same location"))
       (if (f-exists-p dst-fpath)
@@ -80,22 +89,28 @@
     (let* ((unwind (lambda ()
                      (delete-frame)
                      (other-window 1))))
-      (danny--framed-ivy-read (list
-                               (make-danny--framed-ivy-source :prompt (format "Open? (%s) " (f-filename file-path))
-                                                              :action (danny--create-open-action-fun file-path)
-                                                              :collection (lambda (str pred v)
-                                                                            '())
-                                                              :unwind unwind)
-                               (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
-                                                              :action (danny--create-move-action-fun file-path)
-                                                              :collection (lambda (str pred v)
-                                                                            (danny--last-destinations))
-                                                              :unwind unwind)
-                               (make-danny--framed-ivy-source :prompt (format "Save in Downloads (%s): " (f-filename file-path))
-                                                              :action (danny--create-move-action-fun file-path)
-                                                              :collection (lambda (str pred v)
-                                                                            (f-directories danny--destination-root))
-                                                              :unwind unwind))))))
+      (danny--framed-ivy-read (-concat (list
+                                        (make-danny--framed-ivy-source :prompt (format "Open? (%s) " (f-filename file-path))
+                                                                       :action (danny--create-open-action-fun file-path)
+                                                                       :collection (lambda (str pred v)
+                                                                                     '())
+                                                                       :unwind unwind)
+                                        (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
+                                                                       :action (danny--create-move-action-fun file-path)
+                                                                       :collection (lambda (str pred v)
+                                                                                     (danny--last-destinations))
+                                                                       :unwind unwind))
+                                       (-map (lambda (root)
+                                               (make-danny--framed-ivy-source :prompt (format "Save in \"%s\" (%s): "
+                                                                                              (danny-destination-root-name root)
+                                                                                              (f-filename file-path))
+                                                                              :action (danny--create-move-action-fun file-path)
+                                                                              :collection (lambda (str pred v)
+                                                                                            (f-directories (danny-destination-root-dpath root)
+                                                                                                           nil
+                                                                                                           (danny-destination-root-recursive root)))
+                                                                              :unwind unwind))
+                                             danny-destination-roots))))))
 
 (cl-defstruct
     danny--framed-ivy-source
@@ -153,6 +168,7 @@
                                                    (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
                                                                                         nil nil nil)))
                                               (1+ (length (danny--framed-ivy-source-prompt source)))))))))
+        (x-focus-frame frame)
         (ivy-read (danny--framed-ivy-source-prompt source)
                   (danny--framed-ivy-source-collection source)
                   :update-fn (lambda ()
