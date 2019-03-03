@@ -13,7 +13,8 @@
     :ensure t)
 
   (ar/vsetq yas-indent-line 'fixed)
-  (ar/vsetq yas-snippet-dirs
-         '("~/.emacs.d/yasnippets/personal"))
+
+  (add-to-list 'yas-snippet-dirs
+               "~/.emacs.d/yasnippets/personal" t)
 
   (yas-reload-all))
