@@ -31,6 +31,24 @@
 
 (defvar danny--history-path "~/.danny")
 
+(defvar danny--base-frame-params
+  (list
+   (cons 'auto-raise t)
+   (cons 'font "Menlo 15")
+   (cons 'internal-border-width 10)
+   (cons 'left 0.33)
+   (cons 'left-fringe 0)
+   (cons 'line-spacing 3)
+   (cons 'menu-bar-lines 0)
+   (cons 'minibuffer 'only)
+   (cons 'right-fringe 0)
+   (cons 'tool-bar-lines 0)
+   (cons 'top 200)
+   (cons 'undecorated t)
+   (cons 'unsplittable t)
+   (cons 'vertical-scroll-bars nil))
+  "Base frame parameters.")
+
 (cl-defstruct
     danny-destination-root
   name
@@ -145,29 +163,17 @@
     (with-current-buffer (get-buffer-create "*danny*")
       (let* ((lines-count (length (funcall (danny--framed-ivy-source-collection source)
                                            nil nil nil)))
-             (frame (make-frame `((auto-raise . t)
-                                  (font . "Menlo 15")
-                                  (height . ,(if (> lines-count 0) 10
-                                               1))
-                                  (internal-border-width . 20)
-                                  (left . 0.33)
-                                  (left-fringe . 0)
-                                  (line-spacing . 3)
-                                  (menu-bar-lines . 0)
-                                  (minibuffer . only)
-                                  (right-fringe . 0)
-                                  (tool-bar-lines . 0)
-                                  (top . 200)
-                                  (undecorated . t)
-                                  (unsplittable . t)
-                                  (vertical-scroll-bars . nil)
-                                  ;; Calculate a sensible width, based on longest path (in source).
-                                  (width . ,(if (> lines-count 0)
-                                                (+ 1
-                                                   lines-count
-                                                   (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
-                                                                                        nil nil nil)))
-                                              (1+ (length (danny--framed-ivy-source-prompt source)))))))))
+             (frame (make-frame
+                     (-concat danny--base-frame-params
+                              (list (cons 'height (if (> lines-count 0) 10
+                                                    1))
+                                    ;; Calculate a sensible width, based on longest path (in source).
+                                    (cons 'width (if (> lines-count 0)
+                                                     (+ 1
+                                                        lines-count
+                                                        (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
+                                                                                             nil nil nil)))
+                                                   (1+ (length (danny--framed-ivy-source-prompt source))))))))))
         (x-focus-frame frame)
         (ivy-read (danny--framed-ivy-source-prompt source)
                   (danny--framed-ivy-source-collection source)
@@ -184,22 +190,10 @@
   (with-current-buffer (get-buffer-create "*danny*")
     (let* ((input)
            (lines (s-split "\n" prompt))
-           (frame (make-frame `((auto-raise . t)
-                                (font . "Menlo 15")
-                                (height . ,(length lines))
-                                (internal-border-width . 10)
-                                (left . 0.33)
-                                (left-fringe . 0)
-                                (line-spacing . 3)
-                                (menu-bar-lines . 0)
-                                (minibuffer . only)
-                                (right-fringe . 0)
-                                (tool-bar-lines . 0)
-                                (top . 200)
-                                (undecorated . t)
-                                (unsplittable . t)
-                                (vertical-scroll-bars . nil)
-                                (width . ,(+ 1 width (danny--longest-line-length lines)))))))
+           (frame (make-frame
+                   (-concat danny--base-frame-params
+                            (list (cons 'height (length lines))
+                                  (cons 'width (+ 1 width (danny--longest-line-length lines))))))))
       (setq input (read-string prompt))
       (delete-frame)
       (other-window 1)
@@ -212,24 +206,11 @@
   (with-current-buffer (get-buffer-create "*danny*")
     (let* ((input)
            (lines (s-split "\n" prompt))
-           (height (length lines))
-           (width 0)
-           (frame (make-frame `((auto-raise . t)
-                                (font . "Menlo 15")
-                                (height . ,height)
-                                (internal-border-width . 10)
-                                (left . 0.33)
-                                (left-fringe . 0)
-                                (line-spacing . 3)
-                                (menu-bar-lines . 0)
-                                (minibuffer . only)
-                                (right-fringe . 0)
-                                (tool-bar-lines . 0)
-                                (top . 200)
-                                (undecorated . t)
-                                (unsplittable . t)
-                                (vertical-scroll-bars . nil)
-                                (width . ,(+ 1 (danny--longest-line-length lines)))))))
+           (height (1+ (length lines)))
+           (frame (make-frame
+                   (-concat danny--base-frame-params
+                            (list (cons 'height height)
+                                  (cons 'width (+ 20 (danny--longest-line-length lines))))))))
       (setq input (yes-or-no-p prompt))
       (delete-frame)
       (other-window 1)
