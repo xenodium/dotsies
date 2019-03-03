@@ -132,7 +132,7 @@ There is no limit on the number of *ivy-occur* buffers."
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq ivy-display-style 'fancy)
-  (ar/vsetq ivy-wrap t)
+  (ar/vsetq ivy-wrap nil)
   (ar/vsetq enable-recursive-minibuffers t)
 
   ;; From http://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
