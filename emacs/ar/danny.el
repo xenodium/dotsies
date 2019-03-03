@@ -13,11 +13,11 @@
 (require 'ht)
 (require 'ivy)
 
+(defvar danny-monitor-dir-path nil "Directory path to monitor.")
+
 (defvar danny--notify-descriptor nil "File notify descriptor.")
 
-(defvar danny-monitor-path nil "Path to monitor.")
-
-(defvar danny--history-hash (ht) "History.")
+(defvar danny--history-hash (ht) "History hashtable.")
 
 (defvar danny--destination-root "~/Downloads/Targets")
 
@@ -40,8 +40,8 @@
   (interactive)
   (danny-stop-monitoring)
   (setq danny--history-hash (danny--read-history-hashtable danny--history-path))
-  (cl-assert danny-monitor-path nil "`danny-monitor-path' must be set")
-  (setq danny--notify-descriptor (file-notify-add-watch danny-monitor-path
+  (cl-assert danny-monitor-dir-path nil "`danny-monitor-dir-path' must be set")
+  (setq danny--notify-descriptor (file-notify-add-watch danny-monitor-dir-path
                                                         '(change attribute-change)
                                                         'danny--notify-callback)))
 
@@ -53,20 +53,22 @@
                (f-file-p file-path))
       (danny--handle-file-created file-path))))
 
-(defun danny--create-move-action-fun (file-path)
-  (lambda (destination-dir)
-    (let ((destination-file (f-join destination-dir
-                                    (danny--read-string (format "Save as (%s): " (f-filename file-path))
-                                                        (f-filename file-path)
-                                                        20))))
-      (if (f-exists-p destination-file)
+(defun danny--create-move-action-fun (src-fpath)
+  (lambda (dst-dpath)
+    (let ((dst-fpath (f-join dst-dpath
+                            (danny--read-string (format "Save as (%s): " (f-filename src-fpath))
+                                                (f-filename src-fpath)
+                                                20))))
+      (when (equal src-fpath dst-fpath)
+        (error "Moving to same location"))
+      (if (f-exists-p dst-fpath)
           (progn
-            (unless (danny--y-or-n (format "Override? %s\n" destination-file))
+            (unless (danny--y-or-n (format "Override? %s\n" dst-fpath))
               (error "Aborted"))
-            (rename-file file-path destination-file t)
-            (danny--add-destination-dir destination-dir))
-        (rename-file file-path destination-file t)
-        (danny--add-destination-dir destination-dir)))))
+            (rename-file src-fpath dst-fpath t)
+            (danny--add-destination-dir dst-dpath))
+        (rename-file src-fpath dst-fpath t)
+        (danny--add-destination-dir dst-dpath)))))
 
 (defun danny--create-open-action-fun (file-path)
   (lambda (ignored)
@@ -226,30 +228,30 @@
           lines)
     longest))
 
-(defun danny--write-history-hashtable (path hashtable)
-  "Write history HASHTABLE in PATH."
+(defun danny--write-history-hashtable (hash-fpath hashtable)
+  "Write history HASHTABLE in HASH-FPATH."
   (with-temp-buffer
     (prin1 hashtable (current-buffer))
-    (write-file path nil)))
+    (write-file hash-fpath nil)))
 
-(defun danny--read-history-hashtable (path)
-  "Read history hash in PATH."
-  (if (not (f-exists? path))
+(defun danny--read-history-hashtable (hash-fpath)
+  "Read history hash in HASH-FPATH."
+  (if (not (f-exists? hash-fpnath))
       (ht-create)
     (with-temp-buffer
-      (insert-file-contents path)
+      (insert-file-contents hash-fpath)
       (read (current-buffer)))))
 
 (defun danny--last-destinations ()
   "Return a list of recent destinations."
   (ht-get danny--history-hash "last-destinations" '()))
 
-(defun danny--add-destination-dir (dir)
+(defun danny--add-destination-dir (dpath)
   "Return a recent DIR to history.."
   (ht-set danny--history-hash
           "last-destinations"
           (-distinct (-concat (ht-get danny--history-hash
-                                      "last-destinations" '()) (list dir))))
+                                      "last-destinations" '()) (list dpath))))
   (danny--write-history-hashtable danny--history-path danny--history-hash)
   danny--history-hash)
 
