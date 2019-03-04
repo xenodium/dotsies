@@ -86,6 +86,8 @@
       (danny--choose-action fpath))))
 
 (defun danny--move-file (src-fpath dst-dpath)
+  (unless (f-exists-p dst-dpath)
+    (error "Directory not found: %s" dst-dpath))
   (let ((dst-fpath (f-join dst-dpath
                            (danny--read-string (format "Save as (%s): " (f-filename src-fpath))
                                                (f-filename src-fpath)
