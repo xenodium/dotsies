@@ -13,7 +13,7 @@
 (require 'ht)
 (require 'ivy)
 
-(defvar danny-monitor-dir-path nil "Directory path to monitor.")
+(defvar danny-monitor-dir-path "~/Downloads" "Directory path to monitor.")
 
 (cl-defstruct
     danny-destination-root
@@ -119,9 +119,22 @@
                                                  (-concat (list (cons "Open" (lambda ()
                                                                                (unless (f-exists-p fpath)
                                                                                  (error "File not found: %s" fpath))
-                                                                               (find-file fpath)))
-                                                                (cons "Move..." (lambda ()
-                                                                                  (danny--handle-file-created fpath))))
+                                                                               (if ivy-current-prefix-arg
+                                                                                   (shell-command (format "open \"%s\"" fpath))
+                                                                                 (find-file fpath))))
+                                                                (cons "Move" (lambda ()
+                                                                                  (danny--handle-file-created fpath)))
+                                                                (cons "Delete" (lambda ()
+                                                                                 (when (danny--y-or-n (format "Delete? %s\n" fpath))
+                                                                                   (delete-file fpath))))
+                                                                (cons "Open in /tmp" (lambda ()
+                                                                                    (let ((dst-fpath (f-join "/tmp"
+                                                                                                             (f-filename fpath))))
+                                                                                      (rename-file fpath
+                                                                                                   dst-fpath t)
+                                                                                      (if ivy-current-prefix-arg
+                                                                                          (shell-command (format "open \"%s\"" dst-fpath))
+                                                                                        (find-file dst-fpath))))))
                                                           (-map
                                                            (lambda (destination)
                                                              (cons (format "Move to %s" destination)
@@ -224,7 +237,7 @@
                    (-concat danny--base-frame-params
                             (list (cons 'height (length lines))
                                   (cons 'width (+ 1 width (danny--longest-line-length lines))))))))
-      (setq input (read-string prompt))
+      (setq input (read-string prompt default))
       (delete-frame)
       (other-window 1)
       (kill-buffer "*danny*")
