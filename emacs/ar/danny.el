@@ -29,7 +29,7 @@
                                      :recursive t)
         (make-danny-destination-root :name "Temp"
                                      :dpath "/tmp"))
-  "Root destination directories. For example:
+  "Root destination directories.  For example:
 
   (list (make-danny-destination-root :name \"Documents\"
                                      :dpath \"~/Documents\")
