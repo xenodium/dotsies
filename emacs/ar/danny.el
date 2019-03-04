@@ -23,7 +23,12 @@
 
 (defvar danny-destination-roots
   (list (make-danny-destination-root :name "Documents"
-                                     :dpath "~/Documents"))
+                                     :dpath "~/Documents")
+        (make-danny-destination-root :name "Downloads"
+                                     :dpath "~/Downloads"
+                                     :recursive t)
+        (make-danny-destination-root :name "Temp"
+                                     :dpath "/tmp"))
   "Root destination directories. For example:
 
   (list (make-danny-destination-root :name \"Documents\"
@@ -106,14 +111,18 @@
    (list
     (make-danny--framed-ivy-source :prompt (format "Action on (%s): " (f-filename fpath))
                                    :collection (lambda (str pred v)
-                                                 '("Open"
-                                                   "Move"))
+                                                 (-concat (list "Open"
+                                                                "Move...")
+                                                          (-map
+                                                           (lambda (item)
+                                                             (format "Move to %s" item))
+                                                           (danny--last-destinations))))
                                    :action (lambda (item)
                                              (cond ((equal item "Open")
                                                     (unless (f-exists-p fpath)
                                                       (error "File not found: %s" fpath))
                                                     (find-file fpath))
-                                                   ((equal item "Move")
+                                                   ((equal item "Move...")
                                                     (danny--handle-file-created fpath))))
                                    :unwind (lambda ()
                                              (delete-frame)
@@ -139,9 +148,11 @@
                                                                                               (f-filename file-path))
                                                                               :action (danny--create-move-action-fun file-path)
                                                                               :collection (lambda (str pred v)
-                                                                                            (f-directories (danny-destination-root-dpath root)
-                                                                                                           nil
-                                                                                                           (danny-destination-root-recursive root)))
+                                                                                            (-concat
+                                                                                             (list (danny-destination-root-dpath root))
+                                                                                             (f-directories (danny-destination-root-dpath root)
+                                                                                                            nil
+                                                                                                            (danny-destination-root-recursive root))))
                                                                               :unwind unwind))
                                              danny-destination-roots))))))
 
@@ -176,20 +187,20 @@
                                                                                          (1- index))
                                                                                 :initial-input ivy-text))))
     (with-current-buffer (get-buffer-create "*danny*")
-      (let* ((lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
-                             (length (funcall (danny--framed-ivy-source-collection source)
-                                              nil nil nil))))
+      (let* ((collection (funcall (danny--framed-ivy-source-collection source)
+                                              nil nil nil))
+             (lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
+                             (length collection)))
              (frame (make-frame
                      (-concat danny--base-frame-params
                               (list (cons 'height (min (+ 2 lines-count)
                                                        25))
                                     ;; Calculate a sensible width, based on longest path or prompt.
                                     (cons 'width (max (+ 10 (length (danny--framed-ivy-source-prompt source)))
-                                                      (+ 10 (danny--longest-line-length (funcall (danny--framed-ivy-source-collection source)
-                                                                                                 nil nil nil))))))))))
+                                                      (+ 10 (danny--longest-line-length collection)))))))))
         (x-focus-frame frame)
         (ivy-read (danny--framed-ivy-source-prompt source)
-                  (danny--framed-ivy-source-collection source)
+                  collection
                   :require-match t
                   :update-fn (lambda ()
                                ;; Forcing redisplay works around "Open" source not shown
