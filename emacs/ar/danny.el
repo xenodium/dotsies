@@ -115,7 +115,7 @@
   (danny--framed-ivy-read
    (list
     (make-danny--framed-ivy-source :prompt (format "Action on (%s): " (f-filename fpath))
-                                   :collection (lambda (str pred v)
+                                   :collection (lambda ()
                                                  (-concat (list (cons "Open" (lambda ()
                                                                                (unless (f-exists-p fpath)
                                                                                  (error "File not found: %s" fpath))
@@ -145,7 +145,7 @@
       (danny--framed-ivy-read (-concat (list
                                         (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
                                                                        :action (danny--create-move-action-fun file-path)
-                                                                       :collection (lambda (str pred v)
+                                                                       :collection (lambda ()
                                                                                      (danny--last-destinations))
                                                                        :unwind unwind))
                                        (-map (lambda (root)
@@ -153,7 +153,7 @@
                                                                                               (danny-destination-root-name root)
                                                                                               (f-filename file-path))
                                                                               :action (danny--create-move-action-fun file-path)
-                                                                              :collection (lambda (str pred v)
+                                                                              :collection (lambda ()
                                                                                             (-concat
                                                                                              (list (danny-destination-root-dpath root))
                                                                                              (f-directories (danny-destination-root-dpath root)
@@ -193,8 +193,7 @@
                                                                                          (1- index))
                                                                                 :initial-input ivy-text))))
     (with-current-buffer (get-buffer-create "*danny*")
-      (let* ((collection (funcall (danny--framed-ivy-source-collection source)
-                                  nil nil nil))
+      (let* ((collection (funcall (danny--framed-ivy-source-collection source)))
              (lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
                              (length collection)))
              (frame (make-frame
