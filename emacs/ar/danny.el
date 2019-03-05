@@ -79,11 +79,34 @@
 
 (defun danny--notify-callback (event)
   "Handle EVENT for file-notify events."
+  (let ((new-fpath (or (danny--new-file-for-event event)
+                       (danny--new-downloaded-file-for-event event))))
+    (when new-fpath
+      (danny--choose-action new-fpath))))
+
+(defun danny--new-file-for-event (event)
+  "Handle EVENT for file-notify events."
   (let ((event-type (nth 1 event))
         (fpath (nth 2 event)))
     (when (and (eq event-type 'created)
-               (f-file-p fpath))
-      (danny--choose-action fpath))))
+               (f-file-p fpath)
+               (not (equal (f-ext fpath) "part"))
+               (not (equal (f-ext fpath) "crdownload")))
+      fpath)))
+
+(defun danny--new-downloaded-file-for-event (event)
+  "Handle EVENT for file-notify events."
+  (let* ((event-type (nth 1 event))
+         (src-fpath (nth 2 event))
+         (dst-fpath (when (eq event-type 'renamed)
+                      (nth 3 event))))
+    (when (and (eq event-type 'renamed)
+               (f-file-p dst-fpath)
+               (or (and (equal (f-ext src-fpath) "part")
+                        (not (equal (f-ext src-fpath) "part")))
+                   (and (equal (f-ext src-fpath) "crdownload")
+                        (not (equal (f-ext src-fpath) "crdownload")))))
+      dst-fpath)))
 
 (defun danny--move-file (src-fpath dst-dpath)
   (unless (f-exists-p dst-dpath)
