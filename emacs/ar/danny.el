@@ -21,6 +21,13 @@
   dpath
   recursive)
 
+(defvar danny-ignored-extensions (list "crdownload"
+                                       "part")
+  "List of ignored extensions (omit period).
+These are typically temp files created during downloads.
+
+For example \"crdownload\" \"part\".")
+
 (defvar danny-destination-roots
   (list (make-danny-destination-root :name "Documents"
                                      :dpath "~/Documents")
@@ -90,8 +97,8 @@
         (fpath (nth 2 event)))
     (when (and (eq event-type 'created)
                (f-file-p fpath)
-               (not (equal (f-ext fpath) "part"))
-               (not (equal (f-ext fpath) "crdownload")))
+               (not (-contains-p danny-ignored-extensions
+                                 (f-ext fpath)) ))
       fpath)))
 
 (defun danny--new-downloaded-file-for-event (event)
@@ -102,10 +109,10 @@
                       (nth 3 event))))
     (when (and (eq event-type 'renamed)
                (f-file-p dst-fpath)
-               (or (and (equal (f-ext src-fpath) "part")
-                        (not (equal (f-ext src-fpath) "part")))
-                   (and (equal (f-ext src-fpath) "crdownload")
-                        (not (equal (f-ext src-fpath) "crdownload")))))
+               ;; Check some.part was renamed to some.txt.
+               ;; part is one of the ignored extensions.
+               (and (-contains-p danny-ignored-extensions (f-ext src-fpath))
+                    (not (-contains-p danny-ignored-extensions (f-ext dst-fpath)))))
       dst-fpath)))
 
 (defun danny--move-file (src-fpath dst-dpath)
