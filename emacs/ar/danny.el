@@ -144,39 +144,40 @@ For example \"crdownload\" \"part\".")
 (defun danny--choose-action (fpath)
   (danny--framed-ivy-read
    (list
-    (make-danny--framed-ivy-source :prompt (format "Action on (%s): " (f-filename fpath))
-                                   :collection (lambda ()
-                                                 (-concat (list (cons "Open" (lambda ()
-                                                                               (unless (f-exists-p fpath)
-                                                                                 (error "File not found: %s" fpath))
-                                                                               (if ivy-current-prefix-arg
-                                                                                   (shell-command (format "open \"%s\"" fpath))
-                                                                                 (find-file fpath))))
-                                                                (cons "Move" (lambda ()
-                                                                                  (danny--handle-file-created fpath)))
-                                                                (cons "Delete" (lambda ()
-                                                                                 (when (danny--y-or-n (format "Delete? %s\n" fpath))
-                                                                                   (delete-file fpath))))
-                                                                (cons "Open in /tmp" (lambda ()
-                                                                                    (let ((dst-fpath (f-join "/tmp"
-                                                                                                             (f-filename fpath))))
-                                                                                      (rename-file fpath
-                                                                                                   dst-fpath t)
-                                                                                      (if ivy-current-prefix-arg
-                                                                                          (shell-command (format "open \"%s\"" dst-fpath))
-                                                                                        (find-file dst-fpath))))))
-                                                          (-map
-                                                           (lambda (destination)
-                                                             (cons (format "Move to %s" destination)
-                                                                   (lambda ()
-                                                                     (danny--move-file (f-filename fpath) destination))))
-                                                           (danny--last-destinations))))
-                                   :action (lambda (item)
-                                             (funcall (cdr item)))
-                                   :unwind (lambda ()
-                                             (delete-frame)
-                                             (kill-buffer "*danny*")
-                                             (other-window 1))))))
+    (make-danny--framed-ivy-source
+     :prompt (format "Action on (%s): " (f-filename fpath))
+     :collection (lambda ()
+                   (-concat (list (cons "Open" (lambda ()
+                                                 (unless (f-exists-p fpath)
+                                                   (error "File not found: %s" fpath))
+                                                 (if ivy-current-prefix-arg
+                                                     (shell-command (format "open \"%s\"" fpath))
+                                                   (find-file fpath))))
+                                  (cons "Move" (lambda ()
+                                                 (danny--handle-file-created fpath)))
+                                  (cons "Delete" (lambda ()
+                                                   (when (danny--y-or-n (format "Delete? %s\n" fpath))
+                                                     (delete-file fpath))))
+                                  (cons "Open in /tmp" (lambda ()
+                                                         (let ((dst-fpath (f-join "/tmp"
+                                                                                  (f-filename fpath))))
+                                                           (rename-file fpath
+                                                                        dst-fpath t)
+                                                           (if ivy-current-prefix-arg
+                                                               (shell-command (format "open \"%s\"" dst-fpath))
+                                                             (find-file dst-fpath))))))
+                            (-map
+                             (lambda (destination)
+                               (cons (format "Move to %s" destination)
+                                     (lambda ()
+                                       (danny--move-file (f-filename fpath) destination))))
+                             (danny--last-destinations))))
+     :action (lambda (item)
+               (funcall (cdr item)))
+     :unwind (lambda ()
+               (delete-frame)
+               (kill-buffer "*danny*")
+               (other-window 1))))))
 
 (defun danny--handle-file-created (file-path)
   "Handle new file created at FILE-PATH."
@@ -185,25 +186,28 @@ For example \"crdownload\" \"part\".")
                      (delete-frame)
                      (kill-buffer "*danny*")
                      (other-window 1))))
-      (danny--framed-ivy-read (-concat (list
-                                        (make-danny--framed-ivy-source :prompt (format "Save in Recent (%s): " (f-filename file-path))
-                                                                       :action (danny--create-move-action-fun file-path)
-                                                                       :collection (lambda ()
-                                                                                     (danny--last-destinations))
-                                                                       :unwind unwind))
-                                       (-map (lambda (root)
-                                               (make-danny--framed-ivy-source :prompt (format "Save in \"%s\" (%s): "
-                                                                                              (danny-destination-root-name root)
-                                                                                              (f-filename file-path))
-                                                                              :action (danny--create-move-action-fun file-path)
-                                                                              :collection (lambda ()
-                                                                                            (-concat
-                                                                                             (list (danny-destination-root-dpath root))
-                                                                                             (f-directories (danny-destination-root-dpath root)
-                                                                                                            nil
-                                                                                                            (danny-destination-root-recursive root))))
-                                                                              :unwind unwind))
-                                             danny-destination-roots))))))
+      (danny--framed-ivy-read
+       (-concat (list
+                 (make-danny--framed-ivy-source
+                  :prompt (format "Save in Recent (%s): " (f-filename file-path))
+                  :action (danny--create-move-action-fun file-path)
+                  :collection (lambda ()
+                                (danny--last-destinations))
+                  :unwind unwind))
+                (-map (lambda (root)
+                        (make-danny--framed-ivy-source
+                         :prompt (format "Save in \"%s\" (%s): "
+                                         (danny-destination-root-name root)
+                                         (f-filename file-path))
+                         :action (danny--create-move-action-fun file-path)
+                         :collection (lambda ()
+                                       (-concat
+                                        (list (danny-destination-root-dpath root))
+                                        (f-directories (danny-destination-root-dpath root)
+                                                       nil
+                                                       (danny-destination-root-recursive root))))
+                         :unwind unwind))
+                      danny-destination-roots))))))
 
 (cl-defstruct
     danny--framed-ivy-source
