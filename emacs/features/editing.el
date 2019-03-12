@@ -121,10 +121,10 @@
    ("M-[" . sp-backward-unwrap-sexp)
    ("M-]" . sp-unwrap-sexp)
    ("M-k" . sp-backward-kill-sexp)
-   ("C-<right>" . sp-forward-slurp-sexp)
-   ("C-<left>" . sp-forward-barf-sexp)
-   ("M-<right>" . sp-backward-barf-sexp)
-   ("M-<left>"  . sp-backward-slurp-sexp)
+   ("C-<right>" . ar/forward-slurp-sexp)
+   ("C-<left>" . ar/forward-barf-sexp)
+   ("M-<right>" . ar/backward-barf-sexp)
+   ("M-<left>"  . ar/backward-slurp-sexp)
    ("C-M-f" . sp-forward-sexp)
    ("C-M-b" . sp-backward-sexp)
    ("C-M-n" . sp-forward-sexp)
@@ -144,6 +144,30 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
+  (defun ar/backward-barf-sexp (&optional arg)
+    (interactive "P")
+    (if (eq major-mode 'org-mode)
+        (org-metaright)
+      (sp-backward-barf-sexp)))
+
+  (defun ar/backward-slurp-sexp (&optional arg)
+    (interactive "P")
+    (if (eq major-mode 'org-mode)
+        (org-metaleft)
+      (sp-backward-slurp-sexp)))
+
+  (defun ar/forward-barf-sexp (&optional arg)
+    (interactive "P")
+    (if (eq major-mode 'org-mode)
+        (left-word)
+      (sp-forward-barf-sexp)))
+
+  (defun ar/forward-slurp-sexp (&optional arg)
+    (interactive "P")
+    (if (eq major-mode 'org-mode)
+        (right-word)
+      (sp-forward-slurp-sexp)))
+
   (require 'smartparens-config)
   (require 'smartparens-html)
   (require 'smartparens-python)
@@ -383,5 +407,5 @@ line instead."
 
 (use-package re-builder
   :config
-  ;; No double escaping needed.
   (ar/csetq reb-re-syntax 'string))
+;; No double escaping needed.
