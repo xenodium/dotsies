@@ -142,7 +142,8 @@
   :bind(("C-+" . text-scale-increase)
         ("C--" . text-scale-decrease)))
 
-(use-package nyan-mode :ensure t
+(use-package nyan-mode
+  :ensure t
   :if (display-graphic-p)
   :config
   (ar/csetq nyan-bar-length 10)
