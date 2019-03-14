@@ -19,6 +19,11 @@
 (use-package elmacro
   :ensure t)
 
+(use-package change-inner
+  :ensure t
+  :bind (("M-+" . change-outer)
+         ("M-_" . change-inner)))
+
 (use-package expand-region
   :ensure t
   :bind ("C-c w" . er/expand-region)
@@ -360,6 +365,7 @@ line instead."
   :ensure t
   :config
   (clipmon-mode))
+
 
 ;; Make kill ring persistent across sessions.
 (use-package savekill
