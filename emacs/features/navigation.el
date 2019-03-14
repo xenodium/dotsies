@@ -105,20 +105,13 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Prefer horizontal window splits.
   (ar/vsetq split-width-threshold nil))
 
-;; In addition to highlighting, we get navigation between
-(use-package highlight-symbol
-  :hook ((prog-mode . highlight-symbol-mode)
-         (prog-mode . highlight-symbol-nav-mode))
+;; In addition to highlighting symbols, we get navigation between them.
+(use-package symbol-overlay
   :ensure t
-  :bind (:map highlight-symbol-nav-mode-map
-              (("M-n" . highlight-symbol-next)
-               ("M-p" . highlight-symbol-prev)))
-  :config
-  (set-face-attribute 'highlight-symbol-face nil
-                      :background nil
-                      :foreground "yellow")
-  (ar/vsetq highlight-symbol-idle-delay 0.2)
-  (ar/vsetq highlight-symbol-on-navigation-p t))
+  :hook (prog-mode . symbol-overlay-mode)
+  :bind (:map symbol-overlay-mode-map
+              (("M-n" . symbol-overlay-jump-next)
+               ("M-p" . symbol-overlay-jump-prev))))
 
 (use-package ace-window
   :ensure t
