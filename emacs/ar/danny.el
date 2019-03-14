@@ -72,7 +72,8 @@ For example \"crdownload\" \"part\".")
   "Stop monitoring for new files."
   (when (file-notify-valid-p danny--notify-descriptor)
     (file-notify-rm-watch danny--notify-descriptor)
-    (setq danny--notify-descriptor nil)))
+    (setq danny--notify-descriptor nil))
+  (message "Danny: Stopped monitoring \"%s\"" danny-monitor-dir-path))
 
 (defun danny-start-listening ()
   "Start monitoring for new files."
@@ -82,7 +83,8 @@ For example \"crdownload\" \"part\".")
   (cl-assert danny-monitor-dir-path nil "`danny-monitor-dir-path' must be set")
   (setq danny--notify-descriptor (file-notify-add-watch danny-monitor-dir-path
                                                         '(change attribute-change)
-                                                        'danny--notify-callback)))
+                                                        'danny--notify-callback))
+  (message "Danny: Started monitoring \"%s\"" danny-monitor-dir-path))
 
 (defun danny--notify-callback (event)
   "Handle EVENT for file-notify events."
@@ -141,9 +143,11 @@ For example \"crdownload\" \"part\".")
           (unless (danny--y-or-n (format "Override? %s\n" dst-fpath))
             (error "Aborted"))
           (rename-file src-fpath dst-fpath t)
-          (danny--add-destination-dir dst-dpath))
+          (danny--add-destination-dir dst-dpath)
+          (message "Danny: %s -> %s" src-fpath dst-fpath))
       (rename-file src-fpath dst-fpath t)
-      (danny--add-destination-dir dst-dpath))))
+      (danny--add-destination-dir dst-dpath)
+      (message "Danny: %s -> %s" src-fpath dst-fpath))))
 
 (defun danny--create-move-action-fun (src-fpath)
   (lambda (dst-dpath)
