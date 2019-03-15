@@ -182,3 +182,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package subword
   :config
   (global-subword-mode +1))
+
+(use-package goto-line-preview
+  :ensure t
+  :config
+  (global-set-key [remap goto-line] 'goto-line-preview))
