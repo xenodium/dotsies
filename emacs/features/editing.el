@@ -399,7 +399,30 @@ line instead."
 
   (advice-add 'indent-for-tab-command
               :around
-              'ar/kill-ring-save--mark-whole-buffer))
+              'ar/kill-ring-save--mark-whole-buffer)
+
+  (defun ar/add-keymap-to-minor-mode (toggle keymap)
+    "Extracted from `add-minor-mode', adds to TOGGLE (minor mode) a KEYMAP."
+    (let ((existing (assq toggle minor-mode-map-alist)))
+      (if existing
+	  (setcdr existing keymap)
+	(let ((tail minor-mode-map-alist) found)
+	  (while (and tail (not found))
+	    (setq tail (cdr tail)))
+	  (if found
+	      (let ((rest (cdr found)))
+		(setcdr found nil)
+		(nconc found (list (cons toggle keymap)) rest))
+	    (push (cons toggle keymap) minor-mode-map-alist))))))
+
+  (defvar read-only-mode-map (make-sparse-keymap) "read-only-mode's missing keymap")
+  (define-key read-only-mode-map (kbd "q") #'quit-window)
+  (define-key read-only-mode-map (kbd "p") #'previous-line)
+  (define-key read-only-mode-map (kbd "n") #'next-line)
+  (define-key read-only-mode-map (kbd "f") #'forward-char)
+  (define-key read-only-mode-map (kbd "b") #'backward-char)
+
+  (ar/add-keymap-to-minor-mode 'read-only-mode read-only-mode-map))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
