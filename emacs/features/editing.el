@@ -293,6 +293,7 @@
 
 (use-package multiple-cursors :ensure t
   :after region-bindings-mode
+  :commands (ar/set-mc/insert-numbers-starting-value)
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-like-this)
@@ -311,6 +312,11 @@
               ("^" . mc/edit-beginnings-of-lines)
               ("$" . mc/edit-ends-of-lines))
   :config
+  (defun ar/set-mc/insert-numbers-starting-value ()
+    "Set starting value for inserting numbers using multiple cursors."
+    (interactive)
+    (set-variable 'mc/insert-numbers-default
+                  (read-number "Starting value: ")))
   ;; MC-friendly packages.
   (use-package phi-search :ensure t)
   (use-package phi-rectangle :ensure t)

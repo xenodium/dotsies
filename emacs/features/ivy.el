@@ -10,7 +10,7 @@
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
-         ("M-i" . counsel-grep-or-swiper)
+                 ("M-i" . counsel-grep-or-swiper)
          :map counsel-ag-map
          ("C-c C-e" . ar/ivy-occur)
          :map wgrep-mode-map
