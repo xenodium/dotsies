@@ -21,4 +21,4 @@
   ;; Nicer for navigation.
   (add-hook 'prog-mode-hook
             (lambda ()
-              (read-only-mode +1))))
+              (read-only-mode +1)) t))
