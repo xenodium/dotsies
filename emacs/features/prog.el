@@ -15,4 +15,10 @@
 
   ;; Highlight hex strings in respective color.
   (use-package rainbow-mode
-    :ensure t))
+    :ensure t)
+
+  ;; Make all prog mode buffers read-only by default.
+  ;; Nicer for navigation.
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (read-only-mode +1))))
