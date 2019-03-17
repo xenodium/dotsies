@@ -1,10 +1,12 @@
 (use-package prog-mode
   :bind (:map
          prog-mode-map
-         ([f6] . recompile))
+         ([f6] . recompile)
+         ("C-x C-q" . view-mode))
   :hook ((prog-mode . company-mode)
          (prog-mode . flycheck-mode)
          (prog-mode . flyspell-prog-mode)
+         (prog-mode . view-mode)
          (prog-mode . yas-minor-mode)
          (prog-mode . centered-cursor-mode)
          (prog-mode . rainbow-mode)
@@ -15,10 +17,4 @@
 
   ;; Highlight hex strings in respective color.
   (use-package rainbow-mode
-    :ensure t)
-
-  ;; Make all prog mode buffers read-only by default.
-  ;; Nicer for navigation.
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (read-only-mode +1)) t))
+    :ensure t))

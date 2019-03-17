@@ -377,6 +377,18 @@ line instead."
 (use-package savekill
   :ensure t)
 
+(use-package view
+  :bind (:map view-mode-map
+              ("C-x C-q" . view-mode)
+              ("a" . mwim-beginning-of-code-or-line)
+              ("e" . mwim-end-of-code-or-line)
+              ("p" . previous-line)
+              ("n" . next-line)
+              ("f" . forward-char)
+              ("b" . backward-char)
+              ("v" . ccm-scroll-up)
+              ("SPC" . ccm-scroll-up)))
+
 (use-package simple
   :config
   ;; Save external clipboard before killing other text in Emacs.
@@ -405,22 +417,7 @@ line instead."
 
   (advice-add 'indent-for-tab-command
               :around
-              'ar/kill-ring-save--mark-whole-buffer)
-
-  ;; A basic keymap for read-only-mode enables easier navigation.
-  (defvar read-only-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "q") #'quit-window)
-      (define-key map (kbd "p") #'previous-line)
-      (define-key map (kbd "n") #'next-line)
-      (define-key map (kbd "f") #'forward-char)
-      (define-key map (kbd "b") #'backward-char)
-      (define-key map (kbd "v") #'ccm-scroll-up)
-      (define-key map (kbd "SPC") #'ccm-scroll-up)
-      map)
-    "read-only-mode's missing keymap")
-  ;; Add `read-only-mode-map' (the missing read-only-mode keymap).
-  (push (cons 'buffer-read-only read-only-mode-map) minor-mode-map-alist))
+              'ar/kill-ring-save--mark-whole-buffer))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
