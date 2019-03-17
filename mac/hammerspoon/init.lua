@@ -181,32 +181,14 @@ function getEmacsOrgShortLinks()
 end
 
 function searchEmacsOrgShortLinks()
-   local chooser = hs.chooser.new(function(choice)
-         if not choice then
-            ar.window.focusPrevious()
-            return
-         end
-         output,success = hs.execute("open http://"..choice['text'])
-         if not success then
-            hs.alert.show("Could not open: "..choice['text'])
-         end
-   end)
-
-   local links = hs.fnutils.map(getEmacsOrgShortLinks(), function(item)
-                                   return {
-                                      text=item['link'],
-                                      subText=item['description']
-                                   }
-   end)
-   chooser:queryChangedCallback(function(query)
-         chooser:choices(hs.fnutils.filter(links, function(item)
-                                              hs.printf(item["text"])
-                                              -- Concat text and subText to search in either
-                                              return fuzzyMatch(query, item["text"]..item["subText"]) end))
-   end)
-
-   chooser:choices(links)
-   chooser:show()
+   appRequestingEmacs = hs.application.frontmostApplication()
+   emacsExecute(false, "(ar/modal-ivy-search-short-links)")
+   activateFirstOf({
+            {
+               bundleID="org.gnu.Emacs",
+               name="Emacs"
+            }
+      })
 end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)

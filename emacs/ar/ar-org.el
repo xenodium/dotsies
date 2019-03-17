@@ -25,9 +25,10 @@
   (when (string-match-p ar/org-short-link-regex (current-kill 0))
     (insert (format "%s - " (current-kill 0)))))
 
-(defun ar/org-short-links-json ()
-  "Return all short links encoded in JSON link: and description:."
-  (json-encode (ar/org-short-links)))
+(cl-defstruct
+    ar/org-link
+  description
+  url)
 
 (defun ar/org-short-links ()
   "Extracts short links from `ar/org-get-daily-file-path'."
@@ -48,9 +49,8 @@
              (let* ((entry (s-split " - " line))
                     (link (s-trim (nth 0 entry)))
                     (description (s-trim (nth 1 entry))))
-               (list
-                (cons "link" link)
-                (cons "description" description))))
+               (make-ar/org-link :description description
+                                 :url link)))
            (-filter (lambda (line)
                       (not (s-blank-str? line)))
                     (s-split "\n" (buffer-substring-no-properties

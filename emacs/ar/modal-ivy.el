@@ -111,6 +111,32 @@
                                               (delete-frame)
                                               (other-window 1)))))))
 
+(defun ar/modal-ivy-search-short-links ()
+  "Search all my short links."
+  (ar/modal-ivy-frame "*modal-ivy*"
+                      (lambda ()
+                        (let ((ivy-height 20)
+                              (ivy-count-format ""))
+                          (ivy-read " "
+                                    (-map (lambda (link)
+                                            ;; Line is formatted as:
+                                            ;; Description   URL
+                                            (propertize (format " %s %s "
+                                                                (s-pad-right 40 " "
+                                                                             (propertize (ar/org-link-description link)
+                                                                                         'face
+                                                                                         'modal-ivy--col1-face))
+                                                                (ar/org-link-url link))
+                                                        'url (ar/org-link-url link)))
+                                          (ar/org-short-links))
+                                    :action (lambda (item)
+                                              (message "=> %s " (get-text-property 0 'url item))
+                                              (browse-url (if (s-starts-with-p "http" (get-text-property 0 'url item))
+                                                              (get-text-property 0 'url item)
+                                                            (format "http://%s" (get-text-property 0 'url item)))))
+                                    :unwind (lambda ()
+                                              (delete-frame)))))))
+
 (defun ar/modal-ivy-clipboard ()
   "Search all my org links."
   (ar/modal-ivy-frame "*modal-ivy*"
