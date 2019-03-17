@@ -1,6 +1,11 @@
 (use-package ielm
   :hook ((ielm-mode . company-mode)))
 
+;; Highlight bound variables and quoted exprs.
+(use-package lisp-extra-font-lock
+  :ensure t
+  :hook ((emacs-lisp-mode . lisp-extra-font-lock-global-mode)))
+
 (use-package elisp-mode
   :commands emacs-lisp-mode
   :hook ((emacs-lisp-mode . pcre-mode)
