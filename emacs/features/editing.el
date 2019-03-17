@@ -378,6 +378,7 @@ line instead."
   :ensure t)
 
 (use-package view
+  :hook ((prog-mode . view-mode))
   :bind (:map view-mode-map
               ("C-x C-q" . view-mode)
               ("a" . mwim-beginning-of-code-or-line)

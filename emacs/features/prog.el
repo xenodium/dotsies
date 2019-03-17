@@ -6,7 +6,6 @@
   :hook ((prog-mode . company-mode)
          (prog-mode . flycheck-mode)
          (prog-mode . flyspell-prog-mode)
-         (prog-mode . view-mode)
          (prog-mode . yas-minor-mode)
          (prog-mode . centered-cursor-mode)
          (prog-mode . rainbow-mode)
