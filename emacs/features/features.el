@@ -54,6 +54,7 @@
 (ar/init--idle-load "~/.emacs.d/features/pdf.el")
 (ar/init--idle-load "~/.emacs.d/features/plantuml.el")
 (ar/init--idle-load "~/.emacs.d/features/lua.el")
+(ar/init--idle-load "~/.emacs.d/features/misc.el")
 (ar/init--idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
 
 (run-with-idle-timer
