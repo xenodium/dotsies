@@ -37,7 +37,7 @@
   (interactive)
   (with-current-buffer (get-buffer-create "*links*")
     (org-mode)
-    (read-only-mode -1)
+    (view-mode -1)
     (erase-buffer)
     (mapc (lambda (anchor)
             (let-alist anchor
@@ -49,7 +49,7 @@
     (delete-duplicate-lines (point-min) (point-max))
     (goto-char (point-min))
     (toggle-truncate-lines +1)
-    (read-only-mode +1)
+    (view-mode +1)
     (switch-to-buffer (current-buffer))))
 
 (defun ar/url-sans-query (url)
