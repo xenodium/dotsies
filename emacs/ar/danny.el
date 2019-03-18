@@ -22,7 +22,9 @@
   recursive)
 
 (defvar danny-ignored-extensions (list "crdownload"
-                                       "part")
+                                       "part"
+                                       "m4a"
+                                       "ytdl")
   "List of ignored extensions (omit period).
 These are typically temp files created during downloads.
 
