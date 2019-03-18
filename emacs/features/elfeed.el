@@ -145,6 +145,7 @@ Based on `elfeed-search-print-entry--default'."
   (ar/vsetq elfeed-feeds
             '(
               ("http://1w6.org/rss.xml" blog emacs draketo)
+              ("https://d12frosted.io/atom.xml" blog emacs d12frosted)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
