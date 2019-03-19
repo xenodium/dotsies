@@ -21,7 +21,6 @@
 (ar/init--idle-load "~/.emacs.d/features/dev.el")
 (ar/init--idle-load "~/.emacs.d/features/dired.el")
 (ar/init--idle-load "~/.emacs.d/features/ediff.el")
-(ar/init--idle-load "~/.emacs.d/features/editing.el")
 (ar/init--idle-load "~/.emacs.d/features/elfeed.el")
 (ar/init--idle-load "~/.emacs.d/features/elisp.el")
 (ar/init--idle-load "~/.emacs.d/features/eshell.el")
@@ -56,6 +55,9 @@
 (ar/init--idle-load "~/.emacs.d/features/lua.el")
 (ar/init--idle-load "~/.emacs.d/features/misc.el")
 (ar/init--idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
+;; Keep last. It enables view-only mode in prog modes,
+;; which interferes with installing some packages that write to .el files.
+(ar/init--idle-load "~/.emacs.d/features/editing.el")
 
 (run-with-idle-timer
  0.5 nil
