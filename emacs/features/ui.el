@@ -20,14 +20,6 @@
 ;; (use-package github-theme
 ;;   :ensure t)
 
-;; Display
-;; /home/myuser/Documents/Letters/Personal-Family/Letter-to-John.tex as
-;; /h…/m…/D…/L…/P…-F…/Letter-to-John.tex
-(use-package visual-filename-abbrev
-  :ensure t
-  :hook ((prog-mode . visual-filename-abbrev-mode)
-         (eshell . visual-filename-abbrev-mode)))
-
 (use-package material-theme
   :ensure t
   :config
