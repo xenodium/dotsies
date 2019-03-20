@@ -41,9 +41,8 @@
   ;; Display ElDoc documentations in a childframe.
   (use-package eldoc-box
     :ensure t
-    :config
-    (eldoc-box-hover-mode)
-    (eldoc-box-hover-at-point-mode))
+    :hook ((eldoc-mode . eldoc-box-hover-mode)
+           (eldoc-box-hover-mode . eldoc-box-hover-at-point-mode)))
 
   ;; Apply face to face symbols themselves.
   (use-package fontify-face
