@@ -2,6 +2,7 @@
 (use-package modal-ivy
   :commands (ar/modal-ivy-search-org-links
              ar/modal-ivy-clipboard
+             ar/modal-ivy-search-short-links
              ar/modal-key-binding-r
              ar/hammerspoon-org-modal-add-todo
              ar/modal-key-binding-i)
