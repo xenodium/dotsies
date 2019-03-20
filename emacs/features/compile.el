@@ -8,8 +8,26 @@
          ("p" . previous-error-no-select)
          ("n" . next-error-no-select)
          ("{" . compilation-previous-file)
-         ("}" . compilation-next-file))
+         ("}" . compilation-next-file)
+         :map
+         prog-mode-map
+         ("C-c C-c" . ar/compile))
   :config
+
+  ;; https://www.emacswiki.org/emacs/CompileCommand#toc4
+  (defun ar/compile (pfx)
+    """Run the same compile as the last time.
+
+If there was no last time, or there is a prefix argument, this acts like
+M-x compile.
+"""
+    (interactive "p")
+    (if (and (eq pfx 1)
+	     compilation-last-buffer)
+        (progn
+          (set-buffer compilation-last-buffer)
+          (revert-buffer t t))
+      (call-interactively 'compile)))
 
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
