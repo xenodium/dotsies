@@ -337,7 +337,19 @@ line instead."
 (use-package hungry-delete
   :defer 5
   :ensure t
-  :config (global-hungry-delete-mode))
+  :bind (("<C-backspace>" . ar/backwards-delete-sexp-whitespace))
+  :config
+  (defun ar/backwards-delete-sexp-whitespace (arg)
+    "Deletes whitespace character prior to current sexp.  With ARG, delete it all."
+    (interactive "P")
+    (backward-sexp 1)
+    (if arg
+        (let ((current-prefix-arg nil))
+          (call-interactively 'hungry-delete-backward nil))
+      (delete-backward-char 1))
+    (forward-sexp 1))
+
+  (global-hungry-delete-mode))
 
 (use-package delsel
   :defer 5
@@ -363,8 +375,7 @@ line instead."
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("C-c r" . set-rectangular-region-anchor)
-         ("M-DEL" . ar/backward-delete-subword)
-         ("<C-backspace>" . ar/text-backwards-delete-sexp-whitespace)))
+         ("M-DEL" . ar/text-backward-delete-subword)))
 
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon

@@ -67,7 +67,7 @@
                     beg end)))))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
-(defun ar/backward-delete-subword (arg)
+(defun ar/text-backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
 With argument ARG, do this that many times."
   (interactive "p")
@@ -75,13 +75,6 @@ With argument ARG, do this that many times."
                  (progn
                    (subword-backward arg)
                    (point))))
-
-(defun ar/text-backwards-delete-sexp-whitespace ()
-  "Deletes whitespace prior to current sexp."
-  (interactive)
-  (backward-sexp 1)
-  (hungry-delete-backward 1 nil)
-  (forward-sexp 1))
 
 (provide 'ar-text)
 

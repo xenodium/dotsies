@@ -1235,7 +1235,7 @@ With a prefix ARG open line above the current line."
         ("C-<return>" . ar/smart-open-line)))
 
 ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
-(defun ar/backward-delete-subword (arg)
+(defun ar/text-backward-delete-subword (arg)
   "Delete characters backward until encountering the beginning of a word.
 With argument ARG, do this that many times."
   (interactive "p")
@@ -1243,8 +1243,8 @@ With argument ARG, do this that many times."
                  (progn
                    (subword-backward arg)
                    (point))))
-(bind-key "M-DEL" #'ar/backward-delete-subword)
-(bind-key "<C-backspace>" #'ar/backward-delete-subword)
+(bind-key "M-DEL" #'ar/text-backward-delete-subword)
+(bind-key "<C-backspace>" #'ar/text-backward-delete-subword)
 
 (defun ar/duplicate-line ()
   "Duplicate current line and paste below."
