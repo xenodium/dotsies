@@ -76,6 +76,12 @@ With argument ARG, do this that many times."
                    (subword-backward arg)
                    (point))))
 
+(defun ar/text-backwards-delete-sexp-whitespace ()
+  "Deletes whitespace prior to current sexp."
+  (interactive)
+  (backward-sexp 1)
+  (hungry-delete-backward 1 nil)
+  (forward-sexp 1))
 
 (provide 'ar-text)
 
