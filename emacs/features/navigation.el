@@ -111,7 +111,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :hook (prog-mode . symbol-overlay-mode)
   :bind (:map symbol-overlay-mode-map
               (("M-n" . symbol-overlay-jump-next)
-               ("M-p" . symbol-overlay-jump-prev))))
+               ("M-p" . symbol-overlay-jump-prev)))
+  :config
+  ;; Override overlay background color with default background
+  ;; to get rid of overlay bounding box.
+  (set-face-attribute 'symbol-overlay-default-face nil
+                      :background (face-attribute 'default :background)
+                      :foreground "yellow"))
 
 (use-package ace-window
   :ensure t
