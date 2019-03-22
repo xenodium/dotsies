@@ -161,6 +161,7 @@ Based on `elfeed-search-print-entry--default'."
               ("http://dividendlife.com/feed" blog money DividendLife)
               ("http://earlyretirementinuk.blogspot.com/feeds/posts/default" blog money EarlyRetirementUK)
               ("http://emacslife.blogspot.com/feeds/posts/default" blog emacs emacslife)
+              ("http://feeds.feedburner.com/NoufalIbrahim?format=xml" blog emacs NoufalIbrahim)
               ("http://emacsredux.com/atom.xml" blog emacs emacs-redux)
               ("http://emacsworld.blogspot.com/feeds/posts/default?alt=rss" blog emacs EmacsWorld)
               ("http://evgeni.io/categories/posts/index.xml" blog emacs Evgeni)
