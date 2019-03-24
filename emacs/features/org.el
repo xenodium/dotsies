@@ -4,6 +4,7 @@
 (use-package org
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
+              ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
   :init
