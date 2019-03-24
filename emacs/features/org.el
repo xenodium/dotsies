@@ -39,7 +39,7 @@
     :hook (org-mode . org-bullets-mode)
     :config
     (ar/vsetq org-bullets-bullet-list
-                   '("◉" "◎" "⚫" "○" "►" "◇")))
+              '("◉" "◎" "⚫" "○" "►" "◇")))
 
   (use-package org-faces
     :config
