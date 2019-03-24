@@ -30,22 +30,7 @@
   :config
   ;; (ar/csetq expand-region-smart-cursor t)
   ;; Skip marking word. Most of the time, I want symbol.
-  (ar/vsetq er/try-expand-list (remq 'er/mark-word er/try-expand-list))
-  (defun ar/kill-ring-save--expand-region-advice (orig-fun &rest r)
-    "Remember point location prior to expanding region with an advice around `kill-ring-save' (ORIG-FUN and R)."
-    (apply orig-fun r)
-    (when (eq last-command 'er/expand-region)
-      (pop-to-mark-command)
-      (pop-to-mark-command)
-      (message "Restored location prior to 'er/expand-region")))
-
-  (advice-add 'kill-ring-save
-              :around
-              'ar/kill-ring-save--expand-region-advice)
-
-  (advice-add 'indent-for-tab-command
-              :around
-              'ar/kill-ring-save--expand-region-advice))
+  (ar/vsetq er/try-expand-list (remq 'er/mark-word er/try-expand-list)))
 
 (use-package dabbrev
   :config
@@ -413,23 +398,7 @@ line instead."
   (ar/csetq idle-update-delay 2)
 
   ;; Increase mark ring size.
-  (ar/csetq global-mark-ring-max 500)
-
-  (defun ar/kill-ring-save--mark-whole-buffer (orig-fun &rest r)
-    "Remember point location prior to `mark-whole-buffer' with an advice around `kill-ring-save' (ORIG-FUN and R)."
-    (apply orig-fun r)
-    (when (eq last-command 'mark-whole-buffer)
-      (pop-to-mark-command)
-      (pop-to-mark-command)
-      (message "Restored location prior to 'mark-whole-buffer")))
-
-  (advice-add 'kill-ring-save
-              :around
-              'ar/kill-ring-save--mark-whole-buffer)
-
-  (advice-add 'indent-for-tab-command
-              :around
-              'ar/kill-ring-save--mark-whole-buffer))
+  (ar/csetq global-mark-ring-max 500))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
@@ -444,4 +413,9 @@ line instead."
 (use-package re-builder
   :config
   (ar/csetq reb-re-syntax 'string))
+
+(use-package diverted
+  :config
+  (diverted-mode))
+
 ;; No double escaping needed.
