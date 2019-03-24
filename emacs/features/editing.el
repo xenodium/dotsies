@@ -416,6 +416,11 @@ line instead."
 
 (use-package diverted
   :config
-  (diverted-mode))
+  (add-to-list 'diverted-events
+               (make-diverted-event :from 'er/expand-region
+                                    :to 'indent-for-tab-command
+                                    :breadcrumb (lambda ()
+                                                  (diverted--pop-to-mark-command 2))))
+  (diverted-mode +1))
 
 ;; No double escaping needed.

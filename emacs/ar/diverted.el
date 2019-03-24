@@ -7,40 +7,38 @@
 
 ;;; Code:
 
-(require 's)
-(require 'dash)
-
-(defvar diverted--mode-enabled nil)
+(require 'cl)
+(require 'seq)
 
 (defstruct diverted-event
   from ;; Initial function (eg. 'mark-defun)
   to ;; Follow-up function (eg. 'indent-for-tab-command)
   breadcrumb)
 
+
 (defvar diverted-events
   (list
-   (make-diverted-event :from 'er/expand-region
-                        :to 'indent-for-tab-command
-                        :breadcrumb (lambda ()
-                                      (pop-to-mark-command)
-                                      (pop-to-mark-command)))
    (make-diverted-event :from 'mark-defun
                         :to 'indent-for-tab-command
                         :breadcrumb (lambda ()
-                                      (pop-to-mark-command)
-                                      (pop-to-mark-command)))
+                                      (diverted--pop-to-mark-command 2)))
    (make-diverted-event :from 'mark-whole-buffer
                         :to 'indent-for-tab-command
                         :breadcrumb (lambda ()
-                                      (pop-to-mark-command)
-                                      (pop-to-mark-command))))
-  "docstring")
+                                      (diverted--pop-to-mark-command 2))))
+  "Diversion events to look for.")
 
-(defun diverted--resolve (sym)
-  (-find (lambda (event)
-           (equal sym
-                  (diverted-event-from event)))
-         diverted-events))
+(defun diverted--resolve (symbol)
+  "Resolve SYMBOL to event."
+  (seq-find (lambda (event)
+              (equal symbol
+                     (diverted-event-from event)))
+            diverted-events))
+
+(defun diverted--pop-to-mark-command (n)
+  "Invoke `pop-to-mark-command' N number of times."
+  (dotimes (_ n)
+    (pop-to-mark-command)))
 
 (defun diverted--advice-fun (orig-fun &rest r)
   "Get back to location prior to diversion using advice around `diverted-events' (ORIG-FUN and R)."
@@ -50,14 +48,8 @@
       (message "Breadcrumbed prior to `%s'"
                (diverted-event-from recognized-event)))))
 
-(defun diverted-mode ()
-  "Toggle diverted-mode."
-  (interactive)
-  (if diverted--mode-enabled
-      (diverted-mode-disable)
-    (diverted-mode-enable)))
-
 (defun diverted-mode-enable ()
+  "Enable diverted-mode."
   (interactive)
   (diverted-mode-disable)
   (mapc (lambda (event)
@@ -68,10 +60,10 @@
                    (diverted-event-to event)
                    (diverted-event-from event)))
         diverted-events)
-  (setq diverted--mode-enabled t)
   (message "diverted-mode enabled"))
 
 (defun diverted-mode-disable ()
+  "Disable diverted-mode."
   (interactive)
   (mapc (lambda (event)
           (advice-remove (diverted-event-to event)
@@ -80,8 +72,16 @@
                    (diverted-event-to event)
                    (diverted-event-from event)))
         diverted-events)
-  (setq diverted--mode-enabled nil)
   (message "diverted-mode disabled"))
+
+(define-minor-mode diverted-mode
+  "Detect temporary diversions and restore point location."
+  :init-value nil
+  :lighter " diverted"
+  :global t
+  (if diverted-mode
+      (diverted-mode-enable)
+    (diverted-mode-disable)))
 
 (provide 'diverted)
 
