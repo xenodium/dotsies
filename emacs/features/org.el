@@ -4,6 +4,7 @@
 (use-package org
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
+              ("M-RET" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
@@ -19,6 +20,10 @@
          (org-mode . yas-minor-mode)
          (org-mode . smartparens-mode))
   :config
+  (defun ar/org-meta-return (&optional arg)
+    (interactive "P")
+    (end-of-line)
+    (call-interactively 'org-meta-return))
 
   (ar/csetq org-todo-keywords
             '((sequence
