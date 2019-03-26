@@ -8,6 +8,7 @@
 
 (use-package elisp-mode
   :commands emacs-lisp-mode
+  :bind ("C-x C-e" . ar/eval-last-sexp)
   :hook ((emacs-lisp-mode . pcre-mode)
          (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
          (ielm-mode . ar/emacs-lisp-mode-hook-function))
@@ -28,6 +29,21 @@
   ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
   ;; that you can always see what's happening.
   (ar/csetq eval-expression-print-level nil)
+
+  ;; Based on https://emacsredux.com/blog/2013/06/21/eval-and-replace
+  (defun ar/eval-last-sexp (arg)
+    "Replace the preceding sexp with its value."
+    (interactive "P")
+    (if arg
+        (progn
+          (backward-kill-sexp)
+          (condition-case nil
+              (prin1 (eval (read (current-kill 0)))
+                     (current-buffer))
+            (error (message "Invalid expression")
+                   (insert (current-kill 0)))))
+      (let ((current-prefix-arg nil))
+        (call-interactively 'pp-eval-last-sexp))))
 
   ;; make ELisp regular expressions more readable.
   (use-package easy-escape
