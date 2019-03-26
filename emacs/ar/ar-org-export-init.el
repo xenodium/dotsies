@@ -30,5 +30,3 @@
     (set-face-attribute 'whitespace-line nil
                         :foreground nil
                         :background nil)))
-
-(ar/ox-html-export)
