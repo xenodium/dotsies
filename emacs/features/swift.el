@@ -6,12 +6,15 @@
     "Called when entering `swift-mode'."
     (add-to-list 'flycheck-checkers 'swiftlint)
 
-    (let ((lint-config-file (locate-dominating-file (buffer-file-name) ".swiftlint.yml")))
-      (when lint-config-file
-        (setq-local flycheck-swiftlint-config-file
-                    (concat (file-name-as-directory
-                             lint-config-file)
-                            ".swiftlint.yml"))))
+    (if (buffer-file-name)
+        (let ((lint-config-file (locate-dominating-file (buffer-file-name)
+                                                        ".swiftlint.yml")))
+          (when lint-config-file
+            (setq-local flycheck-swiftlint-config-file
+                        (concat (file-name-as-directory
+                                 lint-config-file)
+                                ".swiftlint.yml"))))
+      (message "No buffer filename in swift mode."))
 
     (setq-local company-backends '((company-sourcekit
                                     company-swimports
