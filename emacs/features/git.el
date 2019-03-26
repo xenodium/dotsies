@@ -1,4 +1,6 @@
 (require 'ar-vsetq)
+(require 's)
+(require 'dash)
 
 (use-package magit
   :ensure t
@@ -46,11 +48,14 @@
     "Search and insert commit message from history."
     (interactive)
     (insert (completing-read "History: "
-                             (delete-dups
-                              ;; Remove unnecessary newlines (at beg and end).
-                              (mapcar (lambda (text)
-                                        (string-trim text))
-                                      (ring-elements log-edit-comment-ring)))))))
+                             (-remove
+                              (lambda (item)
+                                (s-contains-p "Summary: " item))
+                              (delete-dups
+                               ;; Remove unnecessary newlines (at beg and end).
+                               (mapcar (lambda (text)
+                                         (string-trim text))
+                                       (ring-elements log-edit-comment-ring))))))))
 
 (use-package gitconfig-mode
   :ensure t
