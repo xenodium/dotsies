@@ -34,7 +34,9 @@
 (defun ar/eshell-config--prompt-function ()
   "Make eshell prompt purrrty."
   (concat "\n┌─ "
-          (abbreviate-file-name (f-parent (eshell/pwd)))
+          (abbreviate-file-name (if (f-root-p (eshell/pwd))
+                                    (eshell/pwd)
+                                  (f-parent (eshell/pwd))))
           "/"
           (propertize (ar/eshell-config--dname)
                       'face 'eshell-ls-directory)
