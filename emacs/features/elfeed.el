@@ -143,8 +143,7 @@ Based on `elfeed-search-print-entry--default'."
   (ar/vsetq elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
 
   (ar/vsetq elfeed-feeds
-            '(
-              ("http://1w6.org/rss.xml" blog emacs draketo)
+            '(("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("https://solmaz.io/atom.xml" blog emacs OnurSolmaz)
               ("http://akkartik.name/feeds.xml" blog dev)
@@ -159,6 +158,7 @@ Based on `elfeed-search-print-entry--default'."
               ("http://cmsj.net/feed.xml" blog hammerspoon dev Chris-Jones)
               ("http://dangrover.com/feed.xml" blog dangrover emacs )
               ("http://dividendlife.com/feed" blog money DividendLife)
+              ("https://engineering.collbox.co/index.xml" blog emacs Collbox)
               ("http://earlyretirementinuk.blogspot.com/feeds/posts/default" blog money EarlyRetirementUK)
               ("http://emacslife.blogspot.com/feeds/posts/default" blog emacs emacslife)
               ("http://feeds.feedburner.com/NoufalIbrahim?format=xml" blog emacs NoufalIbrahim)
