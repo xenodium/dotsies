@@ -45,6 +45,9 @@
       (let ((current-prefix-arg nil))
         (call-interactively 'pp-eval-last-sexp))))
 
+  (use-package relint
+    :ensure t)
+
   ;; make ELisp regular expressions more readable.
   (use-package easy-escape
     :ensure t
