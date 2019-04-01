@@ -44,7 +44,7 @@ If a region is active, export that region."
     <td id='contact-left'>
       <a style='color:rgb(51, 51, 51);' href='/'>index</a>
       |
-      <a style='color:rgb(51, 51, 51);' href='/all'>all posts</a>
+      <a style='color:rgb(51, 51, 51);' href='/all'>all</a>
     </td>
     <td id='contact-right'>
       <a href='https://twitter.com/xenodium'>twitter</a>
