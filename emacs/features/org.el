@@ -117,12 +117,15 @@
     :bind (:map org-mode-map
                 ([f6] . ar/ox-export-all-async))
     :config
+    (use-package ar-org)
     (use-package ox-html)
     ;; Required by code block syntax highlighting.
     (use-package htmlize
       :ensure t)
 
-    (ar/ox-html-setup))
+    (ar/ox-html-setup)
+
+    (use-package ar-org-split-export))
 
   (use-package ob
     :bind (:map org-mode-map

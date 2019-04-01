@@ -42,7 +42,10 @@ If a region is active, export that region."
 <table id='contact-header'>
   <tr>
     <td id='contact-left'>
-   </td>
+      <a style='color:rgb(51, 51, 51);' href='/'>index</a>
+      |
+      <a style='color:rgb(51, 51, 51);' href='/all'>all posts</a>
+    </td>
     <td id='contact-right'>
       <a href='https://twitter.com/xenodium'>twitter</a>
       <a href='http://github.com/xenodium'>github</a>

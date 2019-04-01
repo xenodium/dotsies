@@ -85,3 +85,5 @@
                              'ar/ox-html--timestamp-translate-advice-fun)
               (advice-remove 'worg-export--collect-tree-properties
                              'ar/org-export--collect-tree-properties--postprocess))))))))
+
+(provide 'ar-org-split-export)
