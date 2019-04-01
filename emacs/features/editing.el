@@ -373,20 +373,6 @@ line instead."
 (use-package savekill
   :ensure t)
 
-(use-package view
-  :hook ((prog-mode . view-mode)
-         (org-mode . view-mode))
-  :bind (:map view-mode-map
-              ("C-x C-q" . view-mode)
-              ("a" . mwim-beginning-of-code-or-line)
-              ("e" . mwim-end-of-code-or-line)
-              ("p" . previous-line)
-              ("n" . next-line)
-              ("f" . forward-char)
-              ("b" . backward-char)
-              ("v" . ccm-scroll-up)
-              ("SPC" . ccm-scroll-up)))
-
 (use-package simple
   :config
   ;; Save external clipboard before killing other text in Emacs.

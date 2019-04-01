@@ -62,16 +62,16 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
-(defun ar/ox-export-async ()
+(defun ar/ox-export-all-async ()
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
-                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export)\" && ")
+                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-all)\" && ")
                                "open " (format "file:%s" (expand-file-name
                                                           "~/stuff/active/blog/index.html")))
                        "*org html export*"))
 
 
-(defun ar/ox-html-export ()
+(defun ar/ox-html-export-all ()
   "Export blog to HTML."
   (interactive)
   (ar/file-assert-file-exists org-plantuml-jar-path)
@@ -86,7 +86,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
             (advice-add 'org-timestamp-translate
                         :around
                         'ar/ox-html--timestamp-translate-advice-fun)
-            (org-html-export-to-html))
+            (org-export-to-file 'html "all/index.html"))
         (advice-remove 'org-timestamp-translate
                        'ar/ox-html--timestamp-translate-advice-fun))
       (browse-url (format "file:%s" (expand-file-name

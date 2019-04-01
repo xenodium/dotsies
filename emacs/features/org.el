@@ -115,7 +115,7 @@
 
   (use-package ar-ox-html
     :bind (:map org-mode-map
-                ([f6] . ar/ox-export-async))
+                ([f6] . ar/ox-export-all-async))
     :config
     (use-package ox-html)
     ;; Required by code block syntax highlighting.

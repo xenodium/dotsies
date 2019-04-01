@@ -10,6 +10,8 @@
 ;; Symbol’s value as variable is void: org-src-lang-modes
 (defvar org-src-lang-modes nil)
 
+(message "Running noninteractive? %s" (if noninteractive "yes" "no"))
+
 (load "~/.emacs.d/features/package-extensions.el")
 (load "~/.emacs.d/features/libs.el")
 (load "~/.emacs.d/features/mac.el")
