@@ -16,6 +16,7 @@
 (load "~/.emacs.d/features/linux.el")
 (load "~/.emacs.d/features/org.el")
 (load "~/.emacs.d/ar/ar-ox-html.el")
+(load "~/.emacs.d/ar/ar-org-split-export.el")
 
 (use-package whitespace)
 

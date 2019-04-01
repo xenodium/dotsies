@@ -92,6 +92,57 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
       (browse-url (format "file:%s" (expand-file-name
                                      "~/stuff/active/blog/index.html"))))))
 
+(defun ar/ox-export-index-async ()
+  (interactive)
+  (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
+                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-index)\" && ")
+                               "open " (format "file:%s" (expand-file-name
+                                                          "~/stuff/active/blog/index.html")))
+                       "*org html export*"))
+
+(defun ar/org-html-headline-postprocess (orig-fun &rest r)
+  "Apply ORIG-FUN on R and post-process.
+- Remove everything after </h2> (including </div>).
+- Re-add </div>.
+- Wrap h2 content with <a href=''></a>."
+  (let ((heading (apply orig-fun r))
+        (id (org-element-property :CUSTOM_ID (nth 0 r))))
+    (if (s-index-of "</h2>" heading)
+        (s-replace-regexp "</a>\\(.*?\\)</h2>" (format "<a style='color:rgb(51, 51, 51);' href='%s'>\\1</a>"
+                                                   id)
+                          (concat (substring heading
+                                             0 (+ (length "</h2>")
+                                                  (s-index-of "</h2>" heading)))
+                                  "</div>")
+                          nil nil 1)
+      heading)))
+
+(defun ar/ox-html-export-index ()
+  "Export blog to HTML index."
+  (interactive)
+  (ar/file-assert-file-exists org-plantuml-jar-path)
+  (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
+  (with-current-buffer (find-file-noselect (expand-file-name
+                                            "~/stuff/active/blog/index.org"))
+    (let ((org-time-stamp-custom-formats
+           '("<%d %B %Y>" . "<%A, %B %d, %Y %H:%M>"))
+          (org-display-custom-times 't))
+      (unwind-protect
+          (progn
+            (advice-add 'org-html-headline
+                        :around
+                        'ar/org-html-headline-postprocess)
+            (advice-add 'org-timestamp-translate
+                        :around
+                        'ar/ox-html--timestamp-translate-advice-fun)
+            (org-html-export-to-html))
+        (advice-remove 'org-html-headline
+                       'ar/org-html-headline-postprocess)
+        (advice-remove 'org-timestamp-translate
+                       'ar/ox-html--timestamp-translate-advice-fun))
+      (browse-url (format "file:%s" (expand-file-name
+                                     "~/stuff/active/blog/index.html"))))))
+
 (setq org-html-head-extra
       "<style type='text/css'>
          /* https://stackoverflow.com/questions/6370690/media-queries-how-to-target-desktop-tablet-and-mobile */
@@ -242,7 +293,8 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            letter-spacing: -0.02em;
            margin-bottom: 0px;
            text-indent: -3px;
-           cursor: pointer;
+// Make header clickable.
+//           cursor: pointer;
          }
 
          h3 {
@@ -284,9 +336,10 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          .outline-2 {
          }
 
-         .default-visibility, .outline-text-2, .outline-3, .outline-4, .outline-5, .outline-6, .org-ul {
-           display: none;
-         }
+// Hides subtree for heading by default.
+//         .default-visibility, .outline-text-2, .outline-3, .outline-4, .outline-5, .outline-6, .org-ul {
+//           display: none;
+//         }
 
          .example {
            white-space: pre-wrap;
@@ -307,45 +360,46 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
        <!-- End of Woopra Code -->
 
        <script>
-         function getClosest(elem, selector) {
-             for ( ; elem && elem !== document; elem = elem.parentNode ) {
-         	if ( elem.matches( selector ) ) return elem;
-             }
-             return null;
-         };
-
-
-         function setNodeVisible (node, visible) {
-             for (var i = 0; i < node.childNodes.length; i++) {
-                 var child = node.childNodes[i];
-                 if (node.classList.contains('outline-text-2') ||
-                     node.classList.contains('outline-3') ||
-                     node.classList.contains('outline-4') ||
-                     node.classList.contains('outline-5') ||
-                     node.classList.contains('outline-6')) {
-                     node.style.display = visible ? 'inline' : 'none';
-                 } else if (node.classList.contains('org-ul')) {
-                     node.style.display = visible ? 'block' : 'none';
-                  }
-                 setNodeVisible(child, visible);
-             }
-         }
-
-         window.onload = function() {
-             var parts = document.URL.split('#');
-             if (parts.length > 1) {
-                 var entry = getClosest(document.getElementById(parts[1]), '.outline-2');
-                 setNodeVisible(entry, true)
-             }
-
-             document.body.onclick = function(e){
-                 if (e.target.tagName.toLowerCase() === 'h2') {
-                     var entry = getClosest(e.target, '.outline-2');
-                     var elements = entry.getElementsByClassName('outline-text-2');
-                     setNodeVisible(entry, elements[0].style.display !== 'inline');
-                 }
-             };
-         };
+// Toggles heading subtree on click.
+//         function getClosest(elem, selector) {
+//             for ( ; elem && elem !== document; elem = elem.parentNode ) {
+//         	if ( elem.matches( selector ) ) return elem;
+//             }
+//             return null;
+//         };
+//
+//
+//         function setNodeVisible (node, visible) {
+//             for (var i = 0; i < node.childNodes.length; i++) {
+//                 var child = node.childNodes[i];
+//                 if (node.classList.contains('outline-text-2') ||
+//                     node.classList.contains('outline-3') ||
+//                     node.classList.contains('outline-4') ||
+//                     node.classList.contains('outline-5') ||
+//                     node.classList.contains('outline-6')) {
+//                     node.style.display = visible ? 'inline' : 'none';
+//                 } else if (node.classList.contains('org-ul')) {
+//                     node.style.display = visible ? 'block' : 'none';
+//                  }
+//                 setNodeVisible(child, visible);
+//             }
+//         }
+//
+//         window.onload = function() {
+//             var parts = document.URL.split('#');
+//             if (parts.length > 1) {
+//                 var entry = getClosest(document.getElementById(parts[1]), '.outline-2');
+//                 setNodeVisible(entry, true)
+//             }
+//
+//             document.body.onclick = function(e){
+//                 if (e.target.tagName.toLowerCase() === 'h2') {
+//                     var entry = getClosest(e.target, '.outline-2');
+//                     var elements = entry.getElementsByClassName('outline-text-2');
+//                     setNodeVisible(entry, elements[0].style.display !== 'inline');
+//                 }
+//             };
+//         };
        </script>
 
 ")
