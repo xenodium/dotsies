@@ -104,14 +104,14 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
                        "*org html export*"))
 
 (defun ar/org-html-headline-postprocess (orig-fun &rest r)
-  "Apply ORIG-FUN on R and post-process.
+  "Apply ORIG-FUN on R and post-process. Hacky! Hacky! Hacky!
 - Remove everything after </h2> (including </div>).
 - Re-add </div>.
 - Wrap h2 content with <a href=''></a>."
   (let ((heading (apply orig-fun r))
         (id (org-element-property :CUSTOM_ID (nth 0 r))))
     (if (s-index-of "</h2>" heading)
-        (s-replace-regexp "</a>\\(.*?\\)</h2>" (format "<a style='color:rgb(51, 51, 51);' href='%s'>\\1</a>"
+        (s-replace-regexp "</span></span>\\(.*?\\)</h2>" (format "<a style='color:rgb(51, 51, 51);' href='%s'>\\1</a>"
                                                    id)
                           (concat (substring heading
                                              0 (+ (length "</h2>")
