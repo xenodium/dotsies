@@ -19,10 +19,26 @@
       (lambda (headline)
         (when (org-element-property :CUSTOM_ID headline)
           (ar/org-split-export-headline (expand-file-name "~/stuff/active/blog/index.org")
+                                        (ar/org-split-export--parse-headline-title
+                                         (org-element-property :raw-value headline))
                                         (org-element-property :CUSTOM_ID headline)
                                         (org-element-property :begin headline))
           ;; Adding a sleep prevents error: "Creating pipe: Too many open files".
           (sleep-for 0.1))))))
+
+(defun ar/org-split-export--parse-headline-title (headline)
+  ;; For example:
+  ;; [2019-03-30 Sat] Reading spreadsheets with python/pandas
+  ;; => Reading spreadsheets with python/pandas
+  (let ((match (s-match (rx "[" (= 4 num) "-"(= 2 num) "-" (= 2 num) (= 1 blank)
+                            (or "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun")
+                            "]"
+                            (= 1 blank)
+                            (group (one-or-more anything)))
+                        headline)))
+    (when (> (length match)
+             1)
+      (nth 1 match))))
 
 (defun ar/org-html-link--postprocess (orig-fun &rest r)
   (let ((html-link (apply orig-fun r)))
@@ -50,7 +66,7 @@
                                          (lambda (headline)
                                            (cons (org-element-property :CUSTOM_ID headline) "index.org"))))))))
 
-(defun ar/org-split-export-headline (src-fpath custom-id location)
+(defun ar/org-split-export-headline (src-fpath title custom-id location)
   (message "Exporting %s %s at %s" src-fpath custom-id location)
   (with-current-buffer (find-file-noselect src-fpath)
     (let ((dst-fpath))
@@ -78,7 +94,14 @@
                   (advice-add 'org-timestamp-translate
                               :around
                               'ar/ox-html--timestamp-translate-advice-fun)
-                  (org-export-to-file 'html dst-fpath))
+                  (org-export-to-file 'html dst-fpath nil nil nil nil nil
+                                      (lambda (dst-fpath)
+                                        (with-current-buffer (find-file-noselect dst-fpath t)
+                                          (revert-buffer t t)
+                                          (replace-regexp "<title>Álvaro Ramírez</title>"
+                                                          (format "<title>%s</title>" title))
+                                          (save-buffer)
+                                          (kill-buffer (current-buffer))))))
               (advice-remove 'org-html-link
                              'ar/org-html-link--postprocess)
               (advice-remove 'org-timestamp-translate
