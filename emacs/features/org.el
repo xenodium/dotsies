@@ -110,35 +110,50 @@
     :ensure t)
 
   ;; Work in progress.
-  ;; (use-package webfeeder
-  ;;   :ensure t
-  ;;   :config
-  ;;   (defun ar/blog-date (html-file)
-  ;;     (with-temp-buffer
-  ;;       (insert-file-contents html-file)
-  ;;       (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
-  ;;              (date (dom-text (car (dom-by-class dom "timestamp")))))
-  ;;         (date-to-time date))))
+  (use-package webfeeder
+    :ensure t
+    :config
+    (defun ar/blog-date (html-file)
+      (with-temp-buffer
+        (insert-file-contents html-file)
+        (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
+               (timestamp (nth 1 (dom-by-class dom "timestamp")))
+               (date (parse-time-string (dom-text timestamp))))
+          (encode-time (list 0 0 0
+                             (nth 3 date)
+                             (nth 4 date)
+                             (nth 5 date)
+                             nil -1 nil)))))
 
-  ;;   (defun ar/generate-feed ()
-  ;;     (interactive)
-  ;;     (let ((webfeeder-date-function
-  ;;             'ar/blog-date))
-  ;;        (webfeeder-build "~/stuff/active/blog/rss.xml"
-  ;;                         "~/stuff/active/blog"
-  ;;                         "http://xenodium.com"
-  ;;                         ;; (-filter (lambda (fpath)
-  ;;                         ;;            ;; Remove master index.html.
-  ;;                         ;;            (and (not (s-matches-p "blog/index\\.html$" fpath))
-  ;;                         ;;                 (not (s-matches-p "all/index\\.html$" fpath))))
-  ;;                         ;;          (f-files "~/stuff/active/blog"
-  ;;                         ;;                   (lambda (fpath)
-  ;;                         ;;                     ;; All index.html files.
-  ;;                         ;;                     (s-matches-p "index\\.html$" fpath)) t))
-  ;;                         (list "/Users/alvaro/stuff/active/blog/dot-net-bookmarks/index.html")
-  ;;                         :title "Alvaro Ramirez's notes"
-  ;;                         :description "Alvaro's notes from a hacked up org HTML export."
-  ;;                         :builder 'webfeeder-make-rss))))
+    (defun ar/blog-entry-fpaths ()
+      (let ((fpaths '())
+            (fpath))
+        (with-current-buffer (find-file-noselect (expand-file-name
+                                                  "~/stuff/active/blog/index.org"))
+          (org-element-map (org-element-parse-buffer 'headline)
+              'headline
+            (lambda (headline)
+              (if (org-element-property :CUSTOM_ID headline)
+                  (progn
+                    (setq fpath (format "%s/index.html" (org-element-property :CUSTOM_ID headline)))
+                    (if (f-exists-p fpath)
+                        (add-to-list 'fpaths fpath)
+                      (message "Skipping %s" fpath)))
+                (message "No custom ID for %s" (ar/org-split-export--parse-headline-title
+                                                (org-element-property :raw-value headline)))))))
+        fpaths))
+
+    (defun ar/generate-feed ()
+      (interactive)
+      (let ((webfeeder-date-function
+             'ar/blog-date))
+        (webfeeder-build "~/stuff/active/blog/rss.xml"
+                         "~/stuff/active/blog"
+                         "http://xenodium.com"
+                         (ar/blog-entry-fpaths)
+                         :title "Alvaro Ramirez's notes"
+                         :description "Alvaro's notes from a hacked up org HTML export."
+                         :builder 'webfeeder-make-rss))))
 
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image
@@ -212,19 +227,3 @@
     (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
     (ar/csetq org-crypt-key nil)))
-
-
-(defun ar/blog-date (html-file)
-  (with-temp-buffer
-    (insert-file-contents html-file)
-    (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
-           (timestamp (nth 1 (dom-by-class dom "timestamp")))
-           (date (if (listp timestamp)
-                     (-last-item timestamp)
-                   timestamp)))
-      (message "TIMESTAMP")
-      (dom-pp timestamp)
-      (message "====> %s" date)
-      (date-to-time date))))
-
-(parse-time-string "06 May 2016")
