@@ -1,7 +1,8 @@
+(use-package enlive
+  :ensure t)
+
 (use-package ar-url
-  :commands (ar/url-view-links-at)
-  :config
-  (use-package enlive :ensure t))
+  :commands (ar/url-view-links-at))
 
 ;; Make URLs and e-mail addresses clickable or activatable wit <RET>.
 (use-package goto-addr
