@@ -21,6 +21,7 @@
   dpath
   recursive)
 
+;; TODO: Add support for ignoring .com.google.Chrome.0uuOzk.
 (defvar danny-ignored-extensions (list "crdownload"
                                        "part"
                                        "m4a"
