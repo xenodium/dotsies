@@ -21,14 +21,15 @@
   dpath
   recursive)
 
-(defvar danny-ignored-extensions (list "crdownload"
-                                       "part"
-                                       "m4a"
-                                       "ytdl")
-  "List of ignored extensions (omit period).
-These are typically temp files created during downloads.
+(defvar danny-ignored-regexps (list "crdownload$"
+                                    "part$"
+                                    "m4a$"
+                                    "ytdl$"
+                                    "com\\.google\\.Chrome\\.")
+  "List of ignored regular expressions matching file names.
+These are handy for matching temp files created during downloads.
 
-For example \"crdownload\" \"part\".")
+For example \"crdownload$\" and \"part$\".")
 
 (defvar danny-destination-roots
   (list (make-danny-destination-root :name "Documents"
@@ -101,8 +102,9 @@ For example \"crdownload\" \"part\".")
         (fpath (nth 2 event)))
     (when (and (eq event-type 'created)
                (f-file-p fpath)
-               (not (-contains-p danny-ignored-extensions
-                                 (f-ext fpath)) ))
+               (not (-find-index (lambda (ignored-regexp)
+                                   (s-matches-p ignored-regexp fpath))
+                                 danny-ignored-regexps)))
       fpath)))
 
 (defun danny--new-downloaded-file-for-event (event)
@@ -115,8 +117,13 @@ For example \"crdownload\" \"part\".")
                (f-file-p dst-fpath)
                ;; Check some.part was renamed to some.txt.
                ;; part is one of the ignored extensions.
-               (and (-contains-p danny-ignored-extensions (f-ext src-fpath))
-                    (not (-contains-p danny-ignored-extensions (f-ext dst-fpath)))))
+               (and
+                (-find-index (lambda (ignored-regexp)
+                               (s-matches-p ignored-regexp src-fpath))
+                             danny-ignored-regexps)
+                (not (-find-index (lambda (ignored-regexp)
+                                    (s-matches-p ignored-regexp dst-fpath))
+                                  danny-ignored-regexps))))
       dst-fpath)))
 
 (defun danny-process-last-download ()
