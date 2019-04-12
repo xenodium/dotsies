@@ -66,8 +66,24 @@
                                          (lambda (headline)
                                            (cons (org-element-property :CUSTOM_ID headline) "index.org"))))))))
 
-(defun ar/org-split-export-headline (src-fpath title custom-id location)
-  (message "Exporting %s %s at %s" src-fpath custom-id location)
+
+(defun ar/org-export-current-headline-async ()
+  (interactive)
+  (let ((headline (ar/org-element-at-heading-1)))
+    (assert (eq major-mode 'org-mode))
+    (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
+                                 " --batch -Q"
+                                 " -l "(expand-file-name "~/.emacs.d/ar/ar-org-export-init.el")
+                                 (format " --execute '(ar/org-split-export-headline \"%s\" \"%s\" \"%s\" %d t)'"
+                                         (expand-file-name "~/stuff/active/blog/index.org")
+                                         (ar/org-split-export--parse-headline-title
+                                          (org-element-property :raw-value headline))
+                                         (org-element-property :CUSTOM_ID headline)
+                                         (org-element-property :begin headline)))
+                         "*org html export*")))
+
+(defun ar/org-split-export-headline (src-fpath title custom-id location &optional open)
+  (message "Exporting %s %s at %s open file? %s" src-fpath custom-id location (if open "yes" "no"))
   (with-current-buffer (find-file-noselect src-fpath)
     (let ((dst-fpath))
       (unless (f-exists-p custom-id)
@@ -101,7 +117,9 @@
                                           (replace-regexp "<title>Álvaro Ramírez</title>"
                                                           (format "<title>%s</title>" title))
                                           (save-buffer)
-                                          (kill-buffer (current-buffer))))))
+                                          (kill-buffer (current-buffer)))
+                                        (when open
+                                          (shell-command (format "open file:%s" (expand-file-name dst-fpath)))))))
               (advice-remove 'org-html-link
                              'ar/org-html-link--postprocess)
               (advice-remove 'org-timestamp-translate
