@@ -145,10 +145,10 @@
 
     (defun ar/generate-feed ()
       (interactive)
-      (let ((webfeeder-date-function
-             'ar/blog-date))
-        (webfeeder-build "~/stuff/active/blog/rss.xml"
-                         "~/stuff/active/blog"
+      (let ((webfeeder-date-function 'ar/blog-date)
+            (default-directory (expand-file-name "~/stuff/active/blog")))
+        (webfeeder-build "rss.xml"
+                         "."
                          "http://xenodium.com"
                          (ar/blog-entry-fpaths)
                          :title "Alvaro Ramirez's notes"
