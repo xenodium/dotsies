@@ -327,12 +327,13 @@ line instead."
   (defun ar/backwards-delete-sexp-whitespace (arg)
     "Deletes whitespace character prior to current sexp.  With ARG, delete it all."
     (interactive "P")
-    (backward-sexp 1)
-    (if arg
-        (let ((current-prefix-arg nil))
-          (call-interactively 'hungry-delete-backward nil))
-      (delete-backward-char 1))
-    (forward-sexp 1))
+    (save-excursion
+      (save-restriction
+        (backward-sexp 1)
+        (if arg
+            (let ((current-prefix-arg nil))
+              (call-interactively 'hungry-delete-backward nil))
+          (delete-backward-char 1)))))
 
   (global-hungry-delete-mode))
 
