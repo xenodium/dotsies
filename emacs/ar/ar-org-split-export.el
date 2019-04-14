@@ -82,6 +82,16 @@
                                          (org-element-property :begin headline)))
                          "*org html export*")))
 
+(defun ar/org-export-current-headline ()
+  (interactive)
+  (let ((headline (ar/org-element-at-heading-1)))
+    (assert (eq major-mode 'org-mode))
+    (ar/org-split-export-headline (expand-file-name "~/stuff/active/blog/index.org")
+                                  (ar/org-split-export--parse-headline-title
+                                   (org-element-property :raw-value headline))
+                                  (org-element-property :CUSTOM_ID headline)
+                                  (org-element-property :begin headline)) t)))
+
 (defun ar/org-split-export-headline (src-fpath title custom-id location &optional open)
   (message "Exporting %s %s at %s open file? %s" src-fpath custom-id location (if open "yes" "no"))
   (with-current-buffer (find-file-noselect src-fpath)
