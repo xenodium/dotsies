@@ -341,6 +341,9 @@ Based on `elfeed-search-print-entry--default'."
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
               ("https://coffeeandcode.neocities.org/atom.xml" blog emacs CoffeeAndCode)
               ("https://zudepr.co.uk/feed" blog money Zude)
+              ("https://blog.maya2250.com/feed" blog emacs Maya2250)
+              ("https://www.kill-the-newsletter.com/feeds/y0avwirj3b5jrgdygfyh.xml" newsletter SundayDispatches PaulJarvis)
+              ("https://www.kill-the-newsletter.com/feeds/qtfseubuhywlyqjtaeo9.xml" newsletter MorningBrew)
               ))
 
   (ar/csetq elfeed-search-title-max-width 120)
