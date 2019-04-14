@@ -2,6 +2,11 @@
   ;; No icon on window.
   (setq ns-use-proxy-icon nil)
 
+  ;; Easily insert # on macOS/UK keyboard.
+  ;; https://coffeeandcode.neocities.org/emacs-keyboard-config-on-mac.html
+  (global-set-key (kbd "M-3") '(lambda ()
+                                 (interactive) (insert "#")))
+
   ;; Transparent titlebar on macOS (prettier).
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
