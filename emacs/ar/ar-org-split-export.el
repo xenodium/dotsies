@@ -40,22 +40,6 @@
              1)
       (nth 1 match))))
 
-(defun ar/org-html-link--postprocess (orig-fun &rest r)
-  (let ((html-link (apply orig-fun r)))
-    ;; Massage href from:
-    ;; <a href=\"index.html#ID-trying-out-tesseract\"></a>
-    ;; to:
-    ;; <a href=\"../trying-out-tesseract\"></a>
-    (setq html-link (s-replace-regexp "href=\\\"\\(.*#ID-\\)" "../"
-                                      html-link nil nil 1))
-    ;; Massage image from:
-    ;; <img src=\"images/inserting-numbers-with-emacs-multiple-cursors/mc-number.gif\"></img>
-    ;; to:
-    ;; <img src=\"../images/inserting-numbers-with-emacs-multiple-cursors/mc-number.gif\"></img>
-    (setq html-link (s-replace-regexp "src=\\\"\\(images\\)" "../images"
-                                      html-link nil nil 1))
-    html-link))
-
 (defun ar/org-export--collect-tree-properties--postprocess (orig-fun &rest r)
   (save-excursion
     (save-restriction
@@ -113,7 +97,7 @@
                 (progn
                   (advice-add 'org-html-link
                               :around
-                              'ar/org-html-link--postprocess)
+                              'ar/ox-html-link-postprocess)
                   (advice-add 'org-export--collect-tree-properties
                               :around
                               'ar/org-export--collect-tree-properties--postprocess)
@@ -131,7 +115,7 @@
                                         (when open
                                           (shell-command (format "open file:%s" (expand-file-name dst-fpath)))))))
               (advice-remove 'org-html-link
-                             'ar/org-html-link--postprocess)
+                             'ar/ox-html-link-postprocess)
               (advice-remove 'org-timestamp-translate
                              'ar/ox-html--timestamp-translate-advice-fun)
               (advice-remove 'worg-export--collect-tree-properties
