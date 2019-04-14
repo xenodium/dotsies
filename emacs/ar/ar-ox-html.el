@@ -150,70 +150,11 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
       "<style type='text/css'>
          /* https://stackoverflow.com/questions/6370690/media-queries-how-to-target-desktop-tablet-and-mobile */
 
-         @media (min-width:320px)  {
-           /* smartphones, iPhone, portrait 480x320 phones */
-           body {
-             font-size: 100%;
-             max-width: 300px;
-             margin: 0 auto;
-             padding: 5px;
-             width: 95%;
-           }
-         }
-
-         @media (min-width:481px)  {
-           /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-           body {
-             font-size: 100%;
-             max-width: 300px;
-             margin: 0 auto;
-             padding: 5px;
-             width: 95%;
-           }
-         }
-
-         @media (min-width:641px)  {
-           /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
-           body {
-             font-size: 100%;
-             max-width: 300px;
-             margin: 0 auto;
-             padding: 5px;
-             width: 95%;
-           }
-         }
-
-         @media (min-width:961px)  {
-           /* tablet, landscape iPad, lo-res laptops ands desktops */
-           body {
-             font-size: 100%;
-             margin: 0 auto;
-             max-width: 710px;
-             padding: 25px;
-             width: 50%;
-           }
-         }
-
-         @media (min-width:1025px) {
-           /* big landscape tablets, laptops, and desktops */
-           body {
-             font-size: 100%;
-             margin: 0 auto;
-             max-width: 710px;
-             padding: 25px;
-             width: 50%;
-           }
-         }
-
-         @media (min-width:1281px) {
-           /* hi-res laptops and desktops */
-           body {
-             font-size: 100%;
-             margin: 0 auto;
-             max-width: 710px;
-             padding: 25px;
-             width: 50%;
-           }
+         body {
+           font-size: 100%;
+           max-width: 88ch;
+           padding: 2ch;
+           margin: auto;
          }
 
          .figure {

@@ -90,7 +90,7 @@
                                   (ar/org-split-export--parse-headline-title
                                    (org-element-property :raw-value headline))
                                   (org-element-property :CUSTOM_ID headline)
-                                  (org-element-property :begin headline)) t)))
+                                  (org-element-property :begin headline)) t))
 
 (defun ar/org-split-export-headline (src-fpath title custom-id location &optional open)
   (message "Exporting %s %s at %s open file? %s" src-fpath custom-id location (if open "yes" "no"))
