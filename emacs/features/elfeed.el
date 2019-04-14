@@ -339,6 +339,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
               ("https://youngfiguy.com/feed" blog money YoungFIGuy)
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
+              ("https://coffeeandcode.neocities.org/atom.xml" blog emacs CoffeeAndCode)
               ("https://zudepr.co.uk/feed" blog money Zude)
               ))
 
