@@ -125,7 +125,7 @@
                              (nth 5 date)
                              nil -1 nil)))))
 
-    (defun ar/blog-entry-fpaths ()
+    (defun ar/blog-entry-fpaths (&optional filter)
       (let ((fpaths '())
             (fpath))
         (with-current-buffer (find-file-noselect (expand-file-name
@@ -136,7 +136,12 @@
               (if (org-element-property :CUSTOM_ID headline)
                   (progn
                     (setq fpath (format "%s/index.html" (org-element-property :CUSTOM_ID headline)))
-                    (if (f-exists-p fpath)
+                    (if (and (f-exists-p fpath)
+                             (or (not filter)
+                                 (string-match-p filter (buffer-substring-no-properties
+                                                         (org-element-property :begin headline)
+                                                         (org-element-property :end headline)))
+                                 ))
                         (add-to-list 'fpaths fpath)
                       (message "Skipping %s" fpath)))
                 (message "No custom ID for %s" (ar/org-split-export--parse-headline-title
@@ -153,6 +158,18 @@
                          (ar/blog-entry-fpaths)
                          :title "Alvaro Ramirez's notes"
                          :description "Alvaro's notes from a hacked up org HTML export."
+                         :builder 'webfeeder-make-rss)))
+
+    (defun ar/generate-emacs-feed ()
+      (interactive)
+      (let ((webfeeder-date-function 'ar/blog-date)
+            (default-directory (expand-file-name "~/stuff/active/blog")))
+        (webfeeder-build "emacs/rss.xml"
+                         "."
+                         "http://xenodium.com"
+                         (ar/blog-entry-fpaths "emacs")
+                         :title "Alvaro Ramirez's Emacs notes"
+                         :description "Alvaro's Emacs notes from a hacked up org HTML export."
                          :builder 'webfeeder-make-rss))))
 
   (use-package ar-org-blog
