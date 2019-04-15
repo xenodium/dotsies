@@ -35,4 +35,10 @@
   (ar/vsetq swift-mode:basic-offset 2)
   (require 'ar-vsetq)
   (require 'company-swimports)
-  (require 'flycheck-swiftlint))
+  (require 'flycheck-swiftlint)
+
+  (require 'info)
+  (info-lookup-maybe-add-help
+   :mode 'swift-mode
+   :regexp "[#@_a-zA-Z][_a-zA-Z0-9]*"
+   :doc-spec '(("(swift)Index" nil "['`‘]" "['’]"))))

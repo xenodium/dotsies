@@ -10,7 +10,7 @@
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
-                 ("M-i" . counsel-grep-or-swiper)
+                 ("M-i" . swiper-isearch)
          :map counsel-ag-map
          ("C-c C-e" . ar/ivy-occur)
          :map wgrep-mode-map
@@ -128,7 +128,7 @@ There is no limit on the number of *ivy-occur* buffers."
          :map ivy-minibuffer-map
          ("C-g" . ar/ivy-keyboard-quit-dwim))
   :config
-  (ar/vsetq ivy-height 40)
+  (ar/vsetq ivy-height 15)
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq ivy-display-style 'fancy)
