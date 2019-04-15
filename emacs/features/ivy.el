@@ -205,3 +205,7 @@ With prefix argument, use full path."
   :commands (ar/ivy-org-add-bookmark
              ar/ivy-org-add-backlog-link
              ar/ivy-org-my-todos))
+
+(use-package counsel-dash
+  :commands counsel-dash
+  :ensure t)
