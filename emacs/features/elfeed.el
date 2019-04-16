@@ -302,6 +302,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://two-wrongs.com/atom" blog emacs TwoWrongs)
               ("https://valignatev.com/index.xml" blog emacs ValentinIgnatev)
               ("https://vicarie.in/archive.xml" blog emacs NarendraJoshi)
+              ("https://truongtx.me/atom.xml" blog emacs truongtx)
               ("https://vxlabs.com/feed" blog emacs VXLabs)
               ("https://webgefrickel.de/blog/feed" blog dev SteffenRademacker)
               ("https://wincent.com/blog.rss" blog dev wincent)
