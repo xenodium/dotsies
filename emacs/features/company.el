@@ -40,6 +40,11 @@
     (use-package company-box
       :ensure t
       :hook (company-mode . company-box-mode)
+      :init
+      ;; Needed to avoid error:
+      ;; Eager macro-expansion failure: (void-function all-the-icons-faicon)
+      (use-package all-the-icons
+        :ensure t)
       :config
       (ar/csetq company-box-enable-icon nil)))
 
