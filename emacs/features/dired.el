@@ -103,7 +103,12 @@
 
   ;; Hide some files
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
-  (setq dired-omit-mode t))
+  (setq dired-omit-mode t)
+
+  ;; Predownloaded to ~/.emacs.d/downloads
+  (use-package tmtxt-dired-async
+    :config
+    (use-package tmtxt-async-tasks)))
 
 (use-package openwith
   :ensure t

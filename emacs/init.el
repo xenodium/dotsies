@@ -132,6 +132,7 @@
    (add-to-list 'load-path "~/.emacs.d/ar")
    (add-to-list 'load-path "~/.emacs.d/local")
    (add-to-list 'load-path "~/.emacs.d/external")
+   (add-to-list 'load-path "~/.emacs.d/downloads")
 
    ;; Need these loaded ASAP (many subsequent libraries depend on them).
    (load "~/.emacs.d/features/package-extensions.el")
