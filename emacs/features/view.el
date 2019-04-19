@@ -1,4 +1,5 @@
 (use-package view
+  :commands global-view-mode
   :hook ((view-mode . goto-address-mode))
   :bind (:map view-mode-map
               ("C-x C-q" . view-mode)
@@ -9,13 +10,14 @@
               ("f" . forward-char)
               ("b" . backward-char)
               ("v" . ccm-scroll-up)
-              ("SPC" . ccm-scroll-up)))
-
-(define-global-minor-mode ar/global-view-mode view-mode
-  (lambda ()
-    (if (and ar/global-view-mode
-             (not noninteractive)
-             (derived-mode-p 'prog-mode
-                             'org-mode))
-        (view-mode +1)
-      (view-mode -1))))
+              ("SPC" . ccm-scroll-up))
+  :config
+  (define-global-minor-mode global-view-mode view-mode
+    (lambda ()
+      (if (and (not noninteractive)
+               (derived-mode-p 'prog-mode
+                               'outline-mode
+                               'text-mode))
+          (view-mode +1)
+        (message "Ignoring view-mode for %s" major-mode)
+        (view-mode -1)))))
