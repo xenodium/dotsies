@@ -29,9 +29,6 @@
     :config
     (ar/vsetq company-dabbrev-code-ignore-case nil))
 
-  ;; Manually downloaded.
-  (use-package company-async-files)
-
   (use-package company-grep)
   (use-package company-rfiles)
   (use-package company-projectile-cd)
