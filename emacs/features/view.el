@@ -1,7 +1,5 @@
 (use-package view
-  :hook ((prog-mode . ar/view-mode)
-         (org-mode . ar/view-mode)
-         (view-mode . goto-address-mode))
+  :hook ((view-mode . goto-address-mode))
   :bind (:map view-mode-map
               ("C-x C-q" . view-mode)
               ("a" . mwim-beginning-of-code-or-line)
@@ -11,8 +9,13 @@
               ("f" . forward-char)
               ("b" . backward-char)
               ("v" . ccm-scroll-up)
-              ("SPC" . ccm-scroll-up))
-  :config
-  (defun ar/view-mode ()
-    (unless noninteractive
-      (view-mode +1))))
+              ("SPC" . ccm-scroll-up)))
+
+(define-global-minor-mode ar/global-view-mode view-mode
+  (lambda ()
+    (if (and ar/global-view-mode
+             (not noninteractive)
+             (derived-mode-p 'prog-mode
+                             'org-mode))
+        (view-mode +1)
+      (view-mode -1))))
