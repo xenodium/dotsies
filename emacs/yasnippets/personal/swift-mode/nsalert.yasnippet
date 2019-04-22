@@ -1,0 +1,8 @@
+#name : Swift macOS NSAlert
+#key : nsalert
+# --
+let alert: NSAlert = NSAlert()
+alert.messageText = $1
+alert.informativeText = $2
+alert.addButton(withTitle: $3)
+alert.runModal()
