@@ -56,6 +56,7 @@
 (ar/init--idle-load "~/.emacs.d/features/misc.el")
 (ar/init--idle-load "~/.emacs.d/downloads/company-async-files/company-async-files.el")
 (ar/init--idle-load "~/.emacs.d/features/editing.el")
+(ar/init--idle-load "~/.emacs.d/features/javascript.el")
 ;; Keep last. It enables view-only mode in prog modes,
 ;; which interferes with installing some packages that write to .el files.
 (ar/init--idle-load "~/.emacs.d/features/view.el")
