@@ -142,7 +142,7 @@
         (skip-syntax-forward "^ ()")
       (sp-forward-sexp)))
 
-  (defun ar/ar-backward-sexp (&optional arg)
+  (defun ar/backward-sexp (&optional arg)
     (interactive "P")
     (if arg
         (skip-syntax-backward "^ ()")
