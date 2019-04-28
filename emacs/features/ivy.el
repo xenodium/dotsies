@@ -201,6 +201,9 @@ With prefix argument, use full path."
   (require 'yasnippet)
   (yas-minor-mode))
 
+(use-package ar-counsel-find
+  :commands ar/counsel-find)
+
 (use-package ar-ivy-org
   :commands (ar/ivy-org-add-bookmark
              ar/ivy-org-add-backlog-link
