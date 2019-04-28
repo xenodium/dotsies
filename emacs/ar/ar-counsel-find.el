@@ -14,9 +14,7 @@
 (defvar ar/counsel-find--history nil "History for `ar/counsel-find'.")
 
 (defun ar/counsel-find (arg)
-  "Call the \"find\" shell command and fuzzy narrow using ivy.
-With ARG choose search path.
-Note: If \":\" (colon) is passed, left hand side string will be matched against path."
+  "Call the \"find\" shell command and fuzzy narrow using ivy. With ARG choose search path."
   (interactive "P")
   (when (or arg (not ar/counsel-find--paths))
     (setq ar/counsel-find--paths
@@ -41,28 +39,15 @@ Note: If \":\" (colon) is passed, left hand side string will be matched against 
 
 (defun ar/counsel-find--function (pattern)
   "Find files ivy function matching PATTERN."
-  (let* ((query-parts (s-split ":" pattern))
-         (query-count (length query-parts))
-         (filename-query (format "-iname '*%s*'"
-                                 (s-replace-regexp "[ ]+" "*" (nth (if (> query-count 1)
-                                                                       1
-                                                                     0) query-parts))))
-         (path-query (when (eq query-count 2)
-                       (format "-ipath '*%s*'"
-                               (s-replace-regexp "[ ]+" "*" (nth 0 query-parts)))))
-         (command (format "find %s %s %s"
+  (let* ((command (format "find %s -ipath '*%s*'"
                           (s-join " " paths)
-                          filename-query (if path-query
-                                             path-query
-                                           ""))))
-    (if (> query-count 2)
-        (list "" "Only one \":\" is allowed in query")
-      (or
-       (ivy-more-chars)
-       (progn
-         (message "ar/counsel-find--function: %s" command)
-         (counsel--async-command command)
-         '("" "working..."))))))
+                          (s-replace-regexp "[ ]+" "*" pattern))))
+    (or
+     (ivy-more-chars)
+     (progn
+       (message "ar/counsel-find--function: %s" command)
+       (counsel--async-command command)
+       '("" "working...")))))
 
 
 (provide 'ar-counsel-find)
