@@ -1,4 +1,4 @@
-;;; ar-bazel.el --- Bazel support.
+;;; ar-bazel.el --- Bazel support. -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Bazel helpers.
@@ -12,6 +12,8 @@
 (require 'dash)
 
 (defvar ar/bazel-compile-command "bazel build")
+
+(defvar ar/bazel-gendir-prefix "bazel")
 
 (defun ar/bazel-compile ()
   "Invoke `'compile with `'completing-read a build rule in either current or parent directories."
@@ -30,7 +32,6 @@
     (format "%s:%s"
             (ar/bazel-qualified-package-path closest-build-file)
             (completing-read "build rule: " (ar/bazel-rule-names-in-build-file-path closest-build-file)))))
-
 
 (defun ar/bazel-build-rule-names (str)
   (mapcar (lambda (match)
@@ -56,20 +57,29 @@
   "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
   (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
 
+(defun ar/bazel-bin-dir ()
+  (concat (ar/bazel-workspace-path) (format "%s-bin/" ar/bazel-gendir-prefix)))
+
 (defun ar/bazel-dired-bin-dir ()
   "Open WORKSPACE's bazel-bin directory."
   (interactive)
-  (find-file (concat (ar/bazel-workspace-path) "bazel-bin")))
+  (find-file (ar/bazel-bin-dir)))
+
+(defun ar/bazel-out-dir ()
+  (concat (ar/bazel-workspace-path) (format "%s-out/" ar/bazel-gendir-prefix)))
 
 (defun ar/bazel-dired-out-dir ()
   "Open WORKSPACE's bazel-out directory."
   (interactive)
-  (find-file (concat (ar/bazel-workspace-path) "bazel-out")))
+  (find-file ar/bazel-out-dir))
+
+(defun ar/bazel-genfiles-dir ()
+  (concat (ar/bazel-workspace-path) (format "%s-genfiles/" ar/bazel-gendir-prefix)))
 
 (defun ar/bazel-dired-genfiles-dir ()
   "Open WORKSPACE's bazel-genfiles directory."
   (interactive)
-  (find-file (concat (ar/bazel-workspace-path) "bazel-genfiles")))
+  (find-file ar/bazel-genfiles-dir))
 
 (defun ar/bazel-workspace-path ()
   "Get bazel project path."
@@ -79,14 +89,20 @@
 
 (defun ar/bazel-workspace-build-files ()
   "Get all BUILD files in bazel project."
-  ;; If using projectile is found, try finding the whitelist of directories.
-  (let ((dirs (if (fboundp 'projectile-parse-dirconfig-file)
-                  (mapcar (lambda (path)
-                                 (concat (projectile-project-root)
-                                         path))
-                          (car (projectile-parse-dirconfig-file)))
-                (ar/bazel-workspace-path))))
-    (apply 'process-lines (nconc '("find") dirs '("-name" "BUILD")))))
+  (let ((dirs (cond
+               ;; If projectile is found, try finding the whitelist of directories.
+               ((and (fboundp 'projectile-parse-dirconfig-file)
+                     (projectile-parse-dirconfig-file))
+                (mapcar (lambda (path)
+                          (concat (projectile-project-root)
+                                  path))
+                        (car (projectile-parse-dirconfig-file))))
+               ;; Default to workspace dir otherwise.
+               (t
+                (list (ar/bazel-workspace-path))))))
+    (apply 'process-lines (nconc (list "find")
+                                 dirs
+                                 (list "-name" "BUILD")))))
 
 (defun ar/bazel-workspace-build-rules ()
   "Get all workspace qualified rules."
