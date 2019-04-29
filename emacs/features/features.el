@@ -48,6 +48,7 @@
 (ar/init--idle-load "~/.emacs.d/features/protobuf.el")
 (ar/init--idle-load "~/.emacs.d/features/python.el")
 (ar/init--idle-load "~/.emacs.d/features/swift.el")
+(ar/init--idle-load "~/.emacs.d/features/java.el")
 (ar/init--idle-load "~/.emacs.d/features/web.el")
 (ar/init--idle-load "~/.emacs.d/features/yasnippet.el")
 (ar/init--idle-load "~/.emacs.d/features/pdf.el")
