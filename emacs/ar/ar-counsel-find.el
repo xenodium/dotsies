@@ -23,6 +23,7 @@
 
 (defun ar/counsel--find-in-paths (paths)
   "Ivy narrow files found searching PATHS."
+  (setq ar/counsel-find--paths paths)
   (ivy-read "find: "
             #'ar/counsel-find--function
             :initial-input (when (use-region-p)
@@ -42,6 +43,7 @@
   (let* ((command (format "find %s -ipath '*%s*'"
                           (s-join " " ar/counsel-find--paths)
                           (s-replace-regexp "[ ]+" "*" pattern))))
+    (message "ar/counsel-find--function: %s" command)
     (or
      (ivy-more-chars)
      (progn
