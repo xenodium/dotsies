@@ -13,7 +13,9 @@
 
 (defvar ar/bazel-compile-command "bazel build")
 
-(defvar ar/bazel-gendir-prefix "bazel")
+(defvar ar/bazel-gendir-prefix "bazel"
+  "With a \"bazel\" prefix, we'd get linked directories like:
+bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defun ar/bazel-compile ()
   "Invoke `'compile with `'completing-read a build rule in either current or parent directories."
@@ -57,8 +59,18 @@
   "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
   (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
 
+(defun ar/bazel-linked-dpath (name)
+  (let ((dpath (concat (ar/bazel-workspace-path)
+                       (format "%s-%s/"
+                               ar/bazel-gendir-prefix
+                               name))))
+    (assert (f-exists-p dpath) nil
+            "Path not found:\"%s\" (is `ar/bazel-gendir-prefix' = '%s' correct?)"
+            dpath ar/bazel-gendir-prefix)
+    dpath))
+
 (defun ar/bazel-bin-dir ()
-  (concat (ar/bazel-workspace-path) (format "%s-bin/" ar/bazel-gendir-prefix)))
+  (ar/bazel-linked-dpath "bin"))
 
 (defun ar/bazel-dired-bin-dir ()
   "Open WORKSPACE's bazel-bin directory."
@@ -66,7 +78,7 @@
   (find-file (ar/bazel-bin-dir)))
 
 (defun ar/bazel-out-dir ()
-  (concat (ar/bazel-workspace-path) (format "%s-out/" ar/bazel-gendir-prefix)))
+  (ar/bazel-linked-dpath "out"))
 
 (defun ar/bazel-dired-out-dir ()
   "Open WORKSPACE's bazel-out directory."
@@ -74,7 +86,7 @@
   (find-file (ar/bazel-out-dir)))
 
 (defun ar/bazel-genfiles-dir ()
-  (concat (ar/bazel-workspace-path) (format "%s-genfiles/" ar/bazel-gendir-prefix)))
+  (ar/bazel-linked-dpath "genfiles"))
 
 (defun ar/bazel-dired-genfiles-dir ()
   "Open WORKSPACE's bazel-genfiles directory."
