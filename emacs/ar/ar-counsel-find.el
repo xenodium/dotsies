@@ -40,7 +40,7 @@
 (defun ar/counsel-find--function (pattern)
   "Find files ivy function matching PATTERN."
   (let* ((command (format "find %s -ipath '*%s*'"
-                          (s-join " " paths)
+                          (s-join " " ar/counsel-find--paths)
                           (s-replace-regexp "[ ]+" "*" pattern))))
     (or
      (ivy-more-chars)
