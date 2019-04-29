@@ -6,10 +6,10 @@ silver_searcher:
 init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
-	mkdir -p ~/.emacs.d/downloads/exec-path-from-shell
-	curl https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el -o ~/.emacs.d/downloads/exec-path-from-shell/exec-path-from-shell.el || echo "No internet connection... skipping exec-path-from-shell.el install."
-	mkdir -p ~/.emacs.d/downloads/company-async-files
-	curl https://raw.githubusercontent.com/CeleritasCelery/company-async-files/master/company-async-files.el -o ~/.emacs.d/downloads/company-async-files/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
+	mkdir -p ~/.emacs.d/downloads/
+	curl https://raw.githubusercontent.com/CeleritasCelery/company-async-files/master/company-async-files.el -o ~/.emacs.d/downloads/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
+	curl https://raw.githubusercontent.com/tmtxt/tmtxt-async-tasks/master/tmtxt-async-tasks.el -o ~/.emacs.d/downloads/tmtxt-async-tasks.el || echo "No internet connection... skipping tmtxt-async-task install."
+	curl https://raw.githubusercontent.com/tmtxt/tmtxt-dired-async/master/tmtxt-dired-async.el -o ~/.emacs.d/downloads/tmtxt-dired-async.el || echo "No internet connection... skipping tmtxt-dired-async install."
 	mkdir -p ~/local/bin/
 	cp emacssocket ~/local/bin/
 	cp open_xcode_file_in_emacs.sh ~/local/bin/

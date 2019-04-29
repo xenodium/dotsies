@@ -135,6 +135,10 @@ There is no limit on the number of *ivy-occur* buffers."
   (ar/vsetq ivy-wrap nil)
   (ar/vsetq enable-recursive-minibuffers t)
 
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (setq truncate-lines nil)))
+
   ;; From http://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
   (defun ar/insert-current-file-name-at-point (&optional full-path)
     "Insert the current filename at point.
@@ -200,6 +204,9 @@ With prefix argument, use full path."
   :config
   (require 'yasnippet)
   (yas-minor-mode))
+
+(use-package ar-counsel-find
+  :commands ar/counsel-find)
 
 (use-package ar-ivy-org
   :commands (ar/ivy-org-add-bookmark

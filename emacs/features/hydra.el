@@ -24,9 +24,11 @@
     "search"
     ("d" ar/counsel-ag "search directory")
     ("a" ar/find-all-dired-current-dir "find all files")
+    ("f" ar/counsel-find "find files")
     ("i" ar/helm-ag-insert "insert match")
     ("m" mu4e-headers-search "search email")
     ("q" nil "quit"))
+
   (defhydra hydra-quick-insert (:color blue)
     "
 Quick insert: _w_eb bookmark or backlog

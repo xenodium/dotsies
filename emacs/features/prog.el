@@ -1,4 +1,5 @@
 (use-package prog-mode
+  :after (flycheck)
   :bind (:map
          prog-mode-map
          ([f6] . recompile)

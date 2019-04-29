@@ -115,8 +115,8 @@
    ("C-<left>" . ar/forward-barf-sexp)
    ("M-<right>" . ar/backward-barf-sexp)
    ("M-<left>"  . ar/backward-slurp-sexp)
-   ("C-M-f" . sp-forward-sexp)
-   ("C-M-b" . sp-backward-sexp)
+   ("C-M-f" . ar/forward-sexp)
+   ("C-M-b" . ar/backward-sexp)
    ("C-M-n" . sp-forward-sexp)
    ("C-M-p" . sp-backward-sexp)
    ("C-M-a" . sp-beginning-of-sexp)
@@ -134,6 +134,20 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
+  (skip-syntax-backward "^ ")
+
+  (defun ar/forward-sexp (&optional arg)
+    (interactive "P")
+    (if arg
+        (skip-syntax-forward "^ ()")
+      (sp-forward-sexp)))
+
+  (defun ar/backward-sexp (&optional arg)
+    (interactive "P")
+    (if arg
+        (skip-syntax-backward "^ ()")
+      (sp-backward-sexp)))
+
   (defun ar/backward-barf-sexp (&optional arg)
     (interactive "P")
     (if (eq major-mode 'org-mode)
