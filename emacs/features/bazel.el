@@ -1,4 +1,5 @@
 (use-package bazel-mode
+  :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)
          ("BUILD\\'" . bazel-mode))
   :hook (bazel-mode . ar/bazel-mode-hook-fun)
@@ -9,6 +10,7 @@
   :config
   (use-package ar-bazel)
   (use-package company-bazel)
+  (use-package ar-counsel-find)
 
   (defun ar/bazel-find-staged ()
     "Call the \"find\" shell command and fuzzy narrow using ivy."
