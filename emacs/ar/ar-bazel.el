@@ -71,7 +71,7 @@
 (defun ar/bazel-dired-out-dir ()
   "Open WORKSPACE's bazel-out directory."
   (interactive)
-  (find-file ar/bazel-out-dir))
+  (find-file (ar/bazel-out-dir)))
 
 (defun ar/bazel-genfiles-dir ()
   (concat (ar/bazel-workspace-path) (format "%s-genfiles/" ar/bazel-gendir-prefix)))
@@ -79,7 +79,7 @@
 (defun ar/bazel-dired-genfiles-dir ()
   "Open WORKSPACE's bazel-genfiles directory."
   (interactive)
-  (find-file ar/bazel-genfiles-dir))
+  (find-file (ar/bazel-genfiles-dir)))
 
 (defun ar/bazel-workspace-path ()
   "Get bazel project path."
