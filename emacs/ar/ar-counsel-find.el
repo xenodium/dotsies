@@ -20,12 +20,15 @@
   (interactive "P")
   (when (or arg (not ar/counsel-find--paths))
     (setq ar/counsel-find--paths
-          (list (read-directory-name "search in: " default-directory nil t))))
+          (list (s-chop-suffix "/"
+                               (read-directory-name "search in: " default-directory nil t)))))
   (ar/counsel--find-in-paths ar/counsel-find--paths))
 
 (defun ar/counsel--find-in-paths (paths)
   "Ivy narrow files found searching PATHS."
-  (setq ar/counsel-find--paths paths)
+  (setq ar/counsel-find--paths (mapcar (lambda (path)
+                                         (s-chop-suffix "/" path))
+                                       paths))
   (let ((kmap (make-sparse-keymap)))
     (define-key kmap (kbd "C-c C-e") (lambda ()
                                        (interactive)
@@ -48,13 +51,14 @@
               :caller 'ar/counsel-find)))
 
 (defun ar/counsel-find--command ()
-  (format "find %s %s"
+  (format "find %s %s "
           (s-join " " ar/counsel-find--paths)
           ar/counsel-find--args))
 
 (defun ar/counsel-find--function (pattern)
   "Find files ivy function matching PATTERN."
-  (setq ar/counsel-find--args (format "-ipath '*%s*'"
+  ;; -follow to follow symlinks.
+  (setq ar/counsel-find--args (format "-ipath '*%s*' -follow"
                                       (s-replace-regexp "[ ]+" "*" pattern)))
   (message "ar/counsel-find--function: %s"
            (ar/counsel-find--command))
