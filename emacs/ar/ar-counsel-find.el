@@ -36,7 +36,11 @@
                                        (interactive)
                                        (ivy-quit-and-run
                                          (ar/counsel-find--dired ar/counsel-find--paths
-                                                        ar/counsel-find--args))))
+                                                                 ar/counsel-find--args))))
+    (define-key kmap (kbd "C-c C-r") (lambda ()
+                                       (interactive)
+                                       (ivy-quit-and-run
+                                         (ar/counsel-find t))))
     (ivy-read "find: "
               #'ar/counsel-find--function
               :initial-input (when (use-region-p)
