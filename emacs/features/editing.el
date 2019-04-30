@@ -11,10 +11,6 @@
 ;; No need to keep duplicates in prompt history.
 (ar/vsetq history-delete-duplicates t)
 
-(use-package simple
-  :config
-  (ar/vsetq kill-ring-max 1000))
-
 ;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro
   :ensure t)
@@ -390,6 +386,8 @@ line instead."
 
 (use-package simple
   :config
+  (ar/vsetq kill-ring-max 1000)
+
   ;; Save external clipboard before killing other text in Emacs.
   (ar/vsetq save-interprogram-paste-before-kill t)
 
