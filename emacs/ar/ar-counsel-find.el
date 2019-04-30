@@ -7,6 +7,7 @@
 ;;; Code:
 
 (require 'counsel)
+(require 'find-dired)
 (require 's)
 
 (defvar ar/counsel-find--paths nil "Find path.")
