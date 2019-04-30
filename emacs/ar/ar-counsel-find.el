@@ -134,10 +134,8 @@ The command run is essentially: find DPATHS \\( ARGS \\) -ls"
     (setq buffer-read-only t)
 
     (let ((proc (get-buffer-process (current-buffer))))
-      (set-process-filter proc
-                          (function find-dired-filter))
-      (set-process-sentinel proc
-                            (function find-dired-sentinel))
+      (set-process-filter proc #'find-dired-filter)
+      (set-process-sentinel proc #'find-dired-sentinel)
       (move-marker (process-mark proc) (point) (current-buffer)))
     (setq mode-line-process '(":%s"))))
 
