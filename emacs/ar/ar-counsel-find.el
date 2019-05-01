@@ -78,15 +78,15 @@
 (defun ar/counsel-find--dired (dpaths args)
   "Run `find' and go into Dired mode on a buffer of the output.
 The command run is essentially: find DPATHS \\( ARGS \\) -ls"
-  (let ((parent-dpath (f-common-parent dpaths))
+  (assert (> (length dpaths) 0) nil "Needs at least one directory path to find from")
+  (let ((parent-dpath (file-name-as-directory
+                       (expand-file-name (if (= (length dpaths) 1)
+                                             (nth 0 dpaths)
+                                           (f-common-parent dpaths)))))
         (dired-buffers dired-buffers)
         (command))
-    ;; Expand and ensure it has a trailing slash.
-    (setq parent-dpath (file-name-as-directory (expand-file-name parent-dpath)))
-    (assert (file-directory-p parent-dpath) nil
-            "find-dired needs a directory: %s" parent-dpath)
-    (setq default-directory parent-dpath)
     (pop-to-buffer-same-window (get-buffer-create "*Find*"))
+    (setq default-directory parent-dpath)
     ;; Kill exsiting `find' process.
     (when (and (get-buffer-process (current-buffer))
                (eq (process-status (get-buffer-process (current-buffer)))
@@ -134,10 +134,24 @@ The command run is essentially: find DPATHS \\( ARGS \\) -ls"
     (setq buffer-read-only t)
 
     (let ((proc (get-buffer-process (current-buffer))))
-      (set-process-filter proc #'find-dired-filter)
+      (set-process-filter proc #'ar/counsel-find--dired-filter)
       (set-process-sentinel proc #'find-dired-sentinel)
       (move-marker (process-mark proc) (point) (current-buffer)))
     (setq mode-line-process '(":%s"))))
+
+(defun ar/counsel-find--dired-filter (proc string)
+  (find-dired-filter proc string)
+  (let ((buf (process-buffer proc))
+	(inhibit-read-only t))
+    (when (buffer-name buf)
+      (with-current-buffer buf
+	(save-excursion
+	  (save-restriction
+	    (widen)
+            (goto-line 2)
+            (goto-char (line-end-position))
+            (while (search-forward (file-name-as-directory  default-directory) nil t)
+              (replace-match ""))))))))
 
 (provide 'ar-counsel-find)
 
