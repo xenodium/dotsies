@@ -15,6 +15,6 @@
   (defun ar/bazel-find-staged ()
     "Call the \"find\" shell command and fuzzy narrow using ivy."
     (interactive)
-    (ar/counsel--find-in-paths (list (ar/bazel-bin-dir)
+    (ar/counsel-find--in-paths (list (ar/bazel-bin-dir)
                                      (ar/bazel-genfiles-dir)
                                      (ar/bazel-out-dir)))))
