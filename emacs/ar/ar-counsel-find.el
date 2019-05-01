@@ -1,4 +1,4 @@
-;;; ar-counsel-find.el --- Counsel find support.
+;;; ar-counsel-find.el --- Counsel find support. -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Counsel find helpers.
