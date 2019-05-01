@@ -140,18 +140,20 @@ The command run is essentially: find DPATHS \\( ARGS \\) -ls"
     (setq mode-line-process '(":%s"))))
 
 (defun ar/counsel-find--dired-filter (proc string)
+  "Apply `find-dired-sentinel' to PROC and STRING.
+Also strip all paths of `default-directory' (make them relative)."
   (find-dired-filter proc string)
-  (let ((buf (process-buffer proc))
-	(inhibit-read-only t))
-    (when (buffer-name buf)
-      (with-current-buffer buf
-	(save-excursion
-	  (save-restriction
-	    (widen)
-            (goto-line 2)
-            (goto-char (line-end-position))
-            (while (search-forward (file-name-as-directory  default-directory) nil t)
-              (replace-match ""))))))))
+  (when-let ((buf (process-buffer proc))
+             (inhibit-read-only t))
+    (with-current-buffer buf
+      (save-excursion
+	(save-restriction
+	  (widen)
+          (goto-line 2)
+          (goto-char (line-end-position))
+          (while (search-forward (file-name-as-directory
+                                  default-directory) nil t)
+            (replace-match "")))))))
 
 (provide 'ar-counsel-find)
 
