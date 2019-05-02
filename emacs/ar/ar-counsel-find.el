@@ -37,7 +37,7 @@
                                        (ivy-quit-and-run
                                          (ar/counsel-find--dired ar/counsel-find--paths
                                                                  ar/counsel-find--args))))
-    (define-key kmap (kbd "C-c C-r") (lambda ()
+    (define-key kmap (kbd "C-x C-f") (lambda ()
                                        (interactive)
                                        (ivy-quit-and-run
                                          (ar/counsel-find t))))
