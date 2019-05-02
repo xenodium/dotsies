@@ -74,14 +74,20 @@ There is no limit on the number of *ivy-occur* buffers."
       (setq current-prefix-arg nil)
       (ar/vsetq ar/counsel-ag--default-locaction
                 (read-directory-name "search in: " default-directory nil t)))
-    (cond ((executable-find "rg")
-           (counsel-rg nil ar/counsel-ag--default-locaction))
-          ((executable-find "pt")
-           (counsel-pt nil ar/counsel-ag--default-locaction))
-          ((executable-find "ag")
-           (counsel-ag nil ar/counsel-ag--default-locaction))
-          (t
-           (counsel-ack nil ar/counsel-ag--default-locaction))))
+
+    (let ((kmap counsel-ag-map))
+      (define-key kmap (kbd "C-x C-f") (lambda ()
+                                         (interactive)
+                                         (ivy-quit-and-run
+                                           (ar/counsel-ag t))))
+      (cond ((executable-find "rg")
+             (counsel-rg nil ar/counsel-ag--default-locaction))
+            ((executable-find "pt")
+             (counsel-pt nil ar/counsel-ag--default-locaction))
+            ((executable-find "ag")
+             (counsel-ag nil ar/counsel-ag--default-locaction))
+            (t
+             (counsel-ack nil ar/counsel-ag--default-locaction)))))
 
   (defun ar/wgrep-finish-edit ()
     (interactive)
@@ -216,3 +222,27 @@ With prefix argument, use full path."
 (use-package counsel-dash
   :commands counsel-dash
   :ensure t)
+
+
+(defun ar/counsel-ag (arg)
+    (interactive "P")
+    (defvar ar/counsel-ag--default-locaction nil)
+    (when (or arg (not ar/counsel-ag--default-locaction))
+      ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
+      (setq current-prefix-arg nil)
+      (ar/vsetq ar/counsel-ag--default-locaction
+                (read-directory-name "search in: " default-directory nil t)))
+
+    (let ((kmap counsel-ag-map))
+      (define-key kmap (kbd "C-x C-f") (lambda ()
+                                         (interactive)
+                                         (ivy-quit-and-run
+                                           (ar/counsel-ag t))))
+      (cond ((executable-find "rg")
+             (counsel-rg nil ar/counsel-ag--default-locaction))
+            ((executable-find "pt")
+             (counsel-pt nil ar/counsel-ag--default-locaction))
+            ((executable-find "ag")
+             (counsel-ag nil ar/counsel-ag--default-locaction))
+            (t
+             (counsel-ack nil ar/counsel-ag--default-locaction)))))
