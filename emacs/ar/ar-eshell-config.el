@@ -45,7 +45,7 @@
           (propertize (ar/eshell-config--git-branch-prompt)
                       'face 'font-lock-function-name-face)
           " "
-          (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt-face)
+          (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt)
           ;; needed for the input text to not have prompt face
           (propertize " " 'face 'default)))
 
