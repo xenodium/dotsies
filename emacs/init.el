@@ -135,15 +135,15 @@
    (add-to-list 'load-path "~/.emacs.d/downloads")
 
    ;; Need these loaded ASAP (many subsequent libraries depend on them).
-   (load "~/.emacs.d/features/package-extensions.el")
-   (load "~/.emacs.d/features/libs.el")
-   (load "~/.emacs.d/features/mac.el")
-   (load "~/.emacs.d/features/linux.el")
-   (load "~/.emacs.d/features/ui.el")
-   (load "~/.emacs.d/features/scratch.el")
+   (load "~/.emacs.d/features/fe-package-extensions.el")
+   (load "~/.emacs.d/features/fe-libs.el")
+   (load "~/.emacs.d/features/fe-mac.el")
+   (load "~/.emacs.d/features/fe-linux.el")
+   (load "~/.emacs.d/features/fe-ui.el")
+   (load "~/.emacs.d/features/fe-scratch.el")
 
    ;; Load non-core features.
-   (load "~/.emacs.d/features/features.el"))
+   (load "~/.emacs.d/features/fe-features.el"))
 
 (if ar/init-debug-init
     (ar/load-non-core-init)
