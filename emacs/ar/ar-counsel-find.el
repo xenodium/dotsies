@@ -20,8 +20,12 @@
 (defvar ar/counsel-find--history nil "History for `ar/counsel-find'.")
 
 (defun ar/counsel-find (arg)
-  "Call the \"find\" shell command and fuzzy narrow using ivy. With ARG choose search path.
-C-c C-e invokes `find-dired' with underlying find query, while C-x C-f changes the root directory."
+  "Call the \"find\" shell command and fuzzy narrow using ivy.
+
+With ARG choose search path upfront.
+
+C-c C-e invokes `find-dired' with underlying find query.
+C-x C-f changes the search path."
   (interactive "P")
   (when (or arg (not ar/counsel-find--paths))
     (setq ar/counsel-find--paths
