@@ -199,7 +199,11 @@ The command run is essentially: find DPATHS \\( ARGS \\) -ls"
     ;; Dired header.
     (insert (format "  find in %s:\n" (s-join " "
                                               (mapcar (lambda (path)
-                                                        (f-relative path default-directory))
+                                                        ;; Relative, but expand "."
+                                                        (file-name-nondirectory
+                                                         (expand-file-name
+                                                          (directory-file-name
+                                                           (f-relative path default-directory)))))
                                                       dpaths))))
 
     ;; Dired second line is the `find' command.
