@@ -42,6 +42,10 @@ be global."
     :config
     (ar/csetq ispell-program-name "aspell")))
 
+(use-package mw-thesaurus
+  :ensure t
+  :commands mw-thesaurus--lookup-at-point)
+
 (use-package auto-dictionary
   :commands adict-change-dictionary
   :ensure t
