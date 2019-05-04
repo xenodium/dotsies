@@ -197,7 +197,10 @@ The command run is essentially: find DPATHS \\( ARGS \\) -ls"
     (erase-buffer)
 
     ;; Dired header.
-    (insert (format "  find in %s:\n" (s-join " " dpaths)))
+    (insert (format "  find in %s:\n" (s-join " "
+                                              (mapcar (lambda (path)
+                                                        (f-relative path default-directory))
+                                                      dpaths))))
 
     ;; Dired second line is the `find' command.
     (let ((point (point)))
