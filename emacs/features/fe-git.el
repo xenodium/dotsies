@@ -1,4 +1,5 @@
 (require 'ar-vsetq)
+(require 'ar-csetq)
 (require 's)
 (require 'dash)
 
@@ -6,6 +7,10 @@
   :ensure t
   :bind ("C-x g" . magit-status)
   :config
+
+  (ar/csetq magit-status-margin
+            '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
   (fullframe magit-status magit-mode-quit-window)
