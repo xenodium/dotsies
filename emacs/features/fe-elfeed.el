@@ -29,9 +29,19 @@
   (interactive)
   (require 'ar-url)
   (require 'dash)
-  (let ((youtube-urls (-filter (lambda (iframe-url)
-                                 (string-match "youtube" iframe-url))
-                               (ar/url-fetch-iframe-srcs (current-kill 0)))))
+  (let ((youtube-urls (-union
+                       ;; Look for iframe.
+                       (-filter (lambda (iframe-url)
+                                  (string-match "youtube" iframe-url))
+                                (ar/url-fetch-iframe-srcs (current-kill 0)))
+                       ;; Look for links.
+                       (-map (lambda (anchor)
+                               (let-alist anchor
+                                 .url))
+                             (-filter (lambda (anchor)
+                                        (let-alist anchor
+                                          (string-match "youtube" .url)))
+                                      (ar/url-fetch-anchor-elements (current-kill 0)))))))
     (assert (> (length youtube-urls) 0) nil "No youtube links found")
     (if (= (length youtube-urls) 1)
         (ar/open-youtube-url (nth 0 youtube-urls))
