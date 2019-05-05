@@ -14,3 +14,7 @@
   (use-package flycheck-ledger
     :ensure t
     :hook ((ledger-mode . flycheck-mode))))
+
+(use-package csv-mode
+  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
+  :ensure t)
