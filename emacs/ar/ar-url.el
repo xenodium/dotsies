@@ -32,6 +32,13 @@
                 (url . ,(enlive-attr element 'href))))
             elements)))
 
+(defun ar/url-fetch-iframe-srcs (url)
+  "Fetch iframe src urls in URL."
+  (let ((elements (enlive-query-all (enlive-fetch url) [iframe])))
+    (mapcar (lambda (element)
+              (enlive-attr element 'src))
+            elements)))
+
 (defun ar/url-view-links-at ()
   "View external links in HTML from prompted URL or clipboard."
   (interactive)

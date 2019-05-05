@@ -20,9 +20,22 @@
         (message "Opened: %s" ,url)))))
 
 (defun ar/open-youtube-clipboard-url ()
-  "Download youtube video from url in clipboard."
+  "Open youtube video from url in clipboard."
   (interactive)
   (ar/open-youtube-url (current-kill 0)))
+
+(defun ar/open-youtube-clipboard-from-page-url ()
+  "Open youtube video from page url in clipboard."
+  (interactive)
+  (require 'ar-url)
+  (require 'dash)
+  (let ((youtube-urls (-filter (lambda (iframe-url)
+                                 (string-match "youtube" iframe-url))
+                               (ar/url-fetch-iframe-srcs (current-kill 0)))))
+    (assert (> (length youtube-urls) 0) nil "No youtube links found")
+    (if (= (length youtube-urls) 1)
+        (ar/open-youtube-url (nth 0 youtube-urls))
+      (ar/open-youtube-url (completing-read "choose:" youtube-urls)))))
 
 (use-package elfeed :ensure t
   :commands elfeed
