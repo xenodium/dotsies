@@ -12,11 +12,11 @@
 
 (message "Running noninteractive? %s" (if noninteractive "yes" "no"))
 
-(load "~/.emacs.d/features/package-extensions.el")
-(load "~/.emacs.d/features/libs.el")
-(load "~/.emacs.d/features/mac.el")
-(load "~/.emacs.d/features/linux.el")
-(load "~/.emacs.d/features/org.el")
+(load "~/.emacs.d/features/fe-package-extensions.el")
+(load "~/.emacs.d/features/fe-libs.el")
+(load "~/.emacs.d/features/fe-mac.el")
+(load "~/.emacs.d/features/fe-linux.el")
+(load "~/.emacs.d/features/fe-org.el")
 (load "~/.emacs.d/ar/ar-ox-html.el")
 (load "~/.emacs.d/ar/ar-org-split-export.el")
 
