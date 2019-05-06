@@ -14,7 +14,15 @@
 
   ;; I've inadvertedly exited Emacs far too many times.
   ;; Ask for confirmation.
-  (ar/csetq confirm-kill-emacs 'yes-or-no-p))
+  (ar/csetq confirm-kill-emacs 'yes-or-no-p)
+
+  (defun ar/open-clipboard-file-externally ()
+    (interactive)
+    (funcall (ar/platform-open-in-external-app-function) (current-kill 0)))
+
+  (defun ar/open-clipboard-file ()
+    (interactive)
+    (find-file (current-kill 0))))
 
 (use-package autorevert
   :config
