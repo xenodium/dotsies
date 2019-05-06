@@ -247,5 +247,6 @@
 
 ;; Enable major modes in code blocks.
 (use-package poly-org
+  :disabled t
   :mode ("\\.org\\'" . poly-org-mode)
   :ensure t)
