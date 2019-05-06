@@ -17,4 +17,7 @@
 
 (use-package csv-mode
   :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
+  :bind (:map csv-mode-map
+              ("<tab>" . csv-forward-field)
+              ("<backtab>" . csv-backward-field))
   :ensure t)
