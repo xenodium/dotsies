@@ -148,7 +148,7 @@
                                                 (org-element-property :raw-value headline)))))))
         fpaths))
 
-    (defun ar/generate-feed ()
+    (defun ar/export-blog-feed ()
       (interactive)
       (let ((webfeeder-date-function 'ar/blog-date)
             (default-directory (expand-file-name "~/stuff/active/blog")))
@@ -160,7 +160,7 @@
                          :description "Alvaro's notes from a hacked up org HTML export."
                          :builder 'webfeeder-make-rss)))
 
-    (defun ar/generate-emacs-feed ()
+    (defun ar/export-blog-emacs-feed ()
       (interactive)
       (let ((webfeeder-date-function 'ar/blog-date)
             (default-directory (expand-file-name "~/stuff/active/blog")))
@@ -177,6 +177,8 @@
                ar/org-blog-insert-resized-image))
 
   (use-package ar-ox-html
+    :commands (ar/org-split-export-async
+               ar/org-export-current-headline-async)
     :bind (:map org-mode-map
                 ([f6] . ar/ox-export-all-async))
     :config
