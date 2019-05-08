@@ -67,10 +67,7 @@
   (interactive)
   (mapc (lambda (event)
           (advice-remove (diverted-event-to event)
-                         'diverted--advice-fun)
-          (message "Ignoring `%s' after `%s' diversions."
-                   (diverted-event-to event)
-                   (diverted-event-from event)))
+                         'diverted--advice-fun))
         diverted-events)
   (message "diverted-mode disabled"))
 

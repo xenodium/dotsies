@@ -415,6 +415,7 @@ line instead."
   (ar/csetq reb-re-syntax 'string))
 
 (use-package diverted
+  :defer 20
   :config
   (add-to-list 'diverted-events
                (make-diverted-event :from 'er/expand-region
