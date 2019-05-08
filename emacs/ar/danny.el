@@ -76,7 +76,7 @@ For example \"crdownload$\" and \"part$\".")
   (when (file-notify-valid-p danny--notify-descriptor)
     (file-notify-rm-watch danny--notify-descriptor)
     (setq danny--notify-descriptor nil))
-  (message "Danny: Stopped monitoring \"%s\"" danny-monitor-dir-path))
+  (danny--log "Stopped monitoring \"%s\"" danny-monitor-dir-path))
 
 (defun danny-start-listening ()
   "Start monitoring for new files."
@@ -87,44 +87,70 @@ For example \"crdownload$\" and \"part$\".")
   (setq danny--notify-descriptor (file-notify-add-watch danny-monitor-dir-path
                                                         '(change attribute-change)
                                                         'danny--notify-callback))
-  (message "Danny: Started monitoring \"%s\"" danny-monitor-dir-path))
+  (danny--log "Started monitoring \"%s\"" danny-monitor-dir-path))
 
 (defun danny--notify-callback (event)
   "Handle EVENT for file-notify events."
-  (let ((new-fpath (or (danny--new-file-for-event event)
-                       (danny--new-downloaded-file-for-event event))))
-    (when new-fpath
-      (danny--choose-action new-fpath))))
+  (when-let ((new-fpath (or (danny--new-file-for-event event)
+                            (danny--new-downloaded-file-for-event event))))
+    (danny--choose-action new-fpath)))
+
+(defun danny--log (&rest args)
+  (let* ((log-buffer-name  "*danny*")
+         (log-buffer (get-buffer-create log-buffer-name))
+         (log-file-name "~/danny.log")
+         (log-str (concat
+                   (format-time-string "%Y-%m-%d-%H:%M:%S: ")
+                   (apply 'format args)
+                   "\n")))
+    (save-excursion
+      (with-current-buffer log-buffer
+        (goto-char (point-max))
+        (insert log-str))
+      (with-temp-buffer
+        (insert log-str)
+        (write-region (point-min) (point-max) log-file-name t
+                      'nomessage)))))
 
 (defun danny--new-file-for-event (event)
   "Handle EVENT for file-notify events."
   (let ((event-type (nth 1 event))
         (fpath (nth 2 event)))
-    (when (and (eq event-type 'created)
-               (f-file-p fpath)
-               (not (-find-index (lambda (ignored-regexp)
-                                   (s-matches-p ignored-regexp fpath))
-                                 danny-ignored-regexps)))
-      fpath)))
+    (if (and (eq event-type 'created)
+             (f-file-p fpath)
+             (not (-find-index (lambda (ignored-regexp)
+                                 (s-matches-p ignored-regexp fpath))
+                               danny-ignored-regexps)))
+        (progn
+          (danny--log "Is new file? yes %s %s" event-type fpath)
+          fpath)
+      (danny--log "Is new file? no %s %s" event-type fpath)
+      nil)))
 
 (defun danny--new-downloaded-file-for-event (event)
-  "Handle EVENT for file-notify events."
+  "Handle EVENT for file-notify events for downloads."
   (let* ((event-type (nth 1 event))
          (src-fpath (nth 2 event))
          (dst-fpath (when (eq event-type 'renamed)
                       (nth 3 event))))
-    (when (and (eq event-type 'renamed)
-               (f-file-p dst-fpath)
-               ;; Check some.part was renamed to some.txt.
-               ;; part is one of the ignored extensions.
-               (and
-                (-find-index (lambda (ignored-regexp)
-                               (s-matches-p ignored-regexp src-fpath))
-                             danny-ignored-regexps)
-                (not (-find-index (lambda (ignored-regexp)
-                                    (s-matches-p ignored-regexp dst-fpath))
-                                  danny-ignored-regexps))))
-      dst-fpath)))
+    (if (and (eq event-type 'renamed)
+             (f-file-p dst-fpath)
+             ;; Check some.part was renamed to some.txt.
+             ;; part is one of the ignored extensions.
+             (and
+              (-find-index (lambda (ignored-regexp)
+                             (s-matches-p ignored-regexp src-fpath))
+                           danny-ignored-regexps)
+              (not (-find-index (lambda (ignored-regexp)
+                                  (s-matches-p ignored-regexp dst-fpath))
+                                danny-ignored-regexps))))
+        (progn
+          (danny--log "Is download? yes %s %s %s"
+                      event-type src-fpath (or dst-fpath "nil"))
+          dst-fpath)
+      (danny--log "Is download? no %s %s %s"
+                  event-type src-fpath (or dst-fpath "nil"))
+      nil)))
 
 (defun danny-process-last-download ()
   "Process last downloaded file."
@@ -153,11 +179,11 @@ For example \"crdownload$\" and \"part$\".")
             (error "Aborted"))
           (rename-file src-fpath dst-fpath t)
           (danny--add-destination-dir dst-dpath)
-          (message "Danny: %s -> %s" src-fpath dst-fpath)
+          (danny--log "%s -> %s" src-fpath dst-fpath)
           (kill-new dst-fpath))
       (rename-file src-fpath dst-fpath t)
       (danny--add-destination-dir dst-dpath)
-      (message "Danny: %s -> %s" src-fpath dst-fpath)
+      (danny--log "%s -> %s" src-fpath dst-fpath)
       (kill-new dst-fpath))))
 
 (defun danny--create-move-action-fun (src-fpath)
