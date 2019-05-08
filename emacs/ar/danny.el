@@ -98,15 +98,17 @@ For example \"crdownload$\" and \"part$\".")
 (defun danny--log (&rest args)
   (let* ((log-buffer-name  "*danny*")
          (log-buffer (get-buffer-create log-buffer-name))
-         (log-file-name "~/danny.log")
+         (log-file-name "~/.danny.log")
          (log-str (concat
                    (format-time-string "%Y-%m-%d-%H:%M:%S: ")
                    (apply 'format args)
                    "\n")))
     (save-excursion
       (with-current-buffer log-buffer
+        (read-only-mode -1)
         (goto-char (point-max))
-        (insert log-str))
+        (insert log-str)
+        (read-only-mode +1))
       (with-temp-buffer
         (insert log-str)
         (write-region (point-min) (point-max) log-file-name t
