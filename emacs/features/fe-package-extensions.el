@@ -4,7 +4,9 @@
 (use-package use-package-chords
   :ensure t
   :config
-  (key-chord-mode 1))
+  (run-with-idle-timer 2 nil
+                       (lambda ()
+                         (key-chord-mode 1))))
 
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
 ;; We do this early on as we assert binaries are installed throughout
