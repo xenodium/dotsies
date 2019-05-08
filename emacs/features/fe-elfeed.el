@@ -439,6 +439,7 @@ preferring the preferred type."
                         (cl-loop for (tag attrs) in potential-feeds
                                  when (feed-p (alist-get 'type attrs))
                                  return (url-expand-file-name (alist-get 'href attrs) url))))))
+        (assert return nil "No feed found")
         (if (called-interactively-p)
             (insert (if (listp return)
                         (s-join " " return)
