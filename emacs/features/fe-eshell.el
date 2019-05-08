@@ -189,3 +189,21 @@
 (use-package shell
   ;; Mostly for `async-shell-command'.
   :hook (shell-mode . goto-address-mode))
+
+(use-package term
+  :bind (:map
+         term-mode-map
+         ("C-c C-j" . ar/term-toggle-mode)
+         ("C-c C-k" . ar/term-toggle-mode)
+         :map
+         term-raw-map
+         ("C-c C-j" . ar/term-toggle-mode)
+         ("C-c C-k" . ar/term-toggle-mode))
+  :config
+  ;; https://joelmccracken.github.io/entries/switching-between-term-mode-and-line-mode-in-emacs-term
+  (defun ar/term-toggle-mode ()
+    "Toggle term between line mode and char mode."
+    (interactive)
+    (if (term-in-line-mode)
+        (term-char-mode)
+      (term-line-mode))))
