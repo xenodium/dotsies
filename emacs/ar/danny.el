@@ -93,10 +93,11 @@ For example \"crdownload$\" and \"part$\".")
   "Handle EVENT for file-notify events."
   (when-let ((new-fpath (or (danny--new-file-for-event event)
                             (danny--new-downloaded-file-for-event event))))
-    (danny--choose-action new-fpath)))
+    (when (> (f-size new-fpath) 0)
+      (danny--choose-action new-fpath))))
 
 (defun danny--log (&rest args)
-  (let* ((log-buffer-name  "*danny*")
+  (let* ((log-buffer-name  "*danny log*")
          (log-buffer (get-buffer-create log-buffer-name))
          (log-file-name "~/.danny.log")
          (log-str (concat
