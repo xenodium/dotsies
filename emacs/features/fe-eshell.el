@@ -38,7 +38,7 @@
                     (append company-begin-commands (list 'comint-magic-space))))
 
       (bind-keys :map eshell-mode-map
-                 ("M-r" . counsel-esh-history)
+                 ("M-r" . ar/eshell-counsel-history)
                  ([remap eshell-pcomplete] . completion-at-point)
                  ("C-l" . ar/eshell-cd-to-parent)))
     :config
@@ -50,6 +50,9 @@
 
     (require 'em-hist)
     (require 'em-glob)
+
+    ;; Use native 'sudo', system sudo asks for password every time.
+    (require 'em-tramp)
 
     (use-package em-banner
       :ensure eshell
@@ -116,6 +119,19 @@
     (ar/vsetq eshell-error-if-no-glob t)
     (ar/vsetq eshell-glob-case-insensitive t)
     (ar/vsetq eshell-list-files-after-cd nil)
+
+    (defun ar/eshell-counsel-history ()
+      (interactive)
+      (ar/eshell-clear-current-line)
+      (counsel-esh-history))
+
+    (defun ar/eshell-clear-current-line ()
+      "Clear current line."
+      (interactive)
+      (call-interactively (key-binding ""))
+      (call-interactively 'set-mark-command)
+      (call-interactively (key-binding ""))
+      (call-interactively 'delete-region))
 
     (defun ar/eshell-cd-to-parent (projectile-root-p)
       "Change directory to parent. With prefix PROJECTILE-ROOT, change to projectile root dir."
