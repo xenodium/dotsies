@@ -101,7 +101,21 @@
         "Alias to clear (destructive) eshell content."
         (interactive)
         (let ((inhibit-read-only t))
-          (erase-buffer))))
+          (erase-buffer)))
+
+      ;; https://github.com/dakra/dmacs/blob/master/init.org#eshell
+      (defun eshell/lcd (&optional directory)
+        "Like regular 'cd' but don't jump out of a tramp directory.
+When on a remote directory with tramp don't jump 'out' of the server.
+So if we're connected with sudo to 'remotehost'
+'$ lcd /etc' would go to '/sudo:remotehost:/etc' instead of just
+'/etc' on localhost."
+        (if (file-remote-p default-directory)
+            (with-parsed-tramp-file-name default-directory nil
+              (eshell/cd
+               (tramp-make-tramp-file-name
+                method user nil host nil (or directory "") hop)))
+          (eshell/cd directory))))
 
     (use-package em-dirs)
     (use-package em-smart)
