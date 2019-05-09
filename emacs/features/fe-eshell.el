@@ -71,6 +71,11 @@
     (use-package pcmpl-homebrew
       :ensure t)
 
+    (use-package eshell-up
+      :ensure t
+      :config
+      (defalias 'eshell/up #'eshell-up))
+
     (use-package pcmpl-git
       :ensure t)
 
