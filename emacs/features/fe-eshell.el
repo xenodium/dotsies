@@ -141,16 +141,14 @@ So if we're connected with sudo to 'remotehost'
 
     (defun ar/eshell-counsel-history ()
       (interactive)
-      (ar/eshell-clear-current-line)
-      (counsel-esh-history))
-
-    (defun ar/eshell-clear-current-line ()
-      "Clear current line."
-      (interactive)
-      (call-interactively (key-binding ""))
-      (call-interactively 'set-mark-command)
-      (call-interactively (key-binding ""))
-      (call-interactively 'delete-region))
+      (let ((history eshell-history-ring)
+            (selection nil))
+        (with-temp-buffer
+          (setq eshell-history-ring history)
+          (counsel-esh-history)
+          (setq selection (buffer-string)))
+        (delete-region eshell-last-output-end (line-end-position))
+        (insert selection)))
 
     (defun ar/eshell-cd-to-parent (projectile-root-p)
       "Change directory to parent. With prefix PROJECTILE-ROOT, change to projectile root dir."
