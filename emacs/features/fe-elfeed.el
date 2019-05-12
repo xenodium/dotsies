@@ -7,7 +7,7 @@
   ;; Check for URLs like:
   ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
   ;; https://youtu.be/rzQEIRRJ2T0
-  (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\)" url)
+  (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\|\\(redditmedia.com\\)\\)" url)
           nil "Not a downloadable URL: %s" url)
   (message "Downloading: %s" url)
   (async-start
@@ -32,7 +32,7 @@
   (let ((youtube-urls (-union
                        ;; Look for iframe.
                        (-filter (lambda (iframe-url)
-                                  (string-match "youtube" iframe-url))
+                                  (string-match "\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(redditmedia.com\\)" iframe-url))
                                 (ar/url-fetch-iframe-srcs (current-kill 0)))
                        ;; Look for links.
                        (-map (lambda (anchor)
