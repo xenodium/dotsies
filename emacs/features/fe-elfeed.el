@@ -382,6 +382,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://www.tomheon.com/index.xml" blog emacs Edmund)
               ("https://www.wisdomandwonder.com/feed" blog emacs WisdomWonder)
               ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
+              ("https://www.worthe-it.co.za/rss.xml" blog emacs JustinWernick)
               ("https://yoo2080.wordpress.com/feed" blog emacs YooBox)
               ("https://youngfiguy.com/feed" blog money YoungFIGuy)
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
