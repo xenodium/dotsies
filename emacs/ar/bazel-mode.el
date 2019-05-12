@@ -8,7 +8,28 @@
 
 (require 'prog-mode)
 
-(define-derived-mode bazel-mode prog-mode "Bazel")
+;; Based on `python-mode-syntax-table'
+(defvar bazel-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    (let ((symbol (string-to-syntax "_"))
+          (sst (standard-syntax-table)))
+      (dotimes (i 128)
+        (unless (= i ?_)
+          (if (equal symbol (aref sst i))
+              (modify-syntax-entry i "." table)))))
+    (modify-syntax-entry ?$ "." table)
+    (modify-syntax-entry ?% "." table)
+    ;; exceptions
+    (modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?' "\"" table)
+    (modify-syntax-entry ?` "$" table)
+    table)
+  "Syntax table for BUILD files.")
+
+(define-derived-mode bazel-mode prog-mode "Bazel"
+  :syntax-table bazel-mode-syntax-table
+  (setq-local comment-start "# "))
 
 (defun bazel-mode--hook-fun ()
   "Configure mode in hook."
