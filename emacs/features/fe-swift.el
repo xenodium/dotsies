@@ -54,8 +54,9 @@
    :regexp "[#@_a-zA-Z][_a-zA-Z0-9]*"
    :doc-spec '(("(swift)Index" nil "['`‘]" "['’]")))
 
-  (use-package lsp-sourcekit
-    :config
-    (setenv "SOURCEKIT_TOOLCHAIN_PATH"
-            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain")
-    (setq lsp-sourcekit-executable (expand-file-name "~/local/bin/sourcekit-lsp"))))
+  ;; (use-package lsp-sourcekit
+  ;;   :config
+  ;;   (setenv "SOURCEKIT_TOOLCHAIN_PATH"
+  ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain")
+  ;;   (setq lsp-sourcekit-executable (expand-file-name "~/local/bin/sourcekit-lsp")))
+  )
