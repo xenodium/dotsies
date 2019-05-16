@@ -3,6 +3,7 @@
 
 (use-package files
   :config
+  (require 'ar-platform)
   ;; Disable backup.
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
   (ar/vsetq backup-inhibited t)
