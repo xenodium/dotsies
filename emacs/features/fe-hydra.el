@@ -45,6 +45,7 @@ Quick insert: _w_eb bookmark or backlog
     (interactive)
     (cond ((derived-mode-p 'c-mode) (hydra-open-c-mode/body))
           ((derived-mode-p 'prog-mode) (hydra-open-prog-mode/body))
+          ((derived-mode-p 'protobuf-mode) (hydra-open-prog-mode/body))
           (t (hydra-open/body))))
 
   (defhydra hydra-open-c-mode (:color blue)

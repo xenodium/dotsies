@@ -377,6 +377,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://www.reddit.com/r/UKPersonalFinance/.rss" social reddit money UKPersonalFinanceSubreddit)
               ("https://www.reddit.com/r/investing/.rss" social reddit money InvestingSubreddit)
               ("https://www.romanzolotarev.com/rss.xml" blog bsd dev RomanZolotarev)
+              ("https://www.sandeepnambiar.com/feed.xml" blog emacs SandeepNambiar)
               ("https://www.steventammen.com/index.xml" blog emacs StevenTammen)
               ("https://www.swiftbysundell.com/posts?format=RSS" blog swift SwiftBySundell)
               ("https://www.tomheon.com/index.xml" blog emacs Edmund)
