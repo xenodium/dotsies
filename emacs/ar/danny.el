@@ -70,6 +70,8 @@ For example \"crdownload$\" and \"part$\".")
    (cons 'vertical-scroll-bars nil))
   "Base frame parameters.")
 
+(defvar danny--active-frame nil "Active danny frame")
+
 (defun danny-stop-monitoring ()
   (interactive)
   "Stop monitoring for new files."
@@ -198,75 +200,72 @@ For example \"crdownload$\" and \"part$\".")
     (find-file file-path)))
 
 (defun danny--choose-action (fpath)
-  (danny--framed-ivy-read
-   (list
-    (make-danny--framed-ivy-source
-     :prompt (format "Action on (%s): " (f-filename fpath))
-     :collection (lambda ()
-                   (-concat
-                    (list
-                     (cons "Open" (lambda ()
-                                    (unless (f-exists-p fpath)
-                                      (error "File not found: %s" fpath))
-                                    (if ivy-current-prefix-arg
-                                        (shell-command (format "open \"%s\"" fpath))
-                                      (find-file fpath))))
-                     (cons "Move" (lambda ()
-                                    (danny--handle-file-created fpath)))
-                     (cons "Delete" (lambda ()
-                                      (when (danny--y-or-n (format "Delete? %s\n" fpath))
-                                        (delete-file fpath))))
-                     (cons "Open in /tmp" (lambda ()
-                                            (let ((dst-fpath (f-join "/tmp"
-                                                                     (f-filename fpath))))
-                                              (rename-file fpath
-                                                           dst-fpath t)
-                                              (if ivy-current-prefix-arg
-                                                  (shell-command (format "open \"%s\"" dst-fpath))
-                                                (find-file dst-fpath))))))
-                    (-map
-                     (lambda (destination)
-                       (cons (format "Move to %s" destination)
-                             (lambda ()
-                               (danny--move-file fpath destination))))
-                     (danny--last-destinations))))
-     :action (lambda (item)
-               (funcall (cdr item)))
-     :unwind (lambda ()
-               (delete-frame)
-               (kill-buffer "*danny*")
-               (other-window 1))))))
+  (if danny--active-frame
+      (danny--log "Ignoring download (%s), there's an existing session." fpath)
+    (danny--framed-ivy-read
+     (list
+      (make-danny--framed-ivy-source
+       :prompt (format "Action on (%s): " (f-filename fpath))
+       :collection (lambda ()
+                     (-concat
+                      (list
+                       (cons "Open" (lambda ()
+                                      (unless (f-exists-p fpath)
+                                        (error "File not found: %s" fpath))
+                                      (if ivy-current-prefix-arg
+                                          (shell-command (format "open \"%s\"" fpath))
+                                        (find-file fpath))))
+                       (cons "Move" (lambda ()
+                                      (danny--handle-file-created fpath)))
+                       (cons "Delete" (lambda ()
+                                        (when (danny--y-or-n (format "Delete? %s\n" fpath))
+                                          (delete-file fpath))))
+                       (cons "Open in /tmp" (lambda ()
+                                              (let ((dst-fpath (f-join "/tmp"
+                                                                       (f-filename fpath))))
+                                                (rename-file fpath
+                                                             dst-fpath t)
+                                                (if ivy-current-prefix-arg
+                                                    (shell-command (format "open \"%s\"" dst-fpath))
+                                                  (find-file dst-fpath))))))
+                      (-map
+                       (lambda (destination)
+                         (cons (format "Move to %s" destination)
+                               (lambda ()
+                                 (danny--move-file fpath destination))))
+                       (danny--last-destinations))))
+       :action (lambda (item)
+                 (funcall (cdr item)))
+       :unwind (lambda ()
+                 (danny--kill-active-frame)))))))
 
 (defun danny--handle-file-created (file-path)
   "Handle new file created at FILE-PATH."
-  (with-current-buffer (get-buffer-create "*danny*")
-    (let* ((unwind (lambda ()
-                     (delete-frame)
-                     (kill-buffer "*danny*")
-                     (other-window 1))))
-      (danny--framed-ivy-read
-       (-concat (list
+  (let* ((unwind (lambda ()
+                   (danny--kill-active-frame))))
+    (danny--framed-ivy-read
+     (-concat (list
+               (make-danny--framed-ivy-source
+                :prompt (format "Save in Recent (%s): " (f-filename file-path))
+                :action (danny--create-move-action-fun file-path)
+                :collection (lambda ()
+                              (danny--last-destinations))
+                :unwind unwind))
+              (-map
+               (lambda (root)
                  (make-danny--framed-ivy-source
-                  :prompt (format "Save in Recent (%s): " (f-filename file-path))
+                  :prompt (format "Save in \"%s\" (%s): "
+                                  (danny-destination-root-name root)
+                                  (f-filename file-path))
                   :action (danny--create-move-action-fun file-path)
                   :collection (lambda ()
-                                (danny--last-destinations))
+                                (-concat
+                                 (list (danny-destination-root-dpath root))
+                                 (f-directories (danny-destination-root-dpath root)
+                                                nil
+                                                (danny-destination-root-recursive root))))
                   :unwind unwind))
-                (-map
-                 (lambda (root)
-                   (make-danny--framed-ivy-source
-                    :prompt (format "Save in \"%s\" (%s): "
-                                    (danny-destination-root-name root)
-                                    (f-filename file-path))
-                    :action (danny--create-move-action-fun file-path)
-                    :collection (lambda ()
-                                  (-concat
-                                   (list (danny-destination-root-dpath root))
-                                   (f-directories (danny-destination-root-dpath root)
-                                                  nil
-                                                  (danny-destination-root-recursive root))))
-                    :unwind unwind))
-                 danny-destination-roots))))))
+               danny-destination-roots)))))
 
 (cl-defstruct
     danny--framed-ivy-source
@@ -298,61 +297,69 @@ For example \"crdownload$\" and \"part$\".")
                                                                                            (1- (length sources))
                                                                                          (1- index))
                                                                                 :initial-input ivy-text))))
-    (with-current-buffer (get-buffer-create "*danny*")
-      (let* ((collection (funcall (danny--framed-ivy-source-collection source)))
-             (lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
-                             (length collection)))
-             (frame (make-frame
-                     (-concat danny--base-frame-params
-                              (list (cons 'height (min (+ 2 lines-count)
-                                                       25))
-                                    ;; Calculate a sensible width, based on longest path or prompt.
-                                    (cons 'width (max (+ 10 (length (danny--framed-ivy-source-prompt source)))
-                                                      (+ 10 (danny--longest-line-length collection)))))))))
-        (x-focus-frame frame)
-        (ivy-read (danny--framed-ivy-source-prompt source)
-                  collection
-                  :require-match t
-                  :update-fn (lambda ()
-                               ;; Forcing redisplay works around "Open" source not shown
-                               ;; after having visited other sources (left/right keys).
-                               (redisplay))
-                  :action (danny--framed-ivy-source-action source)
-                  :initial-input initial-input
-                  :unwind (danny--framed-ivy-source-unwind source)
-                  :keymap kmap)))))
+    (let* ((collection (funcall (danny--framed-ivy-source-collection source)))
+           (lines-count (+ (length (s-split "\n" (danny--framed-ivy-source-prompt source)))
+                           (length collection))))
+      (danny--kill-active-frame)
+
+      (setq danny--active-frame
+            (make-frame
+             (-concat danny--base-frame-params
+                      (list (cons 'height (min (+ 2 lines-count)
+                                               25))
+                            ;; Calculate a sensible width, based on longest path or prompt.
+                            (cons 'width (max (+ 10 (length (danny--framed-ivy-source-prompt source)))
+                                              (+ 10 (danny--longest-line-length collection))))))))
+      (x-focus-frame danny--active-frame)
+      (ivy-read (danny--framed-ivy-source-prompt source)
+                collection
+                :require-match t
+                :update-fn (lambda ()
+                             ;; Forcing redisplay works around "Open" source not shown
+                             ;; after having visited other sources (left/right keys).
+                             (redisplay))
+                :action (danny--framed-ivy-source-action source)
+                :initial-input initial-input
+                :unwind (danny--framed-ivy-source-unwind source)
+                :keymap kmap))))
 
 (defun danny--read-string (prompt default width)
-  (with-current-buffer (get-buffer-create "*danny*")
-    (let* ((input)
-           (lines (s-split "\n" prompt))
-           (frame (make-frame
-                   (-concat danny--base-frame-params
-                            (list (cons 'height (length lines))
-                                  (cons 'width (+ 1 width (danny--longest-line-length lines))))))))
-      (setq input (read-string prompt default))
-      (delete-frame)
-      (other-window 1)
-      (kill-buffer "*danny*")
-      (if (> (length input) 0)
-          input
-        default))))
+  (let* ((input)
+         (lines (s-split "\n" prompt))
+         (frame (make-frame
+                 (-concat danny--base-frame-params
+                          (list (cons 'height (length lines))
+                                (cons 'width (+ 1 width (danny--longest-line-length lines))))))))
+    (setq input (read-string prompt default))
+    (delete-frame frame)
+    (other-window 1)
+    (if (> (length input) 0)
+        input
+      default)))
 
 (defun danny--y-or-n (prompt)
   "Frame-based yes or no dialog with PROMPT."
-  (with-current-buffer (get-buffer-create "*danny*")
-    (let* ((input)
-           (lines (s-split "\n" prompt))
-           (height (1+ (length lines)))
-           (frame (make-frame
-                   (-concat danny--base-frame-params
-                            (list (cons 'height height)
-                                  (cons 'width (+ 20 (danny--longest-line-length lines))))))))
-      (setq input (yes-or-no-p prompt))
-      (delete-frame)
-      (other-window 1)
-      (kill-buffer "*danny*")
-      input)))
+  (danny--kill-active-frame)
+  (let* ((input)
+         (lines (s-split "\n" prompt))
+         (height (1+ (length lines)))
+         (frame (make-frame
+                 (-concat danny--base-frame-params
+                          (list (cons 'height height)
+                                (cons 'width (+ 20 (danny--longest-line-length lines))))))))
+    (setq input (yes-or-no-p prompt))
+    (delete-frame frame)
+    (other-window 1)
+    input))
+
+(defun danny--kill-active-frame ()
+  (when danny--active-frame
+    (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+      (abort-recursive-edit))
+    (delete-frame danny--active-frame))
+  (setq danny--active-frame nil)
+  (when (minibufferp)
+    (other-window 1)))
 
 (defun danny--longest-line-length (lines)
   "Return the longest length in LINES."
