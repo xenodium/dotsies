@@ -34,9 +34,6 @@ For example \"crdownload$\" and \"part$\".")
 (defvar danny-destination-roots
   (list (make-danny-destination-root :name "Documents"
                                      :dpath "~/Documents")
-        (make-danny-destination-root :name "Downloads"
-                                     :dpath "~/Downloads"
-                                     :recursive t)
         (make-danny-destination-root :name "Temp"
                                      :dpath "/tmp"))
   "Root destination directories.  For example:
