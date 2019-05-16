@@ -254,6 +254,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://changelog.com/feed" blog dev news JohnGoerzen)
               ("https://changelog.complete.org/feed" blog emacs JohnGoerzen)
               ("https://chaoticlab.io/feed.xml" blog emacs ChaoticLab)
+              ("https://codingquark.com/feed.xml" blog emacs Codingquark)
               ("https://coffeeandcode.neocities.org/atom.xml" blog emacs CoffeeAndCode)
               ("https://colelyman.com/index.xml" blog emacs ColeLyman)
               ("https://copyninja.info/feeds/all.atom.xml" blog dev copyninja)
