@@ -311,6 +311,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://medium.com/feed/@tasshin" blog emacs meditation MichaelFogleman)
               ("https://mhaffner.github.io/index.xml" blog emacs MatthewHaffner)
               ("https://moneytothemasses.com/feed" money blog MoneyToTheMasses)
+              ("https://muratbuffalo.blogspot.com/feeds/posts/default?alt=rss" blog emacs MuratBuffale)
               ("https://news.ycombinator.com/rss" hackernews tech)
               ("https://nickdrozd.github.io/feed.xml" blog emacs NicholasDrozd)
               ("https://notanumber.io/feed.xml" blog emacs NotANumber)
