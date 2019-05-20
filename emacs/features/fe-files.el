@@ -17,6 +17,9 @@
   ;; Ask for confirmation.
   (ar/csetq confirm-kill-emacs 'yes-or-no-p)
 
+  ;; Open that large file! YOLO. Ok, got `openwith' to handle it.
+  (ar/csetq large-file-warning-threshold nil)
+
   (defun ar/open-clipboard-file-externally ()
     (interactive)
     (funcall (ar/platform-open-in-external-app-function) (current-kill 0)))
