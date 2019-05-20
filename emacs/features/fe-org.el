@@ -220,6 +220,9 @@
              (message "Warning: Could not find plantuml.8018.jar")
              (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
+    (use-package gnuplot
+      :ensure t)
+
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((R . t)
