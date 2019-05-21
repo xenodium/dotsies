@@ -105,6 +105,17 @@
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
   (setq dired-omit-mode t)
 
+  (defun ar/dired-du-size-of-selection ()
+    "Print size of selected dired files or directories."
+    (interactive)
+    (let ((files (dired-get-marked-files)))
+      (with-temp-buffer
+        (apply 'call-process "du" nil t nil "-csh" files)
+        (message "Size of all marked files: %s"
+                 (progn
+                   (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                   (match-string 1))))))
+
   ;; Predownloaded to ~/.emacs.d/downloads
   (use-package tmtxt-dired-async
     :config
