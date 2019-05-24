@@ -348,6 +348,17 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
     (org-refile nil (current-buffer))
     (save-buffer)))
 
+(defun ar/org-mark-obsolete ()
+  "Mark current item as OBSOLETE and refile."
+  (interactive)
+  (save-excursion
+    (org-todo "OBSOLETE")
+    (end-of-line)
+    (insert " ")
+    (org-insert-time-stamp (current-time))
+    (org-refile nil (current-buffer))
+    (save-buffer)))
+
 (defun ar/org--preprocess-url-title (url-title)
   "Reformat page URL-TITLE For example:
 HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
