@@ -43,6 +43,7 @@
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-alternate-parent-dir)
+  :custom (dired-recursive-copies 'always)
   :init
   (defun ar/file-find-alternate-parent-dir ()
     "Open parent dir."
