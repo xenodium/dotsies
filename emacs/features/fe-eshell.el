@@ -120,7 +120,13 @@ So if we're connected with sudo to 'remotehost'
               (eshell/cd
                (tramp-make-tramp-file-name
                 method user nil host nil (or directory "") hop)))
-          (eshell/cd directory))))
+          (eshell/cd directory)))
+
+      (defun eshell/sudo-ec (path)
+        (let ((qualified-path (if (string-match "^/" path)
+                                  path
+                                (concat (expand-file-name (eshell/pwd)) "/" path))))
+          (find-file (concat "/sudo::" qualified-path)))))
 
     (use-package em-dirs)
     (use-package em-smart)
