@@ -115,6 +115,7 @@
 ;;;; Now kick off non-essential loading ;;;;
 
 (defun ar/load-non-core-init ()
+  "Load non-core initialisation."
    ;; Undo GC values post init.el.
    (setq gc-cons-threshold 16777216
          gc-cons-percentage 0.1)
