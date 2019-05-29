@@ -60,3 +60,7 @@
   ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain")
   ;;   (setq lsp-sourcekit-executable (expand-file-name "~/local/bin/sourcekit-lsp")))
   )
+
+(use-package applescript-mode
+  :ensure t
+  :mode ("\\.applescript\\'" . swift-mode))
