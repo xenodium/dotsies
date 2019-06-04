@@ -49,6 +49,23 @@
     (require 'company-projectile-cd)
 
     (require 'em-hist)
+
+    (defun ar/eshell-add-input-to-history (orig-fun &rest r)
+      "Cd to relative paths aren't that useful in history. Change to absolute paths."
+      (let* ((input (nth 0 r))
+             (args (progn
+                     (set-text-properties 0 (length input) nil input)
+                     (split-string input))))
+        (if (equal "cd" (nth 0 args))
+            (apply orig-fun (list (format "cd %s"
+                                          (expand-file-name (concat default-directory
+                                                                    (nth 1 args))))))
+          (apply orig-fun r))))
+
+    (advice-add 'eshell-add-input-to-history
+                :around
+                'ar/eshell-add-input-to-history)
+
     (require 'em-glob)
 
     ;; Use native 'sudo', system sudo asks for password every time.
