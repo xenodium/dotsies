@@ -48,6 +48,9 @@
   (require 'company-swimports)
   (require 'flycheck-swiftlint)
 
+  ;; Unset swift-mode:send-region. I prefer my default (ivy-resume).
+  (bind-key "C-c C-r" nil swift-mode-map)
+
   (require 'info)
   (info-lookup-maybe-add-help
    :mode 'swift-mode
