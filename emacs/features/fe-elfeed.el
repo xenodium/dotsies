@@ -284,6 +284,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://fuco1.github.io/rss.xml" blog emacs Fuco)
               ("https://ghuntley.com/rss" blog dev ghuntley)
               ("https://github.crookster.org/feed.xml" blog dev emacs Crook)
+              ("https://hackeryarn.com/index.xml" blog emacs HackerYarn)
               ("https://hacks.mozilla.org/feed" blog dev Mozilla)
               ("https://harryrschwartz.com/atom.xml" bloc emacs HarryRSchwartz)
               ("https://hasanyavuz.ozderya.net/?feed=rss2" blog emacs HasanYavuz)
