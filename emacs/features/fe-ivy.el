@@ -10,13 +10,22 @@
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
-                 ("M-i" . swiper-isearch)
+         ("C-s" . ar/swiper-isearch-dwim)
+         :map swiper-isearch-map
+         ("C-r" . ivy-previous-line)
          :map counsel-ag-map
          ("C-c C-e" . ar/ivy-occur)
          :map wgrep-mode-map
          ("C-c C-c" . ar/wgrep-finish-edit)
          ("C-c C-k" . ar/wgrep-abort-changes))
   :config
+  (defun ar/swiper-isearch-dwim ()
+    (interactive)
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (let ((region (buffer-substring-no-properties (mark) (point))))
+          (deactivate-mark)
+          (swiper-isearch region))
+      (swiper-isearch-thing-at-point)))
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
   (defun ar/ivy-occur ()
@@ -225,24 +234,24 @@ With prefix argument, use full path."
 
 
 (defun ar/counsel-ag (arg)
-    (interactive "P")
-    (defvar ar/counsel-ag--default-locaction nil)
-    (when (or arg (not ar/counsel-ag--default-locaction))
-      ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
-      (setq current-prefix-arg nil)
-      (ar/vsetq ar/counsel-ag--default-locaction
-                (read-directory-name "search in: " default-directory nil t)))
+  (interactive "P")
+  (defvar ar/counsel-ag--default-locaction nil)
+  (when (or arg (not ar/counsel-ag--default-locaction))
+    ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
+    (setq current-prefix-arg nil)
+    (ar/vsetq ar/counsel-ag--default-locaction
+              (read-directory-name "search in: " default-directory nil t)))
 
-    (let ((kmap counsel-ag-map))
-      (define-key kmap (kbd "C-x C-f") (lambda ()
-                                         (interactive)
-                                         (ivy-quit-and-run
-                                           (ar/counsel-ag t))))
-      (cond ((executable-find "rg")
-             (counsel-rg nil ar/counsel-ag--default-locaction))
-            ((executable-find "pt")
-             (counsel-pt nil ar/counsel-ag--default-locaction))
-            ((executable-find "ag")
-             (counsel-ag nil ar/counsel-ag--default-locaction))
-            (t
-             (counsel-ack nil ar/counsel-ag--default-locaction)))))
+  (let ((kmap counsel-ag-map))
+    (define-key kmap (kbd "C-x C-f") (lambda ()
+                                       (interactive)
+                                       (ivy-quit-and-run
+                                         (ar/counsel-ag t))))
+    (cond ((executable-find "rg")
+           (counsel-rg nil ar/counsel-ag--default-locaction))
+          ((executable-find "pt")
+           (counsel-pt nil ar/counsel-ag--default-locaction))
+          ((executable-find "ag")
+           (counsel-ag nil ar/counsel-ag--default-locaction))
+          (t
+           (counsel-ack nil ar/counsel-ag--default-locaction)))))
