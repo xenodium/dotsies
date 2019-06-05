@@ -25,7 +25,7 @@
         (let ((region (buffer-substring-no-properties (mark) (point))))
           (deactivate-mark)
           (swiper-isearch region))
-      (swiper-isearch-thing-at-point)))
+      (swiper-isearch)))
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
   (defun ar/ivy-occur ()
