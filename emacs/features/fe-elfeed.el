@@ -296,6 +296,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://indeedably.com/feed/" blog money InDeedABly)
               ("https://jarss.github.io/TAONAW/index.xml" blog emacs Jarss)
               ("https://joelmccracken.github.io/feed.xml" blog emacs JoelMcCracken)
+              ("https://jonathanabennett.github.io/rss.xml" blog emacs JonathanBennett)
               ("https://jvns.ca/atom.xml" blog emacs JuliaEvans)
               ("https://kdecherf.com/feeds/blog.atom.xml" blog dev kdecherf-blog)
               ("https://kdecherf.com/feeds/le-kdecherf.atom.xml" blog dev kdecherf)
