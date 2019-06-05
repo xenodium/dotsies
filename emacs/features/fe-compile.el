@@ -58,7 +58,8 @@ M-x compile.
            (message "Compilation exited abnormally: %s" string))))
 
   ;; Automatically hide successful builds window.
-  (setq compilation-finish-functions #'ar/compile-autoclose)
+  ;; Trying out without for a little while.
+  ;; (setq compilation-finish-functions #'ar/compile-autoclose)
 
   ;; Automatically scroll build output.
   (ar/csetq compilation-scroll-output t))
