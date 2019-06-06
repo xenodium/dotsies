@@ -112,14 +112,34 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                ;; Default to workspace dir otherwise.
                (t
                 (list (ar/bazel-workspace-path))))))
+    (message "Searching %s" dirs)
     (apply 'process-lines (nconc (list "find")
                                  dirs
                                  (list "-name" "BUILD")))))
 
-(defun ar/bazel-workspace-build-rules ()
+(defun ar/bazel-workspace-build-rules (&optional fresh-read)
   "Get all workspace qualified rules."
-  (-mapcat 'ar/bazel-qualified-rule-names-in-build-file-path
-           (ar/bazel-workspace-build-files)))
+  (if fresh-read
+      (let* ((counter 0)
+             (build-files)
+             (length))
+        (setq build-files (ar/bazel-workspace-build-files))
+        (setq length (length build-files))
+        (-mapcat (lambda (build-file)
+                   (setq counter (1+ counter))
+                   (message "Reading (%d/%d) %s" counter length build-file)
+                   (ar/bazel-qualified-rule-names-in-build-file-path build-file))
+                 build-files))
+    (ar/bazel--read-rules-cache)))
+
+(defun ar/bazel-cache-build-rules ()
+  (interactive)
+  (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
+                               " --batch -Q"
+                               " -l " (ar/bazel--init-fpath)
+                               (format " --execute '(ar/bazel--write-rules-cache (ar/bazel-workspace-build-rules t) \"%s\")'"
+                                       (ar/bazel--rules-cache-fpath)))
+                       "*bazel cache*"))
 
 (defun ar/bazel-insert-rule ()
   "Insert a qualified build rule, with completion."
@@ -132,6 +152,39 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (mapc (lambda (rule)
           (message rule))
         (ar/bazel-workspace-build-rules)))
+
+(defun ar/bazel--rules-cache-fpath ()
+  (concat (file-name-as-directory (ar/bazel-workspace-path))
+          ".bazelrules"))
+
+(defun ar/bazel--init-fpath ()
+  (let ((fpath (concat (temporary-file-directory)
+                       "bazel-init.el")))
+    (with-current-buffer (find-file-noselect fpath)
+      (delete-region (point-min) (point-max))
+      (insert "(setq load-path '(\n")
+      (mapc (lambda (path)
+              (insert (format "\"%s\"\n" path)))
+            load-path)
+      (insert "))\n")
+      (insert "(require 'subr-x)\n")
+      (insert "(require 'projectile)\n")
+      (insert "(require 'ar-bazel)")
+      (write-file fpath nil))
+    fpath))
+
+(defun ar/bazel--write-rules-cache (rules &optional fpath)
+  (with-temp-buffer
+    (prin1 rules (current-buffer))
+    (write-file (or fpath (ar/bazel--rules-cache-fpath)) nil)))
+
+(defun ar/bazel--read-rules-cache ()
+  "Read history hash in HASH-FPATH."
+  (if (not (f-exists? (ar/bazel--rules-cache-fpath)))
+      (list)
+    (with-temp-buffer
+      (insert-file-contents (ar/bazel--rules-cache-fpath))
+      (read (current-buffer)))))
 
 (provide 'ar-bazel)
 
