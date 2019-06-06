@@ -2,32 +2,6 @@
 (require 'ar-csetq)
 (require 'dash)
 
-(use-package isearch
-  :commands (isearch-forward isearch-backward)
-  :defer 5
-  :preface
-  (provide 'isearch)
-  :config
-  (use-package char-fold)
-
-  (ar/vsetq search-default-mode #'char-fold-to-regexp)
-
-  ;; Prepopulate isearch with selectionn.
-  ;; From http://www.reddit.com/r/emacs/comments/2amn1v/isearch_selected_text
-  (defadvice isearch-mode (around isearch-mode-default-string
-                                  (forward &optional regexp op-fun recursive-edit word-p) activate)
-    "Enable isearch to start with current selection."
-    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-        (progn
-          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
-          (deactivate-mark)
-          ad-do-it
-          (if (not forward)
-              (isearch-repeat-backward)
-            (goto-char (mark))
-            (isearch-repeat-forward)))
-      ad-do-it)))
-
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
