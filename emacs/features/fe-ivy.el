@@ -120,7 +120,7 @@ There is no limit on the number of *ivy-occur* buffers."
 (use-package swiper
   :ensure t
   :bind (("C-s" . ar/swiper-isearch-dwim)
-         :map swiper-map
+         :map swiper-isearch-map
          ("C-r" . ivy-previous-line))
   :config
   (defun ar/swiper-isearch-dwim ()
