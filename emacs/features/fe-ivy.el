@@ -78,6 +78,14 @@ There is no limit on the number of *ivy-occur* buffers."
                                          (interactive)
                                          (ivy-quit-and-run
                                            (ar/counsel-ag t))))
+
+      (define-key kmap (kbd "<tab>") (lambda ()
+                                       (interactive)
+                                       ;; First invocation calls ivy-call.
+                                       ;; Second invocation calls ivy-alt-done.
+                                       (if (eq this-command last-command)
+                                           (ivy-alt-done)
+                                         (ivy-call))))
       (cond ((executable-find "rg")
              (counsel-rg nil ar/counsel-ag--default-locaction))
             ((executable-find "pt")
