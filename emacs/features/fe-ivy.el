@@ -2,7 +2,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
 
-;; Ivy equivalents to Emacs commands.
 (use-package counsel
   :ensure t
   :defer 0.1
@@ -10,22 +9,12 @@
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
-         ("C-s" . ar/swiper-isearch-dwim)
-         :map swiper-isearch-map
-         ("C-r" . ivy-previous-line)
          :map counsel-ag-map
          ("C-c C-e" . ar/ivy-occur)
          :map wgrep-mode-map
          ("C-c C-c" . ar/wgrep-finish-edit)
          ("C-c C-k" . ar/wgrep-abort-changes))
   :config
-  (defun ar/swiper-isearch-dwim ()
-    (interactive)
-    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-        (let ((region (buffer-substring-no-properties (mark) (point))))
-          (deactivate-mark)
-          (swiper-isearch region))
-      (swiper-isearch-thing-at-point)))
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
   (defun ar/ivy-occur ()
@@ -127,6 +116,20 @@ There is no limit on the number of *ivy-occur* buffers."
               "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
   (counsel-mode +1))
+
+(use-package swiper
+  :ensure t
+  :bind (("C-s" . ar/swiper-isearch-dwim)
+         :map swiper-map
+         ("C-r" . ivy-previous-line))
+  :config
+  (defun ar/swiper-isearch-dwim ()
+    (interactive)
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (let ((region (buffer-substring-no-properties (mark) (point))))
+          (deactivate-mark)
+          (swiper-isearch region))
+      (swiper-isearch))))
 
 (use-package counsel-projectile
   :ensure t
