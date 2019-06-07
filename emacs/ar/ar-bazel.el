@@ -113,9 +113,11 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                (t
                 (list (ar/bazel-workspace-path))))))
     (message "Searching %s" dirs)
-    (apply 'process-lines (nconc (list "find")
-                                 dirs
-                                 (list "-name" "BUILD")))))
+    (mapcar (lambda (path)
+              (expand-file-name path))
+            (apply 'process-lines (nconc (list "find")
+                                         dirs
+                                         (list "-name" "BUILD"))))))
 
 (defun ar/bazel-workspace-build-rules (&optional fresh-read)
   "Get all workspace qualified rules."
@@ -135,10 +137,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-cache-build-rules ()
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
-                               " --batch -Q"
-                               " -l " (ar/bazel--init-fpath)
-                               (format " --execute '(ar/bazel--write-rules-cache (ar/bazel-workspace-build-rules t) \"%s\")'"
-                                       (ar/bazel--rules-cache-fpath)))
+                               " --batch -Q -l " (ar/bazel--write-rules-cache-async-path))
                        "*bazel cache*"))
 
 (defun ar/bazel-insert-rule ()
@@ -157,10 +156,12 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (concat (file-name-as-directory (ar/bazel-workspace-path))
           ".bazelrules"))
 
-(defun ar/bazel--init-fpath ()
-  (let ((fpath (concat (temporary-file-directory)
-                       "bazel-init.el")))
+(defun ar/bazel--write-rules-cache-async-path ()
+  (let ((calling-dpath default-directory)
+        (fpath (concat (temporary-file-directory)
+                       "ar-bazel--write-rules-cache-async-path.el")))
     (with-current-buffer (find-file-noselect fpath)
+      (setq default-directory calling-dpath)
       (delete-region (point-min) (point-max))
       (insert "(setq load-path '(\n")
       (mapc (lambda (path)
@@ -170,6 +171,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
       (insert "(require 'subr-x)\n")
       (insert "(require 'projectile)\n")
       (insert "(require 'ar-bazel)")
+      (insert (format "(setq default-directory \"%s\")\n" calling-dpath))
+      (insert (format "(ar/bazel--write-rules-cache (ar/bazel-workspace-build-rules t) \"%s\")\n"
+                      (ar/bazel--rules-cache-fpath)))
       (write-file fpath nil))
     fpath))
 
