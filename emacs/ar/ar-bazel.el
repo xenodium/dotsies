@@ -36,6 +36,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
             (completing-read "build rule: " (ar/bazel-rule-names-in-build-file-path closest-build-file)))))
 
 (defun ar/bazel-build-rule-names (str)
+  "Return build rule names in STR."
   (mapcar (lambda (match)
             (nth 1 match))
           ;; match: name = "rulename"
@@ -60,6 +61,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
 
 (defun ar/bazel-linked-dpath (name)
+  "Append NAME to bazel root path and return it."
   (let ((dpath (concat (ar/bazel-workspace-path)
                        (format "%s-%s/"
                                ar/bazel-gendir-prefix
@@ -70,6 +72,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
     dpath))
 
 (defun ar/bazel-bin-dir ()
+  "Bazel bin directory path."
   (ar/bazel-linked-dpath "bin"))
 
 (defun ar/bazel-dired-bin-dir ()
@@ -78,6 +81,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (find-file (ar/bazel-bin-dir)))
 
 (defun ar/bazel-out-dir ()
+  "Bazel out directory path."
   (ar/bazel-linked-dpath "out"))
 
 (defun ar/bazel-dired-out-dir ()
@@ -86,6 +90,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (find-file (ar/bazel-out-dir)))
 
 (defun ar/bazel-genfiles-dir ()
+  "Bazel genfiles directory path."
   (ar/bazel-linked-dpath "genfiles"))
 
 (defun ar/bazel-dired-genfiles-dir ()
@@ -120,7 +125,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                                          (list "-name" "BUILD"))))))
 
 (defun ar/bazel-workspace-build-rules (&optional fresh-read)
-  "Get all workspace qualified rules."
+  "Get all workspace qualified rules.  If FRESH-READ, skip cache."
   (if fresh-read
       (let* ((counter 0)
              (build-files)
@@ -135,6 +140,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
     (ar/bazel--read-rules-cache)))
 
 (defun ar/bazel-cache-build-rules ()
+  "Cache absolute bazel build rules."
   (interactive)
   (ar/bazel--async-body-named "bazel-cache"
    (require 'subr-x)
@@ -157,10 +163,12 @@ bazel-bin, bazel-genfiles, and bazel-out.")
         (ar/bazel-workspace-build-rules)))
 
 (defun ar/bazel--rules-cache-fpath ()
+  "Bazel rules cache path for current project."
   (concat (file-name-as-directory (ar/bazel-workspace-path))
           ".bazelrules"))
 
 (defmacro ar/bazel--async-body-named (name &rest body)
+  "Execute asynchronous BODY with NAME."
   (let ((body-string (replace-regexp-in-string "^(" "(progn " (format "%s" `,@body ) t t)))
     `(let ((calling-dpath default-directory)
            (fpath (concat (temporary-file-directory)
@@ -181,6 +189,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                             (format "*%s*" ,name)))))
 
 (defun ar/bazel--write-rules-cache (rules &optional fpath)
+  "Write bazel absolute RULES at FPATH."
   (with-temp-buffer
     (prin1 rules (current-buffer))
     (write-file (or fpath (ar/bazel--rules-cache-fpath)) nil)))
