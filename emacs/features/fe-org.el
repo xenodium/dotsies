@@ -249,9 +249,3 @@
     (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
     (ar/csetq org-crypt-key nil)))
-
-;; Enable major modes in code blocks.
-(use-package poly-org
-  :disabled t
-  :mode ("\\.org\\'" . poly-org-mode)
-  :ensure t)
