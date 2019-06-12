@@ -13,6 +13,9 @@
 (require 's)
 (require 'projectile)
 
+(defcustom company-projectile-cd--ignore-fallback-regexp nil
+  "If regexp matches `default-directory' ignore fallback.")
+
 (defun company-projectile-cd (command &optional arg &rest ignored)
   "Company shell completion for any projectile path."
   (interactive (list 'interactive))
@@ -42,7 +45,10 @@
       (when prefix-found
         (if (projectile-project-p default-directory)
             (company-projectile-cd--projectile search-term)
-          (company-projectile-cd--find-fallback search-term))))))
+          (when  (or (not company-projectile-cd--ignore-fallback-regexp)
+                     (not (s-match company-projectile-cd--ignore-fallback-regexp
+                                   default-directory)))
+            (company-projectile-cd--find-fallback search-term)))))))
 
 (defun company-projectile-cd--projectile (search-term)
   (-filter (lambda (path)

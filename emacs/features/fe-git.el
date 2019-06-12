@@ -27,14 +27,20 @@
          (shell-mode . with-editor-export-editor)))
 
 (use-package git-gutter
-  :hook ((prog-mode . git-gutter-mode)
+  :hook ((prog-mode . ar/delayed-git-gutter-mode)
          (protobuf-mode . git-gutter-mode))
   :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk))
   :config
   (ar/vsetq
-   git-gutter:handled-backends '(git hg bzr svn)))
+   git-gutter:handled-backends '(git hg))
+
+  (defun ar/delayed-git-gutter-mode ()
+    "Git gutter can take some time."
+    (run-with-timer 5 nil
+                    #'git-gutter-mode
+                    +1)))
 
 (use-package ar-git
   :defer 2)

@@ -16,12 +16,7 @@
                                 ".swiftlint.yml"))))
       (message "No buffer filename in swift mode."))
 
-    (setq-local company-backends '((company-sourcekit
-                                    company-swimports
-                                    company-yasnippet
-                                    company-dabbrev-code
-                                    company-keywords
-                                    company-capf)))
+    (setq-local company-backends '((company-swimports)))
 
     (add-hook 'after-save-hook 'ar/after-swift-save nil t))
 

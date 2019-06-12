@@ -5,6 +5,8 @@
   :ensure t
   :defer 2
   :config
+  (ar/csetq projectile-track-known-projects-automatically nil)
+  (ar/csetq projectile-dynamic-mode-line nil)
   (ar/vsetq projectile-enable-caching t)
   (ar/vsetq projectile-completion-system 'ivy)
   ;; Use alien since turbo-alien ignores .projectile file, which is
