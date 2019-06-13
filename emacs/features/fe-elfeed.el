@@ -13,11 +13,11 @@
   (async-start
    `(lambda ()
       (shell-command-to-string
-       (format "youtube-dl --newline --exec \"open -a VLC {}\" -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
+       (format "youtube-dl --newline -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
    `(lambda (output)
       (if (string-match-p "ERROR:" output)
           (message "%s" output)
-        (message "Opened: %s" ,url)))))
+        (message "Downloaded: %s" ,url)))))
 
 (defun ar/open-youtube-clipboard-url ()
   "Open youtube video from url in clipboard."
