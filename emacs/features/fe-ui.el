@@ -11,6 +11,11 @@
 (set-face-attribute 'default nil
                     :height 160)
 
+(use-package frame
+  :init
+  ;; Mispressing C-z invokes `suspend-frame' (disable).
+  (global-unset-key (kbd "C-z")))
+
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
   :ensure t
