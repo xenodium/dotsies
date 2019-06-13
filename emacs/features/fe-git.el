@@ -37,10 +37,8 @@
    git-gutter:handled-backends '(git hg))
 
   (defun ar/delayed-git-gutter-mode ()
-    "Git gutter can take some time."
-    (run-with-timer 5 nil
-                    #'git-gutter-mode
-                    +1)))
+    "Git gutter can take time to load on some repos. Delay enabling."
+    (run-with-idle-timer 5 nil #'git-gutter-mode +1)))
 
 (use-package ar-git
   :defer 2)
