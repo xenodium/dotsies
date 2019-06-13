@@ -13,9 +13,6 @@
 (require 's)
 (require 'projectile)
 
-(defcustom company-projectile-cd--ignore-fallback-regexp nil
-  "If regexp matches `default-directory' ignore fallback.")
-
 (defun company-projectile-cd (command &optional arg &rest ignored)
   "Company shell completion for any projectile path."
   (interactive (list 'interactive))
@@ -30,11 +27,13 @@
      (company-projectile-cd--expand-inserted-path arg))))
 
 (defun company-projectile-cd--prefix ()
-  (-some (lambda (p)
-           (let ((prefix (company-grab-symbol-cons p (length p))))
-             (when (consp prefix)
-               prefix)))
-         '("cd " "ls ")))
+  "Return prefix if in a project.  Nil otherwise to give a chance to other backends."
+  (when (projectile-project-p default-directory)
+    (-some (lambda (p)
+             (let ((prefix (company-grab-symbol-cons p (length p))))
+               (when (consp prefix)
+                 prefix)))
+           '("cd " "ls "))))
 
 (defun company-projectile-cd--candidates (input)
   "Return candidates for given INPUT."
@@ -42,13 +41,8 @@
     (let ((search-term (substring-no-properties
                         (car input) 0 (length (car input))))
           (prefix-found (cdr input)))
-      (when prefix-found
-        (if (projectile-project-p default-directory)
-            (company-projectile-cd--projectile search-term)
-          (when  (or (not company-projectile-cd--ignore-fallback-regexp)
-                     (not (s-match company-projectile-cd--ignore-fallback-regexp
-                                   default-directory)))
-            (company-projectile-cd--find-fallback search-term)))))))
+      (when (and prefix-found (projectile-project-p default-directory))
+        (company-projectile-cd--projectile search-term)))))
 
 (defun company-projectile-cd--projectile (search-term)
   (-filter (lambda (path)
@@ -59,19 +53,6 @@
             (projectile-current-project-dirs)
             ;; Throw project root in there also.
             (projectile-project-root))))
-
-(defun company-projectile-cd--find-fallback (search-term)
-  (ignore-errors
-    (-map (lambda (path)
-            (string-remove-prefix "./" path))
-          (apply #'process-lines
-                 (list "find" "."
-                       "(" "-type" "d" "-or" "-type" "l" ")"
-                       "-maxdepth" "2"
-                       "-not" "-path" "."
-                       "-not" "-path" "./.*"
-                       "-iname"
-                       (format "\*%s\*" search-term))))))
 
 (defun company-projectile-cd--expand-inserted-path (path)
   "Replace relative PATH insertion with its relative equivalent."
