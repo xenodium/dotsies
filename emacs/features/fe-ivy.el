@@ -133,11 +133,12 @@ There is no limit on the number of *ivy-occur* buffers."
   :config
   (defun ar/swiper-isearch-dwim ()
     (interactive)
-    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-        (let ((region (buffer-substring-no-properties (mark) (point))))
-          (deactivate-mark)
-          (swiper-isearch region))
-      (swiper-isearch))))
+    (let ((ivy-wrap t))
+      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+          (let ((region (buffer-substring-no-properties (mark) (point))))
+            (deactivate-mark)
+            (swiper-isearch region))
+        (swiper-isearch)))))
 
 (use-package counsel-projectile
   :ensure t
