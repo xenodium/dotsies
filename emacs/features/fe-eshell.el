@@ -6,6 +6,7 @@
   :bind (([f5] . ar/shell-pop))
   :config
   (use-package eshell
+    :commands eshell
     :hook ((eshell-mode . goto-address-mode)
            (eshell-mode . ar/eshell-mode-hook-function))
     :init
@@ -148,6 +149,21 @@ So if we're connected with sudo to 'remotehost'
     ;; Avoid "WARNING: terminal is not fully functional."
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
     (setenv "PAGER" "cat")
+
+    (use-package xterm-color
+      :ensure t
+      :init
+      ;; Why is `eshell-output-filter-functions' not found? Defining.
+      (defvar eshell-output-filter-functions '())
+      :config
+      (setenv "TERM" "xterm-256color")
+      (setq eshell-output-filter-functions
+            (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+      (add-hook 'eshell-before-prompt-hook
+                (lambda ()
+                  (setq xterm-color-preserve-properties t)))
+      (ar/csetq eshell-preoutput-filter-functions nil)
+      (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter))
 
     (ar/vsetq eshell-where-to-jump 'begin)
     (ar/vsetq eshell-review-quick-commands nil)
