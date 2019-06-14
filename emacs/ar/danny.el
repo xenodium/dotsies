@@ -12,6 +12,7 @@
 (require 'filenotify)
 (require 'ht)
 (require 'ivy)
+(require 'subr-x)
 
 (defvar danny-monitor-dir-path "~/Downloads" "Directory path to monitor.")
 
