@@ -41,11 +41,9 @@
                  ([remap eshell-pcomplete] . completion-at-point)
                  ("C-l" . ar/eshell-cd-to-parent)))
     :config
-    (require 'company)
     (require 'counsel)
-
-    (require 'company-escaped-files)
     (require 'company-projectile-cd)
+    (require 'company-cd)
 
     (require 'em-hist)
 
