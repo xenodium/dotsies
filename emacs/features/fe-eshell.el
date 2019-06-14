@@ -169,8 +169,10 @@ So if we're connected with sudo to 'remotehost'
           (setq eshell-history-ring history)
           (counsel-esh-history)
           (setq selection (buffer-string)))
+        (goto-char eshell-last-output-end)
         (delete-region eshell-last-output-end (line-end-position))
-        (insert selection)))
+        (insert selection)
+        (eshell-send-input nil t)))
 
     (defun ar/eshell-cd-to-parent (projectile-root-p)
       "Change directory to parent. With prefix PROJECTILE-ROOT, change to projectile root dir."
