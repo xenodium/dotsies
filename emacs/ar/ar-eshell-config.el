@@ -58,13 +58,6 @@
         (concat " [" (substring branch 2)  "]")
       "")))
 
-(defun eshell/clear ()
-  "Alias to clear (destructive) eshell content."
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
-
-
 (defun eshell/emacs (&rest args)
   "Open a file (ARGS) in Emacs.  Some habits die hard."
   (if (null args)
