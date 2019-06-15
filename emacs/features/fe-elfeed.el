@@ -350,6 +350,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://webgefrickel.de/blog/feed" blog dev SteffenRademacker)
               ("https://wincent.com/blog.rss" blog dev wincent)
               ("https://write.as/dani/feed" blog emacs Daniel)
+              ("https://jamesstuber.com/index.xml" blog lifestyle JamesStuber)
               ("https://writequit.org/posts.xml" blog emacs writequit)
               ("https://www.baty.blog/feed.rss" blog emacs JackBatyBlog)
               ("https://www.baty.net/index.xml" blog emacs JackBaty)
