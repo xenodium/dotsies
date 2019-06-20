@@ -170,8 +170,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package replace
   :commands occur
-  ;; Enable view mode for easier navigation (n/p/f/b).
-  :hook (occur-mode . view-mode)
   :config
   (add-hook 'occur-hook
             '(lambda ()
