@@ -166,8 +166,7 @@ Based on `elfeed-search-print-entry--default'."
   (ar/vsetq elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
 
   (ar/vsetq elfeed-feeds
-            '(
-              ("http://1w6.org/rss.xml" blog emacs draketo)
+            '(("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
@@ -378,6 +377,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://www.kill-the-newsletter.com/feeds/y0avwirj3b5jrgdygfyh.xml" newsletter SundayDispatches PaulJarvis)
               ("https://www.madfientist.com/feed/" blog money MadFientist)
               ("https://www.moneysavingexpert.com/news/feeds/news.rss" blog money MoneySavingExpert news)
+              ("http://emacslisp.com/?feed=rss2" blog emacs WUDI)
               ("https://www.mortens.dev/feeds/all.atom.xml" blog emacs)
               ("https://www.ogre.com/blog/feed" blog dev Ogre)
               ("https://www.producthunt.com/feed" blog products ProductHunt)
