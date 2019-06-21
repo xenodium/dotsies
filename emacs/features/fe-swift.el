@@ -57,7 +57,12 @@
   ;;   (setenv "SOURCEKIT_TOOLCHAIN_PATH"
   ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain")
   ;;   (setq lsp-sourcekit-executable (expand-file-name "~/local/bin/sourcekit-lsp")))
-  )
+  (defun ar/swift-public-interface ()
+    "Open an occur buffer with file's public interface."
+    (interactive)
+    (assert (eq major-mode 'swift-mode) nil "Not in swift-mode")
+    (let ((list-matching-lines-face nil))
+      (occur "\\(public\\)\\|\\(open\\)"))))
 
 (use-package applescript-mode
   :ensure t
