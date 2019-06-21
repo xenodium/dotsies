@@ -110,10 +110,14 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                ;; If projectile is found, try finding the whitelist of directories.
                ((and (fboundp 'projectile-parse-dirconfig-file)
                      (projectile-parse-dirconfig-file))
-                (mapcar (lambda (path)
-                          (concat (projectile-project-root)
-                                  path))
-                        (car (projectile-parse-dirconfig-file))))
+                (or (mapcar (lambda (path)
+                              (concat (projectile-project-root)
+                                      path))
+                            ;; Whitelisted.
+                            (car (projectile-parse-dirconfig-file)))
+                    ;; .projectile found, but none whitelisted.
+                    ;; default to root.
+                    (list (projectile-project-root))))
                ;; Default to workspace dir otherwise.
                (t
                 (list (ar/bazel-workspace-path))))))
