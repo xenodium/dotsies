@@ -167,3 +167,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t
   :config
   (global-set-key [remap goto-line] 'goto-line-preview))
+
+(use-package replace
+  :commands occur
+  :config
+  (add-hook 'occur-hook
+            '(lambda ()
+               ;; Focus occur by default.
+               (switch-to-buffer-other-window "*Occur*")
+               ;; Enable follow mode by default.
+               (next-error-follow-minor-mode +1))))

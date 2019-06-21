@@ -1,5 +1,6 @@
 (use-package view
-  :commands global-view-mode
+  :commands (global-view-mode
+             view-mode)
   :hook ((view-mode . goto-address-mode))
   :bind (:map view-mode-map
               ("C-x C-q" . view-mode)
