@@ -5,7 +5,8 @@
 (use-package counsel
   :ensure t
   :defer 0.1
-  :commands ar/counsel-ag
+  :commands (ar/counsel-ag
+             ar/ivy-occur)
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
