@@ -227,10 +227,7 @@ With prefix argument, use full path."
 ;; Displays yasnippet previous inline when cycling through results.
 (use-package ivy-yasnippet
   :ensure t
-  :commands ivy-yasnippet
-  :config
-  (require 'yasnippet)
-  (yas-minor-mode))
+  :commands ivy-yasnippet)
 
 (use-package ar-counsel-find
   :commands ar/counsel-find)
