@@ -8,7 +8,7 @@
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
   (ar/vsetq backup-inhibited t)
   ;; Ensure files end with newline.
-  (ar/csetq require-final-newline t)
+  ;; (ar/csetq require-final-newline t)
   ;; Disable auto save.
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
   (ar/csetq auto-save-default nil)
