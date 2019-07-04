@@ -65,8 +65,39 @@ There is no limit on the number of *ivy-occur* buffers."
            ;; ar addition.
            (delete-other-windows))))))
 
+  (defun ar/counsel-ag--strip-insert-item (item)
+    "Strip ITEM of file info.
+For example:
+
+\"some-file.el:43:  gimme this text only\"
+=> \"  gimme this text only\"
+"
+    (let ((line (if (stringp item)
+                    item
+                  (car x))))
+      (if (string-match ":[0-9]*:\\(.*\\)" line)
+          (insert (match-string 1 line))
+        (insert line))))
+
   (defun ar/counsel-ag (arg)
     (interactive "P")
+    (ivy-set-actions
+     'counsel-rg
+     `(("i" ,'ar/counsel-ag--strip-insert-item
+        "insert")))
+    (ivy-set-actions
+     'counsel-ag
+     `(("i" ,'ar/counsel-ag--strip-insert-item
+        "insert")))
+    (ivy-set-actions
+     'counsel-pt
+     `(("i" ,'ar/counsel-ag--strip-insert-item
+        "insert")))
+    (ivy-set-actions
+     'counsel-ack
+     `(("i" ,'ar/counsel-ag--strip-insert-item
+        "insert")))
+
     (defvar ar/counsel-ag--default-locaction nil)
     (when (or arg (not ar/counsel-ag--default-locaction))
       ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
