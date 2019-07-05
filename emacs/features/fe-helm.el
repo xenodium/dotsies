@@ -19,16 +19,6 @@
 
   (use-package helm-config)
 
-  (use-package helm-imenu
-    :defer t
-    :config
-    (use-package imenu
-      :config
-      ;; Automatically rescan for imenu changes.
-      (set-default 'imenu-auto-rescan t))
-    (use-package imenu-anywhere
-      :ensure t))
-
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
     "First time clear miniuffer. Quit thereafter."
     (interactive "P")
