@@ -19,16 +19,6 @@
 
   (use-package helm-config)
 
-  (use-package helm-imenu
-    :defer t
-    :config
-    (use-package imenu
-      :config
-      ;; Automatically rescan for imenu changes.
-      (set-default 'imenu-auto-rescan t))
-    (use-package imenu-anywhere
-      :ensure t))
-
   (defun ar/helm-keyboard-quit-dwim (&optional arg)
     "First time clear miniuffer. Quit thereafter."
     (interactive "P")
@@ -45,50 +35,3 @@
 
 ;; Differentiate C-i key binding from TAB.
 (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
-
-(use-package helm-ag
-  :ensure t
-  :bind ("H-i" . ar/helm-ag-insert)
-  :commands (ar/helm-ag
-             ar/helm-ag-insert)
-  :config
-  (defun ar/helm-ag-insert (arg)
-    ;; Helm-ag and insert match.
-    (interactive "P")
-    (defun ar/insert-candidate (candidate)
-      (move-beginning-of-line 1)
-      (unless (eolp)
-        (kill-line))
-      ;; Drop file:line:column. For example:
-      ;; arc_hostlink.c:13:2:#include <linux/fs.h>
-      ;; => #include <linux/fs.h>
-      (insert (replace-regexp-in-string "^[^ ]*:" "" candidate))
-      (indent-for-tab-command))
-    (let ((helm-source-do-ag (helm-build-async-source "Silver Searcher inserter"
-                                                      :init 'helm-ag--do-ag-set-command
-                                                      :candidates-process 'helm-ag--do-ag-candidate-process
-                                                      :action 'ar/insert-candidate
-                                                      :nohighlight t
-                                                      :requires-pattern 3
-                                                      :candidate-number-limit 9999
-                                                      :keymap helm-do-ag-map)))
-      (call-interactively #'ar/helm-ag)))
-
-  (defun ar/helm-ag (arg)
-    "Helm-ag search remembering last location.  With ARG, forget the last location."
-    (interactive "P")
-    (defvar ar/helm-ag--default-locaction nil)
-    (when (or arg (not ar/helm-ag--default-locaction))
-      (ar/vsetq ar/helm-ag--default-locaction
-             (read-directory-name "search in: " default-directory nil t)))
-    (helm-do-ag ar/helm-ag--default-locaction))
-
-
-  (cond ((executable-find "rg")
-         (ar/vsetq helm-ag-base-command "rg --vimgrep --no-heading --ignore-case"))
-        ((executable-find "pt")
-         (ar/vsetq helm-ag-base-command "pt -e --nocolor --nogroup"))
-        ((executable-find "ag")
-         (ar/vsetq helm-ag-base-command "ag --nocolor --nogroup"))
-        (t
-         (ar/vsetq helm-ag-base-command "ack --nocolor --nogroup"))))
