@@ -291,11 +291,11 @@
   :commands (ar/set-mc/insert-numbers-starting-value)
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
-  :bind (("C-c a" . mc/mark-all-like-this)
+  :bind (("C-c a" . mc/mark-all-dwim)
          ("C-c n" . mc/mark-more-like-this-extended)
          ("M-<mouse-1>" . mc/add-cursor-on-click))
   :bind (:map region-bindings-mode-map
-              ("a" . mc/mark-all-like-this)
+              ("a" . mc/mark-all-dwim)
               ("p" . mc/mark-previous-like-this)
               ("n" . mc/mark-next-like-this)
               ("P" . mc/unmark-previous-like-this)
