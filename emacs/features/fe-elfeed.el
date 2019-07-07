@@ -397,6 +397,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://yoo2080.wordpress.com/feed" blog emacs YooBox)
               ("https://youngfiguy.com/feed" blog money YoungFIGuy)
               ("https://zacwood.me/atom.xml" blog emacs ZacWood)
+              ("https://zerokspot.com/index.xml" blog emacs Zerokspot)
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
               ("https://zudepr.co.uk/feed" blog money Zude)
               ))
