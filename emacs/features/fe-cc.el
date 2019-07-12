@@ -11,6 +11,9 @@
     (unless (boundp 'objc-mode-hook-did-run)
       (set-fill-column 100)
 
+      (ggtags-mode +1)
+      (counsel-gtags-mode +1)
+
       ;; Company backends for Objective-C.
       (setq-local company-backends '((company-files
                                       company-keywords)))
