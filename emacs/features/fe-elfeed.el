@@ -394,6 +394,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://www.wisdomandwonder.com/feed" blog emacs WisdomWonder)
               ("https://www.with-emacs.com/rss.xml" blog emacs WithEmacs)
               ("https://www.worthe-it.co.za/rss.xml" blog emacs JustinWernick)
+              ("https://ylluminarious.github.io/feed.xml" blog emacs ylluminarious)
               ("https://yoo2080.wordpress.com/feed" blog emacs YooBox)
               ("https://youngfiguy.com/feed" blog money YoungFIGuy)
               ("https://zacwood.me/atom.xml" blog emacs ZacWood)
