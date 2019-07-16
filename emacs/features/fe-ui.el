@@ -84,7 +84,19 @@
   (with-eval-after-load 'fringe
     (set-face-attribute 'fringe nil
                         :foreground (face-foreground 'default)
-                        :background (face-background 'default))))
+                        :background (face-background 'default)))
+
+  ;; Trying out line underline (instead of wave).
+  (mapatoms (lambda (atom)
+              (let ((underline nil))
+                (when (and (facep atom)
+                           (setq underline
+                                 (face-attribute atom
+                                                 :underline))
+                           (eq (plist-get underline :style) 'wave))
+                  (plist-put underline :style 'line)
+                  (set-face-attribute atom nil
+                                      :underline underline))))))
 
 (use-package moody
   :ensure t
