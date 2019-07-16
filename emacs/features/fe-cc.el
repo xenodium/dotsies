@@ -4,6 +4,10 @@
   :bind (:map objc-mode-map
               ("M-]" . ar/smartparens-wrap-square-bracket))
   :init
+  ;; Workaround to define two missing functions. Try removing in future.
+  (defun c-before-change-check-unbalanced-strings (beg end))
+  (defun c-after-change-mark-abnormal-strings (beg end _old-len))
+
   (defun ar/objc-mode-hook-function ()
     "Called when entering `objc-mode'."
     ;; Hook is run twice. Avoid:
