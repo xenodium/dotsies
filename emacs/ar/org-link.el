@@ -27,14 +27,13 @@
 
 (defun org-link-resolved-clipboard-url-or-title (fn)
   "Return a link by reesolving a URL in clipboard.  Invoke FN with link."
-  (let ((link (org-link--clipboard-url-or-title)))
-    (if (org-link-url link)
-        (org-cliplink-retrieve-title (org-link-url link)
-                                     (lambda (url title)
-                                       (funcall fn
-                                                (make-org-link :url url
-                                                               :title (read-string "Link title: " (ar/string-decode-html-entities title))))))
-      (funcall fn link))))
+  (let* ((link (org-link--clipboard-url-or-title))
+         (url (org-link-url link))
+         (title (org-cliplink-retrieve-title-synchronously url)))
+    (funcall fn (make-org-link :url (org-link-url link)
+                               :title (read-string "Link title: " (if title
+                                                                      (ar/string-decode-html-entities title)
+                                                                    ""))))))
 
 (provide 'org-link)
 
