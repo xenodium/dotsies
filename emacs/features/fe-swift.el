@@ -67,3 +67,8 @@
 (use-package applescript-mode
   :ensure t
   :mode ("\\.applescript\\'" . swift-mode))
+
+(use-package swift-playground-mode
+  :disabled ;; Need to think about how to integrate better into workflow.
+  :ensure t
+  :hook (swift-mode . swift-playground-global-mode))
