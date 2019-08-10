@@ -167,6 +167,7 @@ Based on `elfeed-search-print-entry--default'."
 
   (ar/vsetq elfeed-feeds
             '(
+              ("https://fumbling.it/posts/index.xml" blog emacs Fumbling)
               ("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
@@ -227,6 +228,7 @@ Based on `elfeed-search-print-entry--default'."
               ("http://www.brool.com/index.xml" blog emacs Brool)
               ("http://www.gonsie.com/blorg/feed.xml" blog emacs)
               ("http://www.holgerschurig.de/index.xml" blog emacs HolgerSchurig)
+              ("https://mecid.github.io/feed.xml" blog ios swift Majid)
               ("http://www.jesshamrick.com/atom.xml" blog emacs JessHamrick)
               ("http://www.modernemacs.com/index.xml" blog emacs ModernEmacs)
               ("http://www.moneyforthemoderngirl.org/feed" blog money MoneyForTheModernGirl)
@@ -266,6 +268,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://d12frosted.io/atom.xml" blog emacs d12frosted)
               ("https://ddavis.io/index.xml" blog emacs )
               ("https://deliberatelivinguk.wordpress.com/feed/" blog money DeliberateLivingUK)
+              ("https://livingtechmagic.wordpress.com/comments/feed" blog emacs LivingTechMagic)
               ("https://dev.to/feed" blog dev DevTo)
               ("https://developer.atlassian.com/blog/feed.xml" blog emacs attlasian)
               ("https://dmolina.github.io/index.xml" blog emacs DanielMolina)
