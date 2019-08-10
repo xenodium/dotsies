@@ -49,6 +49,11 @@
       (let ((current-prefix-arg nil))
         (call-interactively 'pp-eval-last-sexp))))
 
+  (use-package eros
+    ;; Inline evaluation (use M-C-x).
+    :ensure t
+    :hook (emacs-lisp-mode . eros-mode))
+
   (use-package relint
     :ensure t)
 
