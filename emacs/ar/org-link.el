@@ -29,7 +29,8 @@
   "Return a link by reesolving a URL in clipboard.  Invoke FN with link."
   (let* ((link (org-link--clipboard-url-or-title))
          (url (org-link-url link))
-         (title (org-cliplink-retrieve-title-synchronously url)))
+         (title (unwind-protect
+                    (org-cliplink-retrieve-title-synchronously url))))
     (funcall fn (make-org-link :url (org-link-url link)
                                :title (read-string "Link title: " (if title
                                                                       (ar/string-decode-html-entities title)
