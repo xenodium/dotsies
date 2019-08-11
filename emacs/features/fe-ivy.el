@@ -160,9 +160,19 @@ For example:
 (use-package swiper
   :ensure t
   :bind (("C-s" . ar/swiper-isearch-dwim)
+         ("C-r" . ar/swiper-isearch-backward-dwim)
          :map swiper-isearch-map
          ("C-r" . ivy-previous-line))
   :config
+  (defun ar/swiper-isearch-backward-dwim ()
+    (interactive)
+    (let ((ivy-wrap t))
+      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+          (let ((region (buffer-substring-no-properties (mark) (point))))
+            (deactivate-mark)
+            (swiper-isearch-backward region))
+        (swiper-isearch-backward))))
+
   (defun ar/swiper-isearch-dwim ()
     (interactive)
     (let ((ivy-wrap t))
