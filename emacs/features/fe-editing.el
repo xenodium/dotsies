@@ -67,8 +67,14 @@
   :defer 5
   ;; Automatically remove whitespace on saving.
   :hook ((before-save . whitespace-cleanup)
-         (prog-mode . whitespace-mode))
+         (prog-mode . ar/whitespace-mode-enable))
   :config
+  (defun ar/whitespace-mode-enable ()
+    "Delayed enabling of whitespace-mode to ensure fill-column is set for loaded buffer."
+    (whitespace-mode -1)
+    (run-with-timer 1 nil
+                    (lambda ()
+                      (whitespace-mode +1))))
   ;; When nil, fill-column is used instead.
   (ar/vsetq whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines

@@ -4,8 +4,8 @@
   :init
   (defun ar/swift-mode-hook ()
     "Called when entering `swift-mode'."
+    (set-fill-column 100)
     (add-to-list 'flycheck-checkers 'swiftlint)
-
     (if (buffer-file-name)
         (let ((lint-config-file (locate-dominating-file (buffer-file-name)
                                                         ".swiftlint.yml")))
