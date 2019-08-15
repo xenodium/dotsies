@@ -78,6 +78,9 @@
 
 (require 'tls)
 
+;; From https://irreal.org/blog/?p=8243
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
 (setq gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
       tls-checktrust gnutls-verify-error
