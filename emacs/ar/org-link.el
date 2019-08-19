@@ -21,7 +21,10 @@
   "Return a link with URL if found in clipboard, else link with title."
   (let ((value (substring-no-properties (current-kill 0))))
     (make-org-link :url (when (s-matches-p "^http" value)
-                          (ar/url-sans-query value))
+                          ;; Whitelist some domains to include query params.
+                          (if (s-matches-p "^https?://news\.ycombinator\.com" value)
+                              value
+                            (ar/url-sans-query value)))
                    :title (unless (s-matches-p "^http" value)
                             value))))
 
