@@ -33,8 +33,9 @@ already narrowed."
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t
-  :bind (("C-a" . mwim-beginning-of-code-or-line)
-         ("C-e" . mwim-end-of-code-or-line)))
+  :bind (:map prog-mode-map
+              ("C-a" . mwim-beginning-of-code-or-line)
+              ("C-e" . mwim-end-of-code-or-line)))
 
 ;; Centers text, distributing blank space.
 (use-package olivetti :ensure t)
