@@ -137,3 +137,11 @@
               '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
                  "xdg-open" (file))))))
   (openwith-mode +1))
+
+(use-package tramp
+  :config
+  ;; make sure vc stuff is not making tramp slower
+  (setq vc-ignore-dir-regexp
+	(format "%s\\|%s"
+		vc-ignore-dir-regexp
+		tramp-file-name-regexp)))
