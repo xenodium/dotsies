@@ -1,5 +1,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
+(require 'seq)
 
 (use-package shell-pop
   :ensure t
@@ -56,7 +57,10 @@
              (args (progn
                      (set-text-properties 0 (length input) nil input)
                      (split-string input))))
-        (if (equal "cd" (nth 0 args))
+        (if (and (equal "cd" (nth 0 args))
+                 (not (seq-find (lambda (item)
+                                  (string-prefix-p "/ssh:" item))
+                                args)))
             (apply orig-fun (list (format "cd %s"
                                           (expand-file-name (concat default-directory
                                                                     (nth 1 args))))))
@@ -161,6 +165,7 @@ So if we're connected with sudo to 'remotehost'
     (ar/vsetq eshell-error-if-no-glob t)
     (ar/vsetq eshell-glob-case-insensitive t)
     (ar/vsetq eshell-list-files-after-cd nil)
+    (ar/csetq eshell-destroy-buffer-when-process-dies t)
 
     (defun ar/eshell-counsel-history ()
       (interactive)
