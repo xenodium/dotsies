@@ -37,7 +37,9 @@
         (setq-local company-begin-commands
                     (append company-begin-commands (list 'comint-magic-space))))
 
-      (bind-keys :map eshell-mode-map
+      (bind-keys :map eshell-hist-mode-map
+                 ("M-r" . ar/eshell-counsel-history)
+                 :map eshell-mode-map
                  ("M-r" . ar/eshell-counsel-history)
                  ([remap eshell-pcomplete] . completion-at-point)
                  ("C-l" . ar/eshell-cd-to-parent)))
