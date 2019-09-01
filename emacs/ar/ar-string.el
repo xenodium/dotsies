@@ -55,6 +55,7 @@
 ;;     (xml-parse-string)))
 
 (defun ar/string-decode-html-entities (html)
+  (assert html nil "Must have HTML")
   (let ((result html)
         (entities [
                    ["&nbsp;" " "] ["&ensp;" " "] ["&emsp;" " "] ["&thinsp;" " "]
@@ -119,7 +120,7 @@
                    ["&mdash;" "—"] ["&lsquo;" "‘"] ["&rsquo;" "’"] ["&sbquo;" "‚"]
                    ["&ldquo;" "“"] ["&rdquo;" "”"] ["&bdquo;" "„"] ["&dagger;" "†"]
                    ["&Dagger;" "‡"] ["&permil;" "‰"] ["&lsaquo;" "‹"] ["&rsaquo;" "›"]
-                   ["&euro;" "€"] ["&amp;" "&"] ["&#39;" "'"] ["&#8211;" "–"]
+                   ["&euro;" "€"] ["&amp;" "&"] ["&#39;" "'"] ["&#8211;" "–"] ["&#x27;" "'"]
                    ]))
     (mapc (lambda (entity)
             (setq result (s-replace (elt entity 0)
