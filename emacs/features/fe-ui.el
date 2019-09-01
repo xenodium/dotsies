@@ -1,5 +1,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
+(require 'faces)
 
 (when (display-graphic-p)
   ;; No title. See init.el for initial value.
@@ -225,8 +226,6 @@
                    (not (string= "unspecified" g)))
           (cl-return g))))))
 
-
-
 (defun ar/list-faces--for-color (color &optional distance)
   "Return all faces with COLOR as fg or bg withing DISTANCE."
   (let ((faces ())
@@ -247,3 +246,11 @@
                                        distance)))
                       (push atom faces))))))
     (delete-dups faces))))
+
+(defun ar/pick-font ()
+  (interactive)
+  (let ((font-name (completing-read "Select font:"
+                                    (font-family-list))))
+    (if (member font-name (font-family-list))
+        (set-face-attribute 'default nil :font font-name)
+      (error "'%s' font not found" font-name))))
