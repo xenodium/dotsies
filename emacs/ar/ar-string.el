@@ -119,7 +119,7 @@
                    ["&mdash;" "—"] ["&lsquo;" "‘"] ["&rsquo;" "’"] ["&sbquo;" "‚"]
                    ["&ldquo;" "“"] ["&rdquo;" "”"] ["&bdquo;" "„"] ["&dagger;" "†"]
                    ["&Dagger;" "‡"] ["&permil;" "‰"] ["&lsaquo;" "‹"] ["&rsaquo;" "›"]
-                   ["&euro;" "€"] ["&amp;" "&"] ["&#39;" "'"]
+                   ["&euro;" "€"] ["&amp;" "&"] ["&#39;" "'"] ["&#8211;" "–"]
                    ]))
     (mapc (lambda (entity)
             (setq result (s-replace (elt entity 0)
