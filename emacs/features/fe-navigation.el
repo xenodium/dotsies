@@ -185,3 +185,10 @@ Repeated invocations toggle between the two most recently open buffers."
                (switch-to-buffer-other-window "*Occur*")
                ;; Enable follow mode by default.
                (next-error-follow-minor-mode +1))))
+
+(use-package xref
+  :config
+  ;; I accidentally press these when I meant "global-map M->"
+  ;; for end-of-buffer. Unsetting.
+  (unbind-key "M-?" global-map)
+  (unbind-key "M-?" global-map))
