@@ -15,3 +15,9 @@
   :ensure t
   :config
   (exec-path-from-shell-initialize))
+
+(use-package auto-compile
+  :ensure t
+  :config
+  (auto-compile-on-load-mode +1)
+  (auto-compile-on-save-mode +1))
