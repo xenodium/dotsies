@@ -8,6 +8,7 @@
 (use-package immortal-scratch
   :ensure t
   :after persistent-scratch
+  :custom (immortal-scratch-switch-to-respawned-scratch t)
   :config
   (defun ar/immortal-scratch-respawn-advice (orig-fun &rest r)
     "Advice function around `immortal-scratch-respawn-advice' (ORIG-FUN and R)."
