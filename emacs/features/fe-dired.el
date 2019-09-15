@@ -9,7 +9,7 @@
   (ar/csetq projectile-dynamic-mode-line nil)
   (ar/vsetq projectile-enable-caching t)
   (ar/vsetq projectile-completion-system 'ivy)
-  ;; Use alien since turbo-alien ignores .projectile file, which is
+  ;; Use `hybrid' since `alien' ignores .projectile file, which is
   ;; handy for very large repositories.
   (ar/vsetq projectile-indexing-method 'hybrid)
   ;; fd is super fast. Use it if available.
