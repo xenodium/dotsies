@@ -195,7 +195,9 @@ For example:
          ("C-c C-r" . ivy-resume)
          ("M-o" . ar/insert-current-file-name-at-point)
          :map ivy-minibuffer-map
-         ("C-g" . ar/ivy-keyboard-quit-dwim))
+         ("C-g" . ar/ivy-keyboard-quit-dwim)
+         ("C--" . ivy-minibuffer-shrink)
+         ("C-+" . ivy-minibuffer-grow))
   :config
   (ar/vsetq ivy-height 15)
   (ar/vsetq ivy-count-format "")
