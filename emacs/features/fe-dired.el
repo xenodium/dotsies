@@ -4,6 +4,7 @@
 (use-package projectile
   :ensure t
   :defer 2
+  :ensure-system-package fd
   :config
   (ar/csetq projectile-dynamic-mode-line nil)
   (ar/vsetq projectile-enable-caching t)
