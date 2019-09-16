@@ -25,7 +25,10 @@
                     (buffer-string)))) 1)))
       ;; Now that `initial-scratch-message' is momentarily set,
       ;; invoke `immortal-scratch-respawn-advice'
-      (apply orig-fun r)))
+      (apply orig-fun r)
+      ;; Scroll to top.
+      (with-current-buffer (get-buffer-create "*scratch*")
+        (goto-char (point-min))))))
 
   ;; If `initial-scratch-message' is nil, immortal-scratch-respawn breaks.
   ;; Temporarily let-set `initial-scratch-message' in adviced function
