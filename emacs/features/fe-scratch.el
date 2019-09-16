@@ -28,7 +28,7 @@
       (apply orig-fun r)
       ;; Scroll to top.
       (with-current-buffer (get-buffer-create "*scratch*")
-        (goto-char (point-min))))))
+        (goto-char (point-min)))))
 
   ;; If `initial-scratch-message' is nil, immortal-scratch-respawn breaks.
   ;; Temporarily let-set `initial-scratch-message' in adviced function
