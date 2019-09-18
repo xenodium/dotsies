@@ -11,7 +11,7 @@
   :custom (immortal-scratch-switch-to-respawned-scratch t)
   :config
   (defun ar/immortal-scratch-respawn-advice (orig-fun &rest r)
-    "Advice function around `immortal-scratch-respawn-advice' (ORIG-FUN and R)."
+    "Advice function around `immortal-scratch-respawn' (ORIG-FUN and R)."
     (let ((initial-scratch-message
            ;; `persistent-scratch-save-file' content looks as follows:
            ;; (["*scratch*" "This is the actual content" (24) fundamental-mode nil nil])
@@ -24,8 +24,11 @@
                       (insert-file-contents persistent-scratch-save-file))
                     (buffer-string)))) 1)))
       ;; Now that `initial-scratch-message' is momentarily set,
-      ;; invoke `immortal-scratch-respawn-advice'
-      (apply orig-fun r)))
+      ;; invoke `immortal-scratch-respawn'
+      (apply orig-fun r)
+      ;; Scroll to top.
+      (with-current-buffer (get-buffer-create "*scratch*")
+        (goto-char (point-min)))))
 
   ;; If `initial-scratch-message' is nil, immortal-scratch-respawn breaks.
   ;; Temporarily let-set `initial-scratch-message' in adviced function
