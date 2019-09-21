@@ -391,20 +391,13 @@ line instead."
   :ensure t)
 
 (use-package simple
-  :config
-  (ar/vsetq kill-ring-max 1000)
-
-  ;; Save external clipboard before killing other text in Emacs.
-  (ar/vsetq save-interprogram-paste-before-kill t)
-
-  ;; Don't bother saving things to the kill-ring twice, remove duplicates.
-  (ar/csetq kill-do-not-save-duplicates t)
-
-  ;; Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.
-  (ar/csetq idle-update-delay 2)
-
-  ;; Increase mark ring size.
-  (ar/csetq global-mark-ring-max 500))
+  :custom
+  (kill-ring-max 1000)
+  (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
+  (save-interprogram-paste-before-kill t "Increase mark ring size.")
+  (kill-do-not-save-duplicates t "Don't bother saving things to the kill-ring twice, remove duplicates.")
+  (idle-update-delay 2 "Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.")
+  (global-mark-ring-max 500 "Increase mark ring size."))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
