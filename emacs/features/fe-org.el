@@ -35,6 +35,19 @@
 
   (ar/csetq org-goto-auto-isearch nil)
 
+  (use-package org-agenda
+    :custom
+    ;; Display all unscheduled todos in same buffer as agenda.
+    ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
+    (org-agenda-custom-commands
+     '(("c" "Alvaro's agenda view"
+           ((agenda "")
+            (alltodo ""
+                     ((org-agenda-overriding-header "Unscheduled:")
+                      (org-agenda-skip-function
+                       '(or (org-agenda-skip-entry-if 'todo '("DONE"))
+                            (org-agenda-skip-if nil '(scheduled deadline)))))))))))
+
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
     :config
