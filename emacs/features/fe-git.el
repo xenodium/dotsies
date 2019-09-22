@@ -13,7 +13,8 @@
 
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
-  (fullframe magit-status magit-mode-quit-window)
+  (with-eval-after-load 'fullframe
+    (fullframe magit-status magit-mode-quit-window))
 
   (defun ar/magit-soft-reset-head~1 ()
     "Soft reset current git repo to HEAD~1."
