@@ -168,8 +168,7 @@ Based on `elfeed-search-print-entry--default'."
   (ar/vsetq elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
 
   (ar/vsetq elfeed-feeds
-            '(
-              ("http://1w6.org/rss.xml" blog emacs draketo)
+            '(("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
@@ -252,7 +251,11 @@ Based on `elfeed-search-print-entry--default'."
               ("https://blog.aaronbieber.com/feed.xml" blog emacs AaronBieber)
               ("https://blog.binchen.org/rss.xml" blog emacs BinChen)
               ("https://blog.burntsushi.net/index.xml" blog dev BurnedSushi)
+              ("https://jmonlong.github.io/Hippocamplus/atom.xml" blog emacs JeanMonlong)
+              ("https://feeds.feedburner.com/ryanmcgeary" blog emacs RyanMcGeary)
               ("https://blog.danielgempesaw.com/rss" blog emacs DanielGempesaw)
+              ("https://emacs.cafe/feed.xml" blog emacs EmacsCafe)
+              ("https://zcl.space/index.xml" blog emacs ZclSpace)
               ("https://blog.einval.eu/feeds/all.atom.xml" blog emacs WojciechSiewierski)
               ("https://blog.laurentcharignon.com/post/index.xml" blog emacs LaurentCharingnon)
               ("https://blog.maya2250.com/feed" blog emacs Maya2250)
