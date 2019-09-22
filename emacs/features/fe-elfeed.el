@@ -416,6 +416,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://zerokspot.com/index.xml" blog emacs Zerokspot)
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
               ("https://zudepr.co.uk/feed" blog money Zude)
+              ("https://sam217pa.github.io/index.xml" blog emacs BacterialFinches)
               ))
 
   (ar/csetq elfeed-search-title-max-width 120)
