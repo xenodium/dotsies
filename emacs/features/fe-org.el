@@ -263,7 +263,7 @@
        (alltodo ""
                 ((org-agenda-overriding-header "Unscheduled:")
                  (org-agenda-skip-function
-                  '(or (org-agenda-skip-entry-if 'todo '("DONE"))
+                  '(or (org-agenda-skip-entry-if 'todo '("DONE" "OBSOLETE" "CANCELLED"))
                        (org-agenda-skip-if nil '(scheduled deadline))))))
        (alltodo ""
                 ((org-agenda-overriding-header "All:")))))))
