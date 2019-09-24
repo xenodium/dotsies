@@ -259,9 +259,11 @@
          :map org-agenda-mode-map
          ("g" . org-agenda-redo)
          ("r" . org-agenda-schedule))
+  :hook ((org-agenda-mode . ar/org-agenda-set-style))
   :commands (org-agenda
              ar/org-agenda)
   :custom
+  (org-agenda-block-separator ?-)
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   (org-agenda-custom-commands
@@ -275,6 +277,12 @@
        (alltodo ""
                 ((org-agenda-overriding-header "All:")))))))
   :config
+  (ar/csetq org-fontify-done-headline t)
+
+  (defun ar/org-agenda-set-style ()
+    ;; Separate lines for readability.
+    (ar/vsetq line-spacing 8))
+
   (with-eval-after-load 'fullframe
     (fullframe org-agenda-mode org-agenda-quit))
 
