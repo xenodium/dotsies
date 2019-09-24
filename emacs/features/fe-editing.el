@@ -57,12 +57,13 @@
   (ar/vsetq savehist-file "~/.emacs.d/savehist")
   (ar/vsetq savehist-save-minibuffer-history t)
   (ar/vsetq history-length 1000)
-  (ar/vsetq savehist-additional-variables
+  (ar/csetq savehist-additional-variables
             '(kill-ring
               search-ring
               regexp-search-ring
               log-edit-comment-ring))
   (savehist-mode +1))
+
 (use-package whitespace
   :defer 5
   ;; Automatically remove whitespace on saving.
