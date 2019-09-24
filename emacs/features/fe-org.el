@@ -27,11 +27,15 @@
 
   (ar/csetq org-todo-keywords
             '((sequence
-               "TODO"
-               "STARTED"
-               "DONE"
-               "OBSOLETE"
-               "CANCELLED")))
+               "TODO(t)"
+               "STARTED(s)"
+               "WAITING(w@/!)"
+               "|"
+               "DONE(d!)"
+               "OBSOLETE(o)"
+               "CANCELLED(c)")))
+
+  (ar/csetq org-log-done 'time)
 
   (ar/csetq org-goto-auto-isearch nil)
 
