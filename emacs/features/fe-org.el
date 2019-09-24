@@ -255,7 +255,10 @@
     (ar/csetq org-crypt-key nil)))
 
 (use-package org-agenda
-  :bind (("M-a" . ar/org-agenda))
+  :bind (("M-a" . ar/org-agenda)
+         :map org-agenda-mode-map
+         ("g" . org-agenda-redo)
+         ("r" . org-agenda-schedule))
   :commands (org-agenda
              ar/org-agenda)
   :custom
