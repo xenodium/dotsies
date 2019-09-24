@@ -173,6 +173,7 @@ Based on `elfeed-search-print-entry--default'."
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
               ("http://beard.institute/index.xml" blog emacs BeardInstitute)
+              ("https://patrickskiba.com/feed.xml" blog emacs PatrickSkiba)
               ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
               ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
               ("http://blog.davep.org/feed.xml" blog emacs davep)
@@ -416,6 +417,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://zerokspot.com/index.xml" blog emacs Zerokspot)
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
               ("https://zudepr.co.uk/feed" blog money Zude)
+              ("https://sam217pa.github.io/index.xml" blog emacs BacterialFinches)
               ))
 
   (ar/csetq elfeed-search-title-max-width 120)

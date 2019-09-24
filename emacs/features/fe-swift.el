@@ -72,3 +72,8 @@
   :disabled ;; Need to think about how to integrate better into workflow.
   :ensure t
   :hook (swift-mode . swift-playground-global-mode))
+
+;; Curated Swift 5.1 documentation with cross-references, and keyword/topic indices.
+(use-package swift-helpful
+  :ensure t
+  :commands swift-helpful)

@@ -35,19 +35,6 @@
 
   (ar/csetq org-goto-auto-isearch nil)
 
-  (use-package org-agenda
-    :custom
-    ;; Display all unscheduled todos in same buffer as agenda.
-    ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
-    (org-agenda-custom-commands
-     '(("c" "Alvaro's agenda view"
-           ((agenda "")
-            (alltodo ""
-                     ((org-agenda-overriding-header "Unscheduled:")
-                      (org-agenda-skip-function
-                       '(or (org-agenda-skip-entry-if 'todo '("DONE"))
-                            (org-agenda-skip-if nil '(scheduled deadline)))))))))))
-
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
     :config
@@ -262,3 +249,29 @@
     (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
     (ar/csetq org-crypt-key nil)))
+
+(use-package org-agenda
+  :bind (("M-a" . ar/org-agenda))
+  :commands (org-agenda
+             ar/org-agenda)
+  :custom
+  ;; Display all unscheduled todos in same buffer as agenda.
+  ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
+  (org-agenda-custom-commands
+   '(("c" "Alvaro's agenda view"
+      ((agenda "")
+       (alltodo ""
+                ((org-agenda-overriding-header "Unscheduled:")
+                 (org-agenda-skip-function
+                  '(or (org-agenda-skip-entry-if 'todo '("DONE" "OBSOLETE" "CANCELLED"))
+                       (org-agenda-skip-if nil '(scheduled deadline))))))
+       (alltodo ""
+                ((org-agenda-overriding-header "All:")))))))
+  :config
+  (with-eval-after-load 'fullframe
+    (fullframe org-agenda-mode org-agenda-quit))
+
+  (defun ar/org-agenda (&optional arg)
+    "Agenda using my custom command."
+    (interactive "P")
+    (org-agenda arg "c")))
