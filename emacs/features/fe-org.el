@@ -308,6 +308,17 @@
       (ar/org-agenda-bulk-action (lambda ()
                                    (org-agenda-schedule arg time)))))
 
+  ;; (defun ar/org-agenda-todo-dwim (&optional arg)
+  ;;   (interactive "P")
+  ;;   (org-fast-todo-selection) (completing-read
+  ;;                                           "Todo state: "
+  ;;                                           org-todo-keywords-1)
+  ;;   (let ((state (org-fast-todo-selection))
+  ;;         (org-inhibit-blocking t)
+  ;;         (org-inhibit-logging 'note))
+  ;;     (ar/org-agenda-bulk-action (lambda ()
+  ;;                                  (org-agenda-todo state)))))
+
   (defun ar/org-agenda-validate-marked-entries ()
     "Ensure all marked org agenda entries in selection are valid."
     (dolist (m org-agenda-bulk-marked-entries)
