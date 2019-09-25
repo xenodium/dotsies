@@ -257,8 +257,10 @@
 (use-package org-agenda
   :bind (("M-a" . ar/org-agenda)
          :map org-agenda-mode-map
+         ;; I prefer my M-m global key bind.
+         ("M-m" . nil)
          ("g" . org-agenda-redo)
-         ("r" . org-agenda-schedule))
+         ("s" . ar/org-agenda-schedule-dwim))
   :commands (org-agenda
              ar/org-agenda)
   :custom
@@ -284,4 +286,76 @@
   (defun ar/org-agenda (&optional arg)
     "Agenda using my custom command."
     (interactive "P")
-    (org-agenda arg "c")))
+    (org-agenda arg "c"))
+
+  ;; `ar/org-agenda-schedule-dwim' `ar/org-agenda-validate-marked-entries' and
+  ;; `ar/org-agenda-bulk-action' are mostly lifted from org-agenda.el.
+  ;; The dwim methods behave more like dired bulk commands: if there's a selection
+  ;; operate on all items, otherwise operate on current point.
+  (defun ar/org-agenda-schedule-dwim (&optional arg)
+    (interactive "P")
+    (ar/org-agenda-validate-marked-entries)
+    (let ((time (and (not arg)
+                     (let ((new (org-read-date
+                                 nil nil nil "(Re)Schedule to" org-overriding-default-time)))
+                       ;; A "double plus" answer applies to every
+                       ;; scheduled time.  Do not turn it into
+                       ;; a fixed date yet.
+                       (if (string-match-p "\\`[ \t]*\\+\\+"
+                                           org-read-date-final-answer)
+                           org-read-date-final-answer
+                         new)))))
+      (ar/org-agenda-bulk-action (lambda ()
+                                   (org-agenda-schedule arg time)))))
+
+  (defun ar/org-agenda-validate-marked-entries ()
+    "Ensure all marked org agenda entries in selection are valid."
+    (dolist (m org-agenda-bulk-marked-entries)
+      (unless (and (markerp m)
+                   (marker-buffer m)
+                   (buffer-live-p (marker-buffer m))
+                   (marker-position m))
+        (user-error "Marker %s for bulk command is invalid" m))))
+
+  (defun ar/org-agenda-bulk-action (cmd)
+    "Apply CMD to `org-agenda-bulk-marked-entries'."
+    (if org-agenda-bulk-marked-entries
+        (progn
+          ;; Loop over all markers and apply bulk command.
+          (let ((processed 0)
+                (skipped 0)
+                ;; Sort the markers, to make sure that parents are handled
+                ;; before children.
+                (entries (sort org-agenda-bulk-marked-entries
+                               (lambda (a b)
+                                 (cond
+                                  ((eq (marker-buffer a) (marker-buffer b))
+                                   (< (marker-position a) (marker-position b)))
+                                  (t
+                                   (string< (buffer-name (marker-buffer a))
+                                            (buffer-name (marker-buffer b))))))))
+                redo-at-end)
+            (dolist (e entries)
+              (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
+                (if (not pos)
+                    (progn (message "Skipping removed entry at %s" e)
+                           (cl-incf skipped))
+                  (goto-char pos)
+                  (let (org-loop-over-headlines-in-active-region)
+                    (funcall cmd))
+                  ;; `post-command-hook' is not run yet.  We make sure any
+                  ;; pending log note is processed.
+                  (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
+                            (memq 'org-add-log-note post-command-hook))
+                    (org-add-log-note))
+                  (cl-incf processed))))
+            (when redo-at-end (org-agenda-redo))
+            (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
+            (message "Acted on %d entries%s%s"
+                     processed
+                     (if (= skipped 0)
+                         ""
+                       (format ", skipped %d (disappeared before their turn)"
+                               skipped))
+                     (if (not org-agenda-persistent-marks) "" " (kept marked)"))))
+      (funcall cmd))))
