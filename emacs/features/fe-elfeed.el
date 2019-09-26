@@ -170,6 +170,7 @@ Based on `elfeed-search-print-entry--default'."
   (ar/vsetq elfeed-feeds
             '(("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
+              ("https://vadosware.io/index.xml" blog emacs Vadosware)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
               ("http://beard.institute/index.xml" blog emacs BeardInstitute)
