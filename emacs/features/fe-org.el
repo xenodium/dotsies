@@ -256,14 +256,14 @@
     (ar/csetq org-crypt-key nil)))
 
 (use-package org-agenda
-  :bind (("M-a" . ar/org-agenda)
+  :bind (("M-a" . ar/org-agenda-toggle)
          :map org-agenda-mode-map
          ;; I prefer my M-m global key bind.
          ("M-m" . nil)
          ("g" . org-agenda-redo)
          ("s" . ar/org-agenda-schedule-dwim))
   :commands (org-agenda
-             ar/org-agenda)
+             ar/org-agenda-toggle)
   :custom
   (org-fontify-done-headline t)
   (org-agenda-block-separator ?\u2015)
@@ -289,10 +289,12 @@
   (with-eval-after-load 'fullframe
     (fullframe org-agenda-mode org-agenda-quit))
 
-  (defun ar/org-agenda (&optional arg)
-    "Agenda using my custom command."
+  (defun ar/org-agenda-toggle (&optional arg)
+    "Toggles between agenda using my custom command and org file."
     (interactive "P")
-    (org-agenda arg "c"))
+    (if (eq major-mode 'org-agenda-mode)
+        (find-file "~/stuff/active/agenda.org")
+      (org-agenda arg "c")))
 
   ;; `ar/org-agenda-schedule-dwim' `ar/org-agenda-validate-marked-entries' and
   ;; `ar/org-agenda-bulk-action' are mostly lifted from org-agenda.el.
