@@ -1,5 +1,6 @@
 (require 'ar-vsetq)
 (require 'ar-csetq)
+(require 'map)
 
 (use-package org
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
@@ -264,7 +265,9 @@
   :commands (org-agenda
              ar/org-agenda)
   :custom
-  (org-agenda-block-separator ?-)
+  (org-fontify-done-headline t)
+  (org-agenda-block-separator ?\u2015)
+
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   (org-agenda-custom-commands
@@ -278,7 +281,10 @@
        (alltodo ""
                 ((org-agenda-overriding-header "All:")))))))
   :config
-  (ar/csetq org-fontify-done-headline t)
+  ;; A little formatting of agenda view.
+  (let ((spaces (make-string 33 (string-to-char " "))))
+    (map-put org-agenda-prefix-format 'agenda spaces))
+  (map-put org-agenda-prefix-format 'todo " %i %-31:c")
 
   (with-eval-after-load 'fullframe
     (fullframe org-agenda-mode org-agenda-quit))
