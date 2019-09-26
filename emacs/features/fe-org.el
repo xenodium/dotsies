@@ -20,13 +20,6 @@
          (org-mode . yas-minor-mode)
          (org-mode . smartparens-mode))
   :config
-  (use-package org-capture
-    :commands org-capture
-    :config
-    (ar/csetq org-capture-templates
-              '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-                 "* TODO %?\n"))))
-
   (defun ar/org-meta-return (&optional arg)
     (interactive "P")
     (end-of-line)
@@ -377,3 +370,11 @@
                                skipped))
                      (if (not org-agenda-persistent-marks) "" " (kept marked)"))))
       (funcall cmd))))
+
+(use-package org-capture
+  :bind (("M-c" . org-capture))
+  :commands org-capture
+  :config
+  (ar/csetq org-capture-templates
+            '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
+               "* TODO %?\n"))))
