@@ -261,7 +261,9 @@
          ;; I prefer my M-m global key bind.
          ("M-m" . nil)
          ("g" . org-agenda-redo)
-         ("s" . ar/org-agenda-schedule-dwim))
+         ("s" . ar/org-agenda-schedule-dwim)
+         ("M-<up>" . ar/org-agenda-item-move-up)
+         ("M-<down>" . ar/org-agenda-item-move-down))
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
@@ -272,7 +274,8 @@
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   (org-agenda-custom-commands
    '(("c" "Alvaro's agenda view"
-      ((agenda "")
+      ((agenda "" ((org-agenda-sorting-strategy
+                    (quote ((agenda todo-state-down alpha-down time-up priority-down tag-up))))))
        (alltodo ""
                 ((org-agenda-overriding-header "Unscheduled:")
                  (org-agenda-skip-function
@@ -288,6 +291,26 @@
 
   (with-eval-after-load 'fullframe
     (fullframe org-agenda-mode org-agenda-quit))
+
+  (defun ar/org-agenda-item-move-up ()
+    "Move the current agenda item up."
+    (interactive)
+    (org-save-all-org-buffers)
+    (org-agenda-switch-to)
+    (org-metaup)
+    (switch-to-buffer (other-buffer (current-buffer) 1))
+    (org-agenda-redo)
+    (org-agenda-previous-line))
+
+  (defun ar/org-agenda-item-move-down ()
+    "Move the current agenda item down."
+    (interactive)
+    (org-save-all-org-buffers)
+    (org-agenda-switch-to)
+    (org-metadown)
+    (switch-to-buffer (other-buffer (current-buffer) 1))
+    (org-agenda-redo)
+    (org-agenda-next-line))
 
   (defun ar/org-agenda-toggle (&optional arg)
     "Toggles between agenda using my custom command and org file."
