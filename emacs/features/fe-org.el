@@ -385,4 +385,4 @@
   :config
   (ar/csetq org-capture-templates
             '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-               "* TODO %?\n"))))
+               "* TODO %?\n" :prepend t))))
