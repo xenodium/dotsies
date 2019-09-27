@@ -260,6 +260,8 @@
          :map org-agenda-mode-map
          ;; I prefer my M-m global key bind.
          ("M-m" . nil)
+         ;; Use org-return instead, to follow links.
+         ("<RET>" . org-return)
          ("g" . org-agenda-redo)
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
@@ -408,4 +410,4 @@
   :config
   (ar/csetq org-capture-templates
             '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-               "* TODO %?\n"))))
+               "* TODO %?\n" :prepend t))))
