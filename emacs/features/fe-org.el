@@ -265,7 +265,8 @@
          ("g" . org-agenda-redo)
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
-         ("M-<down>" . ar/org-agenda-item-move-down))
+         ("M-<down>" . ar/org-agenda-item-move-down)
+         ("1"  . ar/org-agenda-item-to-top))
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
@@ -297,22 +298,68 @@
   (defun ar/org-agenda-item-move-up ()
     "Move the current agenda item up."
     (interactive)
-    (org-save-all-org-buffers)
-    (org-agenda-switch-to)
-    (org-metaup)
-    (switch-to-buffer (other-buffer (current-buffer) 1))
-    (org-agenda-redo)
-    (org-agenda-previous-line))
+    (unless (ignore-errors
+              (org-save-all-org-buffers)
+              (org-agenda-switch-to)
+              (org-metaup)
+              (switch-to-buffer (other-buffer (current-buffer) 1))
+              (org-agenda-redo)
+              (org-agenda-previous-line))
+      ;; Something err'd. Switch back to agenda anyway.
+      (switch-to-buffer (other-buffer (current-buffer) 1))))
 
   (defun ar/org-agenda-item-move-down ()
     "Move the current agenda item down."
     (interactive)
+    (unless (ignore-errors
+              (org-save-all-org-buffers)
+              (org-agenda-switch-to)
+              (org-metadown)
+              (switch-to-buffer (other-buffer (current-buffer) 1))
+              (org-agenda-redo)
+              (org-agenda-next-line))
+      ;; Something err'd. Switch back to agenda anyway.
+      (switch-to-buffer (other-buffer (current-buffer) 1))))
+
+  ;; From http://pragmaticemacs.com/emacs/reorder-todo-items-in-your-org-mode-agenda/
+  (defun ar/org-headline-to-top ()
+    "Move the current org headline to the top of its section"
+    (interactive)
+    ;; check if we are at the top level
+    (let ((lvl (org-current-level)))
+      (cond
+       ;; above all headlines so nothing to do
+       ((not lvl)
+        (message "No headline to move"))
+       ((= lvl 1)
+        ;; if at top level move current tree to go above first headline
+        (org-cut-subtree)
+        (beginning-of-buffer)
+        ;; test if point is now at the first headline and if not then
+        ;; move to the first headline
+        (unless (looking-at-p "*")
+          (org-next-visible-heading 1))
+        (org-paste-subtree))
+       ((> lvl 1)
+        ;; if not at top level then get position of headline level above
+        ;; current section and refile to that position. Inspired by
+        ;; https://gist.github.com/alphapapa/2cd1f1fc6accff01fec06946844ef5a5
+        (let* ((org-reverse-note-order t)
+               (pos (save-excursion
+                      (outline-up-heading 1)
+                      (point)))
+               (filename (buffer-file-name))
+               (rfloc (list nil filename nil pos)))
+          (org-refile nil nil rfloc))))))
+
+  (defun ar/org-agenda-item-to-top ()
+    "Move the current agenda item to the top of the subtree in its file"
+    (interactive)
     (org-save-all-org-buffers)
     (org-agenda-switch-to)
-    (org-metadown)
+    (ar/org-headline-to-top)
     (switch-to-buffer (other-buffer (current-buffer) 1))
-    (org-agenda-redo)
-    (org-agenda-next-line))
+    (org-agenda-redo))
 
   (defun ar/org-agenda-toggle (&optional arg)
     "Toggles between agenda using my custom command and org file."
