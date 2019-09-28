@@ -137,8 +137,6 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
-  (skip-syntax-backward "^ ")
-
   (defun ar/forward-sexp (&optional arg)
     (interactive "P")
     (if arg
