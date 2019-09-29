@@ -80,8 +80,8 @@
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
   ;; (use-package button-lock :ensure t)
 
-  (setq org-refile-targets '((nil . (:regexp . "Week of"))
-                             (nil . (:regexp . "RESOLVED"))))
+  (ar/csetq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
 
   (ar/vsetq org-ellipsis "…")
   (ar/vsetq org-fontify-emphasized-text t)
