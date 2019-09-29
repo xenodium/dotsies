@@ -93,7 +93,12 @@
                 ("<backtab>" . dired-subtree-cycle)))
 
   ;; Adding human readable units and sorted by date.
-  (ar/vsetq dired-listing-switches "-Alht")
+  ;; -A List all entries except for "." and "..".
+  ;; -l List in long format.
+  ;; -h Use unites (ie. Byte, Kilobyte, Megabyte).
+  ;; -t Sort by time
+  ;; -c Use last file status changed time for sorting (show me last download).
+  (ar/vsetq dired-listing-switches "-Alhtc")
 
   ;; Try to guess the target directory for operations.
   (ar/vsetq dired-dwim-target t)
