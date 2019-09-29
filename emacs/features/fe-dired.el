@@ -124,6 +124,12 @@
     :config
     (use-package tmtxt-async-tasks))
 
+  ;; Colourful entries.
+  (use-package diredfl
+    :ensure t
+    :config
+    (diredfl-global-mode 1))
+
   (use-package dired-filter
     :ensure t
     :config
