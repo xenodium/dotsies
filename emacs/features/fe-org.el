@@ -262,6 +262,10 @@
          ("M-m" . nil)
          ;; Use org-return instead, to follow links.
          ("<RET>" . org-return)
+         ;; C-n/C-p for can be used for granular movement.
+         ;; Use n/p for faster movement between items
+         ("n" . org-agenda-next-item)
+         ("p" . org-agenda-previous-item)
          ("g" . org-agenda-redo)
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
