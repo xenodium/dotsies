@@ -366,7 +366,11 @@
     (interactive "P")
     (if (eq major-mode 'org-agenda-mode)
         (find-file "~/stuff/active/agenda.org")
-      (org-agenda arg "c")))
+      (let ((agenda-buffer (get-buffer "*Org Agenda*")))
+        (if agenda-buffer
+            ;; Switching buffer doesn't reset point location.
+            (switch-to-buffer agenda-buffer)
+          (org-agenda arg "c")))))
 
   ;; `ar/org-agenda-schedule-dwim' `ar/org-agenda-validate-marked-entries' and
   ;; `ar/org-agenda-bulk-action' are mostly lifted from org-agenda.el.
