@@ -137,6 +137,8 @@
 
   (use-package dired-filter
     :ensure t
+    :bind (:map dired-filter-map
+                ("v" . dired-filter-by-videos))
     :config
     (dired-filter-define videos
         "Toggle current view to video files."
