@@ -37,7 +37,6 @@ Quick insert: _w_eb bookmark or backlog
     ("w" ar/ivy-org-add-bookmark-dwim nil)
     ("t" ar/org-add-todo nil)
     ("d" ar/org-add-done nil)
-    ("r" ar/org-mark-done nil)
     ("q" nil nil :color blue))
 
   (defun ar/hydra-open-dwim ()

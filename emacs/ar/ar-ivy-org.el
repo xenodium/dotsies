@@ -154,7 +154,7 @@
                               (with-current-buffer (marker-buffer marker)
                                 (save-excursion
                                   (goto-char (marker-position marker))
-                                  (ar/org-mark-done)))))
+                                  (error "No longer supported")))))
                       "mark DONE")))
   (ivy-read "TODOs: "
             (sort
