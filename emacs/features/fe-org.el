@@ -274,6 +274,7 @@
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
+  (org-default-priority ?C) ;; Ensures unset tasks have low priority.
   (org-fontify-done-headline t)
   (org-agenda-block-separator ?\u2015)
 
@@ -282,7 +283,7 @@
   (org-agenda-custom-commands
    '(("c" "Alvaro's agenda view"
       ((agenda "" ((org-agenda-sorting-strategy
-                    (quote ((agenda todo-state-down alpha-down time-up priority-down tag-up))))))
+                    (quote ((agenda todo-state-down priority-down alpha-down category-keep))))))
        (alltodo ""
                 ((org-agenda-overriding-header "Unscheduled:")
                  (org-agenda-skip-function
