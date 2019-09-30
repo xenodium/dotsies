@@ -62,7 +62,10 @@ already narrowed."
            ("JJ" . ar/switch-to-previous-buffer))
   :custom
   (split-width-threshold nil) ;; Prevent horizontal window splits.
-  :config
+  ;; Note: window.el is not provided at the end of the file.
+  ;; Using init purely for loading functions.
+  ;; Do NOT use :config. It will not be loaded.
+  :init
   ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
   (defun ar/switch-to-previous-buffer ()
     "Switch to previously open buffer.
