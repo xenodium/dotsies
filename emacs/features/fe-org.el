@@ -9,18 +9,21 @@
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
-  :init
+  :custom
+  (org-default-priority ?C) ;; Ensures unset tasks have low priority.
+  (org-fontify-done-headline t)
+  :hook ((org-mode . ar/org-mode-hook-function)
+         (org-mode . visual-line-mode)
+         (org-mode . yas-minor-mode)
+         (org-mode . smartparens-mode))
+  :config
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
     (org-display-inline-images)
     (ar/vsetq show-trailing-whitespace t)
     (set-fill-column 1000)
     (use-package ar-org))
-  :hook ((org-mode . ar/org-mode-hook-function)
-         (org-mode . visual-line-mode)
-         (org-mode . yas-minor-mode)
-         (org-mode . smartparens-mode))
-  :config
+
   (defun ar/org-meta-return (&optional arg)
     (interactive "P")
     (end-of-line)
@@ -256,28 +259,27 @@
     (ar/csetq org-crypt-key nil)))
 
 (use-package org-agenda
+  :hook ((org-agenda-mode . goto-address-mode)) ;; <RET> follows links.
   :bind (("M-a" . ar/org-agenda-toggle)
          :map org-agenda-mode-map
-         ;; I prefer my M-m global key bind.
+         ;; I prefer my M-m global key bind for another purpose.
          ("M-m" . nil)
-         ;; Use org-return instead, to follow links.
-         ("<RET>" . org-return)
          ;; C-n/C-p for can be used for granular movement.
-         ;; Use n/p for faster movement between items
+         ;; Use n/p for faster movement between items (jumps through sections).
          ("n" . org-agenda-next-item)
+         ("P" . ar/org-agenda-previous-header)
+         ("N" . ar/org-agenda-next-header)
          ("p" . org-agenda-previous-item)
          ("g" . org-agenda-redo)
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
          ("M-<down>" . ar/org-agenda-item-move-down)
-         ("1"  . ar/org-agenda-item-to-top))
+         ("1"  . ar/org-agenda-item-to-top)
+         ("c" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
-  (org-default-priority ?C) ;; Ensures unset tasks have low priority.
-  (org-fontify-done-headline t)
   (org-agenda-block-separator ?\u2015)
-
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   (org-agenda-custom-commands
@@ -365,6 +367,47 @@
     (ar/org-headline-to-top)
     (switch-to-buffer (other-buffer (current-buffer) 1))
     (org-agenda-redo))
+
+  ;; From https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
+  (defun ar/org-agenda-capture (&optional vanilla)
+    "Capture a task in agenda mode, using the date at point.
+
+If VANILLA is non-nil, run the standard `org-capture'."
+    (interactive "P")
+    (if vanilla
+        (org-capture)
+      (let ((org-overriding-default-time (org-get-cursor-date)))
+        (org-capture nil "t"))))
+
+  (defun ar/org-agenda-next-header ()
+    "Jump to the next header in an agenda series."
+    (interactive)
+    (ar/org-agenda--goto-header))
+
+  (defun ar/org-agenda-previous-header ()
+    "Jump to the previous header in an agenda series."
+    (interactive)
+    (ar/org-agenda--goto-header t))
+
+  (defun ar/org-agenda--goto-header (&optional backwards)
+    "Find the next agenda series header forwards or BACKWARDS."
+    (let ((pos (save-excursion
+                 (goto-char (if backwards
+                                (line-beginning-position)
+                              (line-end-position)))
+                 (let* ((find-func (if backwards
+                                       'previous-single-property-change
+                                     'next-single-property-change))
+                        (end-func (if backwards
+                                      'max
+                                    'min))
+                        (all-pos-raw (list (funcall find-func (point) 'org-agenda-structural-header)
+                                           (funcall find-func (point) 'org-agenda-date-header)))
+                        (all-pos (cl-remove-if-not 'numberp all-pos-raw))
+                        (prop-pos (if all-pos (apply end-func all-pos) nil)))
+                   prop-pos))))
+      (if pos (goto-char pos))
+      (if backwards (goto-char (line-beginning-position)))))
 
   (defun ar/org-agenda-toggle (&optional arg)
     "Toggles between agenda using my custom command and org file."
@@ -463,7 +506,7 @@
 (use-package org-capture
   :bind (("M-c" . org-capture))
   :commands org-capture
-  :config
-  (ar/csetq org-capture-templates
-            '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-               "* TODO %?\n" :prepend t))))
+  :custom
+  (org-capture-templates
+   '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
+      "* TODO %?\n" :prepend t))))
