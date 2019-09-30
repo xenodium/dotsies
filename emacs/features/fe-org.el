@@ -12,6 +12,7 @@
   :custom
   (org-default-priority ?C) ;; Ensures unset tasks have low priority.
   (org-fontify-done-headline t)
+  (org-outline-path-complete-in-steps nil) ;; No need to generate in steps (I use a ivy).
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
@@ -509,4 +510,4 @@ If VANILLA is non-nil, run the standard `org-capture'."
   :custom
   (org-capture-templates
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-      "* TODO %?\n" :prepend t))))
+      "* TODO %?\nSCHEDULED: %t" :prepend t))))
