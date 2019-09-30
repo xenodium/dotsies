@@ -60,7 +60,9 @@ already narrowed."
          ("C-<tab>" . other-window))
   :chords (("BB" . other-window)
            ("JJ" . ar/switch-to-previous-buffer))
-  :init
+  :custom
+  (split-width-threshold nil) ;; Prevent horizontal window splits.
+  :config
   ;; From http://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer
   (defun ar/switch-to-previous-buffer ()
     "Switch to previously open buffer.
@@ -82,10 +84,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (interactive)
     (split-window-horizontally)
     (other-window 1 nil)
-    (switch-to-next-buffer))
-  :config
-  ;; Prefer horizontal window splits.
-  (ar/vsetq split-width-threshold nil))
+    (switch-to-next-buffer)))
 
 ;; In addition to highlighting symbols, we get navigation between them.
 (use-package symbol-overlay
