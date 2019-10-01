@@ -10,7 +10,9 @@
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
   :custom
-  (org-default-priority ?C) ;; Ensures unset tasks have low priority.
+  (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
+  (org-lowest-priority ?D)
+  (org-default-priority ?D) ;; Ensures unset tasks have low priority.
   (org-fontify-done-headline t)
   (org-outline-path-complete-in-steps nil) ;; No need to generate in steps (I use a ivy).
   :hook ((org-mode . ar/org-mode-hook-function)
