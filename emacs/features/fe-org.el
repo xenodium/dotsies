@@ -259,6 +259,14 @@
     ;;  Set to nil to use symmetric encryption.
     (ar/csetq org-crypt-key nil)))
 
+;; Like org-bullets but for priorities.
+(use-package org-fancy-priorities
+  :ensure t
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :custom
+  (org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL")))
+
 (use-package org-agenda
   :hook ((org-agenda-mode . goto-address-mode)) ;; <RET> follows links.
   :bind (("M-a" . ar/org-agenda-toggle)
