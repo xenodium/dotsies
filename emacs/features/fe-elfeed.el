@@ -169,6 +169,7 @@ Based on `elfeed-search-print-entry--default'."
 
   (ar/vsetq elfeed-feeds
             '(("http://1w6.org/rss.xml" blog emacs draketo)
+              ("https://beepb00p.xyz/rss.xml" blog emacs JestemKróliczkiem)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
               ("http://feeds.feedburner.com/JuanjoalvareznetPosts" blog emacs JuanjoAlvaro)
               ("https://vadosware.io/index.xml" blog emacs Vadosware)
@@ -420,6 +421,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
               ("https://zudepr.co.uk/feed" blog money Zude)
               ("https://sam217pa.github.io/index.xml" blog emacs BacterialFinches)
+              ("https://systemreboot.net/feeds/blog.atom" blog emacs ArunIsaac)
               ))
 
   (ar/csetq elfeed-search-title-max-width 120)
