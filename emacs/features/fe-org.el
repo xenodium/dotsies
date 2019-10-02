@@ -15,6 +15,10 @@
   (org-default-priority ?D) ;; Ensures unset tasks have low priority.
   (org-fontify-done-headline t)
   (org-outline-path-complete-in-steps nil) ;; No need to generate in steps (I use a ivy).
+  (org-priority-faces '((?A . "#ff2600")
+                        (?B . "#ff5900")
+                        (?C . "#ff9200")
+                        (?D . "#747474")))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
