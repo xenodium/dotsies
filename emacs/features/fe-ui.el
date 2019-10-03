@@ -73,8 +73,9 @@
       (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-done nil :foreground "#C792EA" :strike-through t)
-    (set-face-attribute 'org-agenda-done nil :foreground "#C792EA" :strike-through t)
+    (set-face-attribute 'org-done nil :foreground "#b9ccb2" :strike-through nil)
+    (set-face-attribute 'org-agenda-date-today nil :foreground "#Fb1d84")
+    (set-face-attribute 'org-agenda-done nil :foreground "#b9ccb2" :strike-through nil)
     (set-face-attribute 'org-table nil :background nil)
     (set-face-attribute 'org-code nil :background nil)
     (set-face-attribute 'org-level-1 nil :background nil :box nil)

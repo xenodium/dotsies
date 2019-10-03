@@ -307,7 +307,12 @@
                   '(or (org-agenda-skip-entry-if 'todo '("DONE" "OBSOLETE" "CANCELLED"))
                        (org-agenda-skip-if nil '(scheduled deadline))))))
        (alltodo ""
-                ((org-agenda-overriding-header "All:")))))))
+                ((org-agenda-overriding-header "All:")))))
+     ("a" "This week"
+      ((agenda "" ((org-agenda-sorting-strategy
+                    (quote ((agenda todo-state-down priority-down alpha-down category-keep)))))))
+      nil
+      ("~/Downloads/agenda.html"))))
   :config
   ;; A little formatting of agenda view.
   (let ((spaces (make-string 33 (string-to-char " "))))
