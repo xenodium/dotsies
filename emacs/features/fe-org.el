@@ -315,7 +315,7 @@
       ("~/Downloads/agenda.html"))))
   :config
   ;; A little formatting of agenda view.
-  (let ((spaces (make-string 33 (string-to-char "░"))))
+  (let ((spaces (make-string 32 (string-to-char "░"))))
     (map-put org-agenda-prefix-format 'agenda (concat spaces " ")))
   (map-put org-agenda-prefix-format 'todo " %i %-31:c")
 
