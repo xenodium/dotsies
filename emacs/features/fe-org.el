@@ -279,6 +279,8 @@
          :map org-agenda-mode-map
          ;; I prefer my M-m global key bind for another purpose.
          ("M-m" . nil)
+         ;; Use org-return instead since `org-return-follows-link' is set.
+         ("<RET>" . org-return)
          ;; C-n/C-p for can be used for granular movement.
          ;; Use n/p for faster movement between items (jumps through sections).
          ("n" . org-agenda-next-item)
