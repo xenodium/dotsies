@@ -314,13 +314,16 @@
       nil
       ("~/Downloads/agenda.html"))))
   :config
+  (with-eval-after-load 'fullframe
+    (fullframe org-agenda-mode
+               org-agenda-quit))
+
   ;; A little formatting of agenda view.
+  ;;   Tuesday     1 October 2019
+  ;; ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ DONE High Pass the salt.
   (let ((spaces (make-string 32 (string-to-char "░"))))
     (map-put org-agenda-prefix-format 'agenda (concat spaces " ")))
   (map-put org-agenda-prefix-format 'todo " %i %-31:c")
-
-  (with-eval-after-load 'fullframe
-    (fullframe org-agenda-mode org-agenda-quit))
 
   (defun ar/org-agenda-item-move-up ()
     "Move the current agenda item up."
