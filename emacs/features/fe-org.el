@@ -134,11 +134,10 @@
         (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
                (timestamp (nth 1 (dom-by-class dom "timestamp")))
                (date (parse-time-string (dom-text timestamp))))
-          (encode-time (list 0 0 0
-                             (nth 3 date)
-                             (nth 4 date)
-                             (nth 5 date)
-                             nil -1 nil)))))
+          (encode-time 0 0 0
+                       (nth 3 date)
+                       (nth 4 date)
+                       (nth 5 date) nil -1 nil))))
 
     (defun ar/blog-entry-fpaths (&optional filter)
       (let ((fpaths '())
