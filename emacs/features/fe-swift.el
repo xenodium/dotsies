@@ -77,3 +77,19 @@
 (use-package swift-helpful
   :ensure t
   :commands swift-helpful)
+
+;; (defun ar/swift-args-to-docstring (text)
+;;   "Create a docstring from a Swift function parameter TEXT (comma-separated)."
+;;   (let* ((args (ar/swift-split-args text)))
+;;     (when (> (length args) 0)
+;;       (mapconcat
+;;            (lambda (x)
+;;              (format "///   - %s: " (nth 0 x)))
+;;            args
+;;            "\n"))))
+
+;; (defun ar/swift-split-args (arg-string)
+;;   "Split a js argument string into ((name, default)..) tuples.  ARG-STRING."
+;;   (mapcar (lambda (x)
+;;              (split-string x "[[:blank:]]*=[[:blank:]]*" t))
+;;            (split-string arg-string "[[:blank:]]*,[[:blank:]]*" t)))
