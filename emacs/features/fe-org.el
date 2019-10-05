@@ -289,6 +289,8 @@
          ("N" . ar/org-agenda-next-header)
          ("p" . org-agenda-previous-item)
          ("g" . org-agenda-redo)
+         ("x" . ar/org-agenda-done)
+         ("X" . ar/org-agenda-mark-done-and-add-followup)
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
          ("M-<down>" . ar/org-agenda-item-move-down)
@@ -327,6 +329,24 @@
   (let ((spaces (make-string 32 (string-to-char "░"))))
     (map-put org-agenda-prefix-format 'agenda (concat spaces " ")))
   (map-put org-agenda-prefix-format 'todo " %i %-31:c")
+
+  ;; https://pages.sachachua.com/.emacs.d/Sacha.html#org32b4908
+  (defun ar/org-agenda-done (&optional arg)
+    "Mark current TODO as done.
+This changes the line at point, all other lines in the agenda referring to
+the same tree node, and the headline of the tree node in the Org-mode file."
+    (interactive "P")
+    (org-agenda-todo "DONE"))
+
+  ;; https://pages.sachachua.com/.emacs.d/Sacha.html#orgade1aa9
+  (defun ar/org-agenda-mark-done-and-add-followup ()
+    "Mark the current TODO as done and add another task after it.
+Creates it at the same level as the previous task, so it's better to use
+this with to-do items than with projects or headings."
+    (interactive)
+    (org-agenda-todo "DONE")
+    (org-agenda-switch-to)
+    (org-capture 0 "t"))
 
   (defun ar/org-agenda-item-move-up ()
     "Move the current agenda item up."
