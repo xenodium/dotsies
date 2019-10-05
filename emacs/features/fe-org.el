@@ -195,7 +195,7 @@
     :commands (ar/org-split-export-async
                ar/org-export-current-headline-async)
     :bind (:map org-mode-map
-                ([f6] . ar/ox-export-all-async))
+                ([f6] . ar/ox-html-export-all))
     :config
     (use-package ar-org)
     (use-package ox-html)

@@ -65,12 +65,13 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
-(defun ar/ox-export-all-async ()
+(defun ar/ox-html-export-all ()
+  "Exports all posts into single page under all/index.html."
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
                                (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-all)\" && ")
                                "open " (format "file:%s" (expand-file-name
-                                                          "~/stuff/active/blog/index.html")))
+                                                          "~/stuff/active/blog/all/index.html")))
                        "*org html export*"))
 
 (defun ar/ox-html-link-postprocess (orig-fun &rest r)
@@ -113,9 +114,10 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (advice-remove 'org-html-link
                        'ar/ox-html-link-postprocess))
       (browse-url (format "file:%s" (expand-file-name
-                                     "~/stuff/active/blog/index.html"))))))
+                                     "~/stuff/active/blog/all/index.html"))))))
 
 (defun ar/ox-export-index-async ()
+  "Export blog to HTML index (only headings) to index.html (asynchronously)."
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
                                (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-index)\" && ")
@@ -141,7 +143,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
       heading)))
 
 (defun ar/ox-html-export-index ()
-  "Export blog to HTML index."
+  "Export blog to HTML index (only headings) to index.html."
   (interactive)
   (ar/file-assert-file-exists org-plantuml-jar-path)
   (ar/file-assert-file-exists (getenv "GRAPHVIZ_DOT"))
