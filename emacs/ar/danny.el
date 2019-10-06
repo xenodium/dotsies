@@ -26,8 +26,9 @@
                                     "part$"
                                     "m4a$"
                                     "ytdl$"
-                                    "temp\\.webm"
-                                    "temp\\.mkv"
+                                    "temp\\.webm$"
+                                    "temp\\.mkv$"
+                                    "\\.f[0-9]+\\."
                                     "com\\.google\\.Chrome\\.")
   "List of ignored regular expressions matching file names.
 These are handy for matching temp files created during downloads.
