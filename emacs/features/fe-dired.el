@@ -129,6 +129,11 @@
     :config
     (use-package tmtxt-async-tasks))
 
+  (use-package dired-git-info
+    :ensure t
+    :bind (:map dired-mode-map
+                (")" . dired-git-info-mode)))
+
   ;; Colourful entries.
   (use-package diredfl
     :ensure t
