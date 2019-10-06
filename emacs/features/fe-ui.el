@@ -55,7 +55,8 @@
     ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
     (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
                         ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
-                        :family "mononoki" ;; https://madmalik.github.io/mononoki/ or sudo apt-get install fonts-mononoki
+                        :family "Hack" ;; brew tap homebrew/cask-fonts && brew cask install font-hack
+                        ;; :family "mononoki" ;; https://madmalik.github.io/mononoki/ or sudo apt-get install fonts-mononoki
                         :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
                         :width 'normal :foundry "nil")
 
