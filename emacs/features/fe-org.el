@@ -293,6 +293,10 @@
          ("s" . ar/org-agenda-schedule-dwim)
          ("M-<up>" . ar/org-agenda-item-move-up)
          ("M-<down>" . ar/org-agenda-item-move-down)
+         ("M-<left>" . org-agenda-do-date-earlier)
+         ("M-<right>" . org-agenda-do-date-later)
+         ("S-<left>" . ar/org-agenda-todo-previous-keyword)
+         ("S-<right>" . ar/org-agenda-todo-next-keyword)
          ("1"  . ar/org-agenda-item-to-top)
          ("c" . ar/org-agenda-capture))
   :commands (org-agenda
@@ -346,6 +350,18 @@ this with to-do items than with projects or headings."
     (org-agenda-todo "DONE")
     (org-agenda-switch-to)
     (org-capture 0 "t"))
+
+  (defun ar/org-agenda-todo-previous-keyword ()
+    "Transition current task to previous state in `org-todo-keywords'"
+    (interactive)
+    (let ((org-inhibit-logging t)) ;; Do not ask for notes when transitioning states.
+      (org-agenda-todo 'left)))
+
+  (defun ar/org-agenda-todo-next-keyword ()
+    "Transition current task to next state in `org-todo-keywords'"
+    (interactive)
+    (let ((org-inhibit-logging t)) ;; Do not ask for notes when transitioning states.
+      (org-agenda-todo 'right)))
 
   (defun ar/org-agenda-item-move-up ()
     "Move the current agenda item up."
