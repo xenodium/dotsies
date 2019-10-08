@@ -65,7 +65,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
         (match-string 1 orig-timestamp)
       orig-timestamp)))
 
-(defun ar/ox-html-export-all ()
+(defun ar/ox-html-export-all-async ()
   "Exports all posts into single page under all/index.html."
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
