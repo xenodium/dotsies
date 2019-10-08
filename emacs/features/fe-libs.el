@@ -19,3 +19,7 @@
 (use-package noflet
   :ensure t
   :after dash)
+
+;; Timestamp and date/time library.
+(use-package ts
+  :ensure t)
