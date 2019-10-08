@@ -302,6 +302,8 @@
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
+  ;; Follow mode narrows to task subtree only.
+  (org-agenda-follow-indirect t)
   (org-agenda-block-separator ?\u2015)
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
