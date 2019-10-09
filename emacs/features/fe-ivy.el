@@ -166,21 +166,25 @@ For example:
   :config
   (defun ar/swiper-isearch-backward-dwim ()
     (interactive)
-    (let ((ivy-wrap t))
-      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-          (let ((region (buffer-substring-no-properties (mark) (point))))
-            (deactivate-mark)
-            (swiper-isearch-backward region))
-        (swiper-isearch-backward))))
+    (if multiple-cursors-mode
+        (call-interactively 'isearch-backward)
+      (let ((ivy-wrap t))
+        (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+            (let ((region (buffer-substring-no-properties (mark) (point))))
+              (deactivate-mark)
+              (swiper-isearch-backward region))
+          (swiper-isearch-backward)))))
 
   (defun ar/swiper-isearch-dwim ()
     (interactive)
-    (let ((ivy-wrap t))
-      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-          (let ((region (buffer-substring-no-properties (mark) (point))))
-            (deactivate-mark)
-            (swiper-isearch region))
-        (swiper-isearch)))))
+    (if multiple-cursors-mode
+        (call-interactively 'isearch-forward)
+      (let ((ivy-wrap t))
+        (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+            (let ((region (buffer-substring-no-properties (mark) (point))))
+              (deactivate-mark)
+              (swiper-isearch region))
+          (swiper-isearch))))))
 
 (use-package counsel-projectile
   :ensure t
