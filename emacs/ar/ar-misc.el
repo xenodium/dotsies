@@ -42,8 +42,7 @@
     (cl-labels ((clean-up ()
                           (kill-buffer a)
                           (kill-buffer b)
-                          (remove-hook 'ediff-cleanup-hook #'clean-up)
-                          (winner-undo)))
+                          (remove-hook 'ediff-cleanup-hook #'clean-up)))
                (add-hook 'ediff-cleanup-hook #'clean-up)
                (with-current-buffer a
                  (insert (elt kill-ring 0)))
