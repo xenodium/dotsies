@@ -49,6 +49,13 @@
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
 
+;; Remember undo history across file sessions.
+(use-package undohist
+  :ensure t
+  :custom (undohist-ignored-files '("/tmp" "COMMIT_EDITMSG"))
+  :config
+  (undohist-initialize))
+
 ;; Remember history of things across launches (ie. kill ring).
 ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
