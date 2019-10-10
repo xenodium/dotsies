@@ -9,3 +9,7 @@
 
 [merge]
 	conflictStyle = diff3
+
+[diff]
+	# Remove `a/` and `b/` prefixes from diffs.
+	noprefix = true
