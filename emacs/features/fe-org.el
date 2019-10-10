@@ -302,6 +302,8 @@
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
+  ;; Default to daily view.
+  (org-agenda-span 'day)
   ;; Follow mode narrows to task subtree only.
   (org-agenda-follow-indirect t)
   (org-agenda-block-separator ?\u2015)
