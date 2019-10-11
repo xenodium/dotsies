@@ -146,13 +146,13 @@
   :config
   ;; https://www.reddit.com/r/emacs/comments/dewzuy/weekly_tipstricketc_thread/f3be8kq?utm_source=share&utm_medium=web2x
   (defun ar/backward-up-sexp (a)
-    "backwards up multiple sexps.
+    "Backwards up multiple sexps.
    prefix command interpretation:
      0    → to beginning of all nested sexps
      -    → to end of all nested sexps
      x|+x → x-times go back out of sexps to beginning
      -x   → x-times go out of sexps to end
-     universal-command interpreted as +x"
+     universal-command interpreted as 0"
     (interactive "P")
     (condition-case err
         (let ((arg)
@@ -171,8 +171,8 @@
                     loop t))
              (t (setq arg (- a) ;; do it a times
                       loop nil))))
-           (t (setq arg (- (car a)) ;; interpret `universal-command'
-                    loop nil)))
+           (t (setq arg -1 ;; interpret `universal-command'
+                    loop t)))
           (while (progn  ;; do-while loop
                    (up-list arg t t)
                    loop)))
