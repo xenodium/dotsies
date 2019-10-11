@@ -334,7 +334,8 @@
 
 (use-package multiple-cursors :ensure t
   :after region-bindings-mode
-  :commands (ar/set-mc/insert-numbers-starting-value)
+  :commands (ar/set-mc/insert-numbers-starting-value
+             multiple-cursors-mode)
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-dwim)
