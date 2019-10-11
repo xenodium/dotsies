@@ -131,7 +131,7 @@
    ("C-M-p" . sp-backward-sexp)
    ("C-M-a" . sp-beginning-of-sexp)
    ("C-M-e" . sp-end-of-sexp)
-   ("C-M-u" . sp-backward-up-sexp)
+   ("C-M-u" . ar/backward-up-sexp)
    ("C-M-d" . sp-down-sexp)
    ("C-M-t" . sp-transpose-sexp)
    ("M-t t" . sp-transpose-sexp)
@@ -144,6 +144,40 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
+  ;; https://www.reddit.com/r/emacs/comments/dewzuy/weekly_tipstricketc_thread/f3be8kq?utm_source=share&utm_medium=web2x
+  (defun ar/backward-up-sexp (a)
+    "backwards up multiple sexps.
+   prefix command interpretation:
+     0    → to beginning of all nested sexps
+     -    → to end of all nested sexps
+     x|+x → x-times go back out of sexps to beginning
+     -x   → x-times go out of sexps to end
+     universal-command interpreted as +x"
+    (interactive "P")
+    (condition-case err
+        (let ((arg)
+              (loop))
+          (cond
+           ((null a) ;; back-up once
+            (setq arg -1
+                  loop nil))
+           ((eq a '-) ;; up to end of all sexps
+            (setq arg 1
+                  loop t))
+           ((numberp a)
+            (cond
+             ((= a 0) ;; back-up to begin of all sexps
+              (setq arg -1
+                    loop t))
+             (t (setq arg (- a) ;; do it a times
+                      loop nil))))
+           (t (setq arg (- (car a)) ;; interpret `universal-command'
+                    loop nil)))
+          (while (progn  ;; do-while loop
+                   (up-list arg t t)
+                   loop)))
+      (scan-error ;; stay quiet
+       nil)))
   (defun ar/forward-sexp (&optional arg)
     (interactive "P")
     (if arg
