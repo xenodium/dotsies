@@ -205,6 +205,7 @@ Based on `elfeed-search-print-entry--default'."
               ("http://francismurillo.github.io/hacker/feed.xml" blog emacs francismurillo)
               ("http://francismurillo.github.io/watcher/feed.xml" blog anime francismurillo)
               ("http://irreal.org/blog/?feed=rss2" blog emacs Irreal)
+              ("http://johnbokma.com/index.rss" blog emacs JohnBokma)
               ("http://kitchingroup.cheme.cmu.edu/blog/feed/atom" blog emacs JohnKitchin)
               ("http://kundeveloper.com/feed" blog emacs KunDeveloper)
               ("http://liberate.life/index.php/feed/" blog money LiberateLife)
