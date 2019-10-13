@@ -166,7 +166,7 @@ For example:
   :config
   (defun ar/swiper-isearch-backward-dwim ()
     (interactive)
-    (if (and (boundp 'multiple-cursors-mode)
+    (if (and (fboundp 'multiple-cursors-mode)
              multiple-cursors-mode)
         (call-interactively 'isearch-backward)
       (let ((ivy-wrap t))
@@ -178,7 +178,7 @@ For example:
 
   (defun ar/swiper-isearch-dwim ()
     (interactive)
-    (if (and (boundp 'multiple-cursors-mode)
+    (if (and (fboundp 'multiple-cursors-mode)
              multiple-cursors-mode)
         (call-interactively 'isearch-forward)
       (let ((ivy-wrap t))
