@@ -171,7 +171,6 @@ Based on `elfeed-search-print-entry--default'."
             '(
               ("http://1w6.org/rss.xml" blog emacs draketo)
               ("http://200ok.ch/atom.xml" blog emacs 200ok)
-              ("https://caolan.org/posts/rss.xml" blog emacs CaolanMcMahon)
               ("http://akkartik.name/feeds.xml" blog dev)
               ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
               ("http://beard.institute/index.xml" blog emacs BeardInstitute)
@@ -262,6 +261,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://blog.maya2250.com/feed" blog emacs Maya2250)
               ("https://blog.mjh.io/rss.xml" blog emacs MattHamrick)
               ("https://blog.moneysavingexpert.com/blog.rss" blog money MoneySavingExpert MartinLewis)
+              ("https://caolan.org/posts/rss.xml" blog emacs CaolanMcMahon)
               ("https://changelog.com/feed" blog dev news JohnGoerzen)
               ("https://changelog.complete.org/feed" blog emacs JohnGoerzen)
               ("https://chaoticlab.io/feed.xml" blog emacs ChaoticLab)
@@ -347,6 +347,7 @@ Based on `elfeed-search-print-entry--default'."
               ("https://piware.de/post/index.xml" blog dev MartinPitt)
               ("https://psachin.gitlab.io/index.xml" blog emacs SachinPatil)
               ("https://punchagan.muse-amuse.in/feed.xml" blog emacs Punchagan)
+              ("https://rodogi.github.io/post/index.xml" blog emacs RodrigoDorantes)
               ("https://ryanfb.github.io/etc/feed.xml" blog dev RyanBaumann)
               ("https://ryanholiday.net/feed/" blog meditation health RyanHoliday)
               ("https://ryanholiday.net/feed/atom" blog emacs StringsNote)

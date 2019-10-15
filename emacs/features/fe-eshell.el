@@ -96,6 +96,11 @@
     (use-package pcmpl-homebrew
       :ensure t)
 
+    ;; Fringe exit status indicators.
+    (use-package eshell-fringe-status
+      :ensure t
+      :hook ((eshell-mode . eshell-fringe-status-mode)))
+
     (use-package eshell-up
       :ensure t
       :config
