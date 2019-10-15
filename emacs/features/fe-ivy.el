@@ -249,6 +249,7 @@ With prefix argument, use full path."
               (counsel-describe-variable . "^")
               (counsel-org-capture . "^")
               (Man-completion-table . "^")
+              (counsel-M-x . "")
               (woman . "^")))
 
   (ivy-mode +1)
