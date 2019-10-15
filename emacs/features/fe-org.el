@@ -569,9 +569,17 @@ If VANILLA is non-nil, run the standard `org-capture'."
       (funcall cmd))))
 
 (use-package org-capture
-  :bind (("M-c" . org-capture))
-  :commands org-capture
+  :bind (("M-c" . ar/org-capture-todo))
+  :commands (ar/org-capture-todo
+             org-capture)
   :custom
   (org-capture-templates
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-      "* TODO %?\nSCHEDULED: %t" :prepend t))))
+      "* TODO %?\nSCHEDULED: %t" :prepend t)))
+  :config
+  (defun ar/org-capture-todo (&optional vanilla)
+    "Capture a todo. If VANILLA is non-nil, prompt the user for task type."
+    (interactive "P")
+    (if vanilla
+        (org-capture)
+      (org-capture nil "t"))))
