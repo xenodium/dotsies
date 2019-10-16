@@ -134,6 +134,7 @@
    ("C-M-d" . sp-down-sexp)
    ("C-M-t" . sp-transpose-sexp)
    ("M-t t" . sp-transpose-sexp)
+   ("<C-M-backspace>" . backward-kill-sexp)
    ("C-M-k" . sp-kill-sexp)
    ("C-M-w" . sp-copy-sexp))
   ;; Add to minibuffer also.
