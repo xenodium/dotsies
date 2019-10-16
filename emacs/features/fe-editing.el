@@ -116,7 +116,7 @@
    ([remap kill-region] . kill-region)
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
-   ("M-'" . ar/rewrap-sexp)
+   ("M-'" . ar/rewrap-sexp-dwim)
    ("M-[" . sp-backward-unwrap-sexp)
    ("M-]" . sp-unwrap-sexp)
    ("M-k" . sp-backward-kill-sexp)
@@ -143,25 +143,26 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
-  (defun ar/rewrap-sexp (prefix)
+  (defun ar/rewrap-sexp-dwim (prefix)
     "Like `sp-rewrap-sexp', but RET, DEL, SPC, and C-d remove pair.
 With PREFIX, add an outer pair around existing pair."
     (interactive "P")
     (let* ((pair-prefix (format-kbd-macro (vector (read-event "Rewrap with: " t))))
+           (clear-p (or (equal pair-prefix "RET")
+                        (equal pair-prefix "DEL")
+                        (equal pair-prefix "SPC")
+                        (equal pair-prefix "C-d")))
            (available-pairs (sp--get-pair-list-context 'wrap))
-           (pair (cond ((or (equal pair-prefix "RET")
-                            (equal pair-prefix "DEL")
-                            (equal pair-prefix "SPC")
-                            (equal pair-prefix "C-d"))
-                        (cons "" ""))
-                       ((--first (equal pair-prefix (car it)) available-pairs)))))
-      (unless pair
-        (user-error "Impossible pair prefix selected: %s" pair-prefix))
-      (if (sp-get-enclosing-sexp)
-          (sp-rewrap-sexp pair
-                          prefix)
-        (save-excursion
-          (sp-wrap-with-pair (car pair))))))
+           (pair (--first (equal pair-prefix (car it)) available-pairs)))
+      (cond (clear-p
+             (when (sp-get-enclosing-sexp)
+               (sp-unwrap-sexp)))
+            (pair
+             (if (sp-get-enclosing-sexp)
+                 (sp-rewrap-sexp pair
+                                 prefix)
+               (save-excursion
+                 (sp-wrap-with-pair (car pair))))))))
 
   ;; https://www.reddit.com/r/emacs/comments/dewzuy/weekly_tipstricketc_thread/f3be8kq?utm_source=share&utm_medium=web2x
   (defun ar/backward-up-sexp (a)
