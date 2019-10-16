@@ -24,9 +24,19 @@
   :ensure t
   :bind ("C-c w" . er/expand-region)
   :config
-  ;; (ar/csetq expand-region-smart-cursor t)
-  ;; Skip marking word. Most of the time, I want symbol.
-  (ar/vsetq er/try-expand-list (remq 'er/mark-word er/try-expand-list)))
+  (defun ar/add-mode-expansions ()
+    ;; Making expansion greedier by removing
+    ;; `er/mark-word' and other mark functions.
+    (setq-local er/try-expand-list
+                '(er/mark-symbol
+                  er/mark-outside-quotes
+                  er/mark-outside-pairs
+                  er/mark-comment
+                  er/mark-url
+                  er/mark-email
+                  er/mark-defun)))
+  (er/enable-mode-expansions 'text-mode 'ar/add-mode-expansions)
+  (er/enable-mode-expansions 'prog-mode 'ar/add-mode-expansions))
 
 (use-package dabbrev
   :config
