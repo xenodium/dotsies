@@ -16,6 +16,7 @@
          ("C-c C-c" . ar/wgrep-finish-edit)
          ("C-c C-k" . ar/wgrep-abort-changes))
   :config
+  (push '(counsel-M-x . "") ivy-initial-inputs-alist)
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
   (defun ar/ivy-occur ()
@@ -199,11 +200,7 @@ For example:
   (ivy-initial-inputs-alist '((org-refile . "^")
                               (org-agenda-refile . "^")
                               (org-capture-refile . "^")
-                              (counsel-describe-function . "^")
-                              (counsel-describe-variable . "^")
-                              (counsel-org-capture . "^")
                               (Man-completion-table . "^")
-                              (counsel-M-x . "")
                               (woman . "^")))
   :init
   (global-unset-key (kbd "M-o"))
