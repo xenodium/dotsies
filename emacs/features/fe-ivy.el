@@ -195,6 +195,16 @@ For example:
 (use-package ivy
   :ensure t
   :defer 0.1
+  :custom
+  (ivy-initial-inputs-alist '((org-refile . "^")
+                              (org-agenda-refile . "^")
+                              (org-capture-refile . "^")
+                              (counsel-describe-function . "^")
+                              (counsel-describe-variable . "^")
+                              (counsel-org-capture . "^")
+                              (Man-completion-table . "^")
+                              (counsel-M-x . "")
+                              (woman . "^")))
   :init
   (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
@@ -240,17 +250,6 @@ With prefix argument, use full path."
            (delete-minibuffer-contents))
           (t
            (minibuffer-keyboard-quit))))
-
-  (ar/vsetq ivy-initial-inputs-alist
-            '((org-refile . "^")
-              (org-agenda-refile . "^")
-              (org-capture-refile . "^")
-              (counsel-describe-function . "^")
-              (counsel-describe-variable . "^")
-              (counsel-org-capture . "^")
-              (Man-completion-table . "^")
-              (counsel-M-x . "")
-              (woman . "^")))
 
   (ivy-mode +1)
 
