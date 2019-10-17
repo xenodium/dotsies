@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Needs .ctags and .globalrc in $HOME.
 (use-package counsel-gtags
   :ensure t

@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (require 'ar-csetq)
 
 ;; Growl-workalike for Emacs.

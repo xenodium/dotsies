@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package server
   :defer 10
   :config

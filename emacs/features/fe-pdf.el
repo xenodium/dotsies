@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package pdf-tools
   :ensure t
   ;; :ensure-system-package poppler

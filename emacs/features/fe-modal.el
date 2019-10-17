@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Search for things modally, using ivy.
 (use-package modal-ivy
   :commands (ar/modal-ivy-search-org-links

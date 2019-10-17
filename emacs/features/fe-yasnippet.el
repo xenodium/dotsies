@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package yasnippet
   :ensure t
   :commands (yas-expand

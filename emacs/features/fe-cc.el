@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package cc-mode
   :mode ("\\.m\\'" . objc-mode)
   :hook (objc-mode . ar/objc-mode-hook-function)

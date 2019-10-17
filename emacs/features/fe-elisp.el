@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package ielm
   :hook ((ielm-mode . company-mode)))
 

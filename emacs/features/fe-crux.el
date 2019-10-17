@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package crux
   :ensure t
   :defer t

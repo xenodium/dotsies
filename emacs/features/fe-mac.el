@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (when (memq window-system '(mac ns))
   ;; No icon on window.
   (setq ns-use-proxy-icon nil)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
 
 (require 'ar-string)

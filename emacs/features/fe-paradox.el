@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package paradox
   :ensure t
   :commands (paradox-list-packages)

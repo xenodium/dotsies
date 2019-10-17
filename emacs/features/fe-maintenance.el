@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Find errors in init.el by bisecting the file.
 (use-package bug-hunter
   :ensure t

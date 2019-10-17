@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package bazel-mode
   :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)

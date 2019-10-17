@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package prog-mode
   :after (flycheck)
   :bind (:map

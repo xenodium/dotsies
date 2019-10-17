@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun ar/comment-dwim ()
   "Comment current line or region."
   (interactive)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package swift-mode :ensure t
   :mode ("\\.swift\\'" . swift-mode)
   :hook (swift-mode . ar/swift-mode-hook)

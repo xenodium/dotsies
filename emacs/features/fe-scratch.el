@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Remember scratch content across sessions.
 (use-package persistent-scratch
   :ensure t
