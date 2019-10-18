@@ -570,7 +570,10 @@ If VANILLA is non-nil, run the standard `org-capture'."
       (funcall cmd))))
 
 (use-package org-capture
-  :bind (("M-c" . ar/org-capture-todo))
+  :bind (("M-c" . ar/org-capture-todo)
+         :map org-capture-mode-map
+         ("+" . ar/org-capture-priority-up-dwim)
+         ("-" . ar/org-capture-priority-down-dwim))
   :commands (ar/org-capture-todo
              org-capture)
   :custom
@@ -578,6 +581,26 @@ If VANILLA is non-nil, run the standard `org-capture'."
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
       "* TODO %?\nSCHEDULED: %t" :prepend t)))
   :config
+  (defun ar/org-capture--at-priority-pos-p ()
+    "Either at beginning of line, end of line, or next to TODO [#A]."
+    (or (looking-back "^")
+        (looking-at "$")
+        (looking-back "TODO\\s-*\\(\\[#[A-Z]\\]\\s-*\\)*")))
+
+  (defun ar/org-capture-priority-up-dwim (N)
+    "If at special location, increase priority."
+    (interactive "p")
+    (if (ar/org-capture--at-priority-pos-p)
+        (org-priority 'up)
+      (org-self-insert-command N)))
+
+  (defun ar/org-capture-priority-down-dwim (N)
+    "If at special location, decrease priority."
+    (interactive "p")
+    (if (ar/org-capture--at-priority-pos-p)
+        (org-priority 'down)
+      (org-self-insert-command N)))
+
   (defun ar/org-capture-todo (&optional vanilla)
     "Capture a todo. If VANILLA is non-nil, prompt the user for task type."
     (interactive "P")
