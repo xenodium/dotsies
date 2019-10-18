@@ -9,7 +9,7 @@
   ;; Check for URLs like:
   ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
   ;; https://youtu.be/rzQEIRRJ2T0
-  (ar/vsetq url (s-trim url))
+  (setq url (s-trim url))
   (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\|\\(redditmedia.com\\)\\)" url)
           nil "Not a downloadable URL: %s" url)
   (message "Downloading: %s" url)
