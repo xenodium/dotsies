@@ -125,16 +125,15 @@
    ;; I prefer keeping C-w to DWIM kill, provided by
    ;; `ar/kill-region-advice-fun'. Removing remap.
    ([remap kill-region] . kill-region)
+   :map emacs-lisp-mode-map
+   ("C-<right>" . sp-forward-slurp-sexp)
+   ("C-<left>" . sp-forward-barf-sexp)
+   ("M-<right>" . sp-backward-barf-sexp)
+   ("M-<left>"  . sp-backward-slurp-sexp)
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
    ("M-'" . ar/rewrap-sexp-dwim)
-   ("M-[" . sp-backward-unwrap-sexp)
-   ("M-]" . sp-unwrap-sexp)
    ("M-k" . sp-backward-kill-sexp)
-   ("C-<right>" . ar/forward-slurp-sexp)
-   ("C-<left>" . ar/forward-barf-sexp)
-   ("M-<right>" . ar/backward-barf-sexp)
-   ("M-<left>"  . ar/backward-slurp-sexp)
    ("C-M-f" . ar/forward-sexp)
    ("C-M-b" . ar/backward-sexp)
    ("C-M-n" . sp-forward-sexp)
@@ -221,30 +220,6 @@ With PREFIX, add an outer pair around existing pair."
     (if arg
         (skip-syntax-backward "^ ()")
       (sp-backward-sexp)))
-
-  (defun ar/backward-barf-sexp (&optional arg)
-    (interactive "P")
-    (if (eq major-mode 'org-mode)
-        (org-metaright)
-      (sp-backward-barf-sexp)))
-
-  (defun ar/backward-slurp-sexp (&optional arg)
-    (interactive "P")
-    (if (eq major-mode 'org-mode)
-        (org-metaleft)
-      (sp-backward-slurp-sexp)))
-
-  (defun ar/forward-barf-sexp (&optional arg)
-    (interactive "P")
-    (if (eq major-mode 'org-mode)
-        (left-word)
-      (sp-forward-barf-sexp)))
-
-  (defun ar/forward-slurp-sexp (&optional arg)
-    (interactive "P")
-    (if (eq major-mode 'org-mode)
-        (right-word)
-      (sp-forward-slurp-sexp)))
 
   (require 'smartparens-config)
   (require 'smartparens-html)

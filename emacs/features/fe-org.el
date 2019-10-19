@@ -573,7 +573,9 @@ If VANILLA is non-nil, run the standard `org-capture'."
   :bind (("M-c" . ar/org-capture-todo)
          :map org-capture-mode-map
          ("+" . ar/org-capture-priority-up-dwim)
-         ("-" . ar/org-capture-priority-down-dwim))
+         ("-" . ar/org-capture-priority-down-dwim)
+         ("M-<right>" . ar/org-capture-schedule-earlier)
+         ("M-<left>"  . ar/org-capture-schedule-later))
   :commands (ar/org-capture-todo
              org-capture)
   :custom
@@ -581,10 +583,21 @@ If VANILLA is non-nil, run the standard `org-capture'."
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
       "* TODO %?\nSCHEDULED: %t" :prepend t)))
   :config
+  (defun ar/org-capture-schedule-earlier ()
+  (interactive)
+  (org-schedule (point) (time-add
+                         (org-get-scheduled-time (point))
+                         -86400))) ;; day in seconds
+
+  (defun ar/org-capture-schedule-later ()
+    (interactive)
+    (org-schedule (point) (time-add
+                           (org-get-scheduled-time (point))
+                           86400))) ;; day in seconds
+
   (defun ar/org-capture--at-priority-pos-p ()
-    "Either at beginning of line, end of line, or next to TODO [#A]."
+    "Either at beginning of line or next to TODO [#A]."
     (or (looking-back "^")
-        (looking-at "$")
         (looking-back "TODO\\s-*\\(\\[#[A-Z]\\]\\s-*\\)*")))
 
   (defun ar/org-capture-priority-up-dwim (N)
