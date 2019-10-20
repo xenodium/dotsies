@@ -22,8 +22,8 @@ end)
 
 -- Spectacle Window Manager Keybindings For Hammerspoon
 -- https://github.com/scottwhudson/Lunette
-hs.loadSpoon("Lunette")
-spoon.Lunette:bindHotkeys()
+-- hs.loadSpoon("Lunette")
+-- spoon.Lunette:bindHotkeys(customBindings)
 
 -- Aliases
 
@@ -103,55 +103,55 @@ function addEmacsOrgModeTODO()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/hammerspoon-org-modal-add-todo)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 function searchEmacsBrowserBookmarks()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/modal-ivy-search-org-links)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 function launchEmacsKeybindingI()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/modal-key-binding-i)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 function launchEmacsKeybindingR()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/modal-key-binding-r)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 function launchEmacsKeybindingV()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/modal-ivy-clipboard)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 function backFromEmacs()
@@ -184,11 +184,11 @@ function searchEmacsOrgShortLinks()
    appRequestingEmacs = hs.application.frontmostApplication()
    emacsExecute(false, "(ar/modal-ivy-search-short-links)")
    activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-      })
+         {
+            bundleID="org.gnu.Emacs",
+            name="Emacs"
+         }
+   })
 end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
