@@ -22,8 +22,8 @@ end)
 
 -- Spectacle Window Manager Keybindings For Hammerspoon
 -- https://github.com/scottwhudson/Lunette
--- hs.loadSpoon("Lunette")
--- spoon.Lunette:bindHotkeys(customBindings)
+hs.loadSpoon("Lunette")
+spoon.Lunette:bindHotkeys()
 
 -- Aliases
 
