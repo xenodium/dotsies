@@ -574,8 +574,8 @@ If VANILLA is non-nil, run the standard `org-capture'."
          :map org-capture-mode-map
          ("+" . ar/org-capture-priority-up-dwim)
          ("-" . ar/org-capture-priority-down-dwim)
-         ("M-<right>" . ar/org-capture-schedule-earlier)
-         ("M-<left>"  . ar/org-capture-schedule-later))
+         ("M-<right>" . ar/org-capture-schedule-day-later-dwim)
+         ("M-<left>"  . ar/org-capture-schedule-day-earlier-dwim))
   :commands (ar/org-capture-todo
              org-capture)
   :custom
@@ -583,19 +583,23 @@ If VANILLA is non-nil, run the standard `org-capture'."
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
       "* TODO %?\nSCHEDULED: %t" :prepend t)))
   :config
-  (defun ar/org-capture-schedule-earlier ()
-  (interactive)
-  (org-schedule (point) (time-add
-                         (org-get-scheduled-time (point))
-                         -86400))) ;; day in seconds
-
-  (defun ar/org-capture-schedule-later ()
+  (defun ar/org-capture-schedule-day-earlier-dwim ()
     (interactive)
-    (org-schedule (point) (time-add
-                           (org-get-scheduled-time (point))
-                           86400))) ;; day in seconds
+    (if (ar/org-capture--special-pos-p)
+        (org-schedule (point) (time-add
+                               (org-get-scheduled-time (point))
+                               -86400))  ;; day in seconds
+      (org-metaleft)))
 
-  (defun ar/org-capture--at-priority-pos-p ()
+  (defun ar/org-capture-schedule-day-later-dwim ()
+    (interactive)
+    (if (ar/org-capture--special-pos-p)
+        (org-schedule (point) (time-add
+                               (org-get-scheduled-time (point))
+                               86400))  ;; day in seconds
+      (org-metaright)))
+
+  (defun ar/org-capture--special-pos-p ()
     "Either at beginning of line or next to TODO [#A]."
     (or (looking-back "^")
         (looking-back "TODO\\s-*\\(\\[#[A-Z]\\]\\s-*\\)*")))
@@ -603,14 +607,14 @@ If VANILLA is non-nil, run the standard `org-capture'."
   (defun ar/org-capture-priority-up-dwim (N)
     "If at special location, increase priority."
     (interactive "p")
-    (if (ar/org-capture--at-priority-pos-p)
+    (if (ar/org-capture--special-pos-p)
         (org-priority 'up)
       (org-self-insert-command N)))
 
   (defun ar/org-capture-priority-down-dwim (N)
     "If at special location, decrease priority."
     (interactive "p")
-    (if (ar/org-capture--at-priority-pos-p)
+    (if (ar/org-capture--special-pos-p)
         (org-priority 'down)
       (org-self-insert-command N)))
 
