@@ -23,6 +23,24 @@ end)
 -- Spectacle Window Manager Keybindings For Hammerspoon
 -- https://github.com/scottwhudson/Lunette
 hs.loadSpoon("Lunette")
+DefaultMapping.leftHalf = {{"cmd", "alt"}, "left"}
+DefaultMapping.rightHalf = {{"cmd", "alt"}, "right"}
+DefaultMapping.topHalf = {{"cmd", "alt"}, "up"}
+DefaultMapping.bottomHalf = {{"cmd", "alt"}, "down"}
+DefaultMapping.topLeft = {{"alt"}, "Left"}
+DefaultMapping.topRight = {{"alt"}, "Right"}
+DefaultMapping.bottomLeft = {{"alt", "shift"}, "Left"}
+DefaultMapping.bottomRight = {{"alt", "shift"}, "Right"}
+DefaultMapping.fullScreen = false
+DefaultMapping.center = false
+DefaultMapping.nextThird = false
+DefaultMapping.prevThird = false
+DefaultMapping.enlarge = false
+DefaultMapping.shrink = false
+DefaultMapping.undo = false
+DefaultMapping.redo = false
+DefaultMapping.nextDisplay = false
+DefaultMapping.prevDisplay = false
 spoon.Lunette:bindHotkeys()
 
 -- Aliases
