@@ -73,12 +73,10 @@ For example:
 \"some-file.el:43:  gimme this text only\"
 => \"  gimme this text only\"
 "
-    (let ((line (if (stringp item)
-                    item
-                  (car x))))
-      (if (string-match ":[0-9]*:\\(.*\\)" line)
-          (insert (match-string 1 line))
-        (insert line))))
+    (insert (replace-regexp-in-string "^[^:]+:[^:]+:" ""
+                                      (if (stringp item)
+                                          item
+                                        (car item)))))
 
   (defun ar/counsel-ag (arg)
     (interactive "P")
