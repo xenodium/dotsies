@@ -85,9 +85,7 @@ Mostly copied from counsel.el, but makes find command results relative to common
               (mapcar (lambda (path)
                         (f-relative path
                                     (ar/counsel-find--common-parent)))
-                      (split-string (buffer-string)
-                                    counsel-async-split-string-re
-                                    t)))))
+                      (split-string (buffer-string) "\n" t)))))
           (setq counsel-grep-last-line nil)
           (when counsel--async-start
             (setq counsel--async-duration
@@ -129,9 +127,7 @@ Mostly copied from counsel.el, but makes find command results relative to common
         (ivy--set-candidates
          (mapcar (lambda (path)
                    (f-relative path (ar/counsel-find--common-parent)))
-                 (split-string (buffer-string)
-                               counsel-async-split-string-re
-                               t))))
+                 (split-string (buffer-string) "\n" t))))
       (let ((ivy--prompt (format "%d++ %s" numlines (ivy-state-prompt ivy-last))))
         (ivy--insert-minibuffer (ivy--format ivy--all-candidates)))
       (setq counsel--async-time (current-time)))))
