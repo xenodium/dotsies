@@ -19,6 +19,7 @@
   (push '(counsel-M-x . "") ivy-initial-inputs-alist)
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
+  (defvar ar/ivy-occur--win-config)
   (defun ar/ivy-occur ()
     "Stop completion and put the current candidates into a new buffer.
 
@@ -32,7 +33,6 @@ There is no limit on the number of *ivy-occur* buffers."
     (if (not (window-minibuffer-p))
         (user-error "No completion session is active")
       ;; ar addition start.
-      (defvar ar/ivy-occur--win-config)
       (setq ar/ivy-occur--win-config
             (current-window-configuration))
       ;; ar addition end.
