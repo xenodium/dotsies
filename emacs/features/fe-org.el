@@ -47,6 +47,10 @@
                "OBSOLETE(o)"
                "CANCELLED(c)")))
 
+  (use-package org-indent
+    :config
+    (org-indent-mode +1))
+
   (ar/csetq org-log-done 'time)
 
   (ar/csetq org-goto-auto-isearch nil)
