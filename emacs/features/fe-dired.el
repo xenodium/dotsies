@@ -36,7 +36,7 @@
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
-              ("^" . ar/file-find-alternate-parent-dir)
+              ("^" . ar/file-find-parent-dir)
               ("RET" . dired-find-file)
               ("P" . peep-dired)
               ("i" . dired-hide-details-mode)
@@ -45,13 +45,13 @@
   :commands (dired-mode
              ar/find-all-dired-current-dir
              ar/dired-mark-all
-             ar/file-find-alternate-parent-dir)
+             ar/file-find-parent-dir)
   :custom (dired-recursive-copies 'always)
   :init
-  (defun ar/file-find-alternate-parent-dir ()
+  (defun ar/file-find-parent-dir ()
     "Open parent dir."
     (interactive)
-    (find-alternate-file ".."))
+    (find-file ".."))
 
   (defun ar/dired-mark-all ()
     (interactive)
