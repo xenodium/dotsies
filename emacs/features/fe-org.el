@@ -37,19 +37,8 @@
     (end-of-line)
     (call-interactively 'org-meta-return))
 
-  (ar/csetq org-todo-keywords
-            '((sequence
-               "TODO(t)"
-               "STARTED(s)"
-               "WAITING(w@/!)"
-               "|"
-               "DONE(d!)"
-               "OBSOLETE(o)"
-               "CANCELLED(c)")))
-
   (use-package org-indent
-    :config
-    (org-indent-mode +1))
+    :hook ((org-mode . org-indent-mode)))
 
   (ar/csetq org-log-done 'time)
 
