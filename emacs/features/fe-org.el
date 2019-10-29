@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 (require 'map)
 
 (use-package org
@@ -20,6 +19,17 @@
                         (?B . "#ff5900")
                         (?C . "#ff9200")
                         (?D . "#747474")))
+  (org-todo-keywords
+   '((sequence
+      "TODO(t)"
+      "STARTED(s)"
+      "WAITING(w@/!)"
+      "|"
+      "DONE(d!)"
+      "OBSOLETE(o)"
+      "CANCELLED(c)")))
+  (org-log-done 'time)
+  (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
@@ -40,9 +50,9 @@
   (use-package org-indent
     :hook ((org-mode . org-indent-mode)))
 
-  (ar/csetq org-log-done 'time)
-
-  (ar/csetq org-goto-auto-isearch nil)
+  (use-package org-goto
+    :custom
+    (org-goto-auto-isearch nil))
 
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
@@ -83,9 +93,6 @@
   ;; Look into font-locking email addresses.
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
   ;; (use-package button-lock :ensure t)
-
-  (ar/csetq org-refile-targets '((org-agenda-files :maxlevel . 1)))
-
 
   (ar/vsetq org-ellipsis "…")
   (ar/vsetq org-fontify-emphasized-text t)
@@ -251,12 +258,13 @@
        (swift . t))))
 
   (use-package org-crypt
-    :config
-    (org-crypt-use-before-save-magic)
-    (ar/csetq org-crypt-disable-auto-save nil)
-    (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
+    :custom
+    (org-crypt-disable-auto-save nil)
+    (org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
-    (ar/csetq org-crypt-key nil)))
+    (org-crypt-key nil)
+    :config
+    (org-crypt-use-before-save-magic)))
 
 ;; Like org-bullets but for priorities.
 (use-package org-fancy-priorities
