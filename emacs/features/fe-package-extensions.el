@@ -32,9 +32,10 @@ VALUE is validated against SYMBOL's custom type.
 
 \(fn [SYM VAL] ...)"
     `(if (boundp ,variable)
-         (customize-set-variable ,variable (validate-value ,value (custom-variable-type ,variable)) ,comment)
-       (user-error "Trying to validate a variable that's not defined yet: `%s'.\nYou need to require the package before validating"
-                   ,variable)))
+         ;; (customize-set-variable ,variable (validate-value ,value (custom-variable-type ,variable)) ,comment)
+         (customize-set-variable ,variable ,value ,comment)
+       ;; (user-error "Trying to validate a variable that's not defined yet: `%s'.\nYou need to require the package before validating" ,variable)
+       ))
 
   (add-to-list 'use-package-keywords :custom-validated)
 
