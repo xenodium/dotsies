@@ -1,13 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 
 (use-package projectile
   :ensure t
   :defer 2
   :ensure-system-package fd
+  :custom
+  (projectile-dynamic-mode-line nil)
   :config
-  (ar/csetq projectile-dynamic-mode-line nil)
   (ar/vsetq projectile-enable-caching t)
   (ar/vsetq projectile-completion-system 'ivy)
   ;; Use `hybrid' since `alien' ignores .projectile file, which is
@@ -76,9 +76,9 @@
 
   :config
   (use-package wdired
-    :config
-    (ar/csetq wdired-create-parent-directories t)
-    (ar/csetq dired-allow-to-change-permission t))
+    :custom
+    (wdired-create-parent-directories t)
+    (dired-allow-to-change-permission t))
 
   ;; For dired-jump.
   (use-package dired-x)
@@ -153,17 +153,18 @@
 
 (use-package openwith
   :ensure t
+  :custom
+  (openwith-associations
+   (cond
+    ((string-equal system-type "darwin")
+     '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
+        "open" (file))
+       ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+        "open" ("-a" "VLC" file))))
+    ((string-equal system-type "gnu/linux")
+     '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+        "xdg-open" (file))))))
   :config
-  (ar/csetq openwith-associations
-            (cond
-             ((string-equal system-type "darwin")
-              '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
-                 "open" (file))
-                ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-                 "open" ("-a" "VLC" file))))
-             ((string-equal system-type "gnu/linux")
-              '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-                 "xdg-open" (file))))))
   (openwith-mode +1))
 
 (use-package tramp
