@@ -9,7 +9,7 @@
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
-  :custom
+  :custom-validated
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
   (org-default-priority ?D) ;; Ensures unset tasks have low priority.
@@ -51,7 +51,7 @@
     :hook ((org-mode . org-indent-mode)))
 
   (use-package org-goto
-    :custom
+    :custom-validated
     (org-goto-auto-isearch nil))
 
   (use-package org-bullets :ensure t
@@ -258,7 +258,7 @@
        (swift . t))))
 
   (use-package org-crypt
-    :custom
+    :custom-validated
     (org-crypt-disable-auto-save nil)
     (org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
@@ -271,7 +271,7 @@
   :ensure t
   :hook
   (org-mode . org-fancy-priorities-mode)
-  :custom
+  :custom-validated
   (org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL")))
 
 (use-package org-agenda
@@ -303,7 +303,7 @@
          ("c" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
-  :custom
+  :custom-validated
   ;; Default to daily view.
   (org-agenda-span 'day)
   ;; Follow mode narrows to task subtree only.

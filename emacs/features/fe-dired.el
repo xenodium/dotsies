@@ -5,7 +5,7 @@
   :ensure t
   :defer 2
   :ensure-system-package fd
-  :custom
+  :custom-validated
   (projectile-dynamic-mode-line nil)
   :config
   (ar/vsetq projectile-enable-caching t)
@@ -46,7 +46,7 @@
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-parent-dir)
-  :custom (dired-recursive-copies 'always)
+  :custom-validated (dired-recursive-copies 'always)
   :init
   (defun ar/file-find-parent-dir ()
     "Open parent dir."
@@ -76,7 +76,7 @@
 
   :config
   (use-package wdired
-    :custom
+    :custom-validated
     (wdired-create-parent-directories t)
     (dired-allow-to-change-permission t))
 
@@ -153,7 +153,7 @@
 
 (use-package openwith
   :ensure t
-  :custom
+  :custom-validated
   (openwith-associations
    (cond
     ((string-equal system-type "darwin")

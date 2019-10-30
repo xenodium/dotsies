@@ -9,7 +9,7 @@
   :ensure t
   :commands (wttrin
              ar/weather)
-  :custom
+  :custom-validated
   (wttrin-default-accept-language '("Accept-Language" . "en-GB"))
   (wttrin-default-cities (list "London"))
   :config

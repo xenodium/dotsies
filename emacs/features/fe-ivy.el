@@ -194,7 +194,7 @@ For example:
 (use-package ivy
   :ensure t
   :defer 0.1
-  :custom
+  :custom-validated
   (ivy-initial-inputs-alist '((org-refile . "^")
                               (org-agenda-refile . "^")
                               (org-capture-refile . "^")
