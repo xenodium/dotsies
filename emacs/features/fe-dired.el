@@ -46,7 +46,9 @@
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-alternate-parent-dir)
-  :custom (dired-recursive-copies 'always)
+  :custom
+  (dired-recursive-copies 'always)
+  (wdired-allow-to-change-permissions t)
   :init
   (defun ar/file-find-alternate-parent-dir ()
     "Open parent dir."
