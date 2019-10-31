@@ -1,13 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 
 (use-package projectile
   :ensure t
   :defer 2
   :ensure-system-package fd
+  :custom-validated
+  (projectile-dynamic-mode-line nil)
   :config
-  (ar/csetq projectile-dynamic-mode-line nil)
   (ar/vsetq projectile-enable-caching t)
   (ar/vsetq projectile-completion-system 'ivy)
   ;; Use `hybrid' since `alien' ignores .projectile file, which is
@@ -36,7 +36,7 @@
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
-              ("^" . ar/file-find-alternate-parent-dir)
+              ("^" . ar/file-find-parent-dir)
               ("RET" . dired-find-file)
               ("P" . peep-dired)
               ("i" . dired-hide-details-mode)
@@ -46,14 +46,14 @@
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-alternate-parent-dir)
-  :custom
+  :custom-validated
   (dired-recursive-copies 'always)
   (wdired-allow-to-change-permissions t)
   :init
-  (defun ar/file-find-alternate-parent-dir ()
+  (defun ar/file-find-parent-dir ()
     "Open parent dir."
     (interactive)
-    (find-alternate-file ".."))
+    (find-file ".."))
 
   (defun ar/dired-mark-all ()
     (interactive)
@@ -78,9 +78,9 @@
 
   :config
   (use-package wdired
-    :config
-    (ar/csetq wdired-create-parent-directories t)
-    (ar/csetq dired-allow-to-change-permission t))
+    :custom-validated
+    (wdired-create-parent-directories t)
+    (dired-allow-to-change-permission t))
 
   ;; For dired-jump.
   (use-package dired-x)
@@ -155,17 +155,18 @@
 
 (use-package openwith
   :ensure t
+  :custom-validated
+  (openwith-associations
+   (cond
+    ((string-equal system-type "darwin")
+     '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
+        "open" (file))
+       ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+        "open" ("-a" "VLC" file))))
+    ((string-equal system-type "gnu/linux")
+     '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+        "xdg-open" (file))))))
   :config
-  (ar/csetq openwith-associations
-            (cond
-             ((string-equal system-type "darwin")
-              '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
-                 "open" (file))
-                ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-                 "open" ("-a" "VLC" file))))
-             ((string-equal system-type "gnu/linux")
-              '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-                 "xdg-open" (file))))))
   (openwith-mode +1))
 
 (use-package tramp

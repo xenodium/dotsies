@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 (require 'map)
 
 (use-package org
@@ -10,7 +9,7 @@
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("<" . ar/org-insert-char-dwim))
-  :custom
+  :custom-validated
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
   (org-default-priority ?D) ;; Ensures unset tasks have low priority.
@@ -20,6 +19,17 @@
                         (?B . "#ff5900")
                         (?C . "#ff9200")
                         (?D . "#747474")))
+  (org-todo-keywords
+   '((sequence
+      "TODO(t)"
+      "STARTED(s)"
+      "WAITING(w@/!)"
+      "|"
+      "DONE(d!)"
+      "OBSOLETE(o)"
+      "CANCELLED(c)")))
+  (org-log-done 'time)
+  (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
@@ -37,23 +47,12 @@
     (end-of-line)
     (call-interactively 'org-meta-return))
 
-  (ar/csetq org-todo-keywords
-            '((sequence
-               "TODO(t)"
-               "STARTED(s)"
-               "WAITING(w@/!)"
-               "|"
-               "DONE(d!)"
-               "OBSOLETE(o)"
-               "CANCELLED(c)")))
-
   (use-package org-indent
-    :config
-    (org-indent-mode +1))
+    :hook ((org-mode . org-indent-mode)))
 
-  (ar/csetq org-log-done 'time)
-
-  (ar/csetq org-goto-auto-isearch nil)
+  (use-package org-goto
+    :custom-validated
+    (org-goto-auto-isearch nil))
 
   (use-package org-bullets :ensure t
     :hook (org-mode . org-bullets-mode)
@@ -94,9 +93,6 @@
   ;; Look into font-locking email addresses.
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
   ;; (use-package button-lock :ensure t)
-
-  (ar/csetq org-refile-targets '((org-agenda-files :maxlevel . 1)))
-
 
   (ar/vsetq org-ellipsis "…")
   (ar/vsetq org-fontify-emphasized-text t)
@@ -262,19 +258,20 @@
        (swift . t))))
 
   (use-package org-crypt
-    :config
-    (org-crypt-use-before-save-magic)
-    (ar/csetq org-crypt-disable-auto-save nil)
-    (ar/csetq org-tags-exclude-from-inheritance (quote ("crypt")))
+    :custom-validated
+    (org-crypt-disable-auto-save nil)
+    (org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
-    (ar/csetq org-crypt-key nil)))
+    (org-crypt-key nil)
+    :config
+    (org-crypt-use-before-save-magic)))
 
 ;; Like org-bullets but for priorities.
 (use-package org-fancy-priorities
   :ensure t
   :hook
   (org-mode . org-fancy-priorities-mode)
-  :custom
+  :custom-validated
   (org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL")))
 
 (use-package org-agenda
@@ -306,7 +303,7 @@
          ("c" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
-  :custom
+  :custom-validated
   ;; Default to daily view.
   (org-agenda-span 'day)
   ;; Follow mode narrows to task subtree only.
