@@ -125,6 +125,9 @@
   (use-package org-cliplink
     :ensure t)
 
+  (use-package ox-reveal
+    :ensure t)
+
   ;; Work in progress.
   (use-package webfeeder
     :ensure t
