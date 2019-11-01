@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package files
-  :custom-validated
+  :custom
   ;; Always display opened file using canonical location (not symlink).
   (find-file-visit-truename t)
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
@@ -28,7 +28,7 @@
     (find-file (current-kill 0))))
 
 (use-package autorevert
-  :custom-validated
+  :custom
   ;; Auto refresh dired.
   ;; https://mixandgo.com/learn/how-ive-convinced-emacs-to-dance-with-ruby
   (global-auto-revert-non-file-buffers t)
@@ -42,7 +42,7 @@
 (setq create-lockfiles nil)
 
 (use-package recentf
-  :custom-validated
+  :custom
   (recentf-exclude '("/auto-install/"
                      ".recentf"
                      "/repos/"

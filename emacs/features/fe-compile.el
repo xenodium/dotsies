@@ -4,7 +4,8 @@
 (use-package compile
   :hook ((compilation-mode . goto-address-mode))
   :commands compile
-  :custom-validated (compilation-skip-threshold 2)
+  :custom
+  (compilation-skip-threshold 2)
   :bind (:map
          compilation-mode-map
          ("p" . previous-error-no-select)

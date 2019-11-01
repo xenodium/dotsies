@@ -432,7 +432,7 @@ line instead."
   :ensure t)
 
 (use-package simple
-  :custom-validated
+  :custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
   (save-interprogram-paste-before-kill t "Increase mark ring size.")
