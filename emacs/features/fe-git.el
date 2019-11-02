@@ -7,10 +7,10 @@
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
+  :custom
+  (magit-diff-refine-hunk 'all)
+  (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
   :config
-
-  (ar/csetq magit-status-margin
-            '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
 
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
