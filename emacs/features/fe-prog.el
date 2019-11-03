@@ -17,6 +17,10 @@
   (require 'flyspell)
   (require 'flycheck)
 
+  (use-package insert-shebang
+    :ensure t
+    :commands insert-shebang)
+
   ;; Highlight hex strings in respective color.
   (use-package rainbow-mode
     :ensure t))
