@@ -438,7 +438,21 @@ line instead."
   (save-interprogram-paste-before-kill t "Increase mark ring size.")
   (kill-do-not-save-duplicates t "Don't bother saving things to the kill-ring twice, remove duplicates.")
   (idle-update-delay 2 "Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.")
-  (global-mark-ring-max 500 "Increase mark ring size."))
+  (global-mark-ring-max 500 "Increase mark ring size.")
+  :config
+  (defun ar/adviced-read-shell-command (orig-fun &rest r)
+    "Advice around `read-shell-command' to replace $f with buffer file name."
+    (let ((command (apply orig-fun r)))
+      (if (string-match-p "\\$f" command)
+          (replace-regexp-in-string "\\$f"
+                                    (or (buffer-file-name)
+                                        (user-error "No file file visited to replace $f"))
+                                    command)
+        command)))
+
+  (advice-add 'read-shell-command
+              :around
+              'ar/adviced-read-shell-command))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
