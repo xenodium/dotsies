@@ -125,6 +125,9 @@
   (use-package org-cliplink
     :ensure t)
 
+  (use-package ox-epub
+    :ensure t)
+
   (use-package ox-reveal
     :ensure t)
 
