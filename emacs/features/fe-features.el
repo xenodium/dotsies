@@ -18,7 +18,6 @@
 (ar/init--idle-load "~/.emacs.d/features/fe-company")
 (ar/init--idle-load "~/.emacs.d/features/fe-compile")
 (ar/init--idle-load "~/.emacs.d/features/fe-crux")
-(ar/init--idle-load "~/.emacs.d/features/fe-dev")
 (ar/init--idle-load "~/.emacs.d/features/fe-dired")
 (ar/init--idle-load "~/.emacs.d/features/fe-ediff")
 (ar/init--idle-load "~/.emacs.d/features/fe-elfeed")
