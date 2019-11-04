@@ -64,15 +64,16 @@
 ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
   :defer 2
+  :custom
+  (savehist-file "~/.emacs.d/savehist")
+  (savehist-save-minibuffer-history t)
+  (history-length 20000)
+  (savehist-additional-variables
+   '(kill-ring
+     search-ring
+     regexp-search-ring
+     log-edit-comment-ring))
   :config
-  (ar/vsetq savehist-file "~/.emacs.d/savehist")
-  (ar/vsetq savehist-save-minibuffer-history t)
-  (ar/vsetq history-length 1000)
-  (ar/csetq savehist-additional-variables
-            '(kill-ring
-              search-ring
-              regexp-search-ring
-              log-edit-comment-ring))
   (savehist-mode +1))
 
 (use-package whitespace
