@@ -72,6 +72,7 @@
    '(kill-ring
      search-ring
      regexp-search-ring
+     shell-command-history
      log-edit-comment-ring))
   :config
   (savehist-mode +1))
