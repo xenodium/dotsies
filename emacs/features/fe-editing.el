@@ -72,6 +72,7 @@
    '(kill-ring
      search-ring
      regexp-search-ring
+     last-kbd-macro
      shell-command-history
      log-edit-comment-ring))
   :config
