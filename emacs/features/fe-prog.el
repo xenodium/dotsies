@@ -19,6 +19,10 @@
   (require 'flyspell)
   (require 'flycheck)
 
+  (use-package reformatter
+    :ensure t
+    :config)
+
   (use-package insert-shebang
     :ensure t
     :commands insert-shebang)

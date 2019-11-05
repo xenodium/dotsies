@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package swift-mode :ensure t
   :mode ("\\.swift\\'" . swift-mode)
+  :after reformatter
   :hook (swift-mode . ar/swift-mode-hook)
   :init
   (defun ar/swift-mode-hook ()
@@ -16,27 +17,7 @@
                                  lint-config-file)
                                 ".swiftlint.yml"))))
       (message "No buffer filename in swift mode."))
-
-    (setq-local company-backends '((company-swimports)))
-
-    (add-hook 'after-save-hook 'ar/after-swift-save nil t))
-
-  (defun ar/after-swift-save ()
-    (let ((swift-format-config-dpath (locate-dominating-file (buffer-file-name)
-                                                             ".swift-format.json")))
-      (if swift-format-config-dpath
-          (call-process "swift-format" nil "*swift-format*" t
-                        "--configuration" (expand-file-name (concat (file-name-as-directory
-                                                                     swift-format-config-dpath)
-                                                                    ".swift-format.json"))
-                        "-i"
-                        "-m" "format"
-                        buffer-file-name)
-        (message "No .swift-format.json found")))
-    ;; (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
-    ;;               "--config" flycheck-swiftlint-config-file
-    ;;               "--path" buffer-file-name)
-    )
+    (setq-local company-backends '((company-swimports))))
   :config
   (require 'flycheck)
   (ar/vsetq swift-mode:basic-offset 2)
@@ -52,6 +33,22 @@
    :mode 'swift-mode
    :regexp "[#@_a-zA-Z][_a-zA-Z0-9]*"
    :doc-spec '(("(swift)Index" nil "['`‘]" "['’]")))
+  ;; (call-process "swiftlint" nil "*swiftlint*" t "autocorrect"
+  ;;               "--config" flycheck-swiftlint-config-file
+  ;;               "--path" buffer-file-name)
+  (when (require 'reformatter nil 'noerror)
+    (reformatter-define swift-format
+      :program "swift-format"
+      :args (let ((buffer (current-buffer))
+                  (config-file (locate-dominating-file (buffer-file-name)
+                                                       ".swift-format.json"))
+                  (temp-file-path (make-temp-file "swift-format-")))
+              (with-temp-file temp-file-path
+                (insert-file-contents (buffer-file-name buffer)))
+              (if config-file
+                  (list "--configuration" config-file "-m" "format" temp-file-path))
+              (list "-m" "format" temp-file-path)))
+    (add-hook 'swift-mode-hook 'swift-format-on-save-mode))
 
   ;; (use-package lsp-sourcekit
   ;;   :config
