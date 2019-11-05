@@ -434,6 +434,8 @@ line instead."
   :ensure t)
 
 (use-package simple
+  :bind (("M-u" . upcase-dwim)
+         ("M-l" . downcase-dwim))
   :custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
