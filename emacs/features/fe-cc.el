@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package cc-mode
   :mode ("\\.m\\'" . objc-mode)
+  :after reformatter
   :hook (objc-mode . ar/objc-mode-hook-function)
   :bind (:map objc-mode-map
               ("M-]" . ar/smartparens-wrap-square-bracket))
@@ -23,10 +24,11 @@
       (setq-local company-backends '((company-files
                                       company-keywords)))
 
-      ;; Format files for me.
-      (add-hook 'before-save-hook #'clang-format-buffer t t)
+      (when (require 'reformatter nil 'noerror)
+        (clang-format-on-save-mode +1))
 
       (setq-local objc-mode-hook-did-run t)))
+
   (defun ar/smartparens-wrap-square-bracket (arg)
     "[] equivalent of `paredit-wrap-round'."
     (interactive "P")
@@ -38,9 +40,11 @@
         )
       (sp-wrap-with-pair "[")))
   :config
-  (use-package clang-format
-    :ensure t)
-  (use-package company))
+  (use-package company)
+
+  (when (require 'reformatter nil 'noerror)
+    (reformatter-define clang-format
+      :program "clang-format")))
 
 ;; Recognize .h headers can also be Objective-C (enable objc-mode for them).
 (use-package dummy-h-mode
