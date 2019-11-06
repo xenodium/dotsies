@@ -44,7 +44,7 @@
                                                        ".swift-format.json"))
                   (temp-file-path (make-temp-file "swift-format-")))
               (with-temp-file temp-file-path
-                (insert-file-contents (buffer-file-name buffer)))
+                (insert-buffer buffer))
               (if config-file
                   (list "--configuration" config-file "-m" "format" temp-file-path))
               (list "-m" "format" temp-file-path)))
