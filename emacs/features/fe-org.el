@@ -75,10 +75,11 @@
                 ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
   (defun ar/org-insert-char-dwim ()
+    "If inserting < at BOL, invoke `company-org-block' otherwise insert."
     (interactive)
     ;; Display company-org-block if < inserted at BOL.
-    (let ((complete-p (and (looking-back "^")
-                           company-mode)))
+    (let ((complete-p (and company-mode
+                           (looking-back "^"))))
       (self-insert-command 1)
       (when complete-p
         (call-interactively 'company-org-block))))
