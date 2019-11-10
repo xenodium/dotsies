@@ -3,6 +3,7 @@
 (require 'map)
 
 (use-package org
+  :after company
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
@@ -40,12 +41,16 @@
     (org-display-inline-images)
     (ar/vsetq show-trailing-whitespace t)
     (set-fill-column 1000)
-    (use-package ar-org))
+    (use-package ar-org)
+    (setq-local company-backends '(company-org-block))
+    (company-mode +1))
 
   (defun ar/org-meta-return (&optional arg)
     (interactive "P")
     (end-of-line)
     (call-interactively 'org-meta-return))
+
+  (use-package company-org-block)
 
   (use-package org-indent
     :hook ((org-mode . org-indent-mode)))
@@ -71,10 +76,12 @@
 
   (defun ar/org-insert-char-dwim ()
     (interactive)
-    ;; Display org-insert-structure-template if < inserted at BOL.
-    (if (looking-back "^")
-        (call-interactively #'org-insert-structure-template)
-      (self-insert-command 1)))
+    ;; Display company-org-block if < inserted at BOL.
+    (let ((complete-p (and (looking-back "^")
+                           company-mode)))
+      (self-insert-command 1)
+      (when complete-p
+        (call-interactively 'company-org-block))))
 
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
