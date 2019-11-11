@@ -230,6 +230,11 @@
     ;; We explicitly want org babel confirm evaluations.
     (ar/vsetq org-confirm-babel-evaluate t)
 
+    ;; Make python source blocks export and output results by default.
+    (ar/vsetq org-babel-default-header-args:python
+              '((:exports  . "both")
+                (:results  . "output")))
+
     (use-package ob-objc)
     (use-package ob-swift
       :ensure t)

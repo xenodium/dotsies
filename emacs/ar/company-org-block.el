@@ -29,11 +29,7 @@
   "Replace INSERTION with actual source block."
   (delete-region (point) (- (point) (1+ ;; Include "<" in length.
                                      (length insertion))))
-  (insert (format "#+begin_src %s :results %s\n"
-                  insertion
-                  (if (string-equal insertion "python")
-                      "output"
-                    "value")))
+  (insert (format "#+begin_src %s\n" insertion))
   (insert "  ")
   ;; Saving restores point to location inside code block.
   (save-excursion
