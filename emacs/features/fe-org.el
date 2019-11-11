@@ -319,7 +319,8 @@
          ("S-<left>" . ar/org-agenda-todo-previous-keyword)
          ("S-<right>" . ar/org-agenda-todo-next-keyword)
          ("1"  . ar/org-agenda-item-to-top)
-         ("c" . ar/org-agenda-capture))
+         ("c" . ar/org-agenda-capture)
+         ("C" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
