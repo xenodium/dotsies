@@ -7,6 +7,10 @@
 
 ;;; Code:
 
+(require 'map)
+(require 'org)
+(require 'seq)
+
 (defun company-org-block (command &optional arg &rest ignored)
   "Complete org babel languages into source blocks."
   (interactive (list 'interactive))
@@ -21,25 +25,45 @@
   "Return a list of org babel languages matching PREFIX."
   (seq-filter (lambda (language)
                 (string-prefix-p prefix language))
-              (mapcar (lambda (mode)
-                        (format "%s" (car mode)))
-                      org-babel-load-languages)))
+              ;; Flatten `org-babel-load-languages' and
+              ;; `org-structure-template-alist', join, and sort.
+              (seq-sort
+               #'string-lessp
+               (append
+                (mapcar #'prin1-to-string
+                        (map-keys org-babel-load-languages))
+                (map-values org-structure-template-alist)))))
+
+(defun company-org-block--template-p (template)
+  (seq-contains (map-values org-structure-template-alist)
+                template))
 
 (defun company-org-block--expand (insertion)
   "Replace INSERTION with actual source block."
   (delete-region (point) (- (point) (1+ ;; Include "<" in length.
                                      (length insertion))))
-  (insert (format "#+begin_src %s\n" insertion))
+  (if (company-org-block--template-p insertion)
+      (company-org-block--wrap-point insertion
+                                     ;; May be multiple words.
+                                     ;; Take the first one.
+                                     (nth 0 (split-string insertion)))
+    (company-org-block--wrap-point (format "src %s" insertion)
+                                   "src")))
+
+(defun company-org-block--wrap-point (begin end)
+  "Wrap point with block using BEGIN and END.  For example:
+#+begin_BEGIN
+  |
+#+end_END"
+  (insert (format "#+begin_%s\n" begin))
   (insert "  ")
-  ;; Saving restores point to location inside code block.
+  ;; Saving excursion restores point to location inside code block.
   (save-excursion
-    (insert "\n#+end_src")))
+    (insert (format "\n#+end_%s" end))))
 
 (defun company-org-block--grap-symbol-cons ()
   "Return cons with symbol and t whenever prefix of < is found.
-      For example:
-          \"<e\" -> (\"e\" . t)
-      "
+For example: \"<e\" -> (\"e\" . t)"
   (when (looking-back "<\\([^ ]*\\)" (line-beginning-position))
     (if (match-string-no-properties 1)
         (cons (match-string-no-properties 1) t)
