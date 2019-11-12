@@ -3,7 +3,6 @@
 (require 'map)
 
 (use-package org
-  :after company
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
@@ -206,20 +205,24 @@
                ar/org-blog-insert-resized-image))
 
   (use-package ar-ox-html
-    :commands (ar/org-split-export-async
+    :commands (ar/org-split-export-headline
+               ar/org-split-export-async
+               ar/ox-html-export-all-async
+               ar/ox-html-export-all
                ar/org-export-current-headline-async)
     :bind (:map org-mode-map
                 ([f6] . ar/ox-html-export-all))
     :config
     (use-package ar-org)
+
     (use-package ox-html)
-    ;; Required by code block syntax highlighting.
+
+    ;; For code block syntax highlighting.
     (use-package htmlize
       :ensure t)
+    (use-package ar-org-split-export)
 
-    (ar/ox-html-setup)
-
-    (use-package ar-org-split-export))
+    (ar/ox-html-setup))
 
   (use-package ob
     :bind (:map org-mode-map
@@ -230,10 +233,12 @@
     ;; We explicitly want org babel confirm evaluations.
     (ar/vsetq org-confirm-babel-evaluate t)
 
-    ;; Make python source blocks export and output results by default.
-    (ar/vsetq org-babel-default-header-args:python
-              '((:exports  . "both")
-                (:results  . "output")))
+    (use-package ob-python
+      :custom
+      ;; Make python source blocks export and output results by default.
+      (org-babel-default-header-args:python
+       '((:exports  . "both")
+         (:results  . "output"))))
 
     (use-package ob-objc)
     (use-package ob-swift
