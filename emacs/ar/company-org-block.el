@@ -11,12 +11,17 @@
 (require 'org)
 (require 'seq)
 
+(defvar company-org-block-bol-p t "If t, detect completion when at
+begining of line, otherwise detect completion anywhere.")
+
+(defvar company-org--regexp "<\\([^ ]*\\)")
+
 (defun company-org-block (command &optional arg &rest ignored)
   "Complete org babel languages into source blocks."
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-org-block))
-    (prefix (company-org-block--grap-symbol-cons))
+    (prefix (company-org-block--grab-symbol-cons))
     (candidates (company-org-block--candidates arg))
     (post-completion
      (company-org-block--expand arg))))
@@ -61,12 +66,13 @@
   (save-excursion
     (insert (format "\n#+end_%s" end))))
 
-(defun company-org-block--grap-symbol-cons ()
+(defun company-org-block--grab-symbol-cons ()
   "Return cons with symbol and t whenever prefix of < is found.
 For example: \"<e\" -> (\"e\" . t)"
-  (when (looking-back "<\\([^ ]*\\)" (line-beginning-position))
-    (if (match-string-no-properties 1)
-        (cons (match-string-no-properties 1) t)
-      nil)))
+  (when (looking-back (if company-org-block-bol-p
+                          (concat "^" company-org--regexp)
+                        company-org--regexp)
+                      (line-beginning-position))
+    (cons (match-string-no-properties 1) t)))
 
 (provide 'company-org-block)

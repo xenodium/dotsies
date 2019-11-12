@@ -7,8 +7,7 @@
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
-              ("C-c C-l" . ar/org-insert-link-dwim)
-              ("<" . ar/org-insert-char-dwim))
+              ("C-c C-l" . ar/org-insert-link-dwim))
   :custom
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
@@ -72,16 +71,6 @@
                 ("DONE" . (:foreground "green" :weight bold))
                 ("OBSOLETE" . (:foreground "blue" :weight bold))
                 ("CANCELLED" . (:foreground "gray" :weight bold)))))
-
-  (defun ar/org-insert-char-dwim ()
-    "If inserting < at BOL, invoke `company-org-block' otherwise insert."
-    (interactive)
-    ;; Display company-org-block if < inserted at BOL.
-    (let ((complete-p (and company-mode
-                           (looking-back "^"))))
-      (self-insert-command 1)
-      (when complete-p
-        (call-interactively 'company-org-block))))
 
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
