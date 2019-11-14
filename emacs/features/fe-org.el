@@ -223,6 +223,8 @@
     (ar/vsetq org-confirm-babel-evaluate t)
 
     (use-package ob-objc)
+    (use-package ob-kotlin
+      :ensure t)
     (use-package ob-swift
       :ensure t)
 
