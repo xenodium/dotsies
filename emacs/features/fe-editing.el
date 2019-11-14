@@ -357,6 +357,8 @@ With PREFIX, add an outer pair around existing pair."
               ("^" . mc/edit-beginnings-of-lines)
               ("$" . mc/edit-ends-of-lines))
   :config
+  (defalias 'mc/mark-all-lines-in-region 'mc/edit-lines)
+
   (defun ar/set-mc/insert-numbers-starting-value ()
     "Set starting value for inserting numbers using multiple cursors."
     (interactive)

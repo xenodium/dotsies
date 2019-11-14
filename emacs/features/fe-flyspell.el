@@ -45,7 +45,7 @@ be global."
 
 (use-package mw-thesaurus
   :ensure t
-  :commands mw-thesaurus--lookup-at-point)
+  :commands mw-thesaurus-lookup-at-point)
 
 (use-package auto-dictionary
   :commands adict-change-dictionary

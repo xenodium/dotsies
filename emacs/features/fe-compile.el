@@ -12,6 +12,7 @@
          ("n" . next-error-no-select)
          ("{" . compilation-previous-file)
          ("}" . compilation-next-file)
+         ("q" . kill-buffer-and-window)
          :map
          prog-mode-map
          ("C-c C-c" . ar/compile))

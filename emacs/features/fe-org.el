@@ -7,8 +7,7 @@
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
-              ("C-c C-l" . ar/org-insert-link-dwim)
-              ("<" . ar/org-insert-char-dwim))
+              ("C-c C-l" . ar/org-insert-link-dwim))
   :custom
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
@@ -40,12 +39,16 @@
     (org-display-inline-images)
     (ar/vsetq show-trailing-whitespace t)
     (set-fill-column 1000)
-    (use-package ar-org))
+    (use-package ar-org)
+    (setq-local company-backends '(company-org-block))
+    (company-mode +1))
 
   (defun ar/org-meta-return (&optional arg)
     (interactive "P")
     (end-of-line)
     (call-interactively 'org-meta-return))
+
+  (use-package company-org-block)
 
   (use-package org-indent
     :hook ((org-mode . org-indent-mode)))
@@ -68,13 +71,6 @@
                 ("DONE" . (:foreground "green" :weight bold))
                 ("OBSOLETE" . (:foreground "blue" :weight bold))
                 ("CANCELLED" . (:foreground "gray" :weight bold)))))
-
-  (defun ar/org-insert-char-dwim ()
-    (interactive)
-    ;; Display org-insert-structure-template if < inserted at BOL.
-    (if (looking-back "^")
-        (call-interactively #'org-insert-structure-template)
-      (self-insert-command 1)))
 
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
@@ -198,20 +194,24 @@
                ar/org-blog-insert-resized-image))
 
   (use-package ar-ox-html
-    :commands (ar/org-split-export-async
+    :commands (ar/org-split-export-headline
+               ar/org-split-export-async
+               ar/ox-html-export-all-async
+               ar/ox-html-export-all
                ar/org-export-current-headline-async)
     :bind (:map org-mode-map
                 ([f6] . ar/ox-html-export-all))
     :config
     (use-package ar-org)
+
     (use-package ox-html)
-    ;; Required by code block syntax highlighting.
+
+    ;; For code block syntax highlighting.
     (use-package htmlize
       :ensure t)
+    (use-package ar-org-split-export)
 
-    (ar/ox-html-setup)
-
-    (use-package ar-org-split-export))
+    (ar/ox-html-setup))
 
   (use-package ob
     :bind (:map org-mode-map
@@ -221,6 +221,13 @@
 
     ;; We explicitly want org babel confirm evaluations.
     (ar/vsetq org-confirm-babel-evaluate t)
+
+    (use-package ob-python
+      :custom
+      ;; Make python source blocks export and output results by default.
+      (org-babel-default-header-args:python
+       '((:exports  . "both")
+         (:results  . "output"))))
 
     (use-package ob-objc)
     (use-package ob-kotlin
@@ -308,7 +315,8 @@
          ("S-<left>" . ar/org-agenda-todo-previous-keyword)
          ("S-<right>" . ar/org-agenda-todo-next-keyword)
          ("1"  . ar/org-agenda-item-to-top)
-         ("c" . ar/org-agenda-capture))
+         ("c" . ar/org-agenda-capture)
+         ("C" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
   :custom
