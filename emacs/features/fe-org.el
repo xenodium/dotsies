@@ -7,7 +7,9 @@
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
-              ("C-c C-l" . ar/org-insert-link-dwim))
+              ("C-c C-l" . ar/org-insert-link-dwim)
+              ("M-[" . org-metaleft)
+              ("M-]" . org-metaright))
   :custom
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
