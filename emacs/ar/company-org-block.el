@@ -21,7 +21,8 @@ begining of line, otherwise detect completion anywhere.")
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-org-block))
-    (prefix (company-org-block--grab-symbol-cons))
+    (prefix (when (derived-mode-p 'org-mode)
+              (company-org-block--grab-symbol-cons)))
     (candidates (company-org-block--candidates arg))
     (post-completion
      (company-org-block--expand arg))))
