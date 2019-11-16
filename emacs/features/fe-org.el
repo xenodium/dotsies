@@ -9,6 +9,7 @@
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim))
   :custom
+  (org-fontify-whole-heading-line t)
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
   (org-default-priority ?D) ;; Ensures unset tasks have low priority.
@@ -34,6 +35,17 @@
          (org-mode . yas-minor-mode)
          (org-mode . smartparens-mode))
   :config
+  (defun ar/org-yank (orig-fun &rest r)
+    "Advice `ar/org-yank' to align tables (ORIG-FUN and R)."
+    (apply orig-fun r)
+    (when (and (org-at-table-p)
+               org-table-may-need-update)
+      (org-table-align)))
+
+  (advice-add #'org-yank
+              :around
+              #'ar/org-yank)
+
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
     (org-display-inline-images)
