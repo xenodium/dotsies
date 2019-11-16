@@ -7,7 +7,9 @@
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
-              ("C-c C-l" . ar/org-insert-link-dwim))
+              ("C-c C-l" . ar/org-insert-link-dwim)
+              ("M-[" . org-metaleft)
+              ("M-]" . org-metaright))
   :custom
   (org-fontify-whole-heading-line t)
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
@@ -242,6 +244,8 @@
          (:results  . "output"))))
 
     (use-package ob-objc)
+    (use-package ob-kotlin
+      :ensure t)
     (use-package ob-swift
       :ensure t)
 

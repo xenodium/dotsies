@@ -37,6 +37,7 @@
 (ar/init--idle-load "~/.emacs.d/features/fe-ios")
 (ar/init--idle-load "~/.emacs.d/features/fe-ivy")
 (ar/init--idle-load "~/.emacs.d/features/fe-ledger")
+(ar/init--idle-load "~/.emacs.d/features/fe-markdown")
 (ar/init--idle-load "~/.emacs.d/features/fe-modal")
 (ar/init--idle-load "~/.emacs.d/features/fe-navigation")
 (ar/init--idle-load "~/.emacs.d/features/fe-org")
