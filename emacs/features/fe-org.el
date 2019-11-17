@@ -37,8 +37,8 @@
          (org-mode . yas-minor-mode)
          (org-mode . smartparens-mode))
   :config
-  (defun ar/org-yank (orig-fun &rest r)
-    "Advice `ar/org-yank' to align tables (ORIG-FUN and R)."
+  (defun adviced:org-yank (orig-fun &rest r)
+    "Advice `adviced:org-yank' to align tables (ORIG-FUN and R)."
     (apply orig-fun r)
     (when (and (org-at-table-p)
                org-table-may-need-update)
@@ -46,7 +46,7 @@
 
   (advice-add #'org-yank
               :around
-              #'ar/org-yank)
+              #'adviced:org-yank)
 
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)

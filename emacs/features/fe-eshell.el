@@ -56,7 +56,7 @@
 
     (require 'em-hist)
 
-    (defun ar/eshell-add-input-to-history (orig-fun &rest r)
+    (defun adviced:eshell-add-input-to-history (orig-fun &rest r)
       "Cd to relative paths aren't that useful in history. Change to absolute paths."
       (let* ((input (nth 0 r))
              (args (progn
@@ -71,9 +71,9 @@
                                                                     (nth 1 args))))))
           (apply orig-fun r))))
 
-    (advice-add 'eshell-add-input-to-history
+    (advice-add #'eshell-add-input-to-history
                 :around
-                'ar/eshell-add-input-to-history)
+                #'adviced:eshell-add-input-to-history)
 
     (require 'em-glob)
 

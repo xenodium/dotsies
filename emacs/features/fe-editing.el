@@ -119,7 +119,7 @@
   (:map
    smartparens-strict-mode-map
    ;; I prefer keeping C-w to DWIM kill, provided by
-   ;; `ar/kill-region-advice-fun'. Removing remap.
+   ;; `adviced:kill-region-advice'. Removing remap.
    ([remap kill-region] . kill-region)
    :map emacs-lisp-mode-map
    ("C-<right>" . sp-forward-slurp-sexp)
@@ -301,7 +301,7 @@ With PREFIX, add an outer pair around existing pair."
                  :when '(ar/sp-prog-filter-angle-brackets)
                  :skip-match 'ar/sp-prog-skip-match-angle-bracket)
 
-  (defun ar/kill-region-advice-fun (orig-fun &rest r)
+  (defun adviced:kill-region-advice (orig-fun &rest r)
     "Advice function around `kill-region' (ORIG-FUN and R)."
     (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
             mark-active)
@@ -318,9 +318,9 @@ With PREFIX, add an outer pair around existing pair."
                            (- (line-end-position)
                               (line-beginning-position)))))))
 
-  (advice-add 'kill-region
+  (advice-add #'kill-region
               :around
-              'ar/kill-region-advice-fun))
+              #'adviced:kill-region-advice))
 
 (use-package region-bindings-mode
   :ensure t
@@ -447,7 +447,7 @@ line instead."
   (idle-update-delay 2 "Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.")
   (global-mark-ring-max 500 "Increase mark ring size.")
   :config
-  (defun ar/adviced-read-shell-command (orig-fun &rest r)
+  (defun adviced:read-shell-command (orig-fun &rest r)
     "Advice around `read-shell-command' to replace $f with buffer file name."
     (let ((command (apply orig-fun r)))
       (if (string-match-p "\\$f" command)
@@ -457,9 +457,9 @@ line instead."
                                     command)
         command)))
 
-  (advice-add 'read-shell-command
+  (advice-add #'read-shell-command
               :around
-              'ar/adviced-read-shell-command))
+              #'adviced:read-shell-command))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode

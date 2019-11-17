@@ -125,7 +125,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (ar/csetq dumb-jump-force-searcher 'ag)
   (ar/csetq dumb-jump-max-find-time 5)
 
-  (defun ar/dumb-jump-run-command-advice (run-command-fun &rest r)
+  (defun adviced:dumb-jump-run-command (run-command-fun &rest r)
     "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
     (let ((proj (nth 1 r))
           (exclude-args (nth 4 r)))
@@ -141,9 +141,9 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; +sub1
   ;; +sub2
 
-  (advice-add 'dumb-jump-run-command
+  (advice-add #'dumb-jump-run-command
               :around
-              'ar/dumb-jump-run-command-advice)
+              #'adviced:dumb-jump-run-command)
 
   :bind ("M-." . smart-jump-go))
 

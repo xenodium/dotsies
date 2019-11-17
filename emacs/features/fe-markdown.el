@@ -17,7 +17,7 @@
     "Called when entering `markdown-mode'."
     (set-fill-column 80))
 
-  (defun ar/markdown-demote-advice (orig-fun &rest r)
+  (defun adviced:markdown-demote (orig-fun &rest r)
     ;; If not on anything, demote as header.
     (if (not (or (thing-at-point-looking-at markdown-regex-header-atx)
                  (thing-at-point-looking-at markdown-regex-header-setext)
@@ -29,6 +29,6 @@
         (markdown-insert-header-atx-1)
       (apply orig-fun r)))
 
-  (advice-add 'markdown-demote
+  (advice-add #'markdown-demote
               :around
-              'ar/markdown-demote-advice))
+              #'adviced:markdown-demote))

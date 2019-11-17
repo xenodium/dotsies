@@ -137,7 +137,7 @@
           (apply orig-fun (list arg)))))
     (eshell-flush)))
 
-(advice-add 'eshell/cat :around #'ar/iimage-mode-refresh--eshell/cat)
+(advice-add #'eshell/cat :around #'ar/iimage-mode-refresh--eshell/cat)
 
 (provide 'ar-eshell-config)
 
