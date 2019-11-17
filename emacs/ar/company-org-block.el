@@ -62,7 +62,7 @@ begining of line, otherwise detect completion anywhere.")
   |
 #+end_END"
   (insert (format "#+begin_%s\n" begin))
-  (insert "  ")
+  (insert (make-string org-edit-src-content-indentation ?\s))
   ;; Saving excursion restores point to location inside code block.
   (save-excursion
     (insert (format "\n#+end_%s" end))))
