@@ -40,8 +40,9 @@ be global."
   (use-package abbrev)
   (use-package ispell
     :ensure-system-package aspell
-    :config
-    (ar/csetq ispell-program-name "aspell")))
+    :custom
+    (ispell-dictionary "en_GB")
+    (ispell-program-name "aspell")))
 
 (use-package mw-thesaurus
   :ensure t
