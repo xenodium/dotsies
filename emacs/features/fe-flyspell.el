@@ -40,9 +40,18 @@ be global."
   (use-package abbrev)
   (use-package ispell
     :ensure-system-package aspell
-    :custom
-    (ispell-dictionary "en_GB")
-    (ispell-program-name "aspell")))
+    :config
+    ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+    (cond
+     ;; if hunspell does NOT exist, use aspell
+     ((executable-find "hunspell")
+      (setq ispell-program-name "hunspell")
+      (setq ispell-local-dictionary "en_GB")
+      (setq ispell-local-dictionary-alist
+            '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8))))
+     ((executable-find "aspell")
+      (setq ispell-program-name "aspell")
+      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB"))))))
 
 (use-package mw-thesaurus
   :ensure t
