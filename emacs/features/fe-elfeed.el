@@ -16,6 +16,7 @@
   (elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
   (elfeed-feeds '(
                   ("http://1w6.org/rss.xml" blog emacs draketo)
+                  ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
                   ("http://akkartik.name/feeds.xml" blog dev)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
