@@ -18,7 +18,7 @@
   :config
   (push '(counsel-M-x . "") ivy-initial-inputs-alist)
   (push '(counsel-rg . "--glob '**' -- ") ivy-initial-inputs-alist)
-  (push '(counsel-ag . "--file-search-regex  -- ") ivy-initial-inputs-alist)
+  (push '(counsel-ag . "--file-search-regex '' -- ") ivy-initial-inputs-alist)
 
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
