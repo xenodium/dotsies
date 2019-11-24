@@ -39,13 +39,21 @@
     (with-current-buffer buffer
       (erase-buffer))
     (assert (f-exists-p dir) nil "company-cd error: dir not found %s" dir)
-    (set-process-sentinel (start-process-shell-command
-                           "company-cd-candidates"
-                           buffer
-                           (s-lex-format "find . \\( -type d -or -type l \\) -maxdepth 1 -not -path . -not -path ./.\\* -iname \\*${search-term}\\*"))
-                          (lambda (_ event)
-                            (when (string-equal event "finished\n")
-                              (funcall callback (company-cd--parse buffer)))))))
+    (if (string-prefix-p "/ssh:" dir)
+        ;; Use `directory-files' since it's tramp/ssh-aware.
+        (funcall callback (seq-filter (lambda (path)
+                                        (and
+                                         (file-directory-p path)
+                                         (not (string-equal ".." path))
+                                         (not (string-equal "." path))))
+                                      (directory-files dir)))
+      (set-process-sentinel (start-process-shell-command
+                             "company-cd-candidates"
+                             buffer
+                             (s-lex-format "find . \\( -type d -or -type l \\) -maxdepth 1 -not -path . -not -path ./.\\* -iname \\*${search-term}\\*"))
+                            (lambda (_ event)
+                              (when (string-equal event "finished\n")
+                                (funcall callback (company-cd--parse buffer))))))))
 
 (defun company-cd--prefix ()
   (-some (lambda (p)
