@@ -74,6 +74,7 @@
      regexp-search-ring
      last-kbd-macro
      shell-command-history
+     ivy-dired-history-variable ;; See `ivy-dired-history' in fe-ivy.el
      log-edit-comment-ring))
   :config
   (savehist-mode +1))

@@ -251,6 +251,10 @@ With prefix argument, use full path."
 
   (ivy-mode +1)
 
+  ;; See recent directories when copying/moving dired files.
+  (use-package ivy-dired-history
+    :ensure t)
+
   (use-package ivy-rich
     :ensure t
     :config

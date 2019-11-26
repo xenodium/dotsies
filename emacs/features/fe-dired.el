@@ -90,6 +90,10 @@
     :bind (:map dired-mode-map
                 ("P" . peep-dired)))
 
+  ;; Flaten display of nested directories with no other content.
+  (use-package dired-collapse
+    :ensure t)
+
   (use-package dired-subtree :ensure t
     :bind (:map dired-mode-map
                 ("<tab>" . dired-subtree-toggle)
