@@ -20,6 +20,7 @@
       (semantic-mode -1)
 
       (eshell-smart-initialize)
+      (eshell-tramp-initialize) ;; su/sudo support.
 
       (setq-local global-hl-line-mode nil)
 
