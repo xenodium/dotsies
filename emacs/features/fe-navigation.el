@@ -210,10 +210,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
   (defun adviced:indent-for-tab-command (orig-fun &rest r)
     (let ((hash-before (buffer-hash))
-          (region-active (region-active-p)))
-      (save-excursion
-        (apply orig-fun r))
-      (when (and (not region-active)
-                 ;; buffer is unchanged.
-                 (string-equal hash-before (buffer-hash)))
-        (call-interactively #'yafolding-toggle-element)))))
+          (region-active (region-active-p))
+          (prefix (nth 0 r)))
+      (if (and yafolding-mode
+               prefix)
+          (yafolding-toggle-all)
+        (save-excursion
+          (apply orig-fun r))
+        (when (and yafolding-mode
+                   (not region-active)
+                   ;; buffer is unchanged.
+                   (string-equal hash-before (buffer-hash)))
+          (call-interactively #'yafolding-toggle-element))))))
