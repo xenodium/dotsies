@@ -21,3 +21,7 @@
   :hook ((nxml-mode . auto-rename-tag-mode)
          (html-mode . auto-rename-tag-mode))
   :ensure t)
+
+(use-package web-mode
+  :config
+  (setq web-mode-auto-close-style 2))
