@@ -195,3 +195,25 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; for end-of-buffer. Unsetting.
   (unbind-key "M-?" global-map)
   (unbind-key "M-?" global-map))
+
+(use-package yafolding
+  :ensure t
+  :hook ((prog-mode . ar/yafolding-mode))
+  :config
+  (defun ar/yafolding-mode ()
+    (advice-remove #'indent-for-tab-command
+                   #'adviced:indent-for-tab-command)
+    (advice-add #'indent-for-tab-command
+                :around
+                #'adviced:indent-for-tab-command)
+    (yafolding-mode +1))
+
+  (defun adviced:indent-for-tab-command (orig-fun &rest r)
+    (let ((hash-before (buffer-hash))
+          (region-active (region-active-p)))
+      (save-excursion
+        (apply orig-fun r))
+      (when (and (not region-active)
+                 ;; buffer is unchanged.
+                 (string-equal hash-before (buffer-hash)))
+        (call-interactively #'yafolding-toggle-element)))))
