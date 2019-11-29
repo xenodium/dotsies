@@ -252,7 +252,7 @@ So if we're connected with sudo to 'remotehost'
   (ar/csetq shell-pop-term-shell "eshell")
 
   (defun ar/shell-pop (prefix)
-    "Shell pop with arg to cd to working dir. Else use existing location."
+    "Shell pop with PREFIX to cd to working dir. Else use existing location."
     (interactive "P")
     ;; Overriding shell-pop-autocd-to-working-dir with `prefix' value.
     (let ((shell-pop-autocd-to-working-dir prefix))
