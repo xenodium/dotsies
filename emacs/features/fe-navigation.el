@@ -198,25 +198,20 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package yafolding
   :ensure t
-  :hook ((prog-mode . ar/yafolding-mode))
+  :hook
+  ((prog-mode . yafolding-mode))
+  :bind
+  ([remap indent-for-tab-command] . ar/indent-for-tab-command-dwim)
   :config
-  (defun ar/yafolding-mode ()
-    (advice-remove #'indent-for-tab-command
-                   #'adviced:indent-for-tab-command)
-    (advice-add #'indent-for-tab-command
-                :around
-                #'adviced:indent-for-tab-command)
-    (yafolding-mode +1))
-
-  (defun adviced:indent-for-tab-command (orig-fun &rest r)
+  (defun ar/indent-for-tab-command-dwim (&optional prefix)
+    (interactive "P")
     (let ((hash-before (buffer-hash))
-          (region-active (region-active-p))
-          (prefix (nth 0 r)))
+          (region-active (region-active-p)))
       (if (and yafolding-mode
                prefix)
           (yafolding-toggle-all)
         (save-excursion
-          (apply orig-fun r))
+          (indent-for-tab-command prefix))
         (when (and yafolding-mode
                    (not region-active)
                    ;; buffer is unchanged.
