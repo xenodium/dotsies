@@ -251,14 +251,14 @@ So if we're connected with sudo to 'remotehost'
                                                          (eshell))))
   (ar/csetq shell-pop-term-shell "eshell")
 
-  (defun ar/shell-pop (shell-pop-autocd-to-working-dir)
+  (defun ar/shell-pop (prefix)
     "Shell pop with arg to cd to working dir. Else use existing location."
     (interactive "P")
-    ;; shell-pop-autocd-to-working-dir is defined in shell-pop.el.
-    ;; Using lexical binding to override.
-    (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
-        (shell-pop-out)
-      (shell-pop-up shell-pop-last-shell-buffer-index))))
+    ;; Overriding shell-pop-autocd-to-working-dir with `prefix' value.
+    (let ((shell-pop-autocd-to-working-dir prefix))
+      (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
+          (shell-pop-out)
+        (shell-pop-up shell-pop-last-shell-buffer-index)))))
 
 (use-package shell
   ;; Mostly for `async-shell-command'.
