@@ -199,11 +199,17 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package yafolding
   :ensure t
   :hook
-  ((prog-mode . yafolding-mode))
-  :bind
-  ([remap indent-for-tab-command] . ar/indent-for-tab-command-dwim)
+  ((prog-mode . yafolding-mode)
+   (sgml-mode . yafolding-mode))
+  :bind (:map
+         prog-mode-map
+         ("<tab>" . ar/indent-for-tab-command-dwim)
+         :map
+         sgml-mode-map
+         ("<tab>" . ar/indent-for-tab-command-dwim))
   :config
   (defun ar/indent-for-tab-command-dwim (&optional prefix)
+    "Like `indent-for-tab-command' but folds/unfolds if no change"
     (interactive "P")
     (let ((hash-before (buffer-hash))
           (region-active (region-active-p)))
