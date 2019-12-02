@@ -7,7 +7,11 @@
   :config
   (run-with-idle-timer 2 nil
                        (lambda ()
-                         (key-chord-mode 1))))
+                         (key-chord-mode 1)))
+  (defun ar/disable-key-chord-mode ()
+    (set (make-local-variable 'input-method-function) nil))
+
+  (add-hook 'minibuffer-setup-hook #'ar/disable-key-chord-mode))
 
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
 ;; We do this early on as we assert binaries are installed throughout
