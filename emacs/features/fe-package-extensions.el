@@ -36,15 +36,16 @@ VALUE is validated against SYMBOL's custom type.
 
 \(fn [SYM VAL] ...)"
     `(if (boundp ,variable)
-         ;; (customize-set-variable ,variable (validate-value ,value (custom-variable-type ,variable)) ,comment)
-         (customize-set-variable ,variable ,value ,comment)
-       ;; (user-error "Trying to validate a variable that's not defined yet: `%s'.\nYou need to require the package before validating" ,variable)
-       ))
+         (customize-set-variable ,variable (validate-value ,value (custom-variable-type ,variable)) ,comment)
+       (user-error "Trying to validate a variable that's not defined yet: `%s'.\nYou need to require the package before validating" ,variable)))
 
-  (add-to-list 'use-package-keywords :custom-validated)
+  (setq use-package-keywords
+        (use-package-list-insert :validate-custom
+                                 use-package-keywords
+                                 :load t))
 
-  (defun use-package-normalize/:custom-validated (_name keyword args)
-    "Normalize use-package custom-validated keyword."
+  (defun use-package-normalize/:validate-custom (_name keyword args)
+    "Normalize use-package validate-custom keyword."
     (use-package-as-one (symbol-name keyword) args
       #'(lambda (label arg)
           (unless (listp arg)
@@ -55,8 +56,8 @@ VALUE is validated against SYMBOL's custom type.
               (list arg)
             arg))))
 
-  (defun use-package-handler/:custom-validated (name _keyword args rest state)
-    "Generate use-package custom-validated keyword code."
+  (defun use-package-handler/:validate-custom (name _keyword args rest state)
+    "Generate use-package validate-custom keyword code."
     (use-package-concat
      (mapcar
       #'(lambda (def)
