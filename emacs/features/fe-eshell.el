@@ -25,6 +25,7 @@
       (setq-local global-hl-line-mode nil)
 
       (add-to-list 'eshell-visual-commands "ssh")
+      (add-to-list 'eshell-visual-commands "nano")
       (add-to-list 'eshell-visual-commands "tail")
       (add-to-list 'eshell-visual-commands "top")
       (add-to-list 'eshell-visual-commands "htop")
