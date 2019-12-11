@@ -9,7 +9,7 @@
 
   (use-package flycheck-status-emoji
     :ensure t
-    :custom
+    :validate-custom
     (flycheck-status-emoji-indicator-finished-error ?💀)
     (flycheck-status-emoji-indicator-finished-ok ?👍)
     (flycheck-status-emoji-indicator-finished-warning ?👎)

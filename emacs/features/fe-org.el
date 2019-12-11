@@ -11,6 +11,17 @@
               ("M-[" . org-metaleft)
               ("M-]" . org-metaright))
   :custom
+  (org-todo-keywords
+   '((sequence
+      "TODO(t)"
+      "STARTED(s)"
+      "WAITING(w@/!)"
+      "|"
+      "DONE(d!)"
+      "OBSOLETE(o)"
+      "CANCELLED(c)")))
+  (org-refile-targets '((org-agenda-files :maxlevel . 1)))
+  :validate-custom
   (org-fontify-whole-heading-line t)
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
@@ -21,17 +32,7 @@
                         (?B . "#ff5900")
                         (?C . "#ff9200")
                         (?D . "#747474")))
-  (org-todo-keywords
-   '((sequence
-      "TODO(t)"
-      "STARTED(s)"
-      "WAITING(w@/!)"
-      "|"
-      "DONE(d!)"
-      "OBSOLETE(o)"
-      "CANCELLED(c)")))
   (org-log-done 'time)
-  (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
@@ -68,7 +69,7 @@
     :hook ((org-mode . org-indent-mode)))
 
   (use-package org-goto
-    :custom
+    :validate-custom
     (org-goto-auto-isearch nil))
 
   (use-package org-bullets :ensure t
@@ -237,7 +238,7 @@
     (ar/vsetq org-confirm-babel-evaluate t)
 
     (use-package ob-python
-      :custom
+      :validate-custom
       ;; Make python source blocks export and output results by default.
       (org-babel-default-header-args:python
        '((:exports  . "both")
@@ -288,10 +289,11 @@
 
   (use-package org-crypt
     :custom
-    (org-crypt-disable-auto-save nil)
     (org-tags-exclude-from-inheritance (quote ("crypt")))
     ;;  Set to nil to use symmetric encryption.
     (org-crypt-key nil)
+    :validate-custom
+    (org-crypt-disable-auto-save nil)
     :config
     (org-crypt-use-before-save-magic)))
 
@@ -300,7 +302,7 @@
   :ensure t
   :hook
   (org-mode . org-fancy-priorities-mode)
-  :custom
+  :validate-custom
   (org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL")))
 
 (use-package org-agenda
@@ -333,12 +335,14 @@
          ("C" . ar/org-agenda-capture))
   :commands (org-agenda
              ar/org-agenda-toggle)
-  :custom
+  :validate-custom
+  (org-agenda-use-time-grid nil)
   ;; Default to daily view.
   (org-agenda-span 'day)
   ;; Follow mode narrows to task subtree only.
   (org-agenda-follow-indirect t)
   (org-agenda-block-separator ?\u2015)
+  :custom
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   (org-agenda-custom-commands

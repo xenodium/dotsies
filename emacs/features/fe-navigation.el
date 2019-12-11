@@ -61,7 +61,7 @@ already narrowed."
          ("C-<tab>" . other-window))
   :chords (("BB" . other-window)
            ("JJ" . ar/switch-to-previous-buffer))
-  :custom
+  :validate-custom
   (split-width-threshold nil) ;; Prevent horizontal window splits.
   ;; Note: window.el is not provided at the end of the file.
   ;; Using init purely for loading functions.

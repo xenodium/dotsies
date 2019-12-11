@@ -5,7 +5,7 @@
          ("\\.md\\'" . markdown-mode))
   :hook ((markdown-mode . ar/markdown-mode-hook)
          (markdown-mode . ar/whitespace-mode-enable))
-  :custom (markdown-asymmetric-header t)
+  :validate-custom (markdown-asymmetric-header t)
   :bind (:map
          markdown-mode-map
          ("M-<left>" . markdown-promote)

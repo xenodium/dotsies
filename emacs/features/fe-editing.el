@@ -64,7 +64,7 @@
 ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
   :defer 2
-  :custom
+  :validate-custom
   (savehist-file "~/.emacs.d/savehist")
   (savehist-save-minibuffer-history t)
   (history-length 20000)
@@ -440,7 +440,7 @@ line instead."
 (use-package simple
   :bind (("M-u" . upcase-dwim)
          ("M-l" . downcase-dwim))
-  :custom
+  :validate-custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
   (save-interprogram-paste-before-kill t "Increase mark ring size.")

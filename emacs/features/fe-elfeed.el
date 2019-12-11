@@ -11,7 +11,7 @@
               ("d" . elfeed-search-untag-all-unread)
               ("v" . ar/elfeed-mark-visible-as-read)
               ("<tab>" . ar/elfeed-completing-filter))
-  :custom
+  :validate-custom
   (elfeed-search-title-max-width 120)
   (elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
   (elfeed-feeds '(
