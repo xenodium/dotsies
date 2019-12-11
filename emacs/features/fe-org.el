@@ -33,6 +33,30 @@
                         (?C . "#ff9200")
                         (?D . "#747474")))
   (org-log-done 'time)
+  (org-ellipsis "…")
+  (org-fontify-emphasized-text t)
+
+  ;; Fontify code in code blocks.
+  (org-src-fontify-natively t)
+
+  ;; Display images inline when running in GUI.
+  (org-startup-with-inline-images (display-graphic-p))
+  (org-src-tab-acts-natively t)
+
+  ;; Prevent inadvertently editing invisible areas in Org.
+  (org-catch-invisible-edits 'error)
+  (org-cycle-separator-lines 2)
+  (org-image-actual-width nil)
+  (org-hide-emphasis-markers t)
+
+  ;; All Org leading stars become invisible.
+  (org-hide-leading-stars t)
+
+  ;; Skip Org's odd indentation levels (1, 3, ...).
+  (org-odd-levels-only t)
+
+  ;; Enable RET to follow Org links.
+  (org-return-follows-link t)
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
@@ -105,33 +129,8 @@
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
   ;; (use-package button-lock :ensure t)
 
-  (ar/vsetq org-ellipsis "…")
-  (ar/vsetq org-fontify-emphasized-text t)
-
-  ;; Fontify code in code blocks.
-  (ar/vsetq org-src-fontify-natively t)
-
   ;; When exporting anything, do not insert in kill ring.
   (setq org-export-copy-to-kill-ring nil)
-
-  ;; Display images inline when running in GUI.
-  (ar/vsetq org-startup-with-inline-images (display-graphic-p))
-  (ar/vsetq org-src-tab-acts-natively t)
-
-  ;; Prevent inadvertently editing invisible areas in Org.
-  (ar/vsetq org-catch-invisible-edits 'error)
-  (ar/vsetq org-cycle-separator-lines 2)
-  (ar/vsetq org-image-actual-width nil)
-  (ar/vsetq org-hide-emphasis-markers t)
-
-  ;; All Org leading stars become invisible.
-  (ar/vsetq org-hide-leading-stars t)
-
-  ;; Skip Org's odd indentation levels (1, 3, ...).
-  (ar/vsetq org-odd-levels-only t)
-
-  ;; Enable RET to follow Org links.
-  (ar/vsetq org-return-follows-link t)
 
   (use-package org-cliplink
     :ensure t)
@@ -231,12 +230,11 @@
   (use-package ob
     :bind (:map org-mode-map
                 ("C-c C-c" . org-ctrl-c-ctrl-c))
-    :config
-    (ar/vsetq org-export-babel-evaluate nil)
-
+    :validate-custom
+    (org-export-babel-evaluate nil)
     ;; We explicitly want org babel confirm evaluations.
-    (ar/vsetq org-confirm-babel-evaluate t)
-
+    (org-confirm-babel-evaluate t)
+    :config
     (use-package ob-python
       :validate-custom
       ;; Make python source blocks export and output results by default.
