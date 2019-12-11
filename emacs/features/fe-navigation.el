@@ -212,13 +212,14 @@ Repeated invocations toggle between the two most recently open buffers."
     "Like `indent-for-tab-command' but folds/unfolds if no change"
     (interactive "P")
     (let ((hash-before (buffer-hash))
-          (region-active (region-active-p)))
+          (region-active (region-active-p))
+          (point-before (point)))
       (if (and yafolding-mode
                prefix)
           (yafolding-toggle-all)
-        (save-excursion
-          (indent-for-tab-command prefix))
+        (indent-for-tab-command prefix)
         (when (and yafolding-mode
+                   (eq point-before (point))
                    (not region-active)
                    ;; buffer is unchanged.
                    (string-equal hash-before (buffer-hash)))
