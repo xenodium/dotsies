@@ -52,9 +52,6 @@
   ;; All Org leading stars become invisible.
   (org-hide-leading-stars t)
 
-  ;; Skip Org's odd indentation levels (1, 3, ...).
-  (org-odd-levels-only t)
-
   ;; Enable RET to follow Org links.
   (org-return-follows-link t)
   :hook ((org-mode . ar/org-mode-hook-function)
