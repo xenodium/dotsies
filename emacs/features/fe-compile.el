@@ -6,6 +6,7 @@
   :commands compile
   :validate-custom
   (compilation-skip-threshold 2)
+  (compilation-auto-jump-to-first-error t)
   :bind (:map
          compilation-mode-map
          ("p" . previous-error-no-select)
