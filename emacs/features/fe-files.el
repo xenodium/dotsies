@@ -36,7 +36,7 @@
   ;; Be quiet about dired refresh.
   (auto-revert-verbose nil)
   :config
-  (global-auto-revert-mode))
+  (global-auto-revert-mode +1))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
