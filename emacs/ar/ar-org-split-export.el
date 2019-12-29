@@ -60,8 +60,10 @@
                                  " -l "(expand-file-name "~/.emacs.d/ar/ar-org-export-init.el")
                                  (format " --execute '(ar/org-split-export-headline \"%s\" \"%s\" \"%s\" %d t)'"
                                          (expand-file-name "~/stuff/active/blog/index.org")
-                                         (ar/org-split-export--parse-headline-title
-                                          (org-element-property :raw-value headline))
+                                         ;; TODO: Remove this param and let ar/org-split-export-headline get the value.
+                                         (s-replace "'" ""
+                                                    (ar/org-split-export--parse-headline-title
+                                                     (org-element-property :raw-value headline)))
                                          (org-element-property :CUSTOM_ID headline)
                                          (org-element-property :begin headline)))
                          "*org html export*")))
