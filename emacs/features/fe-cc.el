@@ -3,8 +3,12 @@
   :mode ("\\.m\\'" . objc-mode)
   :after reformatter
   :hook (objc-mode . ar/objc-mode-hook-function)
-  :bind (:map objc-mode-map
-              ("M-]" . ar/smartparens-wrap-square-bracket))
+  :bind (:map
+         objc-mode-map
+         ("M-]" . ar/smartparens-wrap-square-bracket)
+         :map
+         c-mode-base-map
+         ("C-c C-c" . ar/compile))
   :init
   ;; Workaround to define two missing functions. Try removing in future.
   (defun c-before-change-check-unbalanced-strings (beg end))

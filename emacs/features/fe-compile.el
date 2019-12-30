@@ -3,7 +3,7 @@
 
 (use-package compile
   :hook ((compilation-mode . goto-address-mode))
-  :commands compile
+  :commands (compile ar/compile)
   :validate-custom
   (compilation-skip-threshold 2)
   (compilation-auto-jump-to-first-error t)
