@@ -26,7 +26,12 @@
   :ensure t
   :hook ((eshell-mode . with-editor-export-editor)
          (term-exec . with-editor-export-editor)
-         (shell-mode . with-editor-export-editor)))
+         (shell-mode . with-editor-export-editor))
+  :config
+  ;; Requires ~/.hgrc
+  ;; [merge-tools]
+  ;; emacsclient.args = --eval '(ediff-merge-with-ancestor "$local" "$other" "$base" nil "$output")'
+  (setenv "HGMERGE" "emacsclient"))
 
 (use-package git-gutter
   :hook ((prog-mode . ar/delayed-git-gutter-mode)
