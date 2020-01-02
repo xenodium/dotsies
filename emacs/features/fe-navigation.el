@@ -93,7 +93,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; In addition to highlighting symbols, we get navigation between them.
 (use-package symbol-overlay
   :ensure t
-  :hook (prog-mode . symbol-overlay-mode)
+  :hook ((prog-mode . symbol-overlay-mode)
+         (protobuf-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
               (("M-n" . symbol-overlay-jump-next)
                ("M-p" . symbol-overlay-jump-prev)))
