@@ -44,6 +44,8 @@
         )
       (sp-wrap-with-pair "[")))
   :config
+  ;; Prefer global M-a binding.
+  (unbind-key "M-a" c-mode-base-map)
   (use-package company)
 
   (when (require 'reformatter nil 'noerror)
