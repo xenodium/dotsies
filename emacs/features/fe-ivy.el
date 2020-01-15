@@ -262,7 +262,12 @@ With prefix argument, use full path."
           '(counsel-M-x
             (:columns
              ((counsel-M-x-transformer (:width 80))  ; the original transfomer
-              (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))))
+              (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+            ivy-switch-buffer
+            (:columns
+             ((ivy-rich-candidate (:width 80))
+              (ivy-rich-switch-buffer-project (:width 15 :face success))
+              (ivy-rich-switch-buffer-major-mode (:width 13 :face warning))))))
     (ivy-rich-mode +1))
 
   ;; Unsure about this one.
