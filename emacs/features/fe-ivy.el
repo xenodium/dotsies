@@ -267,7 +267,9 @@ With prefix argument, use full path."
             (:columns
              ((ivy-rich-candidate (:width 80))
               (ivy-rich-switch-buffer-project (:width 15 :face success))
-              (ivy-rich-switch-buffer-major-mode (:width 13 :face warning))))))
+              (ivy-rich-switch-buffer-major-mode (:width 13 :face warning)))
+             :predicate
+             (lambda (cand) (get-buffer cand)))))
     (ivy-rich-mode +1))
 
   ;; Unsure about this one.
