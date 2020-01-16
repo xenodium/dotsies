@@ -614,7 +614,10 @@ If VANILLA is non-nil, run the standard `org-capture'."
                        (format ", skipped %d (disappeared before their turn)"
                                skipped))
                      (if (not org-agenda-persistent-marks) "" " (kept marked)"))))
-      (funcall cmd))))
+      (funcall cmd)))
+
+  ;; Automatically save org files after transitioning tasks.
+  (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers))
 
 (use-package org-capture
   :bind (("M-c" . ar/org-capture-todo)
