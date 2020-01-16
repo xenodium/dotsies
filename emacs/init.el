@@ -12,6 +12,10 @@
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
 
+;; Default of 800 was too low.
+;; Avoid Lisp nesting exceeding in swift-mode.
+(setq max-lisp-eval-depth 2000)
+
 ;;; Temporarily avoid loading any modes during init (undone at end).
 (defvar ar/init--file-name-handler-alist file-name-handler-alist)
 
