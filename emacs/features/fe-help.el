@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package info-colors
+  :ensure t
+  :hook ((Info-selection . info-colors-fontify-node)))
+
 (use-package help
   :validate-custom
   ;; Select help window by default.
