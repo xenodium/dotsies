@@ -40,7 +40,8 @@ There is no limit on the number of *ivy-occur* buffers."
             (current-window-configuration))
       ;; ar addition end.
       (let* ((caller (ivy-state-caller ivy-last))
-             (occur-fn (plist-get ivy--occurs-list caller))
+             (occur-fn (or (plist-get ivy--occurs-list caller)
+                           #'ivy--occur-default))
              (buffer
               (generate-new-buffer
                (format "*ivy-occur%s \"%s\"*"
@@ -49,23 +50,16 @@ There is no limit on the number of *ivy-occur* buffers."
                          "")
                        ivy-text))))
         (with-current-buffer buffer
-          (let ((inhibit-read-only t))
-            (erase-buffer)
-            (if occur-fn
-                (funcall occur-fn)
-              (ivy-occur-mode)
-              (insert (format "%d candidates:\n" (length ivy--old-cands)))
-              (read-only-mode)
-              (ivy--occur-insert-lines
-               ivy--old-cands)))
+          (funcall occur-fn ivy--old-cands)
           (setf (ivy-state-text ivy-last) ivy-text)
           (setq ivy-occur-last ivy-last)
-          (setq-local ivy--directory ivy--directory)
           ;; ar addition.
           (ivy-wgrep-change-to-wgrep-mode))
         (ivy-exit-with-action
          (lambda (_)
            (pop-to-buffer buffer)
+           (setq next-error-last-buffer buffer)
+           (setq-local next-error-function #'ivy-occur-next-error)
            ;; ar addition.
            (delete-other-windows))))))
 
