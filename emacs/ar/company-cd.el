@@ -50,7 +50,9 @@
       (set-process-sentinel (start-process-shell-command
                              "company-cd-candidates"
                              buffer
-                             (s-lex-format "find . \\( -type d -or -type l \\) -maxdepth 1 -not -path . -not -path ./.\\* -iname \\*${search-term}\\*"))
+                             (if (executable-find "fd")
+                                 (s-lex-format "fd --color never --max-depth 2  --type directory ${search-term} . ")
+                               (s-lex-format "find . \\( -type d -or -type l \\) -maxdepth 1 -not -path . -not -path ./.\\* -iname \\*${search-term}\\*")))
                             (lambda (_ event)
                               (when (string-equal event "finished\n")
                                 (funcall callback (company-cd--parse buffer))))))))
