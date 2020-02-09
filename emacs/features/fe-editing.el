@@ -122,7 +122,7 @@
    ;; I prefer keeping C-w to DWIM kill, provided by
    ;; `adviced:kill-region-advice'. Removing remap.
    ([remap kill-region] . kill-region)
-   :map emacs-lisp-mode-map
+   :map prog-mode-map
    ("C-<right>" . sp-forward-slurp-sexp)
    ("C-<left>" . sp-forward-barf-sexp)
    ("M-<right>" . sp-backward-barf-sexp)
@@ -142,7 +142,7 @@
    ("C-M-t" . sp-transpose-sexp)
    ("M-t t" . sp-transpose-sexp)
    ("<C-M-backspace>" . backward-kill-sexp)
-   ("C-M-k" . sp-kill-sexp)
+   ("C-M-k" . ar/kill-sexp)
    ("C-M-w" . sp-copy-sexp))
   ;; Add to minibuffer also.
   :hook ((minibuffer-setup . smartparens-mode)
@@ -206,6 +206,13 @@ With PREFIX, add an outer pair around existing pair."
                    loop)))
       (scan-error ;; stay quiet
        nil)))
+  (defun ar/kill-sexp (&optional arg)
+    "If inside symbol, kill from position to end of symbol.  With any ARG, kill current sexp."
+    (interactive "P")
+    (if (or arg
+            (not (sp-point-in-symbol)))
+        (sp-kill-sexp)
+      (kill-sexp)))
   (defun ar/forward-sexp (&optional arg)
     (interactive "P")
     (if arg
