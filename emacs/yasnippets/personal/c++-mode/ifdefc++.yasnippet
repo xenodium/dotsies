@@ -1,0 +1,12 @@
+#name : C++ #ifdef __cplusplus Guard
+#key : ifdefc++
+# --
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+${1:C symbol declarations}
+
+#ifdef __cplusplus
+} // extern "C"
+#endif

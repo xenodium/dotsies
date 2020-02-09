@@ -1,0 +1,7 @@
+#name : Objective-C Unwind Segue Method
+#key : unwind
+# --
+- (IBAction)unwindTo${1:name}:(UIStoryboardSegue *)unwindSegue {
+    UIViewController *sourceViewController = unwindSegue.sourceViewController;
+    // Use data from the view controller which initiated the unwind segue
+}

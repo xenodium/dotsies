@@ -1,0 +1,7 @@
+#name : C Clang Ignore Warning
+#key : ignored
+# --
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-W${1:warning-name}"
+${2:code}
+#pragma clang diagnostic pop

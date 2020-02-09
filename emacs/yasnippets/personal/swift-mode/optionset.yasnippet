@@ -1,0 +1,12 @@
+#name : Swift OptionSet
+#key : optionset
+# --
+struct ${1:name}: OptionSet {
+    let rawValue: ${2:integer type}
+
+    static let ${3:optionA} = ${4:name}(rawValue: 1 << 0)
+    static let ${5:optionB} = ${6:name}(rawValue: 1 << 1)
+    static let ${7:optionC} = ${8:name}(rawValue: 1 << 2)
+
+    static let all: ${9:name} = [.${10:optionA}, .${11:optionB}, .${12:optionC}]
+}

@@ -1,0 +1,8 @@
+#name : Objective-C API Availability Check
+#key : available
+# --
+if (@available(${1:{i, mac, tv, watch}}OS ${2:x.y.z}, *)) {
+    ${3:API available statements}
+} else {
+    ${4:fallback statements}
+}

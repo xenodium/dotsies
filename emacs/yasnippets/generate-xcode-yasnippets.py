@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Converts Xcode's code snippets into Emacs yasnippets
 
 import plistlib
@@ -10,7 +11,7 @@ from collections import namedtuple
 
 def load_raw_xcode_snippets_plist():
   return plistlib.readPlist(
-      "/Applications/Xcode.app/Contents/Frameworks/IDEKit.framework/Versions/A/Resources/SystemCodeSnippets.codesnippets")
+      "/Applications/Xcode.app/Contents/PlugIns/IDESourceEditor.framework/Versions/A/Resources/SystemCodeSnippets.codesnippets")
 
 
 def parse_raw_xcode_snippet(xcode_snippet):
@@ -35,8 +36,14 @@ def convert_xcode_content_to_yasnippet(content):
 
 
 def convert_xcode_to_yasnippet(xcode_snippet):
+  human_lang_name = {
+    "Xcode.SourceCodeLanguage.Swift": "Swift",
+    "Xcode.SourceCodeLanguage.C": "C",
+    "Xcode.SourceCodeLanguage.C-Plus-Plus": "C++",
+    "Xcode.SourceCodeLanguage.Objective-C": "Objective-C"
+  }
   yasnippet = ""
-  yasnippet += "#name : %s\n" % xcode_snippet.title
+  yasnippet += "#name : %s %s\n" % (human_lang_name[xcode_snippet.language], xcode_snippet.title)
   yasnippet += "#key : %s\n" % xcode_snippet.prefix
   yasnippet += "# --\n"
   yasnippet += convert_xcode_content_to_yasnippet(xcode_snippet.content)
