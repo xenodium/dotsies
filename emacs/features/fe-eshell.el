@@ -32,7 +32,7 @@
       (add-to-list 'eshell-visual-commands "prettyping")
       (add-to-list 'eshell-visual-commands "ncdu")
 
-      (setq-local company-backends '(company-projectile-cd company-cd))
+      (setq-local company-backends '((company-cd company-projectile-cd)))
 
       (company-mode +1)
 

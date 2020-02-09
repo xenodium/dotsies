@@ -2,7 +2,8 @@
 (require 'ar-csetq)
 
 (use-package ediff
-  :commands (ediff-backup
+  :commands (ar/ediff-dir-content-file-sizes
+             ediff-backup
              ediff-buffers
              ediff-buffers3
              ediff-current-file
