@@ -105,6 +105,33 @@ _t_ypo
            (log-edit-done)))
     ("q" nil "quit"))
 
+  (defhydra hydra-movement
+    "Navigation"
+    ("a" move-beginning-of-line "bol")
+    ("e" move-end-of-line "eol")
+    ("k" backward-paragraph "bp")
+    ("j" forward-paragraph "fp")
+    ("l" forward-word "fw")
+    ("h" backward-word "bw")
+    ("<" beginning-of-buffer "bb")
+    (">" end-of-buffer "eb")
+    ("f" forward-char "fc")
+    ("b" backward-char "bc")
+    ("n" next-line "nl")
+    ("p" previous-line "pl")
+    ("u" scroll-up "su")
+    ("d" scroll-down "sd")
+    ("[" backward-page "bp")
+    ("]" forward-page "fp")
+    ("i" backward-sentence "bs")
+    ("o" forward-sentence "fs")
+    ("q" backward-sexp "bsexp")
+    ("w" forward-sexp "fsexp")
+    ("c" beginning-of-defun "bfun")
+    ("v" end-of-defun "efun")
+    ("<SPC>" set-mark-command "mark")
+    ("x" exchange-point-and-mark "exchange mark"))
+
   ;; From http://oremacs.com/2015/03/07/hydra-org-templates
 (defun ar/org-expand (str)
   "Expand org template STR."
