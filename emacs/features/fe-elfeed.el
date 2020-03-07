@@ -17,6 +17,8 @@
   (elfeed-feeds '(
                   ("http://1w6.org/rss.xml" blog emacs draketo)
                   ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
+                  ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
+                  ("https://willschenk.com/feed.xml" blog emacs WillSchenk)
                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
                   ("http://akkartik.name/feeds.xml" blog dev)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
@@ -24,6 +26,7 @@
                   ("https://nalexn.github.io/feed.xml" blog swiftui swift AlexeyNaumov)
                   ("https://oracleyue.github.io/atom.xml" blog emacs oracleyue)
                   ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
+                  ("https://posts.michaelks.org/rss.xml" blog emacs MichaelElks)
                   ;; ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
                   ("http://blog.davep.org/feed.xml" blog emacs davep)
                   ("http://blog.josephholsten.com/feed.xml" blog hammerspoon dev Libera-Ideoj)
