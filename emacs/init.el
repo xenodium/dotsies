@@ -14,7 +14,7 @@
 
 ;; Default of 800 was too low.
 ;; Avoid Lisp nesting exceeding in swift-mode.
-(setq max-lisp-eval-depth 2500)
+(setq max-lisp-eval-depth 3000)
 (setq max-specpdl-size 3000)
 
 ;;; Temporarily avoid loading any modes during init (undone at end).
