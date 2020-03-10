@@ -17,6 +17,26 @@
   (with-eval-after-load 'fullframe
     (fullframe magit-status magit-mode-quit-window))
 
+  ;; https://github.com/magit/magit/issues/4054
+  (defun ar/magit-dired-untracked ()
+    "Create a dired buffer from the listed untracked files."
+    (interactive)
+    (require 's)
+    (assert (eq major-mode 'magit-status-mode) nil "Not in magit-status-mode")
+    (let (beg end files)
+      (save-excursion
+        (goto-char (point-min))
+        (re-search-forward "^Untracked files ([0-9]+)")
+        (forward-char)
+        (setq beg (point))
+        ;; find the end of the list of Untracked files.
+        (re-search-forward "^$")
+        (beginning-of-line)
+        (backward-char 1)
+        (setq end (point))
+        (setq files (s-lines (buffer-substring-no-properties beg end))))
+      (dired (cons "dired-untracked" files))))
+
   (defun ar/magit-soft-reset-head~1 ()
     "Soft reset current git repo to HEAD~1."
     (interactive)
