@@ -144,6 +144,7 @@
                   ("https://engineering.collbox.co/index.xml" blog emacs Collbox)
                   ("https://engineering.collbox.co/index.xml" blog emacs Collbox)
                   ("https://ericasadun.com/feed" blog swift ios EricaSadun)
+                  ("https://tanaschita.com/feed.rss" blog ios NataschaFadeeva)
                   ("https://erick.navarro.io/index.xml" dev emacs ErickNavarro)
                   ("https://etienne.depar.is/a-ecrit/feed/atom" blog emacs EtienneDeparis)
                   ("https://feeds.feedburner.com/Firehubeu" blog money FireHubEU)
