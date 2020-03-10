@@ -41,5 +41,6 @@ reuse it's window, otherwise create new one."
 
 (use-package which-key
   :ensure t
+  :disabled
   :config
   (which-key-mode))
