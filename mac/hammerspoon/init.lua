@@ -75,15 +75,14 @@ function fuzzyMatch(terms, text)
 end
 
 function activateFirstOf(queries)
-   local query = hs.fnutils.find(queries, function(query) return hs.application.find(query["bundleID"]) ~= nil end)
+   local query = hs.fnutils.find(queries, function(query) return hs.application.find(query["name"]) ~= nil end)
    if not query then
       hs.alert.show("No app found\n "..hs.inspect.inspect(queries))
       return
    end
-
-   local app = hs.application.find(query["bundleID"])
+   local app = hs.application.find(query["name"])
    if not app:activate() then
-      hs.alert.show(app["bundleID"].." not activated :/")
+      hs.alert.show(app["name"].." not activated :/")
       return
    end
 end
@@ -254,16 +253,16 @@ end)
 
 hs.hotkey.bind({"alt"}, "B", function() activateFirstOf({
             {
+               bundleID="com.google.Chrome",
+               name="Google Chrome"
+            },
+            {
                bundleID="org.mozilla.firefox",
                name="Firefox"
             },
             {
                bundleID="com.apple.Safari",
                name="Safari"
-            },
-            {
-               bundleID="com.google.Chrome",
-               name="Google Chrome"
             },
 }) end)
 
