@@ -20,4 +20,7 @@
 (use-package ts
   :ensure t)
 
+(use-package f
+  :ensure t)
+
 (use-package ar-vsetq)
