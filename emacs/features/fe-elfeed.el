@@ -176,7 +176,7 @@
                   ("https://kdecherf.com/feeds/blog.atom.xml" blog dev kdecherf-blog)
                   ("https://kdecherf.com/feeds/le-kdecherf.atom.xml" blog dev kdecherf)
                   ("https://keyholesoftware.com/feed" blog emacs keyhole)
-                  ;; ("https://kisaragi-hiu.com/feed.xml" blog emacs KisaragiHiu)
+                  ("https://kisaragi-hiu.com/feed.xml" blog emacs KisaragiHiu)
                   ("https://krsoninikhil.github.io/atom.xml" blog emacs NikhilSoni)
                   ("https://lars.ingebrigtsen.no/feed" blog emacs LarsIngebrigtsen)
                   ("https://lchsk.com/posts.xml" blog emacs lchsk)
