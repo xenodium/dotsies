@@ -292,7 +292,39 @@ With prefix argument, use full path."
 
 (use-package counsel-dash
   :commands counsel-dash
-  :ensure t)
+  :ensure t
+  :config
+  (defun ar/dash-parse-apple-api-query (query)
+    "Parse QUERY if recognized as dash-apple-api://. Nil otherwise.
+
+dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_entry_menuDescription=MKMapRect><dash_entry_name=MKMapRect>
+
+'((\"dash_entry_language\" . \"swift\")
+  (\"dash_entry_menuDescription\" . \"MKMapRect\")
+  (\"dash_entry_name\" . \"MKMapRect\"))"
+    (when (s-prefix-p "dash-apple-api://" query)
+      (mapcar (lambda (item)
+                (let ((values (s-split "=" item)))
+                  (cons (nth 0 values) (nth 1 values))))
+              (s-split
+               "><"
+               (s-chop-suffix
+                ">"
+                (s-chop-prefix
+                 "<"
+                 (nth 1 (s-split "#" query))))))))
+
+  (defun adviced:dash-docs-result-url (orig-fun &rest r)
+    "Transforms dash-apple-api:// queries to dash://."
+    (let* ((filename (nth 1 r))
+           (apple-api-query (ar/dash-parse-apple-api-query filename)))
+      (if apple-api-query
+          (format "dash://%s" (map-elt apple-api-query "dash_entry_name" nil 'string-equal))
+        (apply orig-fun r))))
+
+  (advice-add #'dash-docs-result-url
+              :around
+              #'adviced:dash-docs-result-url))
 
 
 (defun ar/counsel-ag (arg)
