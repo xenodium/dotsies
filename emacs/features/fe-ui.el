@@ -105,6 +105,12 @@
                         :foreground (face-foreground 'default)
                         :background (face-background 'default)))
 
+  ;; No color for sp-pair-overlay-face.
+  (with-eval-after-load 'smartparens
+    (set-face-attribute 'sp-pair-overlay-face nil
+                        :foreground (face-foreground 'default)
+                        :background (face-background 'default)))
+
   ;; Trying out line underline (instead of wave).
   (mapatoms (lambda (atom)
               (let ((underline nil))
