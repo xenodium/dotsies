@@ -1,5 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
 
 (use-package hydra
   :ensure t
@@ -9,8 +8,9 @@
          ("C-c o" . ar/hydra-open-dwim)
          ("C-c g" . hydra-git-gutter/body)
          ("C-c 1" . hydra-profile/body))
+  :validate-custom
+  (hydra-is-helpful t)
   :config
-  (ar/vsetq hydra-is-helpful t)
 
   (use-package vc-git)
 
@@ -106,7 +106,7 @@ _t_ypo
     ("q" nil "quit"))
 
   ;; From http://oremacs.com/2015/03/07/hydra-org-templates
-(defun ar/org-expand (str)
-  "Expand org template STR."
-  (insert str)
-  (org-try-structure-completion)))
+  (defun ar/org-expand (str)
+    "Expand org template STR."
+    (insert str)
+    (org-try-structure-completion)))
