@@ -25,3 +25,13 @@
 (use-package web-mode
   :config
   (setq web-mode-auto-close-style 2))
+
+(use-package url-handlers
+  :config
+  (defun ar/download-clipboard-url ()
+    "Download clipboard URL to current directory."
+    (interactive)
+    (let ((url (current-kill 0)))
+      (assert (string-match-p "^http[s]?://\\(www\\.\\)?" url)
+              nil "Not a downloadable URL: %s" url)
+      (url-copy-file url (concat default-directory (file-name-nondirectory url))))))
