@@ -118,9 +118,19 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package smart-jump
   :ensure t
+  :bind ("M-." . smart-jump-go)
   :commands smart-jump-go
   :config
   (smart-jump-setup-default-registers)
+
+  (smart-jump-register
+   :modes 'swift-mode
+   :jump-fn 'counsel-etags-find-tag-at-point
+   :pop-fn 'pop-tag-mark
+   :should-jump t
+   :heuristic 'point
+   :async t)
+
   (ar/csetq dumb-jump-selector 'popup)
   ;; (ar/csetq dumb-jump-selector 'ivy)
   (ar/csetq dumb-jump-force-searcher 'ag)
@@ -144,9 +154,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
   (advice-add #'dumb-jump-run-command
               :around
-              #'adviced:dumb-jump-run-command)
-
-  :bind ("M-." . smart-jump-go))
+              #'adviced:dumb-jump-run-command))
 
 ;; Programmatically get the visible end of window.
 (use-package window-end-visible

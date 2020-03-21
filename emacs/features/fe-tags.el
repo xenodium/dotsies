@@ -2,6 +2,7 @@
 ;; Needs .ctags and .globalrc in $HOME.
 (use-package counsel-gtags
   :ensure t
+  :disabled ;; trying out counsel-etags
   :commands counsel-gtags-mode
   :bind (:map
          counsel-gtags-mode-map
@@ -14,3 +15,15 @@
 (use-package ggtags
   :ensure t
   :commands ggtags-mode)
+
+;; Note: Also used by smart-jump.
+(use-package counsel-etags
+  :ensure t
+  :commands counsel-etags-find-tag-at-point
+  :validate-custom
+  (counsel-etags-update-interval 60)
+  :hook (prog-mode . (lambda ()
+                       (add-hook 'after-save-hook
+                                 'counsel-etags-virtual-update-tags
+                                 'append
+                                 'local))))
