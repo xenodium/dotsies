@@ -8,6 +8,7 @@
   :init
   ;; TODO: Figure out why it's not defined.
   (ar/csetq flyspell-delayed-commands nil)
+
   ;; From http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
   (defun ar/auto-correct-word-then-abbrev (p)
     "Call `ispell-word', then create an abbrev for it.
@@ -43,15 +44,21 @@ be global."
     :config
     ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
     (cond
-     ;; if hunspell does NOT exist, use aspell
+     ;; if hunspell NOT installed, fallback to aspell
      ((executable-find "hunspell")
+      ;; In addition to "brew install hunspell" download dicts to
+      ;; ~/Library/Spelling/
+      ;; https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_GB.aff
+      ;; https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_GB.dic
       (setq ispell-program-name "hunspell")
       (setq ispell-local-dictionary "en_GB")
       (setq ispell-local-dictionary-alist
             '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8))))
      ((executable-find "aspell")
       (setq ispell-program-name "aspell")
-      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB"))))))
+      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")))
+     (t
+      (error "No speller installed")))))
 
 (use-package mw-thesaurus
   :ensure t
