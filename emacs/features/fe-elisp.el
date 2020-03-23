@@ -71,3 +71,7 @@
   (use-package fontify-face
     :ensure t
     :commands fontify-face-mode))
+
+;; Better M-. elisp navigation (enabled with smart jump).
+(use-package elisp-slime-nav
+  :ensure t)

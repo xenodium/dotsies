@@ -14,6 +14,7 @@
 ;; Needs .ctags and .globalrc in $HOME.
 (use-package ggtags
   :ensure t
+  :disabled ;; trying out counsel-etags
   :commands ggtags-mode)
 
 ;; Note: Also used by smart-jump.

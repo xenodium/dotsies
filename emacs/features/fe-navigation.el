@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 (require 'dash)
 
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
@@ -120,21 +119,28 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t
   :bind ("M-." . smart-jump-go)
   :commands smart-jump-go
+  :validate-custom
+  (dumb-jump-selector 'ivy)
+  (dumb-jump-force-searcher 'rg)
+  (dumb-jump-max-find-time 5)
   :config
   (smart-jump-setup-default-registers)
 
   (smart-jump-register
-   :modes 'swift-mode
+   :modes '(swift-mode objc-mode)
    :jump-fn 'counsel-etags-find-tag-at-point
    :pop-fn 'pop-tag-mark
    :should-jump t
    :heuristic 'point
    :async t)
 
-  (ar/csetq dumb-jump-selector 'popup)
-  ;; (ar/csetq dumb-jump-selector 'ivy)
-  (ar/csetq dumb-jump-force-searcher 'ag)
-  (ar/csetq dumb-jump-max-find-time 5)
+  (smart-jump-register
+   :modes '(emacs-lisp-mode lisp-interaction-mode)
+   :jump-fn 'elisp-slime-nav-find-elisp-thing-at-point
+   :pop-fn 'pop-tag-mark
+   :should-jump t
+   :heuristic 'error
+   :async nil)
 
   (defun adviced:dumb-jump-run-command (run-command-fun &rest r)
     "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
