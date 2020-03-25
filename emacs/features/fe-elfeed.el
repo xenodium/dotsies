@@ -23,6 +23,7 @@
                   ("http://akkartik.name/feeds.xml" blog dev)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
                   ("http://beard.institute/index.xml" blog emacs BeardInstitute)
+                  ("https://rebeja.eu/rss.xml" blog emacs PetruRebeja)
                   ("https://nalexn.github.io/feed.xml" blog swiftui swift AlexeyNaumov)
                   ("https://oracleyue.github.io/atom.xml" blog emacs oracleyue)
                   ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
