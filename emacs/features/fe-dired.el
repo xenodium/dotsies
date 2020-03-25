@@ -165,7 +165,7 @@
      '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
         "open" (file))
        ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-        "open" ("-a" "VLC" file))))
+        "open" ("-a" "mpv" file))))
     ((string-equal system-type "gnu/linux")
      '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
         "xdg-open" (file))))))
