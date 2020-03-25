@@ -61,4 +61,14 @@
   (use-package recentf-ext
     :ensure t)
 
+  (defun ar/recentf-delete-entry ()
+    "Delete a recentf entry."
+    (interactive)
+    (let ((selection (completing-read "delete: " recentf-list)))
+      (when (> (length selection) 0)
+        (setq recentf-list
+              (seq-remove (lambda (candidate)
+                            (string-equal candidate selection)) recentf-list))
+        (message "%S removed from the list" selection))))
+
   (recentf-mode +1))
