@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package files
   :validate-custom
+  ;; read-only buffers enable view-mode (C-x C-q enables editing).
+  (view-read-only t)
   ;; Always display opened file using canonical location (not symlink).
   (find-file-visit-truename t)
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
