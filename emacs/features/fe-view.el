@@ -1,8 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package view
+  :init
+  (setq-default cursor-type 'box)
   :commands (global-view-mode
              view-mode)
-  :hook ((view-mode . goto-address-mode))
+  :hook ((view-mode . goto-address-mode)
+         (view-mode . ar/view-mode-set-cursor-type))
   :bind (:map view-mode-map
               ("C-x C-q" . view-mode)
               ("a" . mwim-beginning-of-code-or-line)
@@ -14,6 +17,9 @@
               ("v" . ccm-scroll-up)
               ("SPC" . ccm-scroll-up))
   :config
+  (defun ar/view-mode-set-cursor-type ()
+    (setq cursor-type (if view-mode 'hollow 'box)))
+
   (define-global-minor-mode global-view-mode view-mode
     (lambda ()
       (if (and (not noninteractive)
