@@ -27,6 +27,7 @@
                   ("https://nalexn.github.io/feed.xml" blog swiftui swift AlexeyNaumov)
                   ("https://oracleyue.github.io/atom.xml" blog emacs oracleyue)
                   ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
+                  ("https://haresfaiez.github.io/feed.xml" blog emacs  FaiezHares)
                   ("https://posts.michaelks.org/rss.xml" blog emacs MichaelElks)
                   ;; ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
                   ("http://blog.davep.org/feed.xml" blog emacs davep)
