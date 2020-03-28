@@ -39,6 +39,12 @@
   (er/enable-mode-expansions 'text-mode 'ar/add-mode-expansions)
   (er/enable-mode-expansions 'prog-mode 'ar/add-mode-expansions))
 
+;; underscore -> UPCASE -> CamelCase conversion of names.
+(use-package string-inflection
+  :ensure t
+  :bind (:map prog-mode-map
+              ("C-M-j" . string-inflection-cycle)))
+
 (use-package dabbrev
   :config
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
