@@ -43,14 +43,7 @@
 (use-package string-inflection
   :ensure t
   :bind (:map prog-mode-map
-              ("C-M-j" . ar/string-inflection-cycle))
-  :config
-  (defun ar/string-inflection-cycle ()
-    "Like `string-inflection-cycle' but keep point where it is."
-    (interactive)
-    (let ((point (point)))
-      (string-inflection-cycle)
-      (goto-char point))))
+              ("C-M-j" . string-inflection-all-cycle)))
 
 (use-package dabbrev
   :config
