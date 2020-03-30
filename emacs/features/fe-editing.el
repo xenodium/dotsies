@@ -43,7 +43,7 @@
 (use-package string-inflection
   :ensure t
   :bind (:map prog-mode-map
-              ("C-M-j" . string-inflection-all-cycle)))
+              ("C-M-j" . string-inflection-cycle)))
 
 (use-package dabbrev
   :config
