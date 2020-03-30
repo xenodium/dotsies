@@ -142,6 +142,7 @@
    ("M-<left>"  . sp-backward-slurp-sexp)
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
+   ("C-c e" . sp-change-enclosing)
    ("M-'" . ar/rewrap-sexp-dwim)
    ("M-k" . sp-backward-kill-sexp)
    ("C-M-f" . ar/forward-sexp)
