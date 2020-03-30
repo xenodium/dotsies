@@ -131,6 +131,7 @@
                   ("https://copyninja.info/feeds/all.atom.xml" blog dev copyninja)
                   ("https://curiousprogrammer.wordpress.com/feed" blog emacs ACuriousProgrammer)
                   ("https://d12frosted.io/atom.xml" blog emacs d12frosted)
+                  ("https://jingsi.space/index.xml" blog emacs AkiraKomamura)
                   ("https://ddavis.io/index.xml" blog emacs )
                   ("https://deliberatelivinguk.wordpress.com/feed/" blog money DeliberateLivingUK)
                   ("https://dev.to/feed" blog dev DevTo)
