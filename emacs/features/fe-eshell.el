@@ -32,7 +32,7 @@
       (add-to-list 'eshell-visual-commands "htop")
       (add-to-list 'eshell-visual-commands "prettyping")
       (add-to-list 'eshell-visual-commands "ncdu")
-      (add-to-list 'eshell-visual-subcommands '("hg" "log"))
+      (add-to-list 'eshell-visual-subcommands '("hg" "log" "diff"))
 
       (setq-local company-backends '((company-cd company-projectile-cd)))
 
