@@ -42,8 +42,12 @@
 ;; underscore -> UPCASE -> CamelCase conversion of names.
 (use-package string-inflection
   :ensure t
-  :bind (:map prog-mode-map
-              ("C-M-j" . string-inflection-cycle)))
+  :bind (:map
+         prog-mode-map
+         ("C-M-j" . string-inflection-cycle)
+         :map
+         c-mode-base-map
+         ("C-M-j" . string-inflection-cycle)))
 
 (use-package dabbrev
   :config
