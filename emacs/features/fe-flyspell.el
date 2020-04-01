@@ -7,6 +7,7 @@
          ("C-M-i" . flyspell-correct-wrapper))
   :config
   (use-package flyspell-correct-ivy
+    :ensure t
     :init
     ;; Based on http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
     (defun ar/flyspell-correct-ivy-then-abbrev (candidates mispelled-word)
