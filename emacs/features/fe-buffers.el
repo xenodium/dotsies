@@ -19,3 +19,7 @@
 
 (use-package discover-my-major
   :ensure t)
+
+(use-package ibuffer
+  :bind (:map ibuffer-mode-map)
+  ("C-k" . ibuffer-do-delete))
