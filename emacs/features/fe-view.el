@@ -15,6 +15,7 @@
               ("f" . forward-char)
               ("b" . backward-char)
               ("v" . ccm-scroll-up)
+              ("q" . quit-window)
               ("SPC" . ccm-scroll-up))
   :config
   (defun ar/view-mode-set-cursor-type ()

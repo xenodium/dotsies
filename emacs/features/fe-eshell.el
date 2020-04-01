@@ -10,7 +10,8 @@
   (use-package eshell
     :commands eshell
     :hook ((eshell-mode . goto-address-mode)
-           (eshell-mode . ar/eshell-mode-hook-function))
+           (eshell-mode . ar/eshell-mode-hook-function)
+           (term-exec . view-mode))
     :init
     (defun ar/eshell-mode-hook-function ()
       (setq-local imenu-generic-expression
@@ -31,6 +32,7 @@
       (add-to-list 'eshell-visual-commands "htop")
       (add-to-list 'eshell-visual-commands "prettyping")
       (add-to-list 'eshell-visual-commands "ncdu")
+      (add-to-list 'eshell-visual-subcommands '("hg" "log"))
 
       (setq-local company-backends '((company-cd company-projectile-cd)))
 
@@ -177,7 +179,9 @@ So if we're connected with sudo to 'remotehost'
     (ar/vsetq eshell-error-if-no-glob t)
     (ar/vsetq eshell-glob-case-insensitive t)
     (ar/vsetq eshell-list-files-after-cd nil)
-    (ar/csetq eshell-destroy-buffer-when-process-dies t)
+    ;; Let buffer linger, but can easily quit since view-mode
+    ;; is enabled in term-exec-hook above.
+    (ar/csetq eshell-destroy-buffer-when-process-dies nil)
 
     (defun ar/eshell-counsel-history ()
       (interactive)
