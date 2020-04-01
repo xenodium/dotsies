@@ -207,7 +207,7 @@ For example:
          ("C--" . ivy-minibuffer-shrink)
          ("C-+" . ivy-minibuffer-grow))
   :config
-  (ar/vsetq ivy-height 15)
+  (ar/vsetq ivy-height (round (* 0.01666 (display-pixel-height))))
   (ar/vsetq ivy-count-format "")
   (ar/vsetq ivy-use-virtual-buffers t)
   (ar/vsetq ivy-display-style 'fancy)
