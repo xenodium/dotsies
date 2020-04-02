@@ -120,27 +120,6 @@
          (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
          (match-string 1))))))
 
-(defun ar/dired-sort-by-size()
-  "Sort dired buffer by size."
-  (interactive)
-  (dired-sort-other "-AlhS")
-  (beginning-of-buffer)
-  (next-line))
-
-(defun ar/dired-sort-by-date ()
-  "Sort dired buffer by date."
-  (interactive)
-  (dired-sort-other "-Alht")
-  (beginning-of-buffer)
-  (next-line))
-
-(defun ar/dired-sort-by-name ()
-  "Sort dired buffer by name."
-  (interactive)
-  (dired-sort-other "-Alh")
-  (beginning-of-buffer)
-  (next-line))
-
 (provide 'ar-dired)
 
 ;;; ar-dired.el ends here

@@ -41,6 +41,7 @@
               ("P" . peep-dired)
               ("i" . dired-hide-details-mode)
               ("C-l". dired-jump)
+              ("s" . hydra-dired-sort/body)
               ("M" . ar/dired-mark-all))
   :commands (dired-mode
              ar/find-all-dired-current-dir
@@ -118,6 +119,27 @@
   ;; Hide some files
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
   (setq dired-omit-mode t)
+
+  (defun ar/dired-sort-by-size()
+    "Sort dired buffer by size."
+    (interactive)
+    (dired-sort-other "-AlhS")
+    (beginning-of-buffer)
+    (next-line))
+
+  (defun ar/dired-sort-by-date ()
+    "Sort dired buffer by date."
+    (interactive)
+    (dired-sort-other "-Alhtc")
+    (beginning-of-buffer)
+    (next-line))
+
+  (defun ar/dired-sort-by-name ()
+    "Sort dired buffer by name."
+    (interactive)
+    (dired-sort-other "-Alh")
+    (beginning-of-buffer)
+    (next-line))
 
   (defun ar/dired-du-size-of-selection ()
     "Print size of selected dired files or directories."

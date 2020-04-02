@@ -47,6 +47,13 @@ Quick insert: _w_eb bookmark or backlog
           ((derived-mode-p 'protobuf-mode) (hydra-open-prog-mode/body))
           (t (hydra-open/body))))
 
+  (defhydra hydra-dired-sort (:color blue)
+    "sort"
+    ("d" ar/dired-sort-by-date "date")
+    ("a" ar/dired-sort-by-name "alpha")
+    ("s" ar/dired-sort-by-size "size")
+    ("q" nil "cancel"))
+
   (defhydra hydra-open-c-mode (:color blue)
     "open"
     ("o" ff-find-other-file "other")
