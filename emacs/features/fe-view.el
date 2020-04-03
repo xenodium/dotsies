@@ -15,9 +15,14 @@
               ("f" . forward-char)
               ("b" . backward-char)
               ("v" . ccm-scroll-up)
-              ("q" . quit-window)
+              ("q" . ar/view-mode-quit-window)
               ("SPC" . ccm-scroll-up))
   :config
+  (defun ar/view-mode-quit-window (&optional kill window)
+    "Like `quit-window' but also kills buffer"
+    (interactive "P")
+    (quit-restore-window window 'kill))
+
   (defun ar/view-mode-set-cursor-type ()
     (setq cursor-type (if view-mode 'hollow 'box)))
 

@@ -79,6 +79,20 @@
                 :around
                 #'adviced:eshell-add-input-to-history)
 
+    (defun adviced:eshell-exec-visual (orig-fun &rest r)
+      ;; Don't let visual commands keep creating multiple buffers.
+      ;; Kill it first if it already exists.
+      (cl-letf (((symbol-function #'generate-new-buffer)
+                 (lambda (name)
+                   (when (get-buffer name)
+                     (kill-buffer name))
+                   (get-buffer-create (generate-new-buffer-name name)))))
+        (apply orig-fun r)))
+
+    (advice-add #'eshell-exec-visual
+                :around
+                #'adviced:eshell-exec-visual)
+
     (require 'em-glob)
 
     ;; Use native 'sudo', system sudo asks for password every time.
