@@ -18,7 +18,13 @@
     :validate-custom
     (flyspell-correct-interface #'ar/flyspell-correct-ivy-then-abbrev))
 
-  (use-package abbrev)
+  (use-package abbrev
+    :validate-custom
+    (abbrev-file-name "~/stuff/active/code/dots/emacs/abbrev_defs")
+    (save-abbrevs 'silently)
+    :config
+    (setq-default abbrev-mode t))
+
   (use-package ispell
     :ensure-system-package aspell
     :config
