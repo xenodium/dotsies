@@ -109,10 +109,10 @@ For example \"crdownload$\" and \"part$\".")
                    "\n")))
     (save-excursion
       (with-current-buffer log-buffer
-        (read-only-mode -1)
+        (setq buffer-read-only nil)
         (goto-char (point-max))
         (insert log-str)
-        (read-only-mode +1))
+        (setq buffer-read-only t))
       (with-temp-buffer
         (insert log-str)
         (write-region (point-min) (point-max) log-file-name t
