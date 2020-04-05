@@ -45,6 +45,9 @@
       :hook (company-mode . company-box-mode)
       :validate-custom
       (company-box-enable-icon nil)
+      ;; Make all backends same color.
+      ;; Didn't like yasnippets colored differently.
+      (company-box-backends-colors nil)
       :init
       ;; Needed to avoid error:
       ;; Eager macro-expansion failure: (void-function all-the-icons-faicon)
