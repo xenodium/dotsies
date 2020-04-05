@@ -21,6 +21,7 @@
                   ("https://willschenk.com/feed.xml" blog emacs WillSchenk)
                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
                   ("http://akkartik.name/feeds.xml" blog dev)
+                  ("https://tech.toryanderson.com/index.xml" blog emacs ToryAnderson)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
                   ("http://beard.institute/index.xml" blog emacs BeardInstitute)
                   ("https://rebeja.eu/rss.xml" blog emacs PetruRebeja)
