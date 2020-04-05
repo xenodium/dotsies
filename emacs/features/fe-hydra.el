@@ -78,20 +78,37 @@ Open: _p_oint _e_xternally
     ("b" ar/file-open-closest-build-file "build file")
     ("q" nil "cancel"))
 
-  (defhydra hydra-git-gutter (:pre (git-gutter-mode +1))
+  ;; https://github.com/abo-abo/hydra/wiki/Version-Control#git-gutter
+  (defhydra hydra-git-gutter (:body-pre (git-gutter-mode +1)
+                                        :hint nil)
     "
-Git: _n_ext     _s_tage  _d_iff
-     _p_revious _k_ill _q_uit
+Git gutter:
+  _n_: next hunk        _s_tage hunk   _q_uit
+  _p_: previous hunk    _k_ill hunk    _Q_uit and deactivate git-gutter
+  ^ ^                   _d_iff hunk
+  _<_: first hunk
+  _>_: last hunk        set start _R_evision
 "
-    ("n" git-gutter:next-hunk nil)
-    ("p" git-gutter:previous-hunk nil)
-    ("s" git-gutter:stage-hunk nil)
+    ("n" git-gutter:next-hunk)
+    ("p" git-gutter:previous-hunk)
+    ("<" (progn (goto-char (point-min))
+                (git-gutter:next-hunk 1)))
+    (">" (progn (goto-char (point-min))
+                (git-gutter:previous-hunk 1)))
+    ("s" git-gutter:stage-hunk)
     ("k" (lambda ()
            (interactive)
            (git-gutter:revert-hunk)
            (call-interactively #'git-gutter:next-hunk)) nil)
-    ("d" git-gutter:popup-hunk nil)
-    ("q" nil nil :color blue))
+    ("d" git-gutter:popup-hunk)
+    ("R" git-gutter:set-start-revision)
+    ("q" nil :color blue)
+    ("Q" (progn (git-gutter-mode -1)
+                ;; git-gutter-fringe doesn't seem to
+                ;; clear the markup right away
+                (sit-for 0.1)
+                (git-gutter:clear))
+     :color blue))
 
   (defhydra hydra-vc-log-edit (:color blue :hint nil)
     "
