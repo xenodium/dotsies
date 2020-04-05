@@ -304,12 +304,32 @@ dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_en
   (\"dash_entry_name\" . \"MKMapRect\"))"
     (when (s-prefix-p "dash-apple-api://" query)
       (mapcar (lambda (item)
-  (let ((values (s-split "=" item)))
+                (let ((values (s-split "=" item)))
                   (cons (nth 0 values) (nth 1 values))))
               (thread-last (nth 1 (s-split "#" query))
                 (s-chop-suffix ">")
                 (s-chop-prefix "<")
                 (s-split "><")))))
+
+  (defun adviced:counsel-M-x-action (orig-fun &rest r)
+    "Additional support for multiple cursors."
+    (apply orig-fun r)
+    (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
+      (when (and (boundp 'multiple-cursors-mode)
+                 multiple-cursors-mode
+                 cmd
+                 (not (memq cmd mc--default-cmds-to-run-once))
+                 (not (memq cmd mc/cmds-to-run-once))
+                 (or mc/always-run-for-all
+                     (memq cmd mc--default-cmds-to-run-for-all)
+                     (memq cmd mc/cmds-to-run-for-all)
+                     (mc/prompt-for-inclusion-in-whitelist cmd)))
+        (mc/execute-command-for-all-fake-cursors cmd))))
+
+  (advice-add #'counsel-M-x-action
+              :around
+              #'adviced:counsel-M-x-action)
+
 
   (defun adviced:dash-docs-result-url (orig-fun &rest r)
     "Transforms dash-apple-api:// queries to dash://."
