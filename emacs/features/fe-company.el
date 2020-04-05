@@ -49,4 +49,15 @@
       ;; Needed to avoid error:
       ;; Eager macro-expansion failure: (void-function all-the-icons-faicon)
       (use-package all-the-icons
-        :ensure t))))
+        :ensure t)
+
+      ;; Based on https://github.com/hlissner/doom-emacs/commit/6f273ffc253e5e2f863fe1c7dd1684238a21d03f#diff-b7bf3ccb35ec6e4125e00a39cfef9174
+      (defun adviced:company-box--update-scrollbar (orig-fn &rest args)
+        "Hides scrollbar"
+        (cl-letf (((symbol-function #'display-buffer-in-side-window)
+                   (symbol-function #'ignore)))
+          (apply orig-fn args)))
+
+      (advice-add #'company-box--update-scrollbar
+                  :around
+                  #'adviced:company-box--update-scrollbar))))
