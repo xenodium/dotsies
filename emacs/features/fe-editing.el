@@ -101,8 +101,12 @@
     (let ((buffer (current-buffer)))
       (run-with-timer 1 nil
                       (lambda ()
-                        (with-current-buffer buffer
-                          (whitespace-mode +1))))))
+                        ;; Guard against deleted buffers.
+                        (when (if (stringp buffer)
+                                  (get-buffer buffer)
+                                (buffer-name buffer))
+                          (with-current-buffer buffer
+                            (whitespace-mode +1)))))))
   ;; When nil, fill-column is used instead.
   (ar/vsetq whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines
