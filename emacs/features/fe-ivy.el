@@ -138,6 +138,25 @@ For example:
     (set-window-configuration ar/ivy-occur--win-config)
     (select-window (nth 0 (window-list))))
 
+(defun adviced:counsel-M-x-action (orig-fun &rest r)
+    "Additional support for multiple cursors."
+    (apply orig-fun r)
+    (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
+      (when (and (boundp 'multiple-cursors-mode)
+                 multiple-cursors-mode
+                 cmd
+                 (not (memq cmd mc--default-cmds-to-run-once))
+                 (not (memq cmd mc/cmds-to-run-once))
+                 (or mc/always-run-for-all
+                     (memq cmd mc--default-cmds-to-run-for-all)
+                     (memq cmd mc/cmds-to-run-for-all)
+                     (mc/prompt-for-inclusion-in-whitelist cmd)))
+        (mc/execute-command-for-all-fake-cursors cmd))))
+
+  (advice-add #'counsel-M-x-action
+              :around
+              #'adviced:counsel-M-x-action)
+
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
   (use-package smex
     :ensure t)
@@ -310,25 +329,6 @@ dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_en
                 (s-chop-suffix ">")
                 (s-chop-prefix "<")
                 (s-split "><")))))
-
-  (defun adviced:counsel-M-x-action (orig-fun &rest r)
-    "Additional support for multiple cursors."
-    (apply orig-fun r)
-    (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
-      (when (and (boundp 'multiple-cursors-mode)
-                 multiple-cursors-mode
-                 cmd
-                 (not (memq cmd mc--default-cmds-to-run-once))
-                 (not (memq cmd mc/cmds-to-run-once))
-                 (or mc/always-run-for-all
-                     (memq cmd mc--default-cmds-to-run-for-all)
-                     (memq cmd mc/cmds-to-run-for-all)
-                     (mc/prompt-for-inclusion-in-whitelist cmd)))
-        (mc/execute-command-for-all-fake-cursors cmd))))
-
-  (advice-add #'counsel-M-x-action
-              :around
-              #'adviced:counsel-M-x-action)
 
 
   (defun adviced:dash-docs-result-url (orig-fun &rest r)
