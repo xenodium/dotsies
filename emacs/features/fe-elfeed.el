@@ -40,6 +40,7 @@
                   ("http://cmsj.net/feed.xml" blog hammerspoon dev Chris-Jones)
                   ("http://dangrover.com/feed.xml" blog dangrover emacs )
                   ("http://dividendlife.com/feed" blog money DividendLife)
+                  ("https://sneak.berlin/feed.xml" blog emacs JeffreyPaul)
                   ("https://christiantietze.de/feed.atom" blog emacs ChristianTietze)
                   ("http://earlyretirementinuk.blogspot.com/feeds/posts/default" blog money EarlyRetirementUK)
                   ("http://emacslife.blogspot.com/feeds/posts/default" blog emacs emacslife)
