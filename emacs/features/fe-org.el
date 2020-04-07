@@ -128,17 +128,20 @@
                 ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
   (defun ar/org-insert-link-dwim ()
-    "Convert selected region into a link with clipboard http link (if one is found). Default to `org-insert-link' otherwise."
+    "Convert selected region into a link with clipboard http URL (if one is found).
+Fetch and propose title from URL (if one is found). Default to `org-insert-link' otherwise."
     (interactive)
-    (if (and (string-match-p "^http" (current-kill 0))
-             (region-active-p))
-        (let ((region-content (buffer-substring-no-properties (region-beginning)
-                                                              (region-end))))
-          (delete-region (region-beginning)
-                         (region-end))
-          (insert (format "[[%s][%s]]"
-                          (current-kill 0)
-                          region-content)))
+    (if (string-match-p "^http" (current-kill 0))
+        (if (region-active-p)
+            (let ((region-content (buffer-substring-no-properties (region-beginning)
+                                                                  (region-end))))
+              (delete-region (region-beginning)
+                             (region-end))
+              (insert (format "[[%s][%s]]"
+                              (current-kill 0)
+                              region-content)))
+          ;; Fetch from URL.
+          (ar/org-insert-clipboard-link))
       (call-interactively 'org-insert-link)))
 
   ;; Look into font-locking email addresses.
