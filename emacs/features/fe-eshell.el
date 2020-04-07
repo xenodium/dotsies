@@ -34,8 +34,9 @@
       (add-to-list 'eshell-visual-commands "ncdu")
       (add-to-list 'eshell-visual-subcommands '("hg" "log" "diff"))
 
-      (setq-local company-backends '((company-cd company-projectile-cd)))
+      (setq-local company-backends '((company-yasnippet company-cd company-projectile-cd)))
 
+      (yas-minor-mode +1)
       (company-mode +1)
 
       ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
@@ -124,6 +125,10 @@
       :ensure t
       :config
       (defalias 'eshell/up #'eshell-up))
+
+    ;; It's nicer to type (range 0 3) in eshell.
+    (defalias 'eshell/range #'number-sequence)
+    (defalias 'range #'number-sequence)
 
     (use-package pcmpl-git
       :ensure t)
