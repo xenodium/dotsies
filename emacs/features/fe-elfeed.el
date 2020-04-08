@@ -23,6 +23,7 @@
                   ("https://matthewbauer.us/blog/feed.xml" blog emacs MathewBauer)
                   ("http://akkartik.name/feeds.xml" blog dev)
                   ("https://tech.toryanderson.com/index.xml" blog emacs ToryAnderson)
+                  ("https://eamonnsullivan.co.uk/feed.xml" blog emacs EamonnSullivan)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
                   ("http://beard.institute/index.xml" blog emacs BeardInstitute)
                   ("https://alhassy.github.io/feed.xml" blog MusaAlhassy)
