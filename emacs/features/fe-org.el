@@ -22,6 +22,17 @@
       "CANCELLED(c)")))
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :validate-custom
+  (org-modules '(ol-w3m
+                 ol-bbdb
+                 ol-bibtex
+                 ol-docview
+                 ol-gnus
+                 ol-info
+                 ol-irc
+                 ol-mhe
+                 ol-rmail
+                 ol-eww
+                 org-habit))
   (org-fontify-whole-heading-line t)
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
