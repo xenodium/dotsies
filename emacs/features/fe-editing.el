@@ -63,6 +63,7 @@
             (concat lines
                     (current-kill 0)
                     "\n")))
+    (setq lines (string-remove-suffix "\n" lines))
     (save-excursion
       (end-of-line)
       (newline)
