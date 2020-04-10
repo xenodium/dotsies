@@ -149,7 +149,7 @@ For example:
               :around
               #'adviced:counsel--split-command-args)
 
-(defun adviced:counsel-M-x-action (orig-fun &rest r)
+  (defun adviced:counsel-M-x-action (orig-fun &rest r)
     "Additional support for multiple cursors."
     (apply orig-fun r)
     (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
