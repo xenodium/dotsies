@@ -126,10 +126,8 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("Basef" "Based" nil 0)
-    ("Lmab" "Lamb" nil 1)
     ("agregating" "aggregating" nil 0)
     ("asynchonous" "asynchronous" nil 0)
-    ("borth" "broth" nil 0)
     ("chould" "could" nil 0)
     ("continuosly" "continuously" nil 1)
     ("discusss" "discuss" nil 0)
@@ -139,12 +137,12 @@
     ("ocassional" "ocasional" nil 0)
     ("otherplaces" "places" nil 0)
     ("queueing" "queuing" nil 0)
-    ("readu" "ready" nil 0)
     ("repleacement" "replacement" nil 0)
     ("titlep" "title" nil 0)
     ("tuesday" "tuesday" nil 0)
     ("typi" "typo" nil 0)
     ("unfrotunately" "unfortunately" nil 0)
+    ("unly" "only" nil 0)
    ))
 
 (define-abbrev-table 'gnuplot-comint-mode-abbrev-table '())
@@ -273,6 +271,8 @@
 
 (define-abbrev-table 'mu4e~update-mail-mode-abbrev-table '())
 
+(define-abbrev-table 'nroff-mode-abbrev-table '())
+
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
 (define-abbrev-table 'objc-mode-abbrev-table
@@ -348,6 +348,10 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'sql-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'suggest-mode-abbrev-table '())
 
