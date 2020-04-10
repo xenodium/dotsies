@@ -463,6 +463,11 @@ line instead."
   :config
   (clipmon-mode))
 
+;; Copy formatted region as source block for AsciiDoc Bitbucket Disqus
+;; GitHub GitLab HipChat HTML JIRA Markdown MediaWiki Org-mode POD
+;; reStructuredText Slack.
+(use-package copy-as-format
+  :ensure t)
 
 ;; Make kill ring persistent across sessions.
 (use-package savekill
