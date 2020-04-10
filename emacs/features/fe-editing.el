@@ -54,14 +54,20 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (ar/vsetq dabbrev-case-fold-search nil))
 
-(defun ar/yank-line-below ()
-  "Yank to line below."
-  (interactive)
-  (save-excursion
-    (move-end-of-line nil)
-    (newline)
-    (yank))
-  (next-line))
+(defun ar/yank-line-below (arg)
+  "Yank to line below. With ARG, repeat."
+  (interactive "p")
+  (let ((lines))
+    (dotimes (_i arg)
+      (setq lines
+            (concat lines
+                    (current-kill 0)
+                    "\n")))
+    (save-excursion
+      (end-of-line)
+      (newline)
+      (insert lines))
+    (next-line)))
 
 (bind-key "M-C-y" #'ar/yank-line-below)
 
