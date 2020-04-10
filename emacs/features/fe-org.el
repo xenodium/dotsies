@@ -143,7 +143,9 @@
 Fetch and propose title from URL (if one is found). Default to `org-insert-link' otherwise."
     (interactive)
     (if (string-match-p "^http" (current-kill 0))
-        (if (region-active-p)
+        (if (and (region-active-p)
+                 ;; Not on link.
+                 (not (org-in-regexp org-link-any-re 1)))
             (let ((region-content (buffer-substring-no-properties (region-beginning)
                                                                   (region-end))))
               (delete-region (region-beginning)
