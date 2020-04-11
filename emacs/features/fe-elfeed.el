@@ -20,6 +20,7 @@
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
                   ("https://willschenk.com/feed.xml" blog emacs WillSchenk)
                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
+                  ("http://yqrashawn.com/feeds/lazyblorg-all.atom_1.0.links-only.xml" blog emacs yqrashawn)
                   ("https://matthewbauer.us/blog/feed.xml" blog emacs MathewBauer)
                   ("http://akkartik.name/feeds.xml" blog dev)
                   ("https://tech.toryanderson.com/index.xml" blog emacs ToryAnderson)
