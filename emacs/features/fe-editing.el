@@ -54,8 +54,11 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (ar/vsetq dabbrev-case-fold-search nil))
 
+;; Easily copy from other grepped files and paste in file.
 (use-package eacl
   :ensure t
+  :commands (eacl-complete-line
+             eacl-complete-multiline)
   :validate-custom
   (eacl-git-grep-untracked nil))
 
