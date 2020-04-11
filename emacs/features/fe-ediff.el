@@ -225,3 +225,8 @@ Else call `ediff-buffers'."
                 nil (format "Could not list files in %s" dir2-path))
         (read-only-mode +1))
       (ediff-buffers buf1 buf2))))
+
+;; Diff directories
+(use-package ztree
+  :ensure t
+  :commands ztree-diff)
