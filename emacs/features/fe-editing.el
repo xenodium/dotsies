@@ -54,6 +54,11 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (ar/vsetq dabbrev-case-fold-search nil))
 
+(use-package eacl
+  :ensure t
+  :validate-custom
+  (eacl-git-grep-untracked nil))
+
 (defun ar/yank-line-below (arg)
   "Yank to line below. With ARG, repeat."
   (interactive "p")
