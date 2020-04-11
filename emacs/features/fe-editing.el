@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
@@ -50,9 +49,9 @@
          ("C-M-j" . string-inflection-cycle)))
 
 (use-package dabbrev
-  :config
+  :validate-custom
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
-  (ar/vsetq dabbrev-case-fold-search nil))
+  (dabbrev-case-fold-search nil))
 
 ;; Easily copy from other grepped files and paste in file.
 (use-package eacl
@@ -109,6 +108,13 @@
   ;; Automatically remove whitespace on saving.
   :hook ((before-save . whitespace-cleanup)
          (prog-mode . ar/whitespace-mode-enable))
+  :validate-custom
+  ;; When nil, fill-column is used instead.
+  (whitespace-line-column nil)
+  ;; Highlight empty lines, TABs, blanks at beginning/end, lines
+  ;; longer than fill-column, and trailing blanks.
+  (whitespace-style '(face empty tabs lines-tail trailing))
+  (show-trailing-whitespace t)
   :config
   (defun ar/whitespace-mode-enable ()
     "Delayed enabling of whitespace-mode to ensure fill-column is set for loaded buffer."
@@ -122,12 +128,6 @@
                                 (buffer-name buffer))
                           (with-current-buffer buffer
                             (whitespace-mode +1)))))))
-  ;; When nil, fill-column is used instead.
-  (ar/vsetq whitespace-line-column nil)
-  ;; Highlight empty lines, TABs, blanks at beginning/end, lines
-  ;; longer than fill-column, and trailing blanks.
-  (ar/vsetq whitespace-style '(face empty tabs lines-tail trailing))
-  (ar/vsetq show-trailing-whitespace t)
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
                       :background nil))
@@ -449,13 +449,14 @@ line instead."
 (use-package paren
   :ensure t
   :defer 5
+  :validate-custom
+  ;; Without this matching parens aren't highlighted in region.
+  (show-paren-priority -50)
+  (show-paren-delay 0)
+  ;; Highlight entire bracket expression.
+  (show-paren-style 'expression)
   :config
   (show-paren-mode +1)
-  ;; Without this matching parens aren't highlighted in region.
-  (ar/vsetq show-paren-priority -50)
-  (ar/vsetq show-paren-delay 0)
-  ;; Highlight entire bracket expression.
-  (ar/vsetq show-paren-style 'expression)
   (set-face-attribute 'show-paren-match nil
                       :background nil
                       :foreground "#FA009A"))
@@ -517,8 +518,8 @@ line instead."
   (pcre-mode +1))
 
 (use-package re-builder
-  :config
-  (ar/csetq reb-re-syntax 'string))
+  :validate-custom
+  (reb-re-syntax 'string))
 
 (use-package diverted
   :defer 20
