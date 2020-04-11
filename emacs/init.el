@@ -7,7 +7,7 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Init.el GC values (faster loading) ;;;;
+;;;; init.el gc values (faster loading) ;;;;
 
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
