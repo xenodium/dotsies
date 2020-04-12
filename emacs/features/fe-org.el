@@ -395,6 +395,8 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     (org-super-agenda-groups
      '((:name "Category: inbox"
               :category "inbox")
+       (:name "Habits"
+              :category "habit")
        (:name ""
               :auto-category t)))
     :config
