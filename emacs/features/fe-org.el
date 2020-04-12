@@ -378,7 +378,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   (org-agenda-custom-commands
    '(("c" "Alvaro's agenda view"
       ((agenda "" ((org-agenda-sorting-strategy
-                    (quote ((agenda todo-state-down priority-down alpha-down category-keep))))))
+                    (quote ((agenda time-up todo-state-down priority-down alpha-down category-keep))))))
        (alltodo ""
                 ((org-agenda-overriding-header "Unscheduled:")
                  (org-agenda-skip-function
