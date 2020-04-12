@@ -17,6 +17,15 @@
   (with-eval-after-load 'fullframe
     (fullframe magit-status magit-mode-quit-window))
 
+  (use-package git-identity
+    :ensure t
+    :bind (:map magit-status-mode-map
+                ("I" . git-identity-info))
+    :custom
+    (git-identity-verify t)
+    :config
+    (git-identity-magit-mode +1))
+
   ;; https://github.com/magit/magit/issues/4054
   (defun ar/magit-dired-untracked ()
     "Create a dired buffer from the listed untracked files."
