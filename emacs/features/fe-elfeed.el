@@ -26,6 +26,7 @@
                   ("https://tech.toryanderson.com/index.xml" blog emacs ToryAnderson)
                   ("https://eamonnsullivan.co.uk/feed.xml" blog emacs EamonnSullivan)
                   ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
+                  ("https://www.rousette.org.uk/index.xml" blog emacs BuyShesAGirl)
                   ("http://beard.institute/index.xml" blog emacs BeardInstitute)
                   ("https://alhassy.github.io/feed.xml" blog MusaAlhassy)
                   ("https://rebeja.eu/rss.xml" blog emacs PetruRebeja)
