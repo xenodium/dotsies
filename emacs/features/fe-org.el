@@ -393,10 +393,10 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   (use-package org-super-agenda
     :validate-custom
     (org-super-agenda-groups
-     '((:name "Category: inbox"
-              :category "inbox")
-       (:name "Habits"
+     '((:name "Category: habit"
               :category "habit")
+       (:name "Category: inbox"
+              :category "inbox")
        (:name ""
               :auto-category t)))
     :config
