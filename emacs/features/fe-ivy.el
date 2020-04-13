@@ -317,8 +317,7 @@ With prefix argument, use full path."
   :commands ar/counsel-find)
 
 (use-package ar-ivy-org
-  :commands (ar/ivy-org-add-bookmark
-             ar/ivy-org-add-backlog-link
+  :commands (ar/ivy-org-add-backlog-link
              ar/ivy-org-my-todos))
 
 (use-package counsel-dash
