@@ -29,6 +29,7 @@
                                (category (car selection))
                                (marker (cdr selection)))
                            (switch-to-buffer (marker-buffer marker))
+                           (widen)
                            (goto-char (marker-position marker))
                            (org-show-context)
                            (re-search-backward "^\\*+ " nil t)
@@ -72,6 +73,7 @@
                                (marker (cdr item)))
 
                            (switch-to-buffer (marker-buffer marker))
+                           (widen)
                            (goto-char (marker-position marker))
                            (org-show-context)
                            (re-search-backward "^\\*+ " nil t)
@@ -113,6 +115,7 @@
                            (save-excursion
                              (save-restriction
                                (switch-to-buffer (marker-buffer marker))
+                               (widen)
                                (goto-char (marker-position marker))
                                (org-show-context)
                                (re-search-backward "^\\*+ " nil t)
