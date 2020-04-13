@@ -142,7 +142,7 @@
     ("tuesday" "tuesday" nil 0)
     ("typi" "typo" nil 0)
     ("unfrotunately" "unfortunately" nil 0)
-    ("unly" "only" nil 0)
+    ("widenned" "widened" nil 0)
    ))
 
 (define-abbrev-table 'gnuplot-comint-mode-abbrev-table '())
@@ -267,11 +267,11 @@
 
 (define-abbrev-table 'mu4e-compose-mode-abbrev-table '())
 
+(define-abbrev-table 'mu4e-loading-mode-abbrev-table '())
+
 (define-abbrev-table 'mu4e-org-mode-abbrev-table '())
 
 (define-abbrev-table 'mu4e~update-mail-mode-abbrev-table '())
-
-(define-abbrev-table 'nroff-mode-abbrev-table '())
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
@@ -348,10 +348,6 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
-
-(define-abbrev-table 'sql-mode-abbrev-table
-  '(
-   ))
 
 (define-abbrev-table 'suggest-mode-abbrev-table '())
 
