@@ -391,6 +391,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
       ("~/Downloads/agenda.html"))))
   :config
   (use-package org-super-agenda
+    :ensure t
     :validate-custom
     (org-super-agenda-groups
      '((:name "Category: habit"
