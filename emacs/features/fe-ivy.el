@@ -138,7 +138,18 @@ For example:
     (set-window-configuration ar/ivy-occur--win-config)
     (select-window (nth 0 (window-list))))
 
-(defun adviced:counsel-M-x-action (orig-fun &rest r)
+  ;; Reversing args order
+  ;; https://github.com/abo-abo/swiper/commit/328da1f95ce5f3386b63b28ca41a48bd88cf4144#diff-c7fad2f9905e642928fa92ae655e23d0
+  (defun adviced:counsel--split-command-args (orig-fun &rest r)
+    "Additional support for multiple cursors."
+    (let ((pair (apply orig-fun r)))
+      (cons (cdr pair) (car pair))))
+
+  (advice-add #'counsel--split-command-args
+              :around
+              #'adviced:counsel--split-command-args)
+
+  (defun adviced:counsel-M-x-action (orig-fun &rest r)
     "Additional support for multiple cursors."
     (apply orig-fun r)
     (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
@@ -270,19 +281,20 @@ With prefix argument, use full path."
 
   (use-package ivy-rich
     :ensure t
+    :validate-custom
+    (ivy-rich-display-transformers-list
+     '(counsel-M-x
+       (:columns
+        ((counsel-M-x-transformer (:width 60))  ; the original transfomer
+         (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+       ivy-switch-buffer
+       (:columns
+        ((ivy-rich-candidate (:width 60))
+         (ivy-rich-switch-buffer-size (:width 7))
+         (ivy-rich-switch-buffer-project (:width 15 :face success)))
+        :predicate
+        (lambda (cand) (get-buffer cand)))))
     :config
-    (setq ivy-rich--display-transformers-list
-          '(counsel-M-x
-            (:columns
-             ((counsel-M-x-transformer (:width 80))  ; the original transfomer
-              (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
-            ivy-switch-buffer
-            (:columns
-             ((ivy-rich-candidate (:width 80))
-              (ivy-rich-switch-buffer-project (:width 15 :face success))
-              (ivy-rich-switch-buffer-major-mode (:width 13 :face warning)))
-             :predicate
-             (lambda (cand) (get-buffer cand)))))
     (ivy-rich-mode +1))
 
   ;; Unsure about this one.
@@ -305,8 +317,7 @@ With prefix argument, use full path."
   :commands ar/counsel-find)
 
 (use-package ar-ivy-org
-  :commands (ar/ivy-org-add-bookmark
-             ar/ivy-org-add-backlog-link
+  :commands (ar/ivy-org-add-backlog-link
              ar/ivy-org-my-todos))
 
 (use-package counsel-dash

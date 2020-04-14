@@ -1,0 +1,28 @@
+#name : sqlite source block
+#key : sqlite
+# --
+#+name: ${1:my_table}
+#+begin_src sqlite :header :colnames yes :db (org-sbe "dbpath")
+  select ${2:*} from $1;
+#+end_src
+
+#+name: dbpath
+#+begin_src emacs-lisp :results value
+  "${3:path/to/your/file.sqlite}"
+#+end_src
+
+#+startup: hideblocks
+
+#+name: startup
+#+begin_src emacs-lisp :results none
+  (save-excursion
+    (mapc (lambda (block)
+            (org-babel-goto-named-src-block block)
+            (org-babel-execute-src-block))
+          '("$1")))
+#+end_src
+
+# Local Variables:
+# org-confirm-babel-evaluate: nil
+# eval: (org-sbe "startup")
+# End:

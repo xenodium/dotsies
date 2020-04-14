@@ -52,6 +52,7 @@
 
 
 (defun ar/org-export-current-headline-async ()
+  "Export current headline to HTML asynchronously."
   (interactive)
   (let ((headline (ar/org-element-at-heading-1)))
     (assert (eq major-mode 'org-mode))
@@ -69,6 +70,7 @@
                          "*org html export*")))
 
 (defun ar/org-export-current-headline ()
+  "Export current headline to HTML."
   (interactive)
   (let ((headline (ar/org-element-at-heading-1)))
     (assert (eq major-mode 'org-mode))

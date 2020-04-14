@@ -10,13 +10,6 @@
 (require 's)
 (require 'org-link)
 
-(defun ar/ivy-org-add-bookmark ()
-  "Add a bookmark to blog."
-  (interactive)
-  (ar/ivy-org-add-bookmark-url (if (string-match-p "^http" (current-kill 0))
-                                   (current-kill 0)
-                                 (read-string "URL: "))))
-
 (defun ar/ivy-org-add-bookmark-dwim ()
   "Add a bookmark or TODO to backlog from clipboard."
   (interactive)
@@ -29,6 +22,7 @@
                                (category (car selection))
                                (marker (cdr selection)))
                            (switch-to-buffer (marker-buffer marker))
+                           (widen)
                            (goto-char (marker-position marker))
                            (org-show-context)
                            (re-search-backward "^\\*+ " nil t)
@@ -40,7 +34,16 @@
                                   (if (org-link-url link)
                                       (insert (format "- [[%s][%s]].\n" (org-link-url link) (org-link-title link)))
                                     (insert (format "- %s.\n" (read-string "Bookmark: " (org-link-title link)))))
-                                  (org-sort-list nil ?a))
+                                  (org-sort-list nil ?a)
+
+                                  ;; Remove duplicates after inserting new one.
+                                  (let ((begin (org-in-item-p)))
+                                    (assert begin nil "Not in list")
+                                    (goto-char begin)
+                                    (let* ((struct (org-list-struct))
+                                           (prevs (org-list-prevs-alist struct)))
+                                      (delete-duplicate-lines (org-list-get-list-begin begin struct prevs)
+                                                              (org-list-get-list-end begin struct prevs)))))
                                  ((s-matches-p "backlog" category)
                                   (org-insert-heading)
                                   (if (org-link-url link)
@@ -54,40 +57,6 @@
                            (save-buffer)
                            (switch-to-buffer (marker-buffer breadcrumb-marker))
                            (message "Added \"%s\" to \"%s\"" (org-link-title link) category)))))))
-
-(defun ar/ivy-org-add-bookmark-url (url)
-  "Add a bookmark with URL to blog."
-  (org-cliplink-retrieve-title
-   url
-   (lambda (url default-description)
-     (setq default-description
-           (ar/org--preprocess-url-title
-            (read-string "Description: " (ar/string-decode-html-entities default-description))))
-     (ivy-read "Heading: "
-               (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "bookmarks")
-               ;; TODO: Make function DWIM.
-               ;; (ar/ivy-org--ivy-blog-items "~/stuff/active/blog/index.org" "\\(bookmarks\\)\\|\\(backlog\\)")
-               :action (lambda (item)
-                         (let ((breadcrumb-marker (point-marker))
-                               (marker (cdr item)))
-
-                           (switch-to-buffer (marker-buffer marker))
-                           (goto-char (marker-position marker))
-                           (org-show-context)
-                           (re-search-backward "^\\*+ " nil t)
-                           (org-show-entry)
-
-                           (org-show-subtree)
-                           (org-end-of-meta-data t)
-                           (insert (format "- %s.\n" (ar/org-build-link url
-                                                                        default-description)))
-                           (org-sort-list nil ?a)
-                           (ar/org-timestamp-at-point)
-                           (hide-other)
-                           (save-buffer)
-
-                           (switch-to-buffer (marker-buffer breadcrumb-marker)))
-                         (message "Added: \"%s\"" url))))))
 
 (defun ar/ivy-org-add-backlog-link ()
   "Add a link to blog."
@@ -113,6 +82,7 @@
                            (save-excursion
                              (save-restriction
                                (switch-to-buffer (marker-buffer marker))
+                               (widen)
                                (goto-char (marker-position marker))
                                (org-show-context)
                                (re-search-backward "^\\*+ " nil t)

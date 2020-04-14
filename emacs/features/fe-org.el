@@ -22,6 +22,17 @@
       "CANCELLED(c)")))
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :validate-custom
+  (org-modules '(ol-w3m
+                 ol-bbdb
+                 ol-bibtex
+                 ol-docview
+                 ol-gnus
+                 ol-info
+                 ol-irc
+                 ol-mhe
+                 ol-rmail
+                 ol-eww
+                 org-habit))
   (org-fontify-whole-heading-line t)
   (org-priority-start-cycle-with-default nil) ;; Start one over/under default value.
   (org-lowest-priority ?D)
@@ -132,7 +143,9 @@
 Fetch and propose title from URL (if one is found). Default to `org-insert-link' otherwise."
     (interactive)
     (if (string-match-p "^http" (current-kill 0))
-        (if (region-active-p)
+        (if (and (region-active-p)
+                 ;; Not on link.
+                 (not (org-in-regexp org-link-any-re 1)))
             (let ((region-content (buffer-substring-no-properties (region-beginning)
                                                                   (region-end))))
               (delete-region (region-beginning)
@@ -365,7 +378,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   (org-agenda-custom-commands
    '(("c" "Alvaro's agenda view"
       ((agenda "" ((org-agenda-sorting-strategy
-                    (quote ((agenda todo-state-down priority-down alpha-down category-keep))))))
+                    (quote ((agenda time-up todo-state-down priority-down alpha-down category-keep))))))
        (alltodo ""
                 ((org-agenda-overriding-header "Unscheduled:")
                  (org-agenda-skip-function
@@ -377,6 +390,18 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
       nil
       ("~/Downloads/agenda.html"))))
   :config
+  (use-package org-super-agenda
+    :validate-custom
+    (org-super-agenda-groups
+     '((:name "Category: habit"
+              :category "habit")
+       (:name "Category: inbox"
+              :category "inbox")
+       (:name ""
+              :auto-category t)))
+    :config
+    (org-super-agenda-mode +1))
+
   (with-eval-after-load 'fullframe
     (fullframe org-agenda-mode
                org-agenda-quit))
@@ -384,9 +409,11 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   ;; A little formatting of agenda view.
   ;;   Tuesday     1 October 2019
   ;; ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ DONE High Pass the salt.
-  (let ((spaces (make-string 32 (string-to-char "░"))))
-    (map-put org-agenda-prefix-format 'agenda (concat spaces " ")))
-  (map-put org-agenda-prefix-format 'todo " %i %-31:c")
+  ;; (let ((spaces (make-string 32 (string-to-char "░"))))
+  ;;   (map-put org-agenda-prefix-format 'agenda (concat spaces " ")))
+  ;; (map-put org-agenda-prefix-format 'todo " %i %-31:c")
+  (map-put org-agenda-prefix-format 'agenda "    % s")
+  (map-put org-agenda-prefix-format 'todo "    ")
 
   ;; https://pages.sachachua.com/.emacs.d/Sacha.html#org32b4908
   (defun ar/org-agenda-done (&optional arg)

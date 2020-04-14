@@ -26,6 +26,7 @@
     (funcall (ar/platform-open-in-external-app-function) (current-kill 0)))
 
   (defun ar/open-clipboard-file ()
+    "Open clipboard file URL."
     (interactive)
     (find-file (current-kill 0))))
 
