@@ -17,6 +17,10 @@
   :disabled ;; trying out counsel-etags
   :commands ggtags-mode)
 
+(use-package etags
+  :validate-custom
+  (tags-revert-without-query t))
+
 ;; Note: Also used by smart-jump.
 (use-package counsel-etags
   :ensure t
