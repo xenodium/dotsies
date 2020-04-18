@@ -54,16 +54,6 @@ cd_inactive() {
   cd $(get_inactive_dir)
 }
 
-archive() {
-  source=$1
-  if [[ -z $source ]]; then
-    echo 'usage: archive path/to/file/to/archive'
-    return
-  fi
-  mv "${source}" $(get_inactive_dir)
-}
-
-
 if [ -z "$INSIDE_EMACS" ]; then
     update_terminal_cwd() {
  # Identify the directory using a "file:" scheme URL, including
@@ -99,11 +89,6 @@ fi
 
 # Increase history size.
 export HISTSIZE=32768
-
-# Update and read history file after every command.
-# http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#1292
-# After each command, append to the history file and reread it
-export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 ### Bash History ### end
 
