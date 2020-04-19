@@ -133,6 +133,7 @@
     ("discusss" "discuss" nil 0)
     ("dratfs" "drafts" nil 0)
     ("imediately" "immediately" nil 0)
+    ("immediantely" "immediately" nil 0)
     ("initialization" "initialisation" nil 0)
     ("ocassional" "ocasional" nil 0)
     ("otherplaces" "places" nil 0)
@@ -142,7 +143,6 @@
     ("tuesday" "tuesday" nil 0)
     ("typi" "typo" nil 0)
     ("unfrotunately" "unfortunately" nil 0)
-    ("widenned" "widened" nil 0)
    ))
 
 (define-abbrev-table 'gnuplot-comint-mode-abbrev-table '())
