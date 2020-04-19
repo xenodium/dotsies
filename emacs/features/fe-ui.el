@@ -278,3 +278,7 @@
     (if (member font-name (font-family-list))
         (set-face-attribute 'default nil :font font-name)
       (error "'%s' font not found" font-name))))
+
+(use-package hide-mode-line
+  :ensure t
+  :commands hide-mode-line-mode)

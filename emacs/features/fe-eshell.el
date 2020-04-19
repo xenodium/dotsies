@@ -11,6 +11,7 @@
     :commands eshell
     :hook ((eshell-mode . goto-address-mode)
            (eshell-mode . ar/eshell-mode-hook-function)
+           (eshell-mode . turn-on-hide-mode-line-mode)
            (term-exec . view-mode))
     :init
     (defun ar/eshell-mode-hook-function ()
