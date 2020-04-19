@@ -74,7 +74,11 @@
 
   (defun ar/delayed-git-gutter-mode ()
     "Git gutter can take time to load on some repos. Delay enabling."
-    (run-with-idle-timer 5 nil #'git-gutter-mode +1)))
+    (let ((buffer (current-buffer)))
+      (run-with-idle-timer 3 nil
+                           (lambda ()
+                             (with-current-buffer buffer
+                               (git-gutter-mode +1)))))))
 
 (use-package ar-git
   :defer 2)
