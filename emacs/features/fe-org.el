@@ -366,6 +366,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   :commands (org-agenda
              ar/org-agenda-toggle)
   :validate-custom
+  (setq org-agenda-scheduled-leaders '("Scheduled: " "Overdue %dd: "))
   (org-agenda-use-time-grid nil)
   ;; Default to daily view.
   (org-agenda-span 'day)
