@@ -195,6 +195,9 @@
   (openwith-mode +1))
 
 (use-package tramp
+  :validate-custom
+  ;; Favor .ssh/config instead.
+  (tramp-use-ssh-controlmaster-options nil)
   :config
   ;; make sure vc stuff is not making tramp slower
   (setq vc-ignore-dir-regexp
