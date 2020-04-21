@@ -7,9 +7,9 @@ init:
 	mkdir -p ~/.emacs.d
 	python ../installer/copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
 	mkdir -p ~/.emacs.d/downloads/
-	curl https://raw.githubusercontent.com/CeleritasCelery/company-async-files/master/company-async-files.el -o ~/.emacs.d/downloads/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
-	curl https://raw.githubusercontent.com/tmtxt/tmtxt-async-tasks/master/tmtxt-async-tasks.el -o ~/.emacs.d/downloads/tmtxt-async-tasks.el || echo "No internet connection... skipping tmtxt-async-task install."
-	curl https://raw.githubusercontent.com/tmtxt/tmtxt-dired-async/master/tmtxt-dired-async.el -o ~/.emacs.d/downloads/tmtxt-dired-async.el || echo "No internet connection... skipping tmtxt-dired-async install."
+	curl https://raw.githubusercontent.com/xenodium/company-async-files/master/company-async-files.el -o ~/.emacs.d/downloads/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
+	curl https://raw.githubusercontent.com/xenodium/tmtxt-async-tasks/master/tmtxt-async-tasks.el -o ~/.emacs.d/downloads/tmtxt-async-tasks.el || echo "No internet connection... skipping tmtxt-async-task install."
+	curl https://raw.githubusercontent.com/xenodium/tmtxt-dired-async/master/tmtxt-dired-async.el -o ~/.emacs.d/downloads/tmtxt-dired-async.el || echo "No internet connection... skipping tmtxt-dired-async install."
 	mkdir -p ~/local/bin/
 	cp emacssocket ~/local/bin/
 	cp open_xcode_file_in_emacs.sh ~/local/bin/
@@ -32,14 +32,9 @@ yasxcode:
 	cd yasnippets/personal && python ../generate-xcode-yasnippets.py
 
 emaxcode:
-	curl https://raw.githubusercontent.com/ShingoFukuyama/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
+	curl https://raw.githubusercontent.com/xenodium/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
 	mkdir -p ~/.emacs.d/downloads/emaXcode
 	mv /tmp/emaXcode.el ~/.emacs.d/downloads/emaXcode
-
-ox-rss:
-	curl http://orgmode.org/cgit.cgi/org-mode.git/plain/contrib/lisp/ox-rss.el -o /tmp/ox-rss.el
-	mkdir -p ~/.emacs.d/downloads/ox-rss
-	mv /tmp/ox-rss.el ~/.emacs.d/downloads/ox-rss
 
 local_path := ~/local
 ifeq ($(shell uname), Darwin)
@@ -47,7 +42,7 @@ ifeq ($(shell uname), Darwin)
 endif
 rtags:
 	rm -rf ~/.emacs.d/downloads/rtags
-	git clone https://github.com/Andersbakken/rtags.git ~/.emacs.d/downloads/rtags
+	git clone https://github.com/xenodium/rtags.git ~/.emacs.d/downloads/rtags
 	cd ~/.emacs.d/downloads/rtags && git submodule init && git submodule update
 	cd ~/.emacs.d/downloads/rtags && cmake . && make
 
@@ -65,6 +60,6 @@ rtags_reset:
 
 ycmd_install:
 	rm -rf ~/.emacs.d/downloads/ycmd
-	git clone https://github.com/Valloric/ycmd.git ~/.emacs.d/downloads/ycmd
+	git clone https://github.com/xenodium/ycmd.git ~/.emacs.d/downloads/ycmd
 	cd ~/.emacs.d/downloads/ycmd && git submodule update --init --recursive
 	cd ~/.emacs.d/downloads/ycmd && ./build.sh --clang-completer
