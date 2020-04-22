@@ -129,7 +129,9 @@
     ("agregating" "aggregating" nil 0)
     ("asynchonous" "asynchronous" nil 0)
     ("bookarks" "bookmarks" nil 0)
+    ("cardamon" "cardamom" nil 0)
     ("chould" "could" nil 0)
+    ("cinamon" "cinnamon" nil 0)
     ("continuosly" "continuously" nil 1)
     ("discusss" "discuss" nil 0)
     ("dratfs" "drafts" nil 0)
@@ -392,4 +394,3 @@
 (define-abbrev-table 'web-mode-abbrev-table '())
 
 (define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
-
