@@ -195,7 +195,12 @@
   (openwith-mode +1))
 
 (use-package tramp
+  :validate-custom
+  ;; Favor .ssh/config instead.
+  (tramp-use-ssh-controlmaster-options nil)
   :config
+  ;; Use remote PATH on tramp (handy for eshell).
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
   ;; make sure vc stuff is not making tramp slower
   (setq vc-ignore-dir-regexp
 	(format "%s\\|%s"
