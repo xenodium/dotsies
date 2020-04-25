@@ -477,9 +477,10 @@ line instead."
 ;; reStructuredText Slack.
 (use-package copy-as-format
   :ensure t
+  :init
+  (defalias 'copy-as-symbol-reddit 'copy-as-format-markdown)
   :commands
-  (copy-as-format-reddit
-   copy-as-format-asciidoc
+  (copy-as-format-asciidoc
    copy-as-format-bitbucket
    copy-as-format-disqus
    copy-as-format-github
@@ -492,9 +493,7 @@ line instead."
    copy-as-format-org-mode
    copy-as-format-pod
    copy-as-format-rst
-   copy-as-format-slack)
-  :config
-  (defalias 'copy-as-symbol-reddit #'copy-as-format-markdown))
+   copy-as-format-slack))
 
 ;; Make kill ring persistent across sessions.
 (use-package savekill
