@@ -476,7 +476,25 @@ line instead."
 ;; GitHub GitLab HipChat HTML JIRA Markdown MediaWiki Org-mode POD
 ;; reStructuredText Slack.
 (use-package copy-as-format
-  :ensure t)
+  :ensure t
+  :commands
+  (copy-as-format-reddit
+   copy-as-format-asciidoc
+   copy-as-format-bitbucket
+   copy-as-format-disqus
+   copy-as-format-github
+   copy-as-format-gitlab
+   copy-as-format-hipchat
+   copy-as-format-html
+   copy-as-format-jira
+   copy-as-format-markdown
+   copy-as-format-mediawiki
+   copy-as-format-org-mode
+   copy-as-format-pod
+   copy-as-format-rst
+   copy-as-format-slack)
+  :config
+  (defalias 'copy-as-symbol-reddit #'copy-as-format-markdown))
 
 ;; Make kill ring persistent across sessions.
 (use-package savekill
