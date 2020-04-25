@@ -62,7 +62,7 @@
   ;; emacsclient.args = --eval '(ediff-merge-with-ancestor "$local" "$other" "$base" nil "$output")'
   (setenv "HGMERGE" "emacsclient"))
 
-(use-package git-gutter-fringe
+(use-package git-gutter
   :ensure t
   :hook ((prog-mode . ar/delayed-git-gutter-mode)
          (protobuf-mode . git-gutter-mode))
