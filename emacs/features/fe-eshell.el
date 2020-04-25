@@ -100,8 +100,10 @@
     ;; Use native 'sudo', system sudo asks for password every time.
     (require 'em-tramp)
 
+    (when (< emacs-major-version 27)
+      (use-package em-banner))
+
     (use-package em-banner
-      :ensure eshell
       :config
       (ar/csetq eshell-banner-message "
   Welcome to the Emacs

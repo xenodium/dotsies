@@ -446,8 +446,11 @@ line instead."
   (delete-selection-mode +1))
 
 ;; Highlight matching parenthesis.
+(when (< emacs-major-version 27)
+  (use-package paren
+    :ensure t))
+
 (use-package paren
-  :ensure t
   :defer 5
   :validate-custom
   ;; Without this matching parens aren't highlighted in region.

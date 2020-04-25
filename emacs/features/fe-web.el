@@ -17,6 +17,11 @@
   :mode (("\\.css\\'" . css-mode)
          ("\\.rasi\\'" . css-mode)))
 
+(use-package sgml-mode
+  :bind(:map
+        sgml-mode-map
+        ("<tab>" . ar/indent-for-tab-command-dwim)))
+
 (use-package auto-rename-tag
   :hook ((nxml-mode . auto-rename-tag-mode)
          (html-mode . auto-rename-tag-mode))

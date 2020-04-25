@@ -106,8 +106,9 @@
         ("org" . 2)
         ("gnu" . 1)))
 
-(unless package--initialized
-  (package-initialize))
+(when (< emacs-major-version 27)
+  (unless package--initialized
+    (package-initialize)))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)

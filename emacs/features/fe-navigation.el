@@ -220,9 +220,6 @@ Repeated invocations toggle between the two most recently open buffers."
    (sgml-mode . yafolding-mode))
   :bind (:map
          prog-mode-map
-         ("<tab>" . ar/indent-for-tab-command-dwim)
-         :map
-         sgml-mode-map
          ("<tab>" . ar/indent-for-tab-command-dwim))
   :config
   (defun ar/indent-for-tab-command-dwim (&optional prefix)
