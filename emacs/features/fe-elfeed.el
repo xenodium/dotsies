@@ -19,6 +19,7 @@
                   ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWZ3HFiJkxG1K8C4HVnyBvQ" youtube VicBerger)
+                  ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UCbpMy0Fg74eXXkvxJrtEn3w" youtube BonApetit)
                   ("https://www.youtube.com/feeds/videos.xml?channel_id=UC5fdssPqmmGhkhsJi4VcckA" youtube InnuendoStudios)
                   ("https://willschenk.com/feed.xml" blog emacs WillSchenk)
