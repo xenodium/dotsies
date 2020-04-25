@@ -62,16 +62,15 @@
   ;; emacsclient.args = --eval '(ediff-merge-with-ancestor "$local" "$other" "$base" nil "$output")'
   (setenv "HGMERGE" "emacsclient"))
 
-(use-package git-gutter
+(use-package git-gutter-fringe
+  :ensure t
   :hook ((prog-mode . ar/delayed-git-gutter-mode)
          (protobuf-mode . git-gutter-mode))
-  :ensure t
   :bind (("C-c <up>" . git-gutter:previous-hunk)
          ("C-c <down>" . git-gutter:next-hunk))
+  :validate-custom
+  (git-gutter:handled-backends '(git hg))
   :config
-  (ar/vsetq
-   git-gutter:handled-backends '(git hg))
-
   (defun ar/delayed-git-gutter-mode ()
     "Git gutter can take time to load on some repos. Delay enabling."
     (let ((buffer (current-buffer)))
