@@ -282,7 +282,10 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
 
     (use-package ob-plantuml
       :config
-      (use-package org-src)
+      (use-package org-src
+        :validate-custom
+        ;; When editing src block (via `org-edit-special'), use current window.
+        (org-src-window-setup 'current-window))
 
       ;; Use fundamental mode when editing plantuml blocks with C-c '
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
