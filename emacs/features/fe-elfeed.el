@@ -218,6 +218,7 @@
                   ("https://ogbe.net/blog.xml" blog emacs dev DennisOgbe)
                   ("https://palikar.github.io/index.xml" blog emacs StanislavArnaudov)
                   ("https://pantarei.xyz/rss.xml" blog emacs PelleNilsson)
+                  ("https://weblog.evenmere.org/atom.xml" blog emacs BrianSniffen)
                   ("https://patrickskiba.com/feed.xml" blog emacs PatrickSkiba)
                   ("https://people.gnome.org/~federico/blog/feeds/all.atom.xml" emacs FedericoMenaQuintero)
                   ("https://piware.de/post/index.xml" blog dev MartinPitt)
