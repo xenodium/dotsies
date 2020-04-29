@@ -1,4 +1,4 @@
 #name : Eshell for loop
 #key : for
 # --
-for F in ${1:*} { echo "${2:hello} $F"; echo "${2:bye} $F" }
+for f in ${1:*} { ${2:echo} "$f"; $3} $0
