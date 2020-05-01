@@ -69,7 +69,12 @@
                      (split-string input))))
         (if (and (equal "cd" (nth 0 args))
                  (not (seq-find (lambda (item)
+                                  ;; Don't rewrite "cd /ssh:" in history.
                                   (string-prefix-p "/ssh:" item))
+                                args))
+                 (not (seq-find (lambda (item)
+                                  ;; Don't rewrite "cd -" in history.
+                                  (string-equal "-" item))
                                 args)))
             (apply orig-fun (list (format "cd %s"
                                           (expand-file-name (concat default-directory
