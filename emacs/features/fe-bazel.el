@@ -27,4 +27,10 @@
 
   (map-put compilation-error-regexp-alist-alist
            'bazel-warning (list "^WARNING: \\(.*/BUILD\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 1))
-  (add-to-list 'compilation-error-regexp-alist 'bazel-warning))
+  (add-to-list 'compilation-error-regexp-alist 'bazel-warning)
+
+  (map-put compilation-error-regexp-alist-alist
+           ;; Starlark debug lines are noisy. Make less prevalent.
+           'starlark-debug (list "^DEBUG: \\(/.*/.*\\.bzl\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 0))
+
+  (add-to-list 'compilation-error-regexp-alist 'starlark-debug))
