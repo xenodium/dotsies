@@ -483,7 +483,8 @@ preferring the preferred type."
   ;; https://www.youtube.com/watch?v=rzQEIRRJ2T0
   ;; https://youtu.be/rzQEIRRJ2T0
   (setq url (s-trim url))
-  (assert (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(m.youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\|\\(redditmedia.com\\)\\)" url)
+  (assert (or (string-match-p "^http[s]?://\\(www\\.\\)?\\(\\(youtube.com\\)\\|\\(m.youtube.com\\)\\|\\(youtu.be\\)\\|\\(soundcloud.com\\)\\|\\(redditmedia.com\\)\\)" url)
+              (string-match-p "^http[s]?://.*bandcamp.com" url))
           nil "Not a downloadable URL: %s" url)
   (message "Downloading: %s" url)
   (async-start
