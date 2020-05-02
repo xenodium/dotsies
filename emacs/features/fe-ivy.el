@@ -152,7 +152,7 @@ For example:
   (defun adviced:counsel-M-x-action (orig-fun &rest r)
     "Additional support for multiple cursors."
     (apply orig-fun r)
-    (let ((cmd (intern (counsel--string-trim-left (nth 0 r) "\\^"))))
+    (let ((cmd (intern (string-remove-prefix (nth 0 r) "\\^"))))
       (when (and (boundp 'multiple-cursors-mode)
                  multiple-cursors-mode
                  cmd
