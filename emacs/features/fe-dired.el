@@ -186,7 +186,7 @@
     ((string-equal system-type "darwin")
      '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
         "open" (file))
-       ("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+       ("\\.\\(aiff\\|mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
         "open" ("-a" "mpv" file))))
     ((string-equal system-type "gnu/linux")
      '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
