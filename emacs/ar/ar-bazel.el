@@ -66,9 +66,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                        (format "%s-%s/"
                                ar/bazel-gendir-prefix
                                name))))
-    (assert (f-exists-p dpath) nil
-            "Path not found:\"%s\" (is `ar/bazel-gendir-prefix' = '%s' correct?)"
-            dpath ar/bazel-gendir-prefix)
+    (unless (f-exists-p dpath)
+      (message "Path not found:\"%s\" (is `ar/bazel-gendir-prefix' = '%s' correct?)"
+               dpath ar/bazel-gendir-prefix))
     dpath))
 
 (defun ar/bazel-bin-dir ()
