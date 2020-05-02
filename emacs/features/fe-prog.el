@@ -25,7 +25,14 @@
 
   ;; Highlight hex strings in respective color.
   (use-package rainbow-mode
-    :ensure t)
+    :ensure t
+    :config
+    ;; Enable more color highlighting cases in prog modes.
+    (mapc (lambda (mode)
+            (add-to-list 'rainbow-x-colors-major-mode-list mode)
+            (add-to-list 'rainbow-html-colors-major-mode-list mode))
+          '(objc-mode
+            swift-mode)))
 
   (defun ar/comment-dwim ()
     "Comment current line or region."
