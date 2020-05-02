@@ -21,7 +21,6 @@
       ;; Turn off semantic-mode in eshell buffers.
       (semantic-mode -1)
 
-      (eshell-smart-initialize)
       (eshell-tramp-initialize) ;; su/sudo support.
 
       (setq-local global-hl-line-mode nil)
@@ -70,7 +69,12 @@
                      (split-string input))))
         (if (and (equal "cd" (nth 0 args))
                  (not (seq-find (lambda (item)
+                                  ;; Don't rewrite "cd /ssh:" in history.
                                   (string-prefix-p "/ssh:" item))
+                                args))
+                 (not (seq-find (lambda (item)
+                                  ;; Don't rewrite "cd -" in history.
+                                  (string-equal "-" item))
                                 args)))
             (apply orig-fun (list (format "cd %s"
                                           (expand-file-name (concat default-directory
@@ -186,15 +190,17 @@ So if we're connected with sudo to 'remotehost'
           (find-file (concat "/sudo::" qualified-path)))))
 
     (use-package em-dirs)
-    (use-package em-smart)
+    (use-package em-smart
+      :hook
+      ((eshell-mode . eshell-smart-initialize))
+      :validate-custom
+      (eshell-smart-space-goes-to-end t)
+      (eshell-where-to-jump 'begin)
+      (eshell-review-quick-commands nil))
 
     ;; Avoid "WARNING: terminal is not fully functional."
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
     (setenv "PAGER" "cat")
-
-    (ar/vsetq eshell-where-to-jump 'begin)
-    (ar/vsetq eshell-review-quick-commands nil)
-    (ar/vsetq eshell-smart-space-goes-to-end t)
 
     (ar/vsetq eshell-history-size (* 10 1024))
     (ar/vsetq eshell-hist-ignoredups t)
