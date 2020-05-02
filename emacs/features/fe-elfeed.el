@@ -17,6 +17,7 @@
   (elfeed-feeds '(
                   ("http://1w6.org/rss.xml" blog emacs draketo)
                   ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
+                  ("https://genehack.blog/atom.xml" blog emacs genehack)
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
                   ("https://invidio.us/feed/channel/UCWZ3HFiJkxG1K8C4HVnyBvQ" video invidious VicBerger)
                   ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
@@ -384,6 +385,7 @@ Based on `elfeed-search-print-entry--default'."
                          ("iOS" . "@6-months-ago +unread +ios")
                          ("Money" . "@6-months-ago +unread +money")
                          ("Product Hunt" . "@6-months-ago +unread +ProductHunt")
+                         ("Video" . "@6-months-ago +unread +video")
                          ("Travel" . "@6-months-ago +unread +travel")))))
       (if (> (length categories) 0)
           (progn
