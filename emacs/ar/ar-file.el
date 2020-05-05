@@ -137,7 +137,7 @@
     (switch-to-buffer (find-file-noselect closest-fname))
     closest-fname))
 
-(defvar ar/file-build-file-names '("BUILD" "SConstruct" "Makefile"))
+(defvar ar/file-build-file-names '("BUILD" "SConstruct" "Makefile" "Package.swift"))
 
 (defun ar/file-open-closest-build-file ()
   "Open the closest build file in current or parent directory.
