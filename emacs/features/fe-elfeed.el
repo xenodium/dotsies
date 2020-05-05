@@ -22,6 +22,7 @@
                   ("https://invidio.us/feed/channel/UCWZ3HFiJkxG1K8C4HVnyBvQ" video invidious VicBerger)
                   ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
                   ("https://invidio.us/feed/channel/UCbpMy0Fg74eXXkvxJrtEn3w" video invidious BonApetit)
+                  ("https://randomgeekery.org/index.xml" blog emacs RandomGeekery)
                   ("https://invidio.us/feed/channel/UC5fdssPqmmGhkhsJi4VcckA" video invidious InnuendoStudios)
                   ("https://betamax.video/feeds/videos.xml?sort=-trending" video peertube betamax)
                   ("https://tube.tchncs.de/feeds/videos.xml?sort=-trending" video peertube tchncs)
