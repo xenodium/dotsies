@@ -152,6 +152,28 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
+  (defun ar/dired-convert-to-mp3 (&optional arg)
+    "Converts audio file to mp3."
+    (interactive "P")
+    (mapc
+     (lambda (fpath)
+       (let* ((src-fpath fpath)
+              (ext (file-name-extension src-fpath))
+              (dst-fpath (concat (file-name-sans-extension src-fpath)
+                                 ".mp3")))
+         (message "ffmpeg %s ..." (file-name-nondirectory dst-fpath))
+         (set-process-sentinel (start-process "ffmpeg"
+                                              (generate-new-buffer (format "*ffmpeg %s*" (file-name-nondirectory src-fpath)))
+                                              "ffmpeg" "-loglevel" "error" "-n" "-i" src-fpath "-acodec" "libmp3lame" dst-fpath)
+                               (lambda (process state)
+                                 (if (= (process-exit-status process) 0)
+                                     (message "ffmpeg %s ✔" (file-name-nondirectory dst-fpath))
+                                   (message "ffmpeg %s ❌" (file-name-nondirectory dst-fpath))
+                                   (message (with-current-buffer (process-buffer process)
+                                              (buffer-string))))
+                                 (kill-buffer (process-buffer process))))))
+     (dired-map-over-marks (dired-get-filename) arg)))
+
   ;; Predownloaded to ~/.emacs.d/downloads
   (use-package tmtxt-dired-async
     :config
@@ -186,7 +208,7 @@
     ((string-equal system-type "darwin")
      '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
         "open" (file))
-       ("\\.\\(aiff\\|mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+       ("\\.\\(aiff\\|wav\\|mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
         "open" ("-a" "mpv" file))))
     ((string-equal system-type "gnu/linux")
      '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
