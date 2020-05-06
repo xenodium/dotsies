@@ -283,7 +283,13 @@ With prefix argument, use full path."
                 (lambda (line)
                   ;; Keep lines like: af-8c-3b-b1-99-af - Device name
                   (string-match-p "^[0-9a-f]\\{2\\}" line))
-                (process-lines "BluetoothConnector")))
+                (with-current-buffer (get-buffer-create "*BluetoothConnector*")
+                  (erase-buffer)
+                  ;; BluetoothConnector exits with 64 if no param is given.
+                  ;; Invoke with no params to get a list of devices.
+                  (unless (eq 64 (call-process "BluetoothConnector" nil (current-buffer)))
+                    (error (buffer-string)))
+                  (split-string (buffer-string) "\n"))))
               :require-match t
               :preselect (when (boundp 'ar/misc-bluetooth-connect--history)
                            (nth 0 ar/misc-bluetooth-connect--history))
