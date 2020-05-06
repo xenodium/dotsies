@@ -141,9 +141,11 @@ For example:
   ;; Reversing args order
   ;; https://github.com/abo-abo/swiper/commit/328da1f95ce5f3386b63b28ca41a48bd88cf4144#diff-c7fad2f9905e642928fa92ae655e23d0
   (defun adviced:counsel--split-command-args (orig-fun &rest r)
-    "Additional support for multiple cursors."
+    "https://github.com/abo-abo/swiper/commit/328da1f95ce5f3386b63b28ca41a48bd88cf4144"
     (let ((pair (apply orig-fun r)))
-      (cons (cdr pair) (car pair))))
+      (if (string-empty-p (car pair))
+          pair
+        (cons (cdr pair) (car pair)))))
 
   (advice-add #'counsel--split-command-args
               :around
