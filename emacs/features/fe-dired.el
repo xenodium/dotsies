@@ -152,9 +152,10 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
-  (defun ar/dired-convert-to-mp3 (&optional arg)
-    "Converts audio file to mp3."
+  (defun ar/dired-convert-audio-to-mp3 (&optional arg)
+    "Convert audio file to mp3."
     (interactive "P")
+    (assert (executable-find "convert") nil "Install ffmpeg")
     (mapc
      (lambda (fpath)
        (let* ((src-fpath fpath)
@@ -173,6 +174,39 @@
                                               (buffer-string))))
                                  (kill-buffer (process-buffer process))))))
      (dired-map-over-marks (dired-get-filename) arg)))
+
+  (defun ar/dired-convert-image (&optional arg)
+    "Convert image files to other formats."
+    (interactive "P")
+    (assert (executable-find "convert") nil "Install imagemagick")
+    (let* ((dst-fpath)
+           (src-fpath)
+           (src-ext)
+           (last-ext)
+           (dst-ext))
+      (mapc
+       (lambda (fpath)
+         (setq src-fpath fpath)
+         (setq src-ext (downcase (file-name-extension src-fpath)))
+         (unless (string-equal dst-ext last-ext)
+           (setq dst-ext (completing-read "to format: "
+                                          (seq-remove (lambda (format)
+                                                        (string-equal format src-ext))
+                                                      '("jpg" "png")))))
+         (setq last-ext dst-ext)
+         (setq dst-fpath (format "%s.%s" (file-name-sans-extension src-fpath) dst-ext))
+         (message "convert %s to %s ..." (file-name-nondirectory dst-fpath) dst-ext)
+         (set-process-sentinel (start-process "convert"
+                                              (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
+                                              "convert" src-fpath dst-fpath)
+                               (lambda (process state)
+                                 (if (= (process-exit-status process) 0)
+                                     (message "convert %s ✔" (file-name-nondirectory dst-fpath))
+                                   (message "convert %s ❌" (file-name-nondirectory dst-fpath))
+                                   (message (with-current-buffer (process-buffer process)
+                                              (buffer-string))))
+                                 (kill-buffer (process-buffer process)))))
+       (dired-map-over-marks (dired-get-filename) arg))))
 
   ;; Predownloaded to ~/.emacs.d/downloads
   (use-package tmtxt-dired-async
