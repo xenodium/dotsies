@@ -29,6 +29,7 @@
                   ("https://tube.tchncs.de/feeds/videos.xml?sort=-trending" video peertube tchncs)
                   ("https://willschenk.com/feed.xml" blog emacs WillSchenk)
                   ("https://distinctly.pink/feed.xml" blog emacs DistinctlyPing)
+                  ("https://confessionsfromaflightattendant.wordpress.com/feed" blog misc ConfessionsFromFlightAttendant)
                   ("http://200ok.ch/atom.xml" blog emacs 200ok)
                   ("https://noonker.github.io/index.xml" blog emacs noonker)
                   ("http://yqrashawn.com/feeds/lazyblorg-all.atom_1.0.links-only.xml" blog emacs yqrashawn)
