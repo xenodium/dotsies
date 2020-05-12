@@ -42,6 +42,7 @@
               ("i" . dired-hide-details-mode)
               ("C-l". dired-jump)
               ("s" . hydra-dired-sort/body)
+              ("A" . ar/dired-mark-all)
               ("M" . ar/dired-mark-all))
   :commands (dired-mode
              ar/find-all-dired-current-dir
