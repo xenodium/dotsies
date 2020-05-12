@@ -21,6 +21,7 @@
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
                   ("https://invidio.us/feed/channel/UCWZ3HFiJkxG1K8C4HVnyBvQ" video invidious VicBerger)
                   ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
+                  ("https://menno.io/rss.xml" blog emacs Menno)
                   ("https://invidio.us/feed/channel/UCbpMy0Fg74eXXkvxJrtEn3w" video invidious BonApetit)
                   ("https://archive.casouri.cat/note/rss.xml" blog emacs casouri)
                   ("https://randomgeekery.org/index.xml" blog emacs RandomGeekery)
