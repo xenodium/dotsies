@@ -1,12 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package flycheck
   :ensure t
-  :config
+  :validate-custom
+  ;; bazel-buildifier in flycheck no longer working. Disable.
+  (flycheck-disabled-checkers '(bazel-buildifier))
   ;; Override default flycheck triggers
-  (ar/vsetq flycheck-check-syntax-automatically
-            '(save idle-change mode-enabled)
-            flycheck-idle-change-delay 0.8)
-
+  (flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (flycheck-idle-change-delay 0.8)
+  :config
   (use-package flycheck-status-emoji
     :ensure t
     :validate-custom
