@@ -179,7 +179,7 @@
   (defun ar/dired-convert-image (&optional arg)
     "Convert image files to other formats."
     (interactive "P")
-    (assert (executable-find "convert") nil "Install imagemagick")
+    (assert (or (executable-find "convert") (executable-find "magick.exe")) nil "Install imagemagick")
     (let* ((dst-fpath)
            (src-fpath)
            (src-ext)
@@ -189,7 +189,8 @@
        (lambda (fpath)
          (setq src-fpath fpath)
          (setq src-ext (downcase (file-name-extension src-fpath)))
-         (unless (string-equal dst-ext last-ext)
+         (when (or (null dst-ext)
+                   (not (string-equal dst-ext last-ext)))
            (setq dst-ext (completing-read "to format: "
                                           (seq-remove (lambda (format)
                                                         (string-equal format src-ext))
@@ -197,16 +198,21 @@
          (setq last-ext dst-ext)
          (setq dst-fpath (format "%s.%s" (file-name-sans-extension src-fpath) dst-ext))
          (message "convert %s to %s ..." (file-name-nondirectory dst-fpath) dst-ext)
-         (set-process-sentinel (start-process "convert"
-                                              (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
-                                              "convert" src-fpath dst-fpath)
-                               (lambda (process state)
-                                 (if (= (process-exit-status process) 0)
-                                     (message "convert %s ✔" (file-name-nondirectory dst-fpath))
-                                   (message "convert %s ❌" (file-name-nondirectory dst-fpath))
-                                   (message (with-current-buffer (process-buffer process)
-                                              (buffer-string))))
-                                 (kill-buffer (process-buffer process)))))
+         (set-process-sentinel
+          (if (string-equal system-type "windows-nt")
+              (start-process "convert"
+                             (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
+                             "magick.exe" "convert" src-fpath dst-fpath)
+            (start-process "convert"
+                           (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
+                           "convert" src-fpath dst-fpath))
+          (lambda (process state)
+            (if (= (process-exit-status process) 0)
+                (message "convert %s ✔" (file-name-nondirectory dst-fpath))
+              (message "convert %s ❌" (file-name-nondirectory dst-fpath))
+              (message (with-current-buffer (process-buffer process)
+                         (buffer-string))))
+            (kill-buffer (process-buffer process)))))
        (dired-map-over-marks (dired-get-filename) arg))))
 
   ;; Predownloaded to ~/.emacs.d/downloads
