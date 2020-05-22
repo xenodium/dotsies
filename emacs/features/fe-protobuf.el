@@ -7,9 +7,9 @@
   :config
   (defun ar/protobuf-setup-imenu ()
     (setq-local imenu-generic-expression
-                '(("Message" "^[[:space:]]*message[[:space:]]+\\([[:alpha:]][[:alnum:]_]+\\)" 1)
-                  ("Service" "^[[:space:]]*service[[:space:]]+\\([[:alpha:]][[:alnum:]_]+\\)" 1)
-                  ("Enum" "^[[:space:]]*enum[[:space:]]+\\([[:alpha:]][[:alnum:]_]+\\)" 1))))
+                '((nil "^[[:space:]]*message[[:space:]]+[[:alpha:]][[:alnum:]_]+" 0)
+                  (nil "^[[:space:]]*enum[[:space:]]+[[:alpha:]][[:alnum:]_]+" 0)
+                  (nil "^[[:space:]]*service[[:space:]]+[[:alpha:]][[:alnum:]_]+" 0))))
 
   (defun ar/reindex-proto-fields ()
     "From within a proto message, reindex all proto field tags."

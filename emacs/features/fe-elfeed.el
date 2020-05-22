@@ -10,7 +10,8 @@
               ("R" . ar/elfeed-mark-all-as-read)
               ("d" . elfeed-search-untag-all-unread)
               ("v" . ar/elfeed-mark-visible-as-read)
-              ("<tab>" . ar/elfeed-completing-filter))
+              ("<tab>" . ar/elfeed-completing-filter)
+              ("B" . ar/elfeed-search-browse-background-url))
   :validate-custom
   (elfeed-search-title-max-width 120)
   (elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
@@ -350,7 +351,7 @@ Based on `elfeed-search-print-entry--default'."
   (defun ar/elfeed-set-style ()
     ;; Separate elfeed lines for readability.
     (setq line-spacing 25))
-
+  :config
   (defun ar/elfeed-mark-all-as-read ()
     "Mark all entries in search as read."
     (interactive)
@@ -366,10 +367,10 @@ Based on `elfeed-search-print-entry--default'."
       (let ((lexical-binding t)
             (func (byte-compile (elfeed-search-compile-filter filter))))
         (with-elfeed-db-visit (entry feed)
-                              (when (funcall func entry feed count)
-                                (setf (cdr tail) (list entry)
-                                      tail (cdr tail)
-                                      count (1+ count)))))
+          (when (funcall func entry feed count)
+            (setf (cdr tail) (list entry)
+                  tail (cdr tail)
+                  count (1+ count)))))
       count))
 
   (defun ar/elfeed-completing-filter ()
@@ -397,8 +398,6 @@ Based on `elfeed-search-print-entry--default'."
                                                  categories)))
             (goto-char (window-start)))
         (message "All caught up \\o/"))))
-
-  :config
   (defun ar/elfeed-mark-visible-as-read ()
     (interactive)
     (when (yes-or-no-p "Mark page as read?")
@@ -418,6 +417,20 @@ Based on `elfeed-search-print-entry--default'."
   ;;   (ar/vsetq elfeed-goodies/feed-source-column-width 30)
   ;;   (ar/vsetq elfeed-goodies/tag-column-width 35)
   ;;   (elfeed-goodies/setup))
+
+  (defun ar/elfeed-search-browse-background-url ()
+    "Open current `elfeed' entry (or region entries) in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (assert (memq system-type '(darwin)) t "open command is macOS only")
+              (start-process (concat "open " (elfeed-entry-link entry))
+                             nil "open" "--background" (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
 
   (defun ar/elfeed-open-youtube-video ()
     (interactive)
