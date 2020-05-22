@@ -2,8 +2,8 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("Basef" "Based" nil :count 0)
-    ("Secon" "Second" nil :count 0)
     ("agregating" "aggregating" nil :count 0)
+    ("analoguos" "analogous" nil :count 0)
     ("asynchonous" "asynchronous" nil :count 0)
     ("chould" "could" nil :count 0)
     ("continuosly" "continuously" nil :count 1)
