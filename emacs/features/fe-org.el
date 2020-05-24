@@ -267,25 +267,43 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     ;; We explicitly want org babel confirm evaluations.
     (org-confirm-babel-evaluate t)
     :config
-    (defun ar/org-refresh-inline-images ()
-      (when org-inline-image-overlays
-        (org-redisplay-inline-images)))
+    (use-package ob-python
+      :validate-custom
+      ;; Make python source blocks export and output results by default.
+      (org-babel-default-header-args:python
+       '((:exports  . "both")
+         (:results  . "output"))))
 
-    ;; Automatically refresh inline images.
-    (add-hook 'org-babel-after-execute-hook 'ar/org-refresh-inline-images)
+    (use-package ob-objc)
+    (use-package ob-kotlin
+      :ensure t)
 
-    (defun adviced:org-babel-execute:swift (f &rest args)
-      "Advice `adviced:org-babel-execute:swift' enabling swiftui header param."
-      (let* ((body (nth 0 args))
-             (params (nth 1 args))
-             (swiftui (cdr (assoc :swiftui params)))
-             (output))
-        (when swiftui
-          (assert (or (string-equal swiftui "preview")
-                      (string-equal swiftui "interactive"))
-                  nil ":swiftui must be either preview or interactive")
-          (setq body (format
-                      "
+    (use-package ob-swift
+      :ensure t
+      :config
+      (org-babel-do-load-languages 'org-babel-load-languages
+                                   (append org-babel-load-languages
+                                           '((swift     . t))))
+
+      (defun ar/org-refresh-inline-images ()
+        (when org-inline-image-overlays
+          (org-redisplay-inline-images)))
+
+      ;; Automatically refresh inline images.
+      (add-hook 'org-babel-after-execute-hook 'ar/org-refresh-inline-images)
+
+      (defun adviced:org-babel-execute:swift (f &rest args)
+        "Advice `adviced:org-babel-execute:swift' enabling swiftui header param."
+        (let* ((body (nth 0 args))
+               (params (nth 1 args))
+               (swiftui (cdr (assoc :swiftui params)))
+               (output))
+          (when swiftui
+            (assert (or (string-equal swiftui "preview")
+                        (string-equal swiftui "interactive"))
+                    nil ":swiftui must be either preview or interactive")
+            (setq body (format
+                        "
 import Cocoa
 import SwiftUI
 import Foundation
@@ -366,32 +384,19 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 
   try! image.tiffRepresentation?.write(to: fileURL)
 }"
-                      (if (string-equal swiftui "preview")
-                          "true"
-                        "false")
-                      body))
-          (setq args (list body params)))
-        (setq output (apply f args))
-        (when org-inline-image-overlays
-          (org-redisplay-inline-images))
-        output))
+                        (if (string-equal swiftui "preview")
+                            "true"
+                          "false")
+                        body))
+            (setq args (list body params)))
+          (setq output (apply f args))
+          (when org-inline-image-overlays
+            (org-redisplay-inline-images))
+          output))
 
-    (advice-add #'org-babel-execute:swift
-                :around
-                #'adviced:org-babel-execute:swift)
-
-    (use-package ob-python
-      :validate-custom
-      ;; Make python source blocks export and output results by default.
-      (org-babel-default-header-args:python
-       '((:exports  . "both")
-         (:results  . "output"))))
-
-    (use-package ob-objc)
-    (use-package ob-kotlin
-      :ensure t)
-    (use-package ob-swift
-      :ensure t)
+      (advice-add #'org-babel-execute:swift
+                  :around
+                  #'adviced:org-babel-execute:swift))
 
     (use-package ob-plantuml
       :config
