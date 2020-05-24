@@ -68,7 +68,8 @@
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
          (org-mode . yas-minor-mode)
-         (org-mode . smartparens-mode))
+         (org-mode . smartparens-mode)
+         (org-mode . org-display-inline-images))
   :config
   (defun adviced:org-yank (orig-fun &rest r)
     "Advice `adviced:org-yank' to align tables (ORIG-FUN and R)."
@@ -83,7 +84,6 @@
 
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
-    (org-display-inline-images)
     (ar/vsetq show-trailing-whitespace t)
     (set-fill-column 1000)
     (use-package ar-org)
