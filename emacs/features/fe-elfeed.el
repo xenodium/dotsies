@@ -274,6 +274,7 @@
                   ("https://www.campfirefinance.com/feed" blog money CampFireFinance)
                   ("https://www.choosefi.com/category/podcast-episodes/feed" blog money ChoosefiPodcasts)
                   ("https://www.choosefi.com/feed/" blog money Choosefi)
+                  ("https://grantisom.com/feed.xml" blog dev macos ios GrantIsom)
                   ("https://www.designboom.com/feed" blog art DesignBoom)
                   ("https://www.designernews.co/?format=atom" blog design DesignerNews)
                   ("https://www.drweil.com/blog/health-tips/feed" blog health healthTips DrWeil)
@@ -398,6 +399,7 @@ Based on `elfeed-search-print-entry--default'."
                                                  categories)))
             (goto-char (window-start)))
         (message "All caught up \\o/"))))
+
   (defun ar/elfeed-mark-visible-as-read ()
     (interactive)
     (when (yes-or-no-p "Mark page as read?")
