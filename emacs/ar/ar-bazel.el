@@ -13,7 +13,7 @@
 
 (defvar ar/bazel-compile-command "bazel build")
 
-(defvar ar/bazel-gendir-prefix "bazel"
+(defvar ar/bazel-command "bazel"
   "With a \"bazel\" prefix, we'd get linked directories like:
 bazel-bin, bazel-genfiles, and bazel-out.")
 
@@ -64,11 +64,11 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   "Append NAME to bazel root path and return it."
   (let ((dpath (concat (ar/bazel-workspace-path)
                        (format "%s-%s/"
-                               ar/bazel-gendir-prefix
+                               ar/bazel-command
                                name))))
     (unless (f-exists-p dpath)
-      (message "Path not found:\"%s\" (is `ar/bazel-gendir-prefix' = '%s' correct?)"
-               dpath ar/bazel-gendir-prefix))
+      (message "Path not found:\"%s\" (is `ar/bazel-command' = '%s' correct?)"
+               dpath ar/bazel-command))
     dpath))
 
 (defun ar/bazel-bin-dir ()
@@ -168,6 +168,47 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (mapc (lambda (rule)
           (message rule))
         (ar/bazel-workspace-build-rules)))
+
+(defun ar/bazel-jump-to-build-rule ()
+  "Jump to the closest BUILD rule for current file."
+  (interactive)
+  (assert (executable-find ar/bazel-command) nil
+          "\"%s\" not found. Did you set `ar/bazel-command'?" ar/bazel-command)
+  (let* ((rule-pos)
+         ;; path/to/root (from path/to/root/WORKSPACE)
+         (workspace-dpath (or (locate-dominating-file default-directory "WORKSPACE")
+                              (error "Not in a bazel project.")))
+         ;; path/to/root/package/subpackage (from path/to/root/package/subpackage/BUILD)
+         (package-dpath (or (locate-dominating-file default-directory "BUILD")
+                            (error "No BUILD found.")))
+         ;; source.swift
+         (fname (file-name-nondirectory (or buffer-file-name
+                                            (error "Not visiting a file"))))
+         ;; //package/subpackage
+         (package (replace-regexp-in-string workspace-dpath
+                                            "//" (string-remove-suffix "/" package-dpath)))
+         ;; //package/subpackage:source.swift
+         (qualified-file (concat package ":" fname))
+         ;; attr('srcs', //package/subpackage:source.swift, //package/subpackage:*)
+         (query (format "attr('srcs', '%s', '%s:*')"
+                        (shell-quote-argument qualified-file)
+                        (shell-quote-argument package)))
+         ;; //package/subpackage:MyRule
+         (qualified-rule (or (seq-find (lambda (line)
+                                         (string-prefix-p "//" line))
+                                       (process-lines ar/bazel-command "query" query))
+                             (error "No rule including %s" fname)))
+         ;; MyRule
+         (rule-name (nth 1 (split-string qualified-rule ":"))))
+    (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char 0)
+        ;; Find position of "MyRule".
+        (setq rule-pos (re-search-forward (format "\"%s\"" rule-name)))))
+    (goto-char rule-pos)
+    (backward-sexp)))
 
 (defun ar/bazel--rules-cache-fpath ()
   "Bazel rules cache path for current project."

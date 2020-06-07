@@ -42,7 +42,7 @@ Quick insert: _w_eb bookmark or backlog
   (defun ar/hydra-open-dwim ()
     "Choose \"open\" hydra based on current mode."
     (interactive)
-    (cond ((derived-mode-p 'c-mode) (hydra-open-c-mode/body))
+    (cond ((derived-mode-p 'c-mode) (hydra-open-prog-mode/body))
           ((derived-mode-p 'prog-mode) (hydra-open-prog-mode/body))
           ((derived-mode-p 'protobuf-mode) (hydra-open-prog-mode/body))
           (t (hydra-open/body))))
@@ -54,14 +54,6 @@ Quick insert: _w_eb bookmark or backlog
     ("s" ar/dired-sort-by-size "size")
     ("q" nil "cancel"))
 
-  (defhydra hydra-open-c-mode (:color blue)
-    "open"
-    ("o" ff-find-other-file "other")
-    ("e" ar/platform-open-in-external-app "externally")
-    ("u" ar/platform-open-file-at-point "url at point")
-    ("b" ar/file-open-closest-build-file "build file")
-    ("q" nil "cancel"))
-
   (defhydra hydra-open (:color blue)
     "
 Open: _p_oint _e_xternally
@@ -70,12 +62,18 @@ Open: _p_oint _e_xternally
     ("p" ar/platform-open-file-at-point nil)
     ("q" nil "cancel"))
 
+  (defun ar/file-open-closest-build-file-dwim ()
+    (interactive)
+    (if (locate-dominating-file default-directory "WORKSPACE")
+        (call-interactively 'ar/bazel-jump-to-build-rule)
+      (call-interactively 'ar/file-open-closest-build-file)))
+
   (defhydra hydra-open-prog-mode (:color blue)
     "open"
     ("o" ff-find-other-file "other")
     ("e" ar/platform-open-in-external-app "externally")
     ("u" ar/platform-open-file-at-point "url at point")
-    ("b" ar/file-open-closest-build-file "build file")
+    ("b" ar/file-open-closest-build-file-dwim "build file")
     ("q" nil "cancel"))
 
   ;; https://github.com/abo-abo/hydra/wiki/Version-Control#git-gutter
