@@ -196,7 +196,11 @@ bazel-bin, bazel-genfiles, and bazel-out.")
          ;; //package/subpackage:MyRule
          (qualified-rule (or (seq-find (lambda (line)
                                          (string-prefix-p "//" line))
-                                       (process-lines ar/bazel-command "query" query))
+                                       (process-lines ar/bazel-command
+                                                      "query"
+                                                      query
+                                                      "--noshow_loading_progress"
+                                                      "--noshow_progress"))
                              (error "No rule including %s" fname)))
          ;; MyRule
          (rule-name (nth 1 (split-string qualified-rule ":"))))
