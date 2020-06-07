@@ -548,3 +548,31 @@ preferring the preferred type."
     (if (= (length youtube-urls) 1)
         (ar/open-youtube-url (nth 0 youtube-urls))
       (ar/open-youtube-url (completing-read "choose:" youtube-urls)))))
+
+(use-package ytel
+  :ensure t
+  :bind (:map ytel-mode-map
+              ("RET" . ar/ytel-watch)
+              ("M-RET" . ar/ytel-download-video-at-point))
+  :hook ((ytel-mode . (lambda ()
+                        (toggle-truncate-lines nil))))
+  :config
+  (defun ar/ytel-watch ()
+    "Stream video at point in mpv."
+    (interactive)
+    (let* ((video (ytel-get-current-video))
+     	   (id    (ytel-video-id video)))
+      (start-process "ytel mpv" nil
+		     "mpv"
+		     (concat "https://www.youtube.com/watch?v=" id))
+      "--ytdl-format=bestvideo[height<=?720]+bestaudio/best")
+    (message "Starting streaming..."))
+
+
+  (defun ar/ytel-download-video-at-point ()
+    "Download video at point."
+    (interactive)
+    (let* ((video (ytel-get-current-video))
+     	   (id    (ytel-video-id video)))
+      (ar/open-youtube-url (concat "https://www.youtube.com/watch?v=" id)))
+    (message "Downloading...")))
