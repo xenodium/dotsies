@@ -320,6 +320,7 @@
                   ("https://zerokspot.com/index.xml" blog emacs Zerokspot)
                   ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
                   ("https://zudepr.co.uk/feed" blog money Zude)
+                  ("https://coredumped.dev/index.xml" blog emacs CoreDumped)
                   ))
   :init
   (defun ar/elfeed-search-print-entry (entry)
