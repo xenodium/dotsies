@@ -26,6 +26,11 @@
   :config
   (require 'simple)
 
+  (use-package edebug
+    :validate-custom
+    ;; Display all.
+    (edebug-print-length nil))
+
   (use-package suggest
     :ensure t)
 
