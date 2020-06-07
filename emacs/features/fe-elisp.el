@@ -25,15 +25,9 @@
                                     company-capf))))
   :config
   (require 'simple)
-  (require 'ar-csetq)
 
   (use-package suggest
     :ensure t)
-
-  ;; From https://github.com/daschwa/emacs.d
-  ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
-  ;; that you can always see what's happening.
-  (ar/csetq eval-expression-print-level nil)
 
   ;; Based on https://emacsredux.com/blog/2013/06/21/eval-and-replace
   (defun ar/eval-last-sexp (arg)

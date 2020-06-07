@@ -512,6 +512,9 @@ line instead."
   (kill-do-not-save-duplicates t "Don't bother saving things to the kill-ring twice, remove duplicates.")
   (idle-update-delay 2 "Wait a bit longer than the default (0.5 seconds) before assuming Emacs is idle.")
   (global-mark-ring-max 500 "Increase mark ring size.")
+  ;; From https://github.com/daschwa/emacs.d
+  ;; nil means no limit. Always show result.
+  (eval-expression-print-level nil)
   :config
   (defun adviced:read-shell-command (orig-fun &rest r)
     "Advice around `read-shell-command' to replace $f with buffer file name."
