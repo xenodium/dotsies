@@ -47,8 +47,14 @@
                      (current-buffer))
             (error (message "Invalid expression")
                    (insert (current-kill 0)))))
-      (let ((current-prefix-arg nil))
-        (call-interactively 'pp-eval-last-sexp))))
+      (let ((current-prefix-arg nil)
+            (buffer-name "*Pp Eval Output*"))
+        (call-interactively 'pp-eval-last-sexp)
+        ;; New window? Select and make read-only (q closes window).
+        (when (get-buffer-window buffer-name)
+          (with-current-buffer buffer-name
+            (view-mode +1)
+            (select-window (get-buffer-window buffer-name)))))))
 
   (use-package eros
     ;; Inline evaluation (use M-C-x).
