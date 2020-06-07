@@ -11,6 +11,7 @@
               ("d" . elfeed-search-untag-all-unread)
               ("v" . ar/elfeed-mark-visible-as-read)
               ("<tab>" . ar/elfeed-completing-filter)
+              ("M-RET" . ar/elfeed-search-browse-background-url)
               ("B" . ar/elfeed-search-browse-background-url))
   :validate-custom
   (elfeed-search-title-max-width 120)
