@@ -236,9 +236,10 @@ bazel-bin, bazel-genfiles, and bazel-out.")
          (insert "))\n")
          (insert ,body-string)
          (write-file fpath nil))
-       (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
-                                    " --batch -Q -l " fpath)
-                            (format "*%s*" ,name)))))
+       (let ((display-buffer-alist (list (list (format "*%s*" ,name) 'display-buffer-no-window))))
+         (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
+                                      " --batch -Q -l " fpath)
+                              (format "*%s*" ,name))))))
 
 (defun ar/bazel--write-rules-cache (rules &optional fpath)
   "Write bazel absolute RULES at FPATH."
