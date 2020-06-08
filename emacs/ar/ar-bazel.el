@@ -182,8 +182,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
          (package-dpath (or (locate-dominating-file default-directory "BUILD")
                             (error "No BUILD found.")))
          ;; source.swift
-         (fname (file-name-nondirectory (or buffer-file-name
-                                            (error "Not visiting a file"))))
+         (fname (replace-regexp-in-string package-dpath
+                                          "" (or buffer-file-name
+                                                 (error "Not visiting a file"))))
          ;; //package/subpackage
          (package (replace-regexp-in-string workspace-dpath
                                             "//" (string-remove-suffix "/" package-dpath)))
@@ -193,27 +194,41 @@ bazel-bin, bazel-genfiles, and bazel-out.")
          (query (format "attr('srcs', '%s', '%s:*')"
                         (shell-quote-argument qualified-file)
                         (shell-quote-argument package)))
+         (busy (seq-find
+                (lambda (attributes)
+                  (string-equal (map-elt attributes 'comm) ar/bazel-command))
+                (seq-map (lambda (pid)
+                           (process-attributes pid))
+                         (list-system-processes))))
          ;; //package/subpackage:MyRule
-         (qualified-rule (seq-find (lambda (line)
-                                     (string-prefix-p "//" line))
-                                   (process-lines ar/bazel-command
-                                                  "query"
-                                                  query
-                                                  "--noshow_loading_progress"
-                                                  "--noshow_progress")))
+         (qualified-rule (if busy
+                             nil
+                           (seq-find (lambda (line)
+                                       (string-prefix-p "//" line))
+                                     (process-lines ar/bazel-command
+                                                    "query"
+                                                    query
+                                                    "--noshow_loading_progress"
+                                                    "--noshow_progress"))))
          ;; MyRule
          (rule-name (when qualified-rule
                       (nth 1 (split-string qualified-rule ":")))))
-    (if (null qualified-rule)
-        (progn (when (yes-or-no-p "No rule found. Open nearest BUILD file? ")
-                 (find-file (concat (file-name-as-directory package-dpath) "BUILD"))))
+    (if (or busy (null qualified-rule))
+        (progn (when (yes-or-no-p (if busy
+                                      (format "%s is busy. Open nearest BUILD file? " ar/bazel-command)
+                                    "No rule found. Open nearest BUILD file? "))
+                 (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
+                 (re-search-forward fname)))
       (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
       (save-excursion
         (save-restriction
           (widen)
           (goto-char 0)
           ;; Find position of "MyRule".
-          (setq rule-pos (re-search-forward (format "\"%s\"" rule-name)))))
+          (setq rule-pos (re-search-forward (format "\"%s\"" rule-name) nil t))
+          (unless rule-pos
+            (goto-char 0)
+            (setq rule-pos (re-search-forward fname)))))
       (goto-char rule-pos)
       (backward-sexp))))
 
