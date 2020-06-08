@@ -76,8 +76,9 @@
     (let ((buffer (current-buffer)))
       (run-with-idle-timer 3 nil
                            (lambda ()
-                             (with-current-buffer buffer
-                               (git-gutter-mode +1)))))))
+                             (when (buffer-live-p buffer)
+                               (with-current-buffer buffer
+                                 (git-gutter-mode +1))))))))
 
 (use-package ar-git
   :defer 2)
