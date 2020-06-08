@@ -194,25 +194,28 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                         (shell-quote-argument qualified-file)
                         (shell-quote-argument package)))
          ;; //package/subpackage:MyRule
-         (qualified-rule (or (seq-find (lambda (line)
-                                         (string-prefix-p "//" line))
-                                       (process-lines ar/bazel-command
-                                                      "query"
-                                                      query
-                                                      "--noshow_loading_progress"
-                                                      "--noshow_progress"))
-                             (error "No rule including %s" fname)))
+         (qualified-rule (seq-find (lambda (line)
+                                     (string-prefix-p "//" line))
+                                   (process-lines ar/bazel-command
+                                                  "query"
+                                                  query
+                                                  "--noshow_loading_progress"
+                                                  "--noshow_progress")))
          ;; MyRule
-         (rule-name (nth 1 (split-string qualified-rule ":"))))
-    (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char 0)
-        ;; Find position of "MyRule".
-        (setq rule-pos (re-search-forward (format "\"%s\"" rule-name)))))
-    (goto-char rule-pos)
-    (backward-sexp)))
+         (rule-name (when qualified-rule
+                      (nth 1 (split-string qualified-rule ":")))))
+    (if (null qualified-rule)
+        (progn (when (yes-or-no-p "No rule found. Open nearest BUILD file? ")
+                 (find-file (concat (file-name-as-directory package-dpath) "BUILD"))))
+      (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char 0)
+          ;; Find position of "MyRule".
+          (setq rule-pos (re-search-forward (format "\"%s\"" rule-name)))))
+      (goto-char rule-pos)
+      (backward-sexp))))
 
 (defun ar/bazel--rules-cache-fpath ()
   "Bazel rules cache path for current project."
