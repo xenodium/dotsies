@@ -3,15 +3,22 @@
   :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)
          ("BUILD\\'" . bazel-mode))
+  :after reformatter
   :hook (bazel-mode . ar/bazel-mode-hook-fun)
   :init
   (defun ar/bazel-mode-hook-fun ()
-    (ar/buffer-run-for-saved-file-name "buildifier" "BUILD")
+    (when (require 'reformatter nil 'noerror)
+      (buildifier-on-save-mode +1))
+
     (setq-local company-backends '(company-bazel company-rfiles)))
   :config
   (use-package ar-bazel)
   (use-package company-bazel)
   (use-package ar-counsel-find)
+
+  (when (require 'reformatter nil 'noerror)
+    (reformatter-define buildifier
+      :program "buildifier"))
 
   (defun ar/bazel-find-staged ()
     "Call the \"find\" shell command and fuzzy narrow using ivy."
