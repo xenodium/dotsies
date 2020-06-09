@@ -154,7 +154,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
      (ar/bazel--write-rules-cache
       (ar/bazel-workspace-build-rules t)
       (ar/bazel--rules-cache-fpath))
-     (message \"Cached rules in %.2f seconds.\" (float-time
+     (message "Cached rules in %.2f seconds." (float-time
                                                  (time-subtract (current-time) start-time))))))
 
 (defun ar/bazel-insert-rule ()
@@ -239,14 +239,22 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defmacro ar/bazel--async-body-named (name &rest body)
   "Execute asynchronous BODY with NAME."
-  (let ((body-string (replace-regexp-in-string "^(" "(progn " (format "%s" `,@body ) t t)))
-    `(let ((emacs-bin (concat (expand-file-name invocation-name invocation-directory)))
-           (calling-dpath default-directory)
-           (fpath (concat (temporary-file-directory)
-                          (format "%s-%s.el" ,name (make-temp-name "")))))
+  (let* ((body-string (replace-regexp-in-string "^(" "(progn " ;; "((...))" -> "(prog (...))"
+                                                (format "%s" (prin1-to-string (cdr (macroexp-parse-body body))))
+                                                t t)))
+    `(let* ((emacs-bin (concat (expand-file-name invocation-name invocation-directory)))
+            (calling-dpath default-directory)
+            (fpath (concat (temporary-file-directory)
+                           (format "%s.el" ,name)))
+            (recentf-exclude (list (file-name-nondirectory fpath)))
+            (file-content)
+            (buffer (get-buffer-create (format "*%s*" ,name))))
+       (when (get-buffer-process buffer)
+         (error "Pending process for %s" buffer))
        (with-current-buffer (find-file-noselect fpath t)
          (setq default-directory calling-dpath)
          (delete-region (point-min) (point-max))
+         (insert ";; Script:\n\n")
          (insert (format "(setq default-directory \"%s\")\n" calling-dpath))
          (insert "(setq load-path '(\n")
          (mapc (lambda (path)
@@ -254,18 +262,23 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                load-path)
          (insert "))\n")
          (insert ,body-string)
+         (setq file-content (buffer-string))
          (write-file fpath nil)
          (kill-buffer (current-buffer)))
-       (message "%s started..." ,name)
-       (let ((display-buffer-alist (list (list (format "*%s*" ,name) 'display-buffer-no-window))))
+       (with-current-buffer buffer
+         (delete-region (point-min) (point-max))
+         (insert (format "%s\n\n" file-content))
+         (insert ";; Output:\n\n"))
+       (let ((display-buffer-alist (list (list buffer 'display-buffer-no-window))))
+         (message "%s started..." ,name)
          (set-process-sentinel (start-process "emacs"
-                                              (format "*%s*" ,name)
+                                              buffer
                                               emacs-bin
                                               "--batch" "-Q" "-l" fpath)
                                (lambda (process state)
                                  (if (= (process-exit-status process) 0)
                                      (message "%s finished ✔" ,name)
-                                   (message "%s failed ❌, see %s" ,name (format "*%s*" ,name)))))))))
+                                   (message "%s failed ❌, see %s" ,name buffer))))))))
 
 (defun ar/bazel--write-rules-cache (rules &optional fpath)
   "Write bazel absolute RULES at FPATH."
