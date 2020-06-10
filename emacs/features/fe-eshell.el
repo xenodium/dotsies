@@ -48,12 +48,8 @@
                  ([remap eshell-pcomplete] . completion-at-point)
                  ("C-l" . ar/eshell-cd-to-parent))
 
-      (if (>= emacs-major-version 27)
-          ;; eshell-hist-mode-map introduced in Emacs 27.
-          (bind-keys :map eshell-hist-mode-map
-                     ("M-r" . ar/eshell-counsel-history))
-        (bind-keys :map eshell-mode-map
-                   ("M-r" . ar/eshell-counsel-history))))
+      (bind-keys :map eshell-mode-map
+                   ("M-r" . ar/eshell-counsel-history)))
     :config
     (require 'counsel)
     (require 'company-projectile-cd)
