@@ -169,22 +169,25 @@ bazel-bin, bazel-genfiles, and bazel-out.")
           (message rule))
         (ar/bazel-workspace-build-rules)))
 
-(defun ar/bazel-jump-to-build-rule ()
+(defun ar/bazel-jump-to-build-rule (fork-command)
   "Jump to the closest BUILD rule for current file."
-  (interactive)
+  (interactive "P")
   (assert (executable-find ar/bazel-command) nil
           "\"%s\" not found. Did you set `ar/bazel-command'?" ar/bazel-command)
   (let* ((rule-pos)
          ;; path/to/root (from path/to/root/WORKSPACE)
-         (workspace-dpath (or (locate-dominating-file default-directory "WORKSPACE")
-                              (error "Not in a bazel project.")))
+         (workspace-dpath (expand-file-name
+                           (or (locate-dominating-file default-directory "WORKSPACE")
+                               (error "Not in a bazel project."))))
          ;; path/to/root/package/subpackage (from path/to/root/package/subpackage/BUILD)
-         (package-dpath (or (locate-dominating-file default-directory "BUILD")
-                            (error "No BUILD found.")))
+         (package-dpath (expand-file-name
+                         (or (locate-dominating-file default-directory "BUILD")
+                             (error "No BUILD found."))))
          ;; source.swift
          (fname (replace-regexp-in-string package-dpath
-                                          "" (or buffer-file-name
-                                                 (error "Not visiting a file"))))
+                                          "" (expand-file-name
+                                              (or buffer-file-name
+                                                  (error "Not visiting a file")))))
          ;; //package/subpackage
          (package (replace-regexp-in-string workspace-dpath
                                             "//" (string-remove-suffix "/" package-dpath)))
@@ -194,22 +197,25 @@ bazel-bin, bazel-genfiles, and bazel-out.")
          (query (format "attr('srcs', '%s', '%s:*')"
                         (shell-quote-argument qualified-file)
                         (shell-quote-argument package)))
-         (busy (seq-find
-                (lambda (attributes)
-                  (string-equal (map-elt attributes 'comm) ar/bazel-command))
-                (seq-map (lambda (pid)
-                           (process-attributes pid))
-                         (list-system-processes))))
+         (busy nil
+               ;; (seq-find
+               ;;       (lambda (attributes)
+               ;;         (string-equal (map-elt attributes 'comm) ar/bazel-command))
+               ;;       (seq-map (lambda (pid)
+               ;;                  (process-attributes pid))
+               ;;                (list-system-processes)))
+               )
          ;; //package/subpackage:MyRule
-         (qualified-rule (if busy
-                             nil
-                           (seq-find (lambda (line)
-                                       (string-prefix-p "//" line))
-                                     (process-lines ar/bazel-command
-                                                    "query"
-                                                    query
-                                                    "--noshow_loading_progress"
-                                                    "--noshow_progress"))))
+         (qualified-rule (when fork-command
+                           (if (or busy)
+                               nil
+                             (seq-find (lambda (line)
+                                         (string-prefix-p "//" line))
+                                       (process-lines ar/bazel-command
+                                                      "query"
+                                                      query
+                                                      "--noshow_loading_progress"
+                                                      "--noshow_progress")))))
          ;; MyRule
          (rule-name (when qualified-rule
                       (nth 1 (split-string qualified-rule ":")))))
@@ -218,7 +224,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                                       (format "%s is busy. Open nearest BUILD file? " ar/bazel-command)
                                     "No rule found. Open nearest BUILD file? "))
                  (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
-                 (re-search-forward fname)))
+                 (goto-char (point-min))
+                 (re-search-forward (format "\"%s\"" fname))
+                 (backward-sexp)))
       (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
       (save-excursion
         (save-restriction
@@ -231,6 +239,30 @@ bazel-bin, bazel-genfiles, and bazel-out.")
             (setq rule-pos (re-search-forward fname)))))
       (goto-char rule-pos)
       (backward-sexp))))
+
+(defun ar/bazel-jump-to-build-rule (fork-command)
+  "Jump to the closest BUILD rule for current file."
+  (interactive "P")
+  (let* (;; path/to/root (from path/to/root/WORKSPACE)
+         (workspace-dpath (expand-file-name
+                           (or (locate-dominating-file default-directory "WORKSPACE")
+                               (error "Not in a bazel project."))))
+         ;; path/to/root/package/subpackage (from path/to/root/package/subpackage/BUILD)
+         (package-dpath (expand-file-name
+                         (or (locate-dominating-file default-directory "BUILD")
+                             (error "No BUILD found."))))
+         ;; source.swift
+         (fname (replace-regexp-in-string package-dpath
+                                          "" (expand-file-name
+                                              (or buffer-file-name
+                                                  (error "Not visiting a file")))))
+         ;; search for "source.swift"
+         (needle (format "\"%s\"" fname)))
+    (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
+    (goto-char (point-min))
+    ;; search for "source.swift"
+    (re-search-forward needle)
+    (backward-char (length needle))))
 
 (defun ar/bazel--rules-cache-fpath ()
   "Bazel rules cache path for current project."
