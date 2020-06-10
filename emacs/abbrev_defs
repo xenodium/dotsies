@@ -15,6 +15,7 @@
     ("inacessible" "inaccessible" nil 0)
     ("initialization" "initialisation" nil :count 0)
     ("initialized" "initialised" nil 0)
+    ("inneficient" "inefficient" nil :count 0)
     ("ocassional" "ocasional" nil :count 0)
     ("otherplaces" "places" nil :count 0)
     ("queueing" "queuing" nil :count 0)
