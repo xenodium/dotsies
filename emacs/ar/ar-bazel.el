@@ -169,9 +169,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
           (message rule))
         (ar/bazel-workspace-build-rules)))
 
-(defun ar/bazel-jump-to-build-rule (fork-command)
+(defun ar/bazel-jump-to-build-rule ()
   "Jump to the closest BUILD rule for current file."
-  (interactive "P")
+  (interactive)
   (let* (;; path/to/root (from path/to/root/WORKSPACE)
          (workspace-dpath (expand-file-name
                            (or (locate-dominating-file default-directory "WORKSPACE")
