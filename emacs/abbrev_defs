@@ -2,6 +2,8 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("Basef" "Based" nil :count 0)
+    ("Certaon" "Certain" nil 0)
+    ("Hellow" "Hello" nil 0)
     ("Temporaty" "Temporary" nil :count 0)
     ("agregating" "aggregating" nil :count 0)
     ("asynchonous" "asynchronous" nil :count 0)
@@ -10,14 +12,18 @@
     ("discusss" "discuss" nil :count 0)
     ("dratfs" "drafts" nil :count 0)
     ("imediately" "immediately" nil :count 0)
+    ("inacessible" "inaccessible" nil 0)
     ("initialization" "initialisation" nil :count 0)
+    ("initialized" "initialised" nil 0)
     ("ocassional" "ocasional" nil :count 0)
     ("otherplaces" "places" nil :count 0)
     ("queueing" "queuing" nil :count 0)
     ("repleacement" "replacement" nil :count 0)
+    ("serialized" "serialised" nil 1)
+    ("subcommands" "sub-commands" nil 0)
+    ("terminel" "terminal" nil 0)
     ("titlep" "title" nil :count 0)
     ("tuesday" "tuesday" nil :count 0)
     ("typi" "typo" nil :count 0)
     ("unfrotunately" "unfortunately" nil :count 0)
    ))
-
