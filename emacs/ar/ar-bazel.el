@@ -172,11 +172,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-jump-to-build-rule ()
   "Jump to the closest BUILD rule for current file."
   (interactive)
-  (let* (;; path/to/root (from path/to/root/WORKSPACE)
-         (workspace-dpath (expand-file-name
-                           (or (locate-dominating-file default-directory "WORKSPACE")
-                               (error "Not in a bazel project."))))
-         ;; path/to/root/package/subpackage (from path/to/root/package/subpackage/BUILD)
+  (let* (;; path/to/root/package/subpackage (from path/to/root/package/subpackage/BUILD)
          (package-dpath (expand-file-name
                          (or (locate-dominating-file default-directory "BUILD")
                              (error "No BUILD found."))))
