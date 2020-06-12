@@ -31,4 +31,32 @@
                        (add-hook 'after-save-hook
                                  'counsel-etags-virtual-update-tags
                                  'append
-                                 'local))))
+                                 'local)))
+  :config
+  (defun counsel-etags-fallback-rg-search (&optional default-keyword prompt root)
+    "A non-blocking alternative to counsel-etags-grep."
+    (assert (counsel-etags-has-quick-grep) "ripgrep command-line utility not found")
+    (let ((text (if default-keyword default-keyword ""))
+          (default-directory (file-truename (or root
+                                                (counsel-etags-locate-project))))
+          (options (concat
+                    (mapconcat (lambda (e)
+                                 (format "-g=!%s/*" e))
+                               counsel-etags-ignore-directories " ")
+                    " "
+                    (mapconcat (lambda (e)
+                                 (format "-g=!%s" e))
+                               counsel-etags-ignore-filenames " "))))
+
+      (counsel-rg text default-directory options prompt)))
+
+  (defun adviced:counsel-etags-grep (orig-fun &rest r)
+    "Additional support for multiple cursors."
+    (let ((default-keyword (nth 0 r))
+          (hint (nth 1 r))
+          (root) (nth 2))
+      (counsel-etags-fallback-rg-search default-keyword hint root)))
+
+  (advice-add #'counsel-etags-grep
+              :around
+              #'adviced:counsel-etags-grep))
