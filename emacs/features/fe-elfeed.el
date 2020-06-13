@@ -28,6 +28,7 @@
                   ("https://indieseek.xyz/feed" blog indie IndieSeek)
                   ("https://archive.casouri.cat/note/rss.xml" blog emacs casouri)
                   ("https://randomgeekery.org/index.xml" blog emacs RandomGeekery)
+                  ("https://ricostacruz.com/til/rss.xml" blog dev)
                   ("https://invidio.us/feed/channel/UC5fdssPqmmGhkhsJi4VcckA" video invidious InnuendoStudios)
                   ("http://feeds.99percentinvisible.org/99percentinvisible" video design 99PercentInvisible)
                   ("https://betamax.video/feeds/videos.xml?sort=-trending" video peertube betamax)
