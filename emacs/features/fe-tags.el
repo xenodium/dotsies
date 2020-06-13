@@ -57,7 +57,6 @@
     "Additional support for multiple cursors."
     (let ((tagname (nth 0 r)))
       (setq ar/counsel-etags-last-tag-searched tagname)
-      (setq )
       (apply orig-fun r)))
 
   (advice-add #'counsel-etags-open-tag-cand
