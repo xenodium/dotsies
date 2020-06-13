@@ -6,7 +6,7 @@
          ([f6] . recompile)
          ("C-x C-q" . view-mode)
          ("M-;" . 'ar/comment-dwim)
-         ("C-M-;" . 'ar/comment-dwim-next-line))
+         ("C-M-;" . 'comment-line))
   :hook ((prog-mode . company-mode)
          (prog-mode . flycheck-mode)
          (prog-mode . flyspell-prog-mode)
@@ -32,26 +32,4 @@
             (add-to-list 'rainbow-x-colors-major-mode-list mode)
             (add-to-list 'rainbow-html-colors-major-mode-list mode))
           '(objc-mode
-            swift-mode)))
-
-  (defun ar/comment-dwim ()
-    "Comment current line or region."
-    (interactive)
-    (let ((start (line-beginning-position))
-          (end (line-end-position)))
-      (when (region-active-p)
-        (setq start (save-excursion
-                      (goto-char (region-beginning))
-                      (beginning-of-line)
-                      (point))
-              end (save-excursion
-                    (goto-char (region-end))
-                    (end-of-line)
-                    (point))))
-      (comment-or-uncomment-region start end)))
-
-  (defun ar/comment-dwim-next-line ()
-    "Like `ar/comment-dwim', but also move to next line."
-    (interactive)
-    (call-interactively #'ar/comment-dwim)
-    (next-line)))
+            swift-mode))))
