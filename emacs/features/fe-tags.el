@@ -19,7 +19,8 @@
 
 (use-package etags
   :validate-custom
-  (tags-revert-without-query t))
+  (tags-revert-without-query t)
+  (tags-add-tables nil))
 
 ;; Note: Also used by smart-jump.
 (use-package counsel-etags
@@ -33,6 +34,10 @@
                                  'append
                                  'local)))
   :config
+  ;; Can also be added to ~/.ctags as --exclude="bazel-*"
+  (add-to-list 'counsel-etags-ignore-filenames "bazel-*")
+  (add-to-list 'counsel-etags-ignore-filenames "*/*.xcodeproj/*")
+
   (defun counsel-etag-grep-action ()
     (interactive)
     (ivy-exit-with-action
