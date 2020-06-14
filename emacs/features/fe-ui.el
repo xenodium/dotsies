@@ -61,6 +61,11 @@
                         :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
                         :width 'normal :foundry "nil")
 
+    ;; Emoji's: welcome back to Emacs
+    ;; https://github.crookster.org/emacs27-from-homebrew-on-macos-with-emoji/
+    (when (>= emacs-major-version 27)
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
+
     ;; Hardcode region theme color.
     (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
     (set-face-attribute 'mode-line nil :background "#191919" :box nil)
