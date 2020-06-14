@@ -12,6 +12,11 @@
          :map wgrep-mode-map
          ("C-c C-c" . ar/wgrep-finish-edit)
          ("C-c C-k" . ar/wgrep-abort-changes))
+  :validate-custom
+  ;; https://oremacs.com/2017/08/04/ripgrep/
+  (counsel-grep-base-command (if (executable-find "rg")
+                                 "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+                               counsel-grep-base-command))
   :config
   (push '(counsel-M-x . "") ivy-initial-inputs-alist)
   (push '(counsel-rg . "--glob ** -- ") ivy-initial-inputs-alist)
@@ -246,10 +251,6 @@ For example:
   (ivy-display-style 'fancy)
   (ivy-wrap nil)
   (enable-recursive-minibuffers t)
-  ;; https://oremacs.com/2017/08/04/ripgrep/
-  (counsel-grep-base-command (if (executable-find "rg")
-                                 "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
-                               counsel-grep-base-command))
   :init
   (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
