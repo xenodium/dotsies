@@ -24,6 +24,7 @@
                   ("https://invidio.us/feed/channel/UCWZ3HFiJkxG1K8C4HVnyBvQ" video invidious VicBerger)
                   ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
                   ("https://menno.io/rss.xml" blog emacs Menno)
+                  ("https://www.miskatonic.org/feed/all.xml" bloc emacs Miskatonic)
                   ("https://invidio.us/feed/channel/UCbpMy0Fg74eXXkvxJrtEn3w" video invidious BonApetit)
                   ("https://indieseek.xyz/feed" blog indie IndieSeek)
                   ("https://archive.casouri.cat/note/rss.xml" blog emacs casouri)
