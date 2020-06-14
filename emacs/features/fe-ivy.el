@@ -1,7 +1,4 @@
 ;;; ivy.el -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
-(require 'ar-csetq)
-
 (use-package counsel
   :ensure t
   :defer 0.1
@@ -195,11 +192,6 @@ For example:
   (use-package wgrep
     :ensure t)
 
-  ;; https://oremacs.com/2017/08/04/ripgrep/
-  (when (executable-find "rg")
-    (ar/csetq counsel-grep-base-command
-              "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
-
   (counsel-mode +1))
 
 (use-package swiper
@@ -248,6 +240,16 @@ For example:
                               (Man-completion-table . "^")
                               (woman . "^")))
   (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
+  (ivy-height (round (* 0.01666 (display-pixel-height))))
+  (ivy-count-format "")
+  (ivy-use-virtual-buffers t)
+  (ivy-display-style 'fancy)
+  (ivy-wrap nil)
+  (enable-recursive-minibuffers t)
+  ;; https://oremacs.com/2017/08/04/ripgrep/
+  (counsel-grep-base-command (if (executable-find "rg")
+                                 "rg -i -M 120 --no-heading --line-number --color never '%s' %s"
+                               counsel-grep-base-command))
   :init
   (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
@@ -258,16 +260,14 @@ For example:
          ("C--" . ivy-minibuffer-shrink)
          ("C-+" . ivy-minibuffer-grow))
   :config
-  (ar/vsetq ivy-height (round (* 0.01666 (display-pixel-height))))
-  (ar/vsetq ivy-count-format "")
-  (ar/vsetq ivy-use-virtual-buffers t)
-  (ar/vsetq ivy-display-style 'fancy)
-  (ar/vsetq ivy-wrap nil)
-  (ar/vsetq enable-recursive-minibuffers t)
-
   (add-hook 'minibuffer-setup-hook
             (lambda ()
               (setq truncate-lines nil)))
+
+  (defun ar/ivy-reset-height ()
+    "Reset ivy height considering frame height."
+    (interactive)
+    (setq ivy-height (round (* 0.01666 (display-pixel-height)))))
 
   ;; From http://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
   (defun ar/insert-current-file-name-at-point (&optional full-path)
