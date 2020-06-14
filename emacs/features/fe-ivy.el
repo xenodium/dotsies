@@ -247,6 +247,7 @@ For example:
                               (org-capture-refile . "^")
                               (Man-completion-table . "^")
                               (woman . "^")))
+  (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   :init
   (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
