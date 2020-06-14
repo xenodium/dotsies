@@ -33,11 +33,24 @@
                                  'append
                                  'local)))
   :config
-  (defun counsel-etags-fallback-rg-search (&optional default-keyword prompt root)
-    "A non-blocking alternative to counsel-etags-grep."
+  (defun counsel-etag-grep-action ()
+    (interactive)
+    (ivy-exit-with-action
+     (lambda (_)
+       (funcall counsel-etags-fallback-search-function
+                (if (string-empty-p ivy-text)
+                    counsel-etags-last-tagname-at-point
+                  (format "%s %s" counsel-etags-last-tagname-at-point ivy-text))))))
+
+  (bind-key "C-s" #'counsel-etag-grep-action counsel-etags-find-tag-map)
+
+  (defun ar/counsel-etags-async-ripgrep (&optional default-keyword prompt root)
+    "A non-blocking alternative to `counsel-etags-grep'."
+    (interactive)
     (unless (counsel-etags-has-quick-grep)
-      (error "ripgrep command-line utility not found"))
-    (let ((text (if default-keyword default-keyword ""))
+      (error "rg command-line utility not found"))
+
+    (let ((keyword (if default-keyword default-keyword ""))
           (default-directory (file-truename (or root
                                                 (counsel-etags-locate-project))))
           (options (concat
@@ -49,56 +62,12 @@
                                  (format "-g=!%s" e))
                                counsel-etags-ignore-filenames " "))))
 
-      (counsel-rg text default-directory options prompt)))
+      ;; Momentarily override `counsel-git-grep-action'. Use `counsel-etags-open-file-api' instead.
+      (cl-letf (((symbol-function 'counsel-git-grep-action) `(lambda (item)
+                                                               ;; when grepping, we grepping in project root
+                                                               (counsel-etags-open-file-api item
+                                                                                            ,default-directory
+                                                                                            ,keyword))))
+        (counsel-rg keyword default-directory options prompt))))
 
-  (defvar ar/counsel-etags-last-tag-searched "")
-
-  (defun adviced:counsel-etags-open-tag-cand (orig-fun &rest r)
-    "Additional support for multiple cursors."
-    (let ((tagname (nth 0 r)))
-      (setq ar/counsel-etags-last-tag-searched tagname)
-      (apply orig-fun r)))
-
-  (advice-add #'counsel-etags-open-tag-cand
-              :around
-              #'adviced:counsel-etags-open-tag-cand)
-
-  (defun adviced:counsel-etags-grep (orig-fun &rest r)
-    "Additional support for multiple cursors."
-    (let ((default-keyword (nth 0 r))
-          (hint (nth 1 r))
-          (root) (nth 2))
-      (counsel-etags-fallback-rg-search default-keyword hint root)))
-
-  (advice-add #'counsel-etags-grep
-              :around
-              #'adviced:counsel-etags-grep)
-
-  (defun ar/counsel-etags-search-action (item)
-    (counsel-etags-fallback-rg-search ar/counsel-etags-last-tag-searched
-                                      "Search: "
-                                      (or (counsel-etags-tags-file-directory)
-                                          (error "No TAGS found"))))
-
-  (ivy-add-actions
-   'counsel-etags-find-tag '(("s" ar/counsel-etags-search-action "fallback search"))))
-
-
-;; --langdef=swift
-;; --langmap=swift:+.swift
-
-;; --kinddef-swift=v,variable,variables
-;; --kinddef-swift=f,function,functions
-;; --kinddef-swift=s,struct,structs
-;; --kinddef-swift=c,class,classes
-;; --kinddef-swift=p,protocol,protocols
-;; --kinddef-swift=e,enum,enums
-;; --kinddef-swift=t,typealias,typealiases
-
-;; --regex-swift=/(var|let)[ \t]+([^:=]+).*$/\2/v/
-;; --regex-swift=/func[ \t]+([^\(\)]+)\([^\(\)]*\)/\1/f/
-;; --regex-swift=/struct[ \t]+([^:\{]+).*$/\1/s/
-;; --regex-swift=/class[ \t]+([^:\{]+).*$/\1/c/
-;; --regex-swift=/protocol[ \t]+([^:\{]+).*$/\1/p/
-;; --regex-swift=/enum[ \t]+([^:\{]+).*$/\1/e/
-;; --regex-swift=/(typealias)[ \t]+([^:=]+).*$/\2/v/
+  (setq counsel-etags-fallback-search-function #'ar/counsel-etags-async-ripgrep))
