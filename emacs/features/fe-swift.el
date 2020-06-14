@@ -17,7 +17,7 @@
                                  lint-config-file)
                                 ".swiftlint.yml"))))
       (message "No buffer filename in swift mode."))
-    (setq-local company-backends '((company-swimports))))
+    (setq-local company-backends '(company-swimports company-capf)))
   :config
   (require 'flycheck)
   (ar/vsetq swift-mode:basic-offset 2)
