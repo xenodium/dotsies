@@ -56,6 +56,7 @@
                   ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
                   ("https://haresfaiez.github.io/feed.xml" blog emacs  FaiezHares)
                   ("https://posts.michaelks.org/rss.xml" blog emacs MichaelElks)
+                  ("https://azzamsa.com/feeds/all.atom.xml" blog emacs AzzamSyawqi)
                   ;; ("http://blog.abhixec.com/index.xml" blog emacs RandomMusings)
                   ("http://blog.davep.org/feed.xml" blog emacs davep)
                   ("http://blog.josephholsten.com/feed.xml" blog hammerspoon dev Libera-Ideoj)
