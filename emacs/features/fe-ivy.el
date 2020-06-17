@@ -246,6 +246,7 @@ For example:
                               (woman . "^")))
   (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   (ivy-height (round (* 0.01666 (display-pixel-height))))
+  (ivy-auto-shrink-minibuffer t)
   (ivy-count-format "")
   (ivy-use-virtual-buffers t)
   (ivy-display-style 'fancy)
