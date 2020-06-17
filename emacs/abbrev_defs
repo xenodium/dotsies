@@ -2,6 +2,7 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("Basef" "Based" nil :count 0)
+    ("Trhying" "Trying" nil :count 0)
     ("agregating" "aggregating" nil :count 0)
     ("asynchonous" "asynchronous" nil :count 0)
     ("chould" "could" nil :count 0)
@@ -18,6 +19,5 @@
     ("tuesday" "tuesday" nil :count 0)
     ("typi" "typo" nil :count 0)
     ("unfrotunately" "unfortunately" nil :count 0)
-    ("unnedded" "unneeded" nil :count 0)
    ))
 
