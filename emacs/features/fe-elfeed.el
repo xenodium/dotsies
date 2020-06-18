@@ -93,6 +93,7 @@
                   ("http://justinhj.github.io/feed.xml" blog emacs FunctionalJustin)
                   ("http://kitchingroup.cheme.cmu.edu/blog/feed/atom" blog emacs JohnKitchin)
                   ("https://kundeveloper.com/index.xml" blog emacs KunDeveloper)
+                  ("https://juliaferraioli.com/blog/index.xml" blog dev JuliaFerraioli)
                   ("http://liberate.life/index.php/feed/" blog money LiberateLife)
                   ("http://mbork.pl?action=rss" blog emacs MarcinBorkowski)
                   ("http://nullprogram.com/feed" blog emacs Chris-Wellons)
