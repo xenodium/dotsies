@@ -341,6 +341,8 @@ With prefix argument, use full path."
   (use-package ivy-rich
     :ensure t
     :validate-custom
+    ;; Avoid lag for TRAMP.
+    (ivy-rich-parse-remote-buffer nil)
     (ivy-rich-display-transformers-list
      '(counsel-M-x
        (:columns
