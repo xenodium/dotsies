@@ -188,7 +188,21 @@ So if we're connected with sudo to 'remotehost'
                                 (concat (expand-file-name (eshell/pwd)) "/" path))))
           (find-file (concat "/sudo::" qualified-path)))))
 
-    (use-package em-dirs)
+    (use-package em-dirs
+      :config
+      ;; https://www.reddit.com/r/emacs/comments/5pziif/cd_to_home_directory_of_server_when_using_eshell/
+      (defun eshell/lcd (&optional directory)
+        "Like cd, but give preference to sandboxed remote/TRAMP machine."
+        (if (file-remote-p default-directory)
+            (with-parsed-tramp-file-name default-directory nil
+              (eshell/cd (tramp-make-tramp-file-name
+                          (tramp-file-name-method v)
+                          (tramp-file-name-user v)
+                          (tramp-file-name-host v)
+                          (or directory "")
+                          (tramp-file-name-hop v))))
+          (eshell/cd directory))))
+
     (use-package em-smart
       :hook
       ((eshell-mode . eshell-smart-initialize))
