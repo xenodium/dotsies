@@ -250,11 +250,63 @@
      '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
         "open" (file))
        ("\\.\\(aiff\\|wav\\|mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
-        "open" ("-a" "mpv" file))))
+        "open" ("-a" "mpv" "--args" "--geometry=<oww>+<owx>+<owy>" file))))
     ((string-equal system-type "gnu/linux")
      '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
         "xdg-open" (file))))))
   :config
+  (defun adviced:openwith-file-handler (orig-fun &rest r)
+    "Same as `openwith-file-handler' but replace <oww> <owh> <owx> and
+ <owy> with frame width height x y coordinates in params."
+    (let* ((args (cdr r))
+           (assocs openwith-associations)
+           (operation (nth 0 r))
+           (file (nth 1 r))
+           (assoc (seq-find (lambda (candidate)
+                              (string-match (car candidate) file))
+                            assocs))
+           (app (nth 1 assoc))
+           (params (mapcar
+                    (lambda (x)
+                      (cond
+                       ((eq x 'file)
+                        file)
+                       ((or (string-match-p "<oww>" x)
+                            (string-match-p "<owh>" x)
+                            (string-match-p "<owx>" x)
+                            (string-match-p "<owy>" x))
+                        ;; Geometry values tweaked for macOS.
+                        (replace-regexp-in-string
+                         "<oww>" (format "%d" (frame-pixel-width))
+                         (replace-regexp-in-string
+                          "<owh>" (format "%d" (+ (frame-pixel-height) 20))
+                          (replace-regexp-in-string
+                           "<owx>" (format "%d" (car (frame-position)))
+                           (replace-regexp-in-string
+                            "<owy>" (format "%d" (- (- (x-display-pixel-height)
+                                                       (+ (cdr (frame-position)) (frame-pixel-height)))
+                                                    20))
+                            x)))))
+                       (t
+                        x)))
+                    (nth 2 assoc))))
+      (if app
+          (progn
+            (if (eq system-type 'windows-nt)
+	        (openwith-open-windows file)
+	      (openwith-open-unix app params))
+            (kill-buffer nil)
+            (when (featurep 'recentf)
+              (recentf-add-file file)))
+        (let ((inhibit-file-name-handlers
+               (cons 'openwith-file-handler
+                     (and (eq inhibit-file-name-operation operation)
+                          inhibit-file-name-handlers)))
+              (inhibit-file-name-operation operation))
+          (apply operation args)))))
+  (advice-add #'openwith-file-handler
+              :around
+              #'adviced:openwith-file-handler)
   (openwith-mode +1))
 
 (use-package tramp
