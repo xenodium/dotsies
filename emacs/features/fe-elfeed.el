@@ -326,6 +326,8 @@
                   ("https://zhangda.wordpress.com/feed" blog emacs DaZhang)
                   ("https://zudepr.co.uk/feed" blog money Zude)
                   ("https://coredumped.dev/index.xml" blog emacs CoreDumped)
+                  ("https://blog.vivekhaldar.com/rss" blog emacs VivekHaldar)
+                  ("https://luna-studios.gitlab.io/luna-studios/index.xml" blog emacs LunaStudios)
                   ))
   :init
   (defun ar/elfeed-search-print-entry (entry)
