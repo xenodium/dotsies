@@ -7,16 +7,16 @@
   :ensure-system-package fd
   :validate-custom
   (projectile-dynamic-mode-line nil)
-  :config
-  (ar/vsetq projectile-enable-caching t)
-  (ar/vsetq projectile-completion-system 'ivy)
+  (projectile-enable-caching t)
+  (projectile-completion-system 'ivy)
   ;; Use `hybrid' since `alien' ignores .projectile file, which is
   ;; handy for very large repositories.
-  (ar/vsetq projectile-indexing-method 'hybrid)
+  (projectile-indexing-method 'hybrid)
   ;; fd is super fast. Use it if available.
-  (ar/vsetq projectile-project-root-files-functions
-            '(projectile-root-local
-              projectile-root-bottom-up))
+  (projectile-project-root-files-functions
+   '(projectile-root-local
+     projectile-root-bottom-up))
+  :config
   (when (executable-find "fd")
     (let ((fd-command "fd . --print0"))
       (ar/vsetq projectile-hg-command fd-command)
@@ -26,6 +26,17 @@
       (ar/vsetq projectile-darcs-command fd-command)
       (ar/vsetq projectile-svn-command fd-command)
       (ar/vsetq projectile-generic-command fd-command)))
+
+  (defun adviced:projectile-project-root (orig-fun &rest r)
+    "Same as `projectile-project-root' but return nil if remote location (ie. tramp)."
+    (if (file-remote-p default-directory)
+        nil
+      (apply orig-fun r)))
+
+  (advice-add #'projectile-project-root
+              :around
+              #'adviced:projectile-project-root)
+
   (projectile-mode))
 
 (use-package dired
