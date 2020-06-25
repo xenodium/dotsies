@@ -107,6 +107,7 @@
                   ("http://sachachua.com/blog/feed" blog emacs sachachua)
                   ("http://spensertruex.com/rss.xml" blog emacs SpenserTruex)
                   ("http://tangent.libsyn.com" blog money  ChristopherRyan)
+                  ("https://jherrlin.github.io/index.xml" blog emacs JohnHerrlin)
                   ("http://tech.memoryimprintstudio.com/feed" blog emacs MemoryImprintStudio)
                   ("http://thefirestarter.co.uk/feed" blog money FireStarter)
                   ("http://trey-jackson.blogspot.com/feeds/posts/default" blog emacs TreyJackson)
