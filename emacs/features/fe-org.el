@@ -97,6 +97,21 @@
 
   (use-package company-org-block)
 
+  (use-package ol
+    :config
+    ;; https://kitchingroup.cheme.cmu.edu/blog/2016/11/04/New-link-features-in-org-9
+    (org-link-set-parameters
+     "file"
+     :follow (lambda (fpath)
+               (ivy-read (format "%s: " (file-name-nondirectory fpath))
+                         `(("Open" . (lambda ()
+                                       (find-file ,fpath)))
+                           ("Reveal" . (lambda ()
+                                         (dired (file-name-directory ,fpath))
+                                         (re-search-forward (file-name-nondirectory ,fpath)))))
+                         :action (lambda (item)
+                                   (funcall (cdr item)))))))
+
   (use-package org-compat
     :config
     ;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
