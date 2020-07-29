@@ -50,6 +50,9 @@
               (list "-m" "format" temp-file-path)))
     (add-hook 'swift-mode-hook 'swift-format-on-save-mode))
 
+  (defun ar/xcode-info ()
+    (interactive)
+    (shell-command "system_profiler SPDeveloperToolsDataType"))
   ;; (use-package lsp-sourcekit
   ;;   :config
   ;;   (setenv "SOURCEKIT_TOOLCHAIN_PATH"
