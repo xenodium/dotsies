@@ -42,7 +42,7 @@
     (interactive)
     (ivy-exit-with-action
      (lambda (_)
-       (funcall counsel-etags-fallback-search-function
+       (funcall counsel-etags-fallback-grep-function
                 (if (string-empty-p ivy-text)
                     counsel-etags-last-tagname-at-point
                   (format "%s %s" counsel-etags-last-tagname-at-point ivy-text))))))
@@ -75,4 +75,4 @@
                                                                                             ,keyword))))
         (counsel-rg keyword default-directory options prompt))))
 
-  (setq counsel-etags-fallback-search-function #'ar/counsel-etags-async-ripgrep))
+  (setq counsel-etags-fallback-grep-function #'ar/counsel-etags-async-ripgrep))
