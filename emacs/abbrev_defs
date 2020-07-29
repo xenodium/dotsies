@@ -2,7 +2,6 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     ("Basef" "Based" nil :count 0)
-    ("Trhying" "Trying" nil :count 0)
     ("agregating" "aggregating" nil :count 0)
     ("asynchonous" "asynchronous" nil :count 0)
     ("chould" "could" nil :count 0)
@@ -13,6 +12,7 @@
     ("initialization" "initialisation" nil :count 0)
     ("ocassional" "ocasional" nil :count 0)
     ("otherplaces" "places" nil :count 0)
+    ("preemptively" "pre-emptively" nil :count 0)
     ("queueing" "queuing" nil :count 0)
     ("repleacement" "replacement" nil :count 0)
     ("titlep" "title" nil :count 0)
