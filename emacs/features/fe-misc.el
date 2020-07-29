@@ -17,3 +17,18 @@
     "Show London weather."
     (interactive)
     (wttrin-query "London")))
+
+;; https://gist.github.com/syohex/626af66ba3650252b0a2
+(defun ar/hash-region (algorithm beg end)
+  "Hash region using ALGORITHM with BEG and END endpoints."
+  (interactive
+   (list
+    (completing-read "Hash type: " '(md5 sha1 sha224 sha256 sha384 sha512))
+    (if (use-region-p)
+        (region-beginning)
+      (point-min))
+    (if (use-region-p)
+        (region-end)
+      (point-max))))
+  (message "%s: %s"
+           algorithm (secure-hash (intern algorithm) (current-buffer) beg end)))

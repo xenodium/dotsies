@@ -16,7 +16,9 @@
 (use-package frame
   :init
   ;; Mispressing C-z invokes `suspend-frame' (disable).
-  (global-unset-key (kbd "C-z")))
+  (global-unset-key (kbd "C-z"))
+  ;; Enable expanding frame to end of screen.
+  (setq frame-resize-pixelwise t))
 
 ;; Ensure window is maximized after window setup.
 (use-package maxframe

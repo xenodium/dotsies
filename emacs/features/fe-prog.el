@@ -1,12 +1,18 @@
 ;;; -*- lexical-binding: t; -*-
+(use-package newcomment
+  :bind (:map
+         prog-mode-map
+         ;; Better comment functionality
+         ;; https://emacsredux.com/blog/2020/06/10/comment-commands-redux/
+         ("M-;" . 'comment-line)
+         ("C-M-;" . 'comment-line)))
+
 (use-package prog-mode
   :after (flycheck)
   :bind (:map
          prog-mode-map
          ([f6] . recompile)
-         ("C-x C-q" . view-mode)
-         ("M-;" . 'ar/comment-dwim)
-         ("C-M-;" . 'comment-line))
+         ("C-x C-q" . view-mode))
   :hook ((prog-mode . company-mode)
          (prog-mode . flycheck-mode)
          (prog-mode . flyspell-prog-mode)

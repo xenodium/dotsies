@@ -50,6 +50,20 @@
               (list "-m" "format" temp-file-path)))
     (add-hook 'swift-mode-hook 'swift-format-on-save-mode))
 
+  (defun ar/xcode-info ()
+    (interactive)
+    (shell-command "system_profiler SPDeveloperToolsDataType"))
+
+  ;; (use-package lsp-mode
+  ;;   :hook (swift-mode . lsp-deferred)
+  ;;   :commands (lsp lsp-deferred))
+
+  ;; (use-package lsp-sourcekit
+  ;;   :after lsp-mode
+  ;;   :config
+  ;;   ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
+  ;;   (setq lsp-sourcekit-executable "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
+
   ;; (use-package lsp-sourcekit
   ;;   :config
   ;;   (setenv "SOURCEKIT_TOOLCHAIN_PATH"
@@ -61,6 +75,11 @@
     (assert (eq major-mode 'swift-mode) nil "Not in swift-mode")
     (let ((list-matching-lines-face nil))
       (occur "\\(public\\)\\|\\(open\\)"))))
+
+;; Not yet on melpa.
+;; (use-package flycheck-bazel
+;;   :commands (flycheck-bazel-setup)
+;;   :hook ((bazel-mode . flycheck-bazel-setup)))
 
 (use-package applescript-mode
   :ensure t
