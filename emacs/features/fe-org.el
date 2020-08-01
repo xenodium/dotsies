@@ -15,7 +15,7 @@
    '((sequence
       "TODO(t)"
       "STARTED(s)"
-      "WAITING(w@/!)"
+      "WAITING(w!)" ;; Use @/! to log note and timestamp
       "|"
       "DONE(d!)"
       "OBSOLETE(o)"
