@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 (require 'faces)
 
 (when (display-graphic-p)
@@ -148,24 +147,27 @@
 
   (use-package minions
     :ensure t
+    :validate-custom
+    (minions-mode-line-lighter "…")
+    (minions-mode-line-delimiters '("" . ""))
     :config
-    (ar/csetq minions-mode-line-lighter "…")
-    (ar/csetq minions-mode-line-delimiters '("" . ""))
     (minions-mode +1))
 
-  (use-package time
-    :config
-    (ar/csetq display-time-24hr-format t)
-    (ar/csetq display-time-day-and-date t)
-    (ar/csetq display-time-world-list '(("Europe/Paris" "Paris")
-                                        ("Europe/London" "London")
-                                        ("America/Los_Angeles" "Los Angeles")))
-    (ar/csetq display-time-string-forms
-            '((format "%s %s %s, %s:%s"
-                      dayname
-                      monthname day
-                      24-hours minutes)))
-    (display-time))
+  ;; Disabled: Trying out clock outside Emacs
+  ;; (use-package time
+  ;;   :validate-custom
+  ;;   (display-time-24hr-format t)
+  ;;   (display-time-day-and-date t)
+  ;;   (display-time-world-list '(("Europe/Paris" "Paris")
+  ;;                              ("Europe/London" "London")
+  ;;                              ("America/Los_Angeles" "Los Angeles")))
+  ;;   (display-time-string-forms
+  ;;    '((format "%s %s %s, %s:%s"
+  ;;              dayname
+  ;;              monthname day
+  ;;              24-hours minutes)))
+  ;;   :config
+  ;;   (display-time))
 
   (ar/vsetq global-mode-string (remove 'display-time-string global-mode-string))
   (ar/vsetq mode-line-end-spaces
@@ -194,8 +196,9 @@
 (use-package nyan-mode
   :ensure t
   :if (display-graphic-p)
+  :validate-custom
+  (nyan-bar-length 10)
   :config
-  (ar/csetq nyan-bar-length 10)
   (nyan-mode +1))
 
 ;; From https://www.reddit.com/r/emacs/comments/b5n1yh/weekly_tipstricketc_thread/ejessje?utm_source=share&utm_medium=web2x
