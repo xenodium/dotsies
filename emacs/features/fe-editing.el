@@ -554,22 +554,4 @@ line instead."
                                                   (diverted--pop-to-mark-command 2))))
   (diverted-mode +1))
 
-(defun ar/region-camel-to-spaced ()
-  "Splits camelCaseWord to \"camel case word\"."
-  (interactive)
-  (let ((case-fold-search nil))
-    (while (re-search-forward "[A-Z]" (region-end) t)
-      (replace-match (format " %s"
-                             (downcase (match-string 0)))
-                     t nil))))
-
-(defun ar/region-camel-to-snake ()
-  "Splits camelCaseWord to camel_case_word."
-  (interactive)
-  (let ((case-fold-search nil))
-    (while (re-search-forward "[A-Z]" (region-end) t)
-      (replace-match (format "_%s"
-                             (downcase (match-string 0)))
-                     t nil))))
-
 ;; No double escaping needed.

@@ -37,6 +37,39 @@ already narrowed."
               ("C-a" . mwim-beginning-of-code-or-line)
               ("C-e" . mwim-end-of-code-or-line)))
 
+;; http://endlessparentheses.com/meta-binds-part-2-a-peeve-with-paragraphs.html
+(global-set-key (kbd "M-a") 'ar/backward-paragraph)
+(global-set-key (kbd "M-e") 'ar/forward-paragraph)
+
+(defun ar/forward-paragraph (&optional n)
+  "Advance just past next blank line."
+  (interactive "p")
+  (let ((para-commands
+         '(ar/forward-paragraph
+           ar/backward-paragraph)))
+    ;; Only push mark if it's not active and we're not
+    ;; repeating.
+    (or (use-region-p)
+        (not (member this-command para-commands))
+        (member last-command para-commands)
+        (push-mark))
+    ;; The actual movement.
+    (dotimes (_ (abs n))
+      (if (> n 0)
+          (skip-chars-forward "\n[:blank:]")
+        (skip-chars-backward "\n[:blank:]"))
+      (if (search-forward-regexp
+           "\n[[:blank:]]*\n[[:blank:]]*"
+           nil t (cl-signum n))
+          (goto-char (match-end 0))
+        (goto-char
+         (if (> n 0) (point-max) (point-min)))))))
+
+(defun ar/backward-paragraph (&optional n)
+  "Go back up to previous blank line."
+  (interactive "p")
+  (ar/forward-paragraph (- n)))
+
 ;; Centers text, distributing blank space.
 (use-package olivetti :ensure t)
 
