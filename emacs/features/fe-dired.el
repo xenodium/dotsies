@@ -226,6 +226,31 @@
             (kill-buffer (process-buffer process)))))
        (dired-map-over-marks (dired-get-filename) arg))))
 
+  (defun ar/dired-create-icns-iconset (&optional arg)
+    "Convert image ios icns and iconset (needs 1024x1024)."
+    (interactive "P")
+    (assert (executable-find "sips") nil "sips not installed")
+    (mapc
+     (lambda (fpath)
+       (let* ((src-fpath fpath)
+              (base-name (file-name-nondirectory (file-name-sans-extension src-fpath)))
+              (dst-fpath (format "%s.iconset" (file-name-sans-extension src-fpath))))
+         (message "Processing %s" (file-name-nondirectory src-fpath))
+         (process-lines "mkdir" dst-fpath)
+         (process-lines "sips" "-z" "16" "16" src-fpath "--out" (format "%s/icon16x16.png" dst-fpath))
+         (process-lines "sips" "-z" "32" "32" src-fpath "--out" (format "%s/icon16x16@2x.png" dst-fpath))
+         (process-lines "sips" "-z" "32" "32" src-fpath "--out" (format "%s/icon32x32.png" dst-fpath))
+         (process-lines "sips" "-z" "64" "64" src-fpath "--out" (format "%s/icon32x32@2x.png" dst-fpath))
+         (process-lines "sips" "-z" "128" "128" src-fpath "--out" (format "%s/icon128x128.png" dst-fpath))
+         (process-lines "sips" "-z" "256" "256" src-fpath "--out" (format "%s/icon128x128@2x.png" dst-fpath))
+         (process-lines "sips" "-z" "256" "256" src-fpath "--out" (format "%s/icon256x256.png" dst-fpath))
+         (process-lines "sips" "-z" "512" "512" src-fpath "--out" (format "%s/icon256x256@2x.png" dst-fpath))
+         (process-lines "sips" "-z" "512" "512" src-fpath "--out" (format "%s/icon512x512.png" dst-fpath))
+         (process-lines "sips" "-z" "1024" "1024" src-fpath "--out" (format "%s/icon_512x512@2x.png" dst-fpath))
+         (process-lines "iconutil" "-c" "icns" dst-fpath)
+         (message "Created %s and %s.icns" (file-name-nondirectory dst-fpath) (file-name-nondirectory src-fpath))))
+     (dired-map-over-marks (dired-get-filename) arg)))
+
   ;; Predownloaded to ~/.emacs.d/downloads
   (use-package tmtxt-dired-async
     :config
