@@ -18,6 +18,7 @@
   (elfeed-search-print-entry-function #'ar/elfeed-search-print-entry)
   (elfeed-feeds '(
                   ("http://1w6.org/rss.xml" blog emacs draketo)
+                  ("http://www.mycpu.org/feed.xml" blog emacs mycpu)
                   ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
                   ("https://genehack.blog/atom.xml" blog emacs genehack)
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
@@ -115,6 +116,7 @@
                   ("http://trey-jackson.blogspot.com/feeds/posts/default" blog emacs TreyJackson)
                   ("http://tromey.com/blog/?feed=rss2" blog emacs TheCliffsOfInanity)
                   ("http://ukfipod.space/feed" blog money UKFIPod)
+                  ("https://llazarek.com/feeds/all.rss.xml blog emacs LukasLazarek")
                   ("http://whattheemacsd.com/atom.xml" blog WhatTheEmacsD)
                   ("http://www.arcadianvisions.com/blog/rss.xml" blog emacs arcadianvisions)
                   ("http://www.badykov.com/feed.xml" blog emacs KrakenOfThought)
