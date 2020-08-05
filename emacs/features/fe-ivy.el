@@ -338,25 +338,26 @@ With prefix argument, use full path."
   (use-package ivy-dired-history
     :ensure t)
 
-  (use-package ivy-rich
-    :ensure t
-    :validate-custom
-    ;; Avoid lag for TRAMP.
-    (ivy-rich-parse-remote-buffer nil)
-    (ivy-rich-display-transformers-list
-     '(counsel-M-x
-       (:columns
-        ((counsel-M-x-transformer (:width 60))  ; the original transfomer
-         (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
-       ivy-switch-buffer
-       (:columns
-        ((ivy-rich-candidate (:width 60))
-         (ivy-rich-switch-buffer-size (:width 7))
-         (ivy-rich-switch-buffer-project (:width 15 :face success)))
-        :predicate
-        (lambda (cand) (get-buffer cand)))))
-    :config
-    (ivy-rich-mode +1))
+  ;; Trying without. May be slowing things down.
+  ;; (use-package ivy-rich
+  ;;   :ensure t
+  ;;   :validate-custom
+  ;;   ;; Avoid lag for TRAMP.
+  ;;   (ivy-rich-parse-remote-buffer nil)
+  ;;   (ivy-rich-display-transformers-list
+  ;;    '(counsel-M-x
+  ;;      (:columns
+  ;;       ((counsel-M-x-transformer (:width 60))  ; the original transfomer
+  ;;        (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+  ;;      ivy-switch-buffer
+  ;;      (:columns
+  ;;       ((ivy-rich-candidate (:width 60))
+  ;;        (ivy-rich-switch-buffer-size (:width 7))
+  ;;        (ivy-rich-switch-buffer-project (:width 15 :face success)))
+  ;;       :predicate
+  ;;       (lambda (cand) (get-buffer cand)))))
+  ;;   :config
+  ;;   (ivy-rich-mode +1))
 
   ;; Unsure about this one.
   ;; (use-package ivy-posframe
