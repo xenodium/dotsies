@@ -51,19 +51,17 @@ M-x compile.
     "Hide successful builds window with BUFFER and STRING."
     (cond ((string-match "finished" string)
            (message "Build finished")
-           (when (> (count-windows) 1)
+           (when (and (> (count-windows) 1)
+                      (get-buffer-window buffer t))
              (run-with-timer 2 nil
                              #'delete-window
                              (get-buffer-window buffer t))))
           (t
-           (next-error)
-           (when (equal major-mode 'objc-mode)
-             (next-error))
            (message "Compilation exited abnormally: %s" string))))
 
   ;; Automatically hide successful builds window.
   ;; Trying out without for a little while.
-  ;; (setq compilation-finish-functions #'ar/compile-autoclose)
+  (setq compilation-finish-functions #'ar/compile-autoclose)
 
   ;; Automatically scroll build output.
   (ar/csetq compilation-scroll-output t))
