@@ -38,8 +38,9 @@ already narrowed."
               ("C-e" . mwim-end-of-code-or-line)))
 
 ;; http://endlessparentheses.com/meta-binds-part-2-a-peeve-with-paragraphs.html
-(global-set-key (kbd "M-a") 'ar/backward-paragraph)
-(global-set-key (kbd "M-e") 'ar/forward-paragraph)
+;; Disabling. I'm currently using M-a as shortcut to agenda.
+;; (global-set-key (kbd "M-a") 'ar/backward-paragraph)
+;; (global-set-key (kbd "M-e") 'ar/forward-paragraph)
 
 (defun ar/forward-paragraph (&optional n)
   "Advance just past next blank line."
