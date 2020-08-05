@@ -1,5 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
 (require 'map)
 
 (use-package org
@@ -84,7 +83,7 @@
 
   (defun ar/org-mode-hook-function ()
     (toggle-truncate-lines 0)
-    (ar/vsetq show-trailing-whitespace t)
+    (setq-local show-trailing-whitespace t)
     (set-fill-column 1000)
     (use-package ar-org)
     (setq-local company-backends '(company-org-block))
@@ -138,20 +137,21 @@
     :validate-custom
     (org-goto-auto-isearch nil))
 
-  (use-package org-bullets :ensure t
+  (use-package org-bullets
+    :ensure t
     :hook (org-mode . org-bullets-mode)
-    :config
-    (ar/vsetq org-bullets-bullet-list
-              '("◉" "◎" "⚫" "○" "►" "◇")))
+    :validate-custom
+    (org-bullets-bullet-list
+     '("◉" "◎" "⚫" "○" "►" "◇")))
 
   (use-package org-faces
-    :config
-    (ar/vsetq org-todo-keyword-faces
-              '(("TODO" . (:foreground "red" :weight bold))
-                ("STARTED" . (:foreground "yellow" :weight bold))
-                ("DONE" . (:foreground "green" :weight bold))
-                ("OBSOLETE" . (:foreground "blue" :weight bold))
-                ("CANCELLED" . (:foreground "gray" :weight bold)))))
+    :validate-custom
+    (org-todo-keyword-faces
+     '(("TODO" . (:foreground "red" :weight bold))
+       ("STARTED" . (:foreground "yellow" :weight bold))
+       ("DONE" . (:foreground "green" :weight bold))
+       ("OBSOLETE" . (:foreground "blue" :weight bold))
+       ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
   (defun ar/org-insert-link-dwim ()
     "Convert selected region into a link with clipboard http URL (if one is found).
@@ -425,7 +425,7 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 
       (cond ((string-equal system-type "darwin")
              ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
-             (ar/vsetq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2019.5/libexec/plantuml.jar")
+             (ar/vsetq org-plantuml-jar-path "~/homebrew//Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
              (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
             (t
              (message "Warning: Could not find plantuml.8018.jar")
