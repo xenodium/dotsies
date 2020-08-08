@@ -23,6 +23,7 @@
                   ("https://genehack.blog/atom.xml" blog emacs genehack)
                   ("https://thomashartmann.dev/rss.xml" blog emacs ThomasHartmann)
                   ("https://invidio.us/feed/channel/UCWZ3HFiJkxG1K8C4HVnyBvQ" video invidious VicBerger)
+                  ("https://ag91.github.io/rss.xml" blog emacs ag91)
                   ("https://www.ethanaa.com/rss.xml" blog emacs EthanAnderson)
                   ("https://menno.io/rss.xml" blog emacs Menno)
                   ("http://lahtela.me/feed.xml" blog emacs TatuLahtela)
