@@ -27,6 +27,11 @@
   (auto-compile-on-load-mode +1)
   (auto-compile-on-save-mode +1))
 
+(use-package quelpa-use-package
+  :ensure t
+  :init (setq quelpa-update-melpa-p nil)
+  :config (quelpa-use-package-activate-advice))
+
 (use-package validate
   :ensure t
   :config
