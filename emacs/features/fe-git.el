@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'ar-vsetq)
-(require 'ar-csetq)
 (require 's)
 (require 'dash)
 
@@ -73,12 +72,14 @@
   :config
   (defun ar/delayed-git-gutter-mode ()
     "Git gutter can take time to load on some repos. Delay enabling."
-    (let ((buffer (current-buffer)))
-      (run-with-idle-timer 3 nil
-                           (lambda ()
-                             (when (buffer-live-p buffer)
-                               (with-current-buffer buffer
-                                 (git-gutter-mode +1))))))))
+    (if (file-remote-p default-directory)
+        (message "Ignoring git-gutter (tramp): %s" buffer-file-name)
+      (let ((buffer (current-buffer)))
+        (run-with-idle-timer 3 nil
+                             (lambda ()
+                               (when (buffer-live-p buffer)
+                                 (with-current-buffer buffer
+                                   (git-gutter-mode +1)))))))))
 
 (use-package ar-git
   :defer 2)
