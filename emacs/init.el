@@ -12,6 +12,10 @@
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
 
+;; Default was too low.
+;; Increase for better lsp performance.
+(setq read-process-output-max (* 3 1024 1024)) ;; 3mb
+
 ;; Default of 800 was too low.
 ;; Avoid Lisp nesting exceeding in swift-mode.
 (setq max-lisp-eval-depth 10000)
@@ -125,8 +129,8 @@
 
 (defun ar/load-non-core-init ()
   "Load non-core initialisation."
-   ;; Undo GC values post init.el.
-   (setq gc-cons-threshold 16777216
+  ;; Undo GC values post init.el.
+   (setq gc-cons-threshold 100000000
          gc-cons-percentage 0.1)
    (run-with-idle-timer 5 t #'garbage-collect)
    (setq garbage-collection-messages t)
