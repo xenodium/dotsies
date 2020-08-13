@@ -38,7 +38,7 @@
 (use-package ar-osx
   :commands ar/osx-convert-plist-to-xml)
 
-(defun ar/macos-cpus ()
-  "Find out how many cpus on your macOS machine."
+(defun ar/macos-hardware-overview ()
+  "View macOS hardware overview."
   (interactive)
-  (message "cpus: %s" (car (process-lines "sysctl" "-n" "hw.ncpu"))))
+  (shell-command "system_profiler SPHardwareDataType"))
