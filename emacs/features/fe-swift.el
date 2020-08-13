@@ -55,14 +55,16 @@
     (shell-command "system_profiler SPDeveloperToolsDataType"))
 
   ;; (use-package lsp-mode
+  ;;   :ensure t
   ;;   :hook (swift-mode . lsp-deferred)
   ;;   :commands (lsp lsp-deferred))
 
   ;; (use-package lsp-sourcekit
+  ;;   :ensure t
   ;;   :after lsp-mode
   ;;   :config
   ;;   ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
-  ;;   (setq lsp-sourcekit-executable "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
+  ;;   (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
 
   ;; (use-package lsp-sourcekit
   ;;   :config
