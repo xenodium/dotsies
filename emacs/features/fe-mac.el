@@ -37,3 +37,8 @@
 ;; Convert binary plists to xml using host utilities.
 (use-package ar-osx
   :commands ar/osx-convert-plist-to-xml)
+
+(defun ar/macos-cpus ()
+  "Find out how many cpus on your macOS machine."
+  (interactive)
+  (message "cpus: %s" (car (process-lines "sysctl" "-n" "hw.ncpu"))))
