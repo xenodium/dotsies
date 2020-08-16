@@ -33,3 +33,23 @@
     (set-face-attribute 'whitespace-line nil
                         :foreground nil
                         :background nil)))
+
+(use-package org-compat
+  :config
+  ;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
+  ;; Based on http://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html
+  (org-add-link-type
+   "youtube"
+   (lambda (handle)
+     (browse-url (concat "https://www.youtube.com/watch?v=" handle)))
+   (lambda (path desc backend)
+     (cl-case backend
+       (html (format
+              "<p style='text-align:center;'>
+                    <iframe width='420' height='315' align='middle'
+                            src='https://www.youtube.com/embed/W4LxHn5Y_l4?controls=0'
+                            allowFullScreen>
+                    </iframe>
+                 </p>"
+              path (or desc "")))
+       (latex (format "\href{%s}{%s}" path (or desc "video")))))))

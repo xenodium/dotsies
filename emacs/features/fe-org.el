@@ -82,9 +82,6 @@
               #'adviced:org-yank)
 
   (defun ar/org-mode-hook-function ()
-    (toggle-truncate-lines 0)
-    (setq-local show-trailing-whitespace t)
-    (set-fill-column 1000)
     (use-package ar-org)
     (setq-local company-backends '(company-org-block))
     (company-mode +1))
@@ -110,26 +107,7 @@
                                          (re-search-forward (file-name-nondirectory ,fpath)))))
                          :action (lambda (item)
                                    (funcall (cdr item)))))))
-
-  (use-package org-compat
-    :config
-    ;; Handle youtube org links in the form of [[youtube:XjKtkEMUYGc][Some description]]
-    ;; Based on http://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html
-    (org-add-link-type
-     "youtube"
-     (lambda (handle)
-       (browse-url (concat "https://www.youtube.com/watch?v=" handle)))
-     (lambda (path desc backend)
-       (cl-case backend
-         (html (format
-                "<p style='text-align:center;'>
-                    <iframe width='420' height='315' align='middle'
-                            src='https://www.youtube.com/embed/W4LxHn5Y_l4?controls=0'
-                            allowFullScreen>
-                    </iframe>
-                 </p>"
-                path (or desc "")))
-         (latex (format "\href{%s}{%s}" path (or desc "video")))))))
+  
   (use-package org-indent
     :hook ((org-mode . org-indent-mode)))
 
@@ -183,9 +161,6 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     :ensure t)
 
   (use-package ox-epub
-    :ensure t)
-
-  (use-package ox-reveal
     :ensure t)
 
   ;; Work in progress.
@@ -260,8 +235,6 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                ar/ox-html-export-all-async
                ar/ox-html-export-all
                ar/org-export-current-headline-async)
-    :bind (:map org-mode-map
-                ([f6] . ar/ox-html-export-all))
     :config
     (use-package ar-org)
 
@@ -423,6 +396,7 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
       ;; Use fundamental mode when editing plantuml blocks with C-c '
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
+      (require 'ar-vsetq)
       (cond ((string-equal system-type "darwin")
              ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
              (ar/vsetq org-plantuml-jar-path "~/homebrew//Cellar/plantuml/1.2020.15/libexec/plantuml.jar")

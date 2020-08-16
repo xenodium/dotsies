@@ -51,6 +51,7 @@
   (set-face-attribute 'org-indent nil :background "#212121"))
 
 (with-eval-after-load 'org-faces
+  (set-face-attribute 'org-hide nil :foreground "#212121" :background "#212121" :strike-through nil)
   (set-face-attribute 'org-done nil :foreground "#b9ccb2" :strike-through nil)
   (set-face-attribute 'org-agenda-date-today nil :foreground "#Fb1d84")
   (set-face-attribute 'org-agenda-done nil :foreground "#b9ccb2" :strike-through nil)

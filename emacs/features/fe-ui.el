@@ -25,8 +25,9 @@
   :hook (window-setup . maximize-frame))
 
 ;; Used when exporting org source blocks.
-;; (use-package github-theme
-;;   :ensure t)
+(use-package github-theme
+  :defer 60
+  :ensure t)
 
 (use-package material-theme
   :ensure t
@@ -75,9 +76,6 @@
   ;;   (display-time))
 
   (setq global-mode-string (remove 'display-time-string global-mode-string))
-  (setq mode-line-end-spaces
-        (list (propertize " " 'display '(space :align-to (- right 19)))
-              'display-time-string))
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
