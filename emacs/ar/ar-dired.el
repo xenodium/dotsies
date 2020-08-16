@@ -62,16 +62,6 @@
   (let ((file-path (ar/dired--choose-from (f-expand path))))
     (find-file file-path)))
 
-(defun ar/dired--open-file-externally-from (path)
-  "Open file externally choosing from PATH."
-  (let ((file-path (ar/dired--choose-from (f-expand path))))
-    (funcall (ar/platform-open-in-external-app-function) file-path)))
-
-(defun ar/dired-open-file-externally-from-downloads ()
-  "Open a file externally from Downloads directory."
-  (interactive)
-  (ar/dired--open-file-externally-from "~/Downloads"))
-
 (defun ar/dired-find-file-from-downloads ()
   "Move a file from Downloads directory to current."
   (interactive)
@@ -86,12 +76,6 @@
   "Copy a file from Downloads directory to current."
   (interactive)
   (ar/dired--copy-or-move 'f-copy "~/Downloads"))
-
-
-(defun ar/dired-open-file-externally-from-desktop ()
-  "Open a file externally from Desktop directory."
-  (interactive)
-  (ar/dired--open-file-externally-from "~/Desktop"))
 
 (defun ar/dired-find-file-from-desktop ()
   "Move a file from Desktop directory to current."

@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
+
 (use-package flycheck
   :ensure t
+  :defer 80
   :validate-custom
   ;; bazel-buildifier in flycheck no longer working. Disable.
   (flycheck-disabled-checkers '(bazel-buildifier))

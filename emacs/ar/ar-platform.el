@@ -6,16 +6,13 @@
 
 ;;; Code:
 
-(require 'ar-osx)
-(require 'ar-linux)
-
 (defun ar/platform-new-browser-tab ()
   "Open a new browser tab in the default browser."
   (interactive)
   (let ((command (cond
-                  ((ar/osx-p)
+                  ((string-equal system-type "darwin")
                    "open http://google.com")
-                  ((ar/platform-gnu-linux-p)
+                  ((string-equal system-type "gnu/linux")
                    "google-chrome http://google.com")
                   (nil))))
     (unless command
@@ -25,7 +22,7 @@
 (defun ar/platform-open-in-external-app-function ()
   "Return a function to open FPATH externally."
   (cond
-   ((ar/osx-p)
+   ((string-equal system-type "darwin")
     (lambda (fPath)
       (shell-command (format "open \"%s\"" fPath))))
    ((ar/linux-p)

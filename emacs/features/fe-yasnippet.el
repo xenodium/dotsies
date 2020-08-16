@@ -18,3 +18,8 @@
                "~/.emacs.d/yasnippets/personal" t)
 
   (yas-reload-all))
+
+;; Displays yasnippet previous inline when cycling through results.
+(use-package ivy-yasnippet
+  :ensure t
+  :commands ivy-yasnippet)

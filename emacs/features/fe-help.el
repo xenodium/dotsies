@@ -9,6 +9,11 @@
   ;; Select help window by default.
   (help-window-select t))
 
+(use-package discover-my-major
+  :ensure t
+  :commands (discover-my-major
+             discover-my-mode))
+
 (use-package helpful
   :ensure t
   :bind  (("C-h f" . helpful-callable)
@@ -35,12 +40,11 @@ reuse it's window, otherwise create new one."
                 #'elisp-demos-advice-helpful-update)))
 
 (use-package tldr
-  :ensure
+  :ensure t
   :commands (tldr
              tldr-update-docs))
 
 (use-package which-key
   :ensure t
-  :disabled
   :config
   (which-key-mode))

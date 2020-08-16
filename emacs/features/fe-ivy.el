@@ -1,17 +1,17 @@
 ;;; ivy.el -*- lexical-binding: t; -*-
+
 (use-package counsel
   :ensure t
-  :defer 0.1
+  ;; :defer 0.2
   :commands (ar/counsel-ag
              ar/ivy-occur)
   :bind (:map
          global-map
          ("C-c i" . counsel-semantic-or-imenu)
+         ("M-y" . counsel-yank-pop)
+         ("M-x" . counsel-M-x)
          :map counsel-ag-map
-         ("C-c C-e" . ar/ivy-occur)
-         :map wgrep-mode-map
-         ("C-c C-c" . ar/wgrep-finish-edit)
-         ("C-c C-k" . ar/wgrep-abort-changes))
+         ("C-c C-e" . ar/ivy-occur))
   :validate-custom
   ;; https://oremacs.com/2017/08/04/ripgrep/
   (counsel-grep-base-command (if (executable-find "rg")
@@ -79,6 +79,7 @@ For example:
 
   (defun ar/counsel-ag (arg)
     (interactive "P")
+    (require 'counsel)
     (ivy-set-actions
      'counsel-rg
      `(("i" ,'ar/counsel-ag--strip-insert-item
@@ -195,7 +196,11 @@ For example:
 
   ;; Wgrep is used by counsel-ag (to make writeable).
   (use-package wgrep
-    :ensure t)
+    :ensure t
+    :bind
+    (:map wgrep-mode-map
+     ("C-c C-c" . ar/wgrep-finish-edit)
+     ("C-c C-k" . ar/wgrep-abort-changes)))
 
   (counsel-mode +1))
 
@@ -236,8 +241,10 @@ For example:
 
 (use-package ivy
   :ensure t
-  :defer 0.1
-  :commands (ar/ivy-bluetooth-connect)
+  ;; :defer 0.2
+  :bind ("C-x b" . ivy-switch-buffer)
+  :commands (ar/ivy-bluetooth-connect
+             ivy-switch-buffer)
   :validate-custom
   (ivy-initial-inputs-alist '((org-refile . "^")
                               (org-agenda-refile . "^")
@@ -336,7 +343,11 @@ With prefix argument, use full path."
 
   ;; See recent directories when copying/moving dired files.
   (use-package ivy-dired-history
-    :ensure t)
+    :ensure t
+    :after savehist
+    :config
+    (add-to-list 'savehist-additional-variables
+                 'ivy-dired-history-variable))
 
   ;; Trying without. May be slowing things down.
   ;; (use-package ivy-rich
@@ -369,11 +380,6 @@ With prefix argument, use full path."
   ;;   (setq ivy-display-function #'ivy-posframe-display)
   ;;   (ivy-posframe-enable))
   )
-
-;; Displays yasnippet previous inline when cycling through results.
-(use-package ivy-yasnippet
-  :ensure t
-  :commands ivy-yasnippet)
 
 (use-package ar-counsel-find
   :commands ar/counsel-find)

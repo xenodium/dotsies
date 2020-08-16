@@ -1,26 +1,23 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package s
-  :ensure t)
+  :ensure t
+  :defer 60)
 
 (use-package ht
-  :ensure t)
+  :ensure t
+  :defer 60)
 
 (use-package async
   :ensure t
+  :defer 60
   :config
-  (async-bytecomp-package-mode +1)
-  (dired-async-mode +1))
-
-;; flet is no longer available. Use noflet as a replacement.
-(use-package noflet
-  :ensure t
-  :after dash)
+  (async-bytecomp-package-mode +1))
 
 ;; Timestamp and date/time library.
 (use-package ts
-  :ensure t)
+  :ensure t
+  :defer 60)
 
 (use-package f
-  :ensure t)
-
-(use-package ar-vsetq)
+  :ensure t
+  :defer 60)

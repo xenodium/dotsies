@@ -1,6 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package files
+  :defer 15
   :validate-custom
+  ;; Automatically Kill Running Processes on Exit.
+  ;; https://emacsredux.com/blog/2020/07/18/automatically-kill-running-processes-on-exit
+  (confirm-kill-processes nil)
   ;; read-only buffers enable view-mode (C-x C-q enables editing).
   (view-read-only t)
   ;; Always display opened file using canonical location (not symlink).
@@ -19,18 +23,13 @@
   ;; Open that large file! YOLO. Ok, got `openwith' to handle it.
   (large-file-warning-threshold nil)
   :config
-  (require 'ar-platform)
-
-  (defun ar/open-clipboard-file-externally ()
-    (interactive)
-    (funcall (ar/platform-open-in-external-app-function) (current-kill 0)))
-
-  (defun ar/open-clipboard-file ()
+  (defun ar/misc-open-clipboard-file ()
     "Open clipboard file URL."
     (interactive)
     (find-file (current-kill 0))))
 
 (use-package autorevert
+  :commands auto-revert-mode
   :validate-custom
   ;; Auto refresh dired.
   ;; https://mixandgo.com/learn/how-ive-convinced-emacs-to-dance-with-ruby
@@ -39,12 +38,18 @@
   ;; Be quiet about dired refresh.
   (auto-revert-verbose nil)
   :config
-  (global-auto-revert-mode +1))
+  ;; global-auto-revert-mode can slow things down. try to enable it per active window.
+  (add-to-list 'window-state-change-functions (defun ar/window-state-state-change (state)
+						(with-current-buffer (window-buffer (old-selected-window))
+						  (auto-revert-mode -1))
+						(with-current-buffer (window-buffer (selected-window))
+						  (auto-revert-mode -1)))))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
 
 (use-package recentf
+  :defer 10
   :validate-custom
   (recentf-exclude '("/auto-install/"
                      ".recentf"
@@ -75,3 +80,6 @@
         (message "%S removed from the list" selection))))
 
   (recentf-mode +1))
+
+(use-package ar-file
+  :commands (ar/file-open-closest-build-file))

@@ -1,6 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
-(require 'dash)
 
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/narrow-or-widen-dwim (p)
@@ -183,7 +181,7 @@ Repeated invocations toggle between the two most recently open buffers."
     "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
     (let ((proj (nth 1 r))
           (exclude-args (nth 4 r)))
-      (unless (-contains-p exclude-args proj)
+      (unless (seq-contains-p exclude-args proj)
         (apply run-command-fun r))))
 
   ;; This advice is handy for very large repositories, as it enables whitelisting
@@ -223,11 +221,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (("M-e" . avy-goto-char-timer)))
 
 (use-package subword
+  :defer 60
   :config
   (global-subword-mode +1))
 
 (use-package goto-line-preview
   :ensure t
+  :commands goto-line-preview
   :config
   (global-set-key [remap goto-line] 'goto-line-preview))
 

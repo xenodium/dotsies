@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-csetq)
 
 (use-package python
-  :config
-  (ar/csetq python-indent-guess-indent-offset-verbose nil))
+  :mode ("\\.py\\'" . python-mode)
+  :validate-custom
+  (python-indent-guess-indent-offset-verbose nil))

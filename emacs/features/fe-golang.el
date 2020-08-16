@@ -1,6 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
-(require 'ar-csetq)
 
 ;; Requires gocode daemon. Install with:
 ;; go get -u golang.org/x/tools/cmd/...
@@ -17,11 +15,13 @@
   (:map go-mode-map
         ("M-." . godef-jump))
   :hook (go-mode . ar/go-mode-hook-function)
+  :validate-custom
+  (gofmt-command "goimports")
   :init
   (defun ar/go-mode-hook-function ()
     "Called when entering `go-mode'."
     (setq-local company-backends '(company-go))
-    (ar/vsetq tab-width 2 indent-tabs-mode t)
+    (setq-local tab-width 2 indent-tabs-mode t)
     (add-hook 'before-save-hook #'gofmt-before-save t t))
   :config
   (setenv "GOPATH" (expand-file-name "~/stuff/active/code/gopath"))
@@ -31,8 +31,6 @@
 
   (add-to-list 'exec-path
                (expand-file-name "~/go/bin"))
-
-  (ar/csetq gofmt-command "goimports")
 
   (use-package go-snippets
     :ensure t

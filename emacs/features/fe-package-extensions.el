@@ -5,13 +5,12 @@
 (use-package use-package-chords
   :ensure t
   :config
-  (run-with-idle-timer 2 nil
+  (run-with-idle-timer 60 nil
                        (lambda ()
                          (key-chord-mode 1)))
-  (defun ar/disable-key-chord-mode ()
-    (set (make-local-variable 'input-method-function) nil))
-
-  (add-hook 'minibuffer-setup-hook #'ar/disable-key-chord-mode))
+  (add-hook 'minibuffer-setup-hook
+            (defun ar/disable-key-chord-mode ()
+              (set (make-local-variable 'input-method-function) nil))))
 
 ;; Ask shell for PATH, MANPATH, and exec-path and update Emacs environment.
 ;; We do this early on as we assert binaries are installed throughout
@@ -19,18 +18,27 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (exec-path-from-shell-initialize))
+  (exec-path-from-shell-initialize)
+  (if (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+      (progn
+	(message "Native comp is available")
+        (add-to-list 'exec-path (expand-file-name "~/homebrew/opt/gccemacs/bin"))
+	(setenv "LIBRARY_PATH" (concat (getenv "LIBRARY_PATH")
+                                       (when (getenv "LIBRARY_PATH")
+                                         ":")
+				       ;; This is where Homebrew puts gcc libraries.
+                                       (car (file-expand-wildcards
+                                             (expand-file-name "~/homebrew/opt/gcc/lib/gcc/*")))))
+	;; Only set after LIBRARY_PATH can find gcc libraries.
+	(setq comp-deferred-compilation t))
+    (message "Native comp is *not* available")))
 
 (use-package auto-compile
   :ensure t
   :config
   (auto-compile-on-load-mode +1)
   (auto-compile-on-save-mode +1))
-
-(use-package quelpa-use-package
-  :ensure t
-  :init (setq quelpa-update-melpa-p nil)
-  :config (quelpa-use-package-activate-advice))
 
 (use-package validate
   :ensure t

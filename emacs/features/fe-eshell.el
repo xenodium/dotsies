@@ -1,11 +1,18 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
-(require 'ar-csetq)
-(require 'seq)
 
 (use-package shell-pop
   :ensure t
   :bind (([f5] . ar/shell-pop))
+  :validate-custom
+  ;; (shell-pop-term-shell "/bin/bash")
+  ;; (shell-pop-shell-type '("ansi-term"
+  ;;                              "terminal"
+  ;;                              (lambda
+  ;;                                nil (ansi-term shell-pop-term-shell))))
+  (shell-pop-window-position "full")
+  (shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
+                                                (eshell))))
+  (shell-pop-term-shell "eshell")
   :config
   (use-package eshell
     :commands eshell
@@ -57,11 +64,17 @@
     (require 'counsel)
     (require 'company-projectile-cd)
     (require 'company-cd)
+        ;; Use native 'sudo', system sudo asks for password every time.
+    (require 'em-tramp)
 
-    (require 'em-hist)
+    (use-package em-hist
+      :validate-custom
+      (eshell-history-size (* 10 1024))
+      (eshell-hist-ignoredups t))
 
     (defun adviced:eshell-add-input-to-history (orig-fun &rest r)
       "Cd to relative paths aren't that useful in history. Change to absolute paths."
+      (require 'seq)
       (let* ((input (nth 0 r))
              (args (progn
                      (set-text-properties 0 (length input) nil input)
@@ -98,17 +111,17 @@
                 :around
                 #'adviced:eshell-exec-visual)
 
-    (require 'em-glob)
-
-    ;; Use native 'sudo', system sudo asks for password every time.
-    (require 'em-tramp)
+    (use-package em-glob
+      :validate-custom
+      (eshell-glob-case-insensitive t)
+      (eshell-error-if-no-glob t))
 
     (when (< emacs-major-version 27)
       (use-package em-banner))
 
     (use-package em-banner
-      :config
-      (ar/csetq eshell-banner-message "
+      :validate-custom
+      (eshell-banner-message "
   Welcome to the Emacs
 
                          _/                  _/  _/
@@ -175,6 +188,8 @@
           (find-file (concat "/sudo::" qualified-path)))))
 
     (use-package em-dirs
+      :validate-custom
+      (eshell-list-files-after-cd nil)
       :config
       ;; https://github.com/dakra/dmacs/blob/master/init.org#eshell
       (defun eshell/rcd (&optional directory)
@@ -196,20 +211,14 @@ So if we're connected with sudo to 'remotehost'
       :validate-custom
       (eshell-smart-space-goes-to-end t)
       (eshell-where-to-jump 'begin)
-      (eshell-review-quick-commands nil))
+      (eshell-review-quick-commands nil)
+      ;; Let buffer linger, but can easily quit since view-mode
+      ;; is enabled in term-exec-hook above.
+      (eshell-destroy-buffer-when-process-dies nil))
 
     ;; Avoid "WARNING: terminal is not fully functional."
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
     (setenv "PAGER" "cat")
-
-    (ar/vsetq eshell-history-size (* 10 1024))
-    (ar/vsetq eshell-hist-ignoredups t)
-    (ar/vsetq eshell-error-if-no-glob t)
-    (ar/vsetq eshell-glob-case-insensitive t)
-    (ar/vsetq eshell-list-files-after-cd nil)
-    ;; Let buffer linger, but can easily quit since view-mode
-    ;; is enabled in term-exec-hook above.
-    (ar/csetq eshell-destroy-buffer-when-process-dies nil)
 
     (defun ar/eshell-counsel-history ()
       (interactive)
@@ -271,18 +280,6 @@ So if we're connected with sudo to 'remotehost'
 
 
     (use-package ar-eshell-config))
-
-  ;; (ar/csetq shell-pop-term-shell "/bin/bash")
-  ;; (ar/csetq shell-pop-shell-type '("ansi-term"
-  ;;                              "terminal"
-  ;;                              (lambda
-  ;;                                nil (ansi-term shell-pop-term-shell))))
-
-  ;; Must use custom set for these.
-  (ar/csetq shell-pop-window-position "full")
-  (ar/csetq shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
-                                                         (eshell))))
-  (ar/csetq shell-pop-term-shell "eshell")
 
   (defun ar/shell-pop (prefix)
     "Shell pop with PREFIX to cd to working dir. Else use existing location."

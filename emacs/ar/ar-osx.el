@@ -10,10 +10,6 @@
 ;; Convert plists on Mac OS to xml equivalent and open.
 (push '(".plist'" . ar/convert-plist-to-xml) auto-mode-alist)
 
-(defun ar/osx-p ()
-  "Return t if the system is a Mac OS X machine, nil otherwise."
-  (string-equal system-type "darwin"))
-
 (defun ar/osx-convert-plist-to-xml ()
   (interactive)
   (when (string-match "plist"
@@ -25,24 +21,6 @@
                              t t))
   (set-buffer-modified-p nil)
   (nxml-mode))
-
-(defun ar/osx-init ()
-  "Perform initializations for Mac OS X."
-  (unless (ar/osx-p)
-    (error "Loading OS X config on different platform"))
-  ;; Keep menu bar under graphical OS X for fullscreen.
-  (when (window-system)
-    (menu-bar-mode 1))
-  ;; Sets the command (Apple) key as Meta.
-  (setq mac-command-modifier 'meta)
-  ;; Command as meta is enough. Let option act native.
-  (setq mac-option-modifier (quote none))
-  (setq exec-path (append exec-path '("~/homebrew/bin"
-                                      "~/homebrew/Cellar/llvm/HEAD/bin"
-                                      "/usr/local/bin"))))
-
-(when (ar/osx-p)
-  (ar/osx-init))
 
 (provide 'ar-osx)
 

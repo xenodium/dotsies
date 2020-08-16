@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'map)
 
 (use-package org
+  :mode ("\\.org\\'" . org-mode)
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
               ("M-RET" . ar/org-meta-return)
@@ -786,27 +786,6 @@ If VANILLA is non-nil, run the standard `org-capture'."
   ;; Automatically save org files after transitioning tasks.
   (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers))
 
-(use-package yequake
-  :ensure t
-  :quelpa (yequake
-           :fetcher github
-           :repo "xenodium/yequake")
-  :init
-  (defun ar/yequake-toggle-org-capture ()
-    (interactive)
-    (yequake-toggle "org-capture"))
-  ;; :bind (("M-c" . ar/yequake-toggle-org-capture))
-  :custom
-  (yequake-frames
-   '(("org-capture"
-      (buffer-fns . (yequake-org-capture))
-      (width . 0.75)
-      (height . 0.5)
-      (alpha . 0.95)
-      (frame-parameters . ((auto-raise . t)
-                           (undecorated . t)
-                           (skip-taskbar . t)
-                           (sticky . t)))))))
 
 (use-package org-capture
   :bind (("M-c" . ar/org-capture-todo)

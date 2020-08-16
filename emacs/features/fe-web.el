@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
+
 (use-package enlive
-  :ensure t)
+  :ensure t
+  :defer 60)
 
 (use-package ar-url
   :commands (ar/url-view-links-at))
@@ -28,10 +30,13 @@
   :ensure t)
 
 (use-package web-mode
+  :ensure t
+  :defer 80
   :config
   (setq web-mode-auto-close-style 2))
 
 (use-package url-handlers
+  :commands ar/download-clipboard-url
   :config
   (defun ar/download-clipboard-url ()
     "Download clipboard URL to current directory."

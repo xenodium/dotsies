@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 ;; Needs .ctags and .globalrc in $HOME.
+
 (use-package counsel-gtags
   :ensure t
   :disabled ;; trying out counsel-etags
@@ -17,11 +18,6 @@
   :disabled ;; trying out counsel-etags
   :commands ggtags-mode)
 
-(use-package etags
-  :validate-custom
-  (tags-revert-without-query t)
-  (tags-add-tables nil))
-
 ;; Note: Also used by smart-jump.
 (use-package counsel-etags
   :ensure t
@@ -34,6 +30,11 @@
                                  'append
                                  'local)))
   :config
+  (use-package etags
+    :validate-custom
+    (tags-revert-without-query t)
+    (tags-add-tables nil))
+
   ;; Can also be added to ~/.ctags as --exclude="bazel-*"
   (add-to-list 'counsel-etags-ignore-filenames "bazel-*")
   (add-to-list 'counsel-etags-ignore-filenames "*/*.xcodeproj/*")

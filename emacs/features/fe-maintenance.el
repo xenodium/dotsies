@@ -11,7 +11,8 @@
 
 ;; Safely delete packages without breaking depending packages.
 (use-package package-safe-delete
-  :ensure t)
+  :ensure t
+  :commands package-safe-delete)
 
 (use-package esup
   :ensure t

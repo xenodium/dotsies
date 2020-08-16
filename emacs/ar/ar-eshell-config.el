@@ -13,6 +13,7 @@
 (require 'shrink-path)
 (require 'validate)
 (require 'iimage)
+(require 'cl-lib)
 
 (defun ar/eshell-config--prompt-char ()
   "Return shell config character, based on current OX. For example, an  for MacOS."
@@ -51,7 +52,7 @@
 
 (defun ar/eshell-config--git-branch-prompt ()
   "Git branch prompt."
-  (let ((branch (car (loop for match in (split-string (shell-command-to-string "git branch") "\n")
+  (let ((branch (car (cl-loop for match in (split-string (shell-command-to-string "git branch") "\n")
                            when (string-match "^\*" match)
                            collect match))))
     (if (not (eq branch nil))

@@ -1,4 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package vuiet
-  :ensure t)
+  :ensure t
+  :commands vuiet-mode)

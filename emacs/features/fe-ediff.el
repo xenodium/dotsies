@@ -1,7 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-csetq)
 
 (use-package ediff
+  :validate-custom
+  (ediff-window-setup-function #'ediff-setup-windows-plain)
+  (ediff-split-window-function #'split-window-horizontally)
   :commands (ar/ediff-dir-content-file-sizes
              ediff-backup
              ediff-buffers
@@ -60,9 +62,6 @@
     (jump-to-register ar/ediff-bwin-reg))
 
   :config
-  (ar/csetq ediff-window-setup-function #'ediff-setup-windows-plain)
-  (ar/csetq ediff-split-window-function #'split-window-horizontally)
-
   (use-package outline
     ;; Ensure ediff expands org files.
     :hook (ediff-prepare-buffer . outline-show-all))

@@ -1,14 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
 
 (use-package ledger-mode
   :ensure t
   :ensure-system-package ledger
+  :validate-custom
+  (ledger-reconcile-default-commodity "GBP")
   :hook ((ledger-mode . company-mode)
          (ledger-mode . ar/ledger-mode-hook-function))
   :config
-  (ar/vsetq ledger-reconcile-default-commodity "GBP")
-
   (defun ar/ledger-mode-hook-function ()
     (setq-local company-backends '((company-capf))))
 

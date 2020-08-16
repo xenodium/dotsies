@@ -1,19 +1,21 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-vsetq)
 
 ;; Prevent Extraneous Tabs.
 ;; From http://www.gnu.org/software/emacs/manual/html_node/eintr/Indent-Tabs-Mode.html
 (setq-default indent-tabs-mode nil)
 
 ;; Show keystrokes earlier (ie. C-x)
-(ar/vsetq echo-keystrokes 0.1)
+(setq echo-keystrokes 0.1)
 
 ;; No need to keep duplicates in prompt history.
-(ar/vsetq history-delete-duplicates t)
+(setq history-delete-duplicates t)
 
 ;; Shows keyboard macros as Emacs lisp.
 (use-package elmacro
-  :ensure t)
+  :ensure t
+  :commands (elmacro-show-last-macro
+             elmacro-show-last-commands
+             elmacro-clear-command-history))
 
 (use-package change-inner
   :ensure t
@@ -49,35 +51,10 @@
          ("C-M-j" . string-inflection-cycle)))
 
 (use-package dabbrev
+  :commands (dabbrev-expand)
   :validate-custom
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (dabbrev-case-fold-search nil))
-
-;; Easily copy from other grepped files and paste in file.
-(use-package eacl
-  :ensure t
-  :commands (eacl-complete-line
-             eacl-complete-multiline)
-  :validate-custom
-  (eacl-git-grep-untracked nil))
-
-(defun ar/yank-line-below (arg)
-  "Yank to line below. With ARG, repeat."
-  (interactive "p")
-  (let ((lines))
-    (dotimes (_i arg)
-      (setq lines
-            (concat lines
-                    (current-kill 0)
-                    "\n")))
-    (setq lines (string-remove-suffix "\n" lines))
-    (save-excursion
-      (end-of-line)
-      (newline)
-      (insert lines))
-    (next-line)))
-
-(bind-key "M-C-y" #'ar/yank-line-below)
 
 (use-package drag-stuff
   :ensure t
@@ -87,24 +64,24 @@
 ;; Remember history of things across launches (ie. kill ring).
 ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
-  :defer 2
+  :defer 10
   :validate-custom
   (savehist-file "~/.emacs.d/savehist")
   (savehist-save-minibuffer-history t)
   (history-length 20000)
-  (savehist-additional-variables
-   '(kill-ring
-     search-ring
-     regexp-search-ring
-     last-kbd-macro
-     shell-command-history
-     ivy-dired-history-variable ;; See `ivy-dired-history' in fe-ivy.el
-     log-edit-comment-ring))
   :config
+  (mapc (lambda (ring)
+          (add-to-list 'savehist-additional-variables
+                       ring))
+        '(kill-ring
+          search-ring
+          regexp-search-ring
+          last-kbd-macro
+          shell-command-history
+          log-edit-comment-ring))
   (savehist-mode +1))
 
 (use-package whitespace
-  :defer 5
   ;; Automatically remove whitespace on saving.
   :hook ((before-save . whitespace-cleanup)
          (prog-mode . ar/whitespace-mode-enable))
@@ -128,6 +105,7 @@
                                 (buffer-name buffer))
                           (with-current-buffer buffer
                             (whitespace-mode +1)))))))
+
   (set-face-attribute 'whitespace-line nil
                       :foreground "DarkOrange1"
                       :background nil))
@@ -183,207 +161,11 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
-  (defun ar/rewrap-sexp-dwim (prefix)
-    "Like `sp-rewrap-sexp', but RET, DEL, SPC, and C-d remove pair.
-With PREFIX, add an outer pair around existing pair."
-    (interactive "P")
-    (let* ((pair-prefix (format-kbd-macro (vector (read-event "Rewrap with: " t))))
-           (clear-p (or (equal pair-prefix "RET")
-                        (equal pair-prefix "DEL")
-                        (equal pair-prefix "SPC")
-                        (equal pair-prefix "C-d")))
-           (available-pairs (sp--get-pair-list-context 'wrap))
-           (pair (--first (equal pair-prefix (car it)) available-pairs)))
-      (cond (clear-p
-             (when (sp-get-enclosing-sexp)
-               (sp-unwrap-sexp)))
-            (pair
-             (if (sp-get-enclosing-sexp)
-                 (sp-rewrap-sexp pair
-                                 prefix)
-               (save-excursion
-                 (sp-wrap-with-pair (car pair))))))))
-
-  ;; https://www.reddit.com/r/emacs/comments/dewzuy/weekly_tipstricketc_thread/f3be8kq?utm_source=share&utm_medium=web2x
-  (defun ar/backward-up-sexp (a)
-    "Backwards up multiple sexps.
-   prefix command interpretation:
-     0    → to beginning of all nested sexps
-     -    → to end of all nested sexps
-     x|+x → x-times go back out of sexps to beginning
-     -x   → x-times go out of sexps to end
-     universal-command interpreted as 0"
-    (interactive "P")
-    (condition-case err
-        (let ((arg)
-              (loop))
-          (cond
-           ((null a) ;; back-up once
-            (setq arg -1
-                  loop nil))
-           ((eq a '-) ;; up to end of all sexps
-            (setq arg 1
-                  loop t))
-           ((numberp a)
-            (cond
-             ((= a 0) ;; back-up to begin of all sexps
-              (setq arg -1
-                    loop t))
-             (t (setq arg (- a) ;; do it a times
-                      loop nil))))
-           (t (setq arg -1 ;; interpret `universal-command'
-                    loop t)))
-          (while (progn  ;; do-while loop
-                   (up-list arg t t)
-                   loop)))
-      (scan-error ;; stay quiet
-       nil)))
-  (defun ar/kill-sexp (&optional arg)
-    "If inside symbol, kill from position to end of symbol.  With any ARG, kill current sexp."
-    (interactive "P")
-    (if (or arg
-            (not (sp-point-in-symbol)))
-        (sp-kill-sexp)
-      (kill-sexp)))
-  (defun ar/forward-sexp (&optional arg)
-    (interactive "P")
-    (if arg
-        (skip-syntax-forward "^ ()")
-      (sp-forward-sexp)))
-
-  (defun ar/backward-sexp (&optional arg)
-    (interactive "P")
-    (if arg
-        (skip-syntax-backward "^ ()")
-      (sp-backward-sexp)))
-
-  (require 'smartparens-config)
-  (require 'smartparens-html)
-  (require 'smartparens-python)
-
-  ;; Removes \\(
-  (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
-  (sp-local-pair 'swift-mode "\\(" ")")
-
-  (defun ar/create-newline-and-enter-sexp (&rest _ignored)
-    "Open a new brace or bracket expression, with relevant newlines and indent. "
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-
-  (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-  (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-  (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
-
-  (defun ar/sp-prog-skip-match-angle-bracket (_ms _mb me)
-    "Non-nil if we should ignore the bracket as valid delimiter."
-    (save-excursion
-      (goto-char me)
-      (let ((on-fn-return-type
-             (sp--looking-back-p (rx "->") nil))
-            (on-match-branch
-             (sp--looking-back-p (rx "=>") nil))
-            (on-comparison
-             (sp--looking-back-p (rx (or
-                                      (seq space "<")
-                                      (seq space ">")
-                                      (seq space "<<")
-                                      (seq space ">>")))
-                                 nil)))
-        (or on-comparison on-fn-return-type on-match-branch))))
-
-  (defun ar/sp-prog-filter-angle-brackets (_id action context)
-    "Non-nil if we should allow ID's ACTION in CONTEXT for angle brackets."
-    ;; See the docstring for `sp-pair' for the possible values of ID,
-    ;; ACTION and CONTEXT.
-    (cond
-     ;; Inside strings, don't do anything with < or >.
-     ((eq context 'string)
-      nil)
-     ;; Don't do any smart pairing inside comments either.
-     ((eq context 'comment)
-      nil)
-     ;; Otherwise, we're in code.
-     ((eq context 'code)
-      (let ((on-fn-return-type
-             (looking-back (rx "->") nil))
-            (on-match-branch
-             (looking-back (rx "=>") nil))
-            (on-comparison
-             (looking-back (rx (or
-                                (seq space "<")
-                                (seq space ">")
-                                (seq space "<<")
-                                (seq space ">>")))
-                           nil)))
-        (cond
-         ;; Only insert a matching > if we're not looking at a
-         ;; comparison.
-         ((eq action 'insert)
-          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
-         ;; Always allow wrapping in a pair if the region is active.
-         ((eq action 'wrap)
-          (not on-match-branch))
-         ;; When pressing >, autoskip if we're not looking at a
-         ;; comparison.
-         ((eq action 'autoskip)
-          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
-         ;; Allow navigation, highlighting and strictness checks if it's
-         ;; not a comparison.
-         ((eq action 'navigate)
-          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch))))))))
-
-  (sp-local-pair 'protobuf-mode "'" "'")
-  (sp-local-pair 'prog-mode "/*" "*/")
-
-  (sp-local-pair 'prog-mode "<" ">"
-                 :when '(ar/sp-prog-filter-angle-brackets)
-                 :skip-match 'ar/sp-prog-skip-match-angle-bracket)
-
-  (defun adviced:kill-region-advice (orig-fun &rest r)
-    "Advice function around `kill-region' (ORIG-FUN and R)."
-    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
-            mark-active)
-        (apply orig-fun r)
-      ;; Kill entire line.
-      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
-            (offset (- (point)
-                       (line-beginning-position))))
-        (apply orig-fun (list (line-beginning-position)
-                              (line-end-position)
-                              nil))
-        (delete-char 1)
-        (forward-char (min offset
-                           (- (line-end-position)
-                              (line-beginning-position)))))))
-
-  (advice-add #'kill-region
-              :around
-              #'adviced:kill-region-advice))
+  (load "~/.emacs.d/features/config-smartparens"))
 
 (use-package region-bindings-mode
   :ensure t
-  :defer 2
-  :config
-  (region-bindings-mode-enable))
-
-;; Display chars/lines or row/columns in the region.
-(use-package region-state
-  :ensure t
-  :defer 2
-  :config
-  (region-state-mode))
-
-(use-package multiple-cursors :ensure t
-  :after region-bindings-mode
-  :commands (ar/set-mc/insert-numbers-starting-value
-             multiple-cursors-mode)
-  :init
-  (global-unset-key (kbd "M-<down-mouse-1>"))
-  :bind (("C-c a" . mc/mark-all-dwim)
-         ("C-c n" . mc/mark-more-like-this-extended)
-         ("M-<mouse-1>" . mc/add-cursor-on-click))
+  :defer 10 ;; Don't lazy-load, to enable for regions.
   :bind (:map region-bindings-mode-map
               ("a" . mc/mark-all-dwim)
               ("p" . mc/mark-previous-like-this)
@@ -396,6 +178,25 @@ With PREFIX, add an outer pair around existing pair."
               ("#" . mc/insert-numbers) ; use num prefix to set the starting number
               ("^" . mc/edit-beginnings-of-lines)
               ("$" . mc/edit-ends-of-lines))
+  :config
+  (region-bindings-mode-enable))
+
+;; Display chars/lines or row/columns in the region.
+(use-package region-state
+  :ensure t
+  :defer 20
+  :config
+  (region-state-mode))
+
+(use-package multiple-cursors :ensure t
+  :after region-bindings-mode
+  :commands (ar/set-mc/insert-numbers-starting-value
+             multiple-cursors-mode)
+  :init
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  :bind (("C-c a" . mc/mark-all-dwim)
+         ("C-c n" . mc/mark-more-like-this-extended)
+         ("M-<mouse-1>" . mc/add-cursor-on-click))
   :config
   (defalias 'mc/mark-all-lines-in-region 'mc/edit-lines)
 
@@ -410,16 +211,6 @@ With PREFIX, add an outer pair around existing pair."
   (use-package phi-search-mc :ensure t
     :config
     (phi-search-mc/setup-keys)))
-
-;; From https://github.com/daschwa/emacs.d
-(defadvice kill-ring-save (before slick-copy activate compile)
-  "When called interactively with no active region, copy a single
-line instead."
-  (interactive
-   (if mark-active
-       (list (region-beginning) (region-end))
-     (message "Copied line")
-     (list (line-beginning-position) (line-end-position)))))
 
 (use-package hungry-delete
   :defer 5
@@ -445,11 +236,6 @@ line instead."
   ;; Override selection with new text.
   (delete-selection-mode +1))
 
-;; Highlight matching parenthesis.
-(when (< emacs-major-version 27)
-  (use-package paren
-    :ensure t))
-
 (use-package paren
   :defer 5
   :validate-custom
@@ -472,6 +258,7 @@ line instead."
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon
   :ensure t
+  :defer 20
   :config
   (clipmon-mode))
 
@@ -500,11 +287,13 @@ line instead."
 
 ;; Make kill ring persistent across sessions.
 (use-package savekill
-  :ensure t)
+  :ensure t
+  :defer 20)
 
 (use-package simple
   :bind (("M-u" . upcase-dwim)
-         ("M-l" . downcase-dwim))
+         ("M-l" . downcase-dwim)
+         ("M-C-y" . ar/yank-line-below))
   :validate-custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
@@ -516,19 +305,7 @@ line instead."
   ;; nil means no limit. Always show result.
   (eval-expression-print-level nil)
   :config
-  (defun adviced:read-shell-command (orig-fun &rest r)
-    "Advice around `read-shell-command' to replace $f with buffer file name."
-    (let ((command (apply orig-fun r)))
-      (if (string-match-p "\\$f" command)
-          (replace-regexp-in-string "\\$f"
-                                    (or (buffer-file-name)
-                                        (user-error "No file file visited to replace $f"))
-                                    command)
-        command)))
-
-  (advice-add #'read-shell-command
-              :around
-              #'adviced:read-shell-command))
+  (load "~/.emacs.d/features/config-simple"))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
@@ -537,10 +314,12 @@ line instead."
 ;; Handles escaping regexes from input. For example: no need for \(\)
 (use-package pcre2el
   :ensure t
+  :defer 30
   :config
   (pcre-mode +1))
 
 (use-package re-builder
+  :defer 30
   :validate-custom
   (reb-re-syntax 'string))
 

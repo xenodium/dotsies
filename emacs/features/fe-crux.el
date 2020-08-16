@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
+
 (use-package crux
   :ensure t
-  :defer t
   :bind
   (("C-x C-d" . crux-duplicate-current-line-or-region))
   :config

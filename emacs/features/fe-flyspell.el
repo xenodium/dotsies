@@ -1,5 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-csetq)
 
 (use-package flyspell
   :hook ((text-mode . flyspell-mode))

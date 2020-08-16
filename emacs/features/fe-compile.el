@@ -1,10 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'ar-csetq)
 
 (use-package compile
   :hook ((compilation-mode . goto-address-mode))
   :commands (compile ar/compile)
   :validate-custom
+  ;; Automatically scroll build output.
+  (compilation-scroll-output t)
   (compilation-skip-threshold 2)
   (compilation-auto-jump-to-first-error t)
   :bind (:map
@@ -18,7 +19,6 @@
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
-
   ;; https://www.emacswiki.org/emacs/CompileCommand#toc4
   (defun ar/compile (pfx)
     """Run the same compile as the last time.
@@ -61,7 +61,4 @@ M-x compile.
 
   ;; Automatically hide successful builds window.
   ;; Trying out without for a little while.
-  (setq compilation-finish-functions #'ar/compile-autoclose)
-
-  ;; Automatically scroll build output.
-  (ar/csetq compilation-scroll-output t))
+  (setq compilation-finish-functions #'ar/compile-autoclose))

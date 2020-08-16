@@ -127,37 +127,42 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Now kick off non-essential loading ;;;;
 
+(defun ar/load (library)
+  (let ((now (current-time)))
+    (load library)
+    (message "elapsed: %.3fs" (float-time (time-subtract (current-time) now)))))
+
 (defun ar/load-non-core-init ()
   "Load non-core initialisation."
   ;; Undo GC values post init.el.
-   (setq gc-cons-threshold 100000000
-         gc-cons-percentage 0.1)
-   (run-with-idle-timer 5 t #'garbage-collect)
-   (setq garbage-collection-messages t)
-   (setq file-name-handler-alist ar/init--file-name-handler-alist)
+  (setq gc-cons-threshold 100000000
+        gc-cons-percentage 0.1)
+  (run-with-idle-timer 5 t #'garbage-collect)
+  (setq garbage-collection-messages t)
+  (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
-   ;; Done loading core init.el. Announce it and let the heavy loading begin.
-   (message "Emacs ready in %s with %d garbage collections."
-            (format "%.2f seconds" (float-time
-                                    (time-subtract after-init-time before-init-time)))
-            gcs-done)
+  ;; Done loading core init.el. Announce it and let the heavy loading begin.
+  (message "Emacs ready in %s with %d garbage collections."
+           (format "%.2f seconds" (float-time
+                                   (time-subtract after-init-time before-init-time)))
+           gcs-done)
 
-   ;; Additional load paths.
-   (add-to-list 'load-path "~/.emacs.d/ar")
-   (add-to-list 'load-path "~/.emacs.d/local")
-   (add-to-list 'load-path "~/.emacs.d/external")
-   (add-to-list 'load-path "~/.emacs.d/downloads")
+  ;; Additional load paths.
+  (add-to-list 'load-path "~/.emacs.d/ar")
+  (add-to-list 'load-path "~/.emacs.d/local")
+  (add-to-list 'load-path "~/.emacs.d/external")
+  (add-to-list 'load-path "~/.emacs.d/downloads")
 
-   ;; Need these loaded ASAP (many subsequent libraries depend on them).
-   (load "~/.emacs.d/features/fe-package-extensions.el")
-   (load "~/.emacs.d/features/fe-libs.el")
-   (load "~/.emacs.d/features/fe-mac.el")
-   (load "~/.emacs.d/features/fe-linux.el")
-   (load "~/.emacs.d/features/fe-ui.el")
-   (load "~/.emacs.d/features/fe-scratch.el")
+  ;; Need these loaded ASAP (many subsequent libraries depend on them).
+  (ar/load "~/.emacs.d/features/fe-package-extensions.el")
+  (ar/load "~/.emacs.d/features/fe-libs.el")
+  (ar/load "~/.emacs.d/features/fe-mac.el")
+  (ar/load "~/.emacs.d/features/fe-linux.el")
+  (ar/load "~/.emacs.d/features/fe-ui.el")
+  (ar/load "~/.emacs.d/features/fe-scratch.el")
 
-   ;; Load non-core features.
-   (load "~/.emacs.d/features/fe-features.el"))
+  ;; Load non-core features.
+  (load "~/.emacs.d/features/fe-features.el"))
 
 (if ar/init-debug-init
     (ar/load-non-core-init)
