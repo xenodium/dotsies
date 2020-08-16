@@ -432,6 +432,7 @@ dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_en
     (ar/vsetq ar/counsel-ag--default-locaction
               (read-directory-name "search in: " default-directory nil t)))
 
+  (require 'counsel) ;; counsel-ag-map
   (let ((kmap counsel-ag-map))
     (define-key kmap (kbd "C-x C-f") (lambda ()
                                        (interactive)
