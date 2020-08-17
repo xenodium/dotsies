@@ -43,8 +43,8 @@ Quick insert: _w_eb bookmark or backlog"
   "
 Open: _p_oint _e_xternally
 "
-  ("e" ar/platform-open-in-external-app nil)
-  ("p" ar/platform-open-file-at-point nil)
+  ("e" ar/misc-open-in-external-app nil)
+  ("p" ar/misc-open-file-at-point nil)
   ("q" nil "cancel"))
 
 (defun ar/file-open-closest-build-file-dwim ()
@@ -56,8 +56,8 @@ Open: _p_oint _e_xternally
 (defhydra hydra-open-prog-mode (:color blue)
   "open"
   ("o" ff-find-other-file "other")
-  ("e" ar/platform-open-in-external-app "externally")
-  ("u" ar/platform-open-file-at-point "url at point")
+  ("e" ar/misc-open-in-external-app "externally")
+  ("u" ar/misc-open-file-at-point "url at point")
   ("b" ar/file-open-closest-build-file-dwim "build file")
   ("q" nil "cancel"))
 
