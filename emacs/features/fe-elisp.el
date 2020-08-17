@@ -5,7 +5,7 @@
   :hook ((ielm-mode . company-mode)))
 
 (use-package elisp-mode
-  :commands emacs-lisp-mode
+  :defer 30 ;; Prevent loading while loading elisp during init.
   :bind ("C-x C-e" . ar/eval-last-sexp)
   :hook ((emacs-lisp-mode . pcre-mode)
          (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
