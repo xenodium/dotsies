@@ -8,7 +8,9 @@
   ;; Show persistent scratch ASAP.
   (persistent-scratch-setup-default)
   ;; Reload emacs-lisp-mode (with all the goodies from lazy-loaded packages)
-  (run-with-timer 60 nil #'emacs-lisp-mode))
+  (run-with-timer 60 nil (lambda ()
+                           (with-current-buffer "*scratch*"
+			     (emacs-lisp-mode +1)))))
 
 ;; Lock scratch buffer (can't be killed).
 (run-with-timer 5 nil (lambda ()
