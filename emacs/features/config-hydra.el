@@ -20,12 +20,8 @@
 
 (defhydra hydra-quick-insert (:color blue)
   "
-Quick insert: _w_eb bookmark or backlog
-              _t_odo _d_one
-"
+Quick insert: _w_eb bookmark or backlog"
   ("w" ar/ivy-org-add-bookmark-dwim nil)
-  ("t" ar/org-add-todo nil)
-  ("d" ar/org-add-done nil)
   ("q" nil nil :color blue))
 
 (defun ar/hydra-open-dwim ()
@@ -115,9 +111,3 @@ _t_ypo
          (insert "Addressing review comments")
          (log-edit-done)))
   ("q" nil "quit"))
-
-;; From http://oremacs.com/2015/03/07/hydra-org-templates
-(defun ar/org-expand (str)
-  "Expand org template STR."
-  (insert str)
-  (org-try-structure-completion))

@@ -192,20 +192,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
         ;; TODO: Avoid adding trailing caused by org-indent-line.
         (delete-trailing-whitespace)))))
 
-(defun ar/org-add-done (done)
-  "Add DONE task to current week."
-  (interactive "sDONE: ")
-  (ar/org-paste-subtree-to-current-week (format "* DONE %s" done)))
-
-(defun ar/org-add-todo (todo)
-  "Add a new TODO."
-  (interactive "sTODO: ")
-  (ar/org-with-file-location (ar/org-get-daily-file-path) "backlog"
-                             (show-subtree)
-                             (org-meta-return)
-                             (insert (format "TODO %s" todo))
-                             (save-buffer)))
-
 (defun ar/org-build-backlog-link ()
   "Build an org backlog link, prompting for url and description."
   (format "TODO [[%s][%s]]"
