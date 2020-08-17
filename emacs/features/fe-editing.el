@@ -95,7 +95,8 @@
   (defun ar/whitespace-mode-enable ()
     "Delayed enabling of whitespace-mode to ensure fill-column is set for loaded buffer."
     (whitespace-mode -1)
-    (setq-local show-trailing-whitespace t)
+    ;; Trying without, seems to be slow.
+    ;; (setq-local show-trailing-whitespace t)
     (let ((buffer (current-buffer)))
       (run-with-timer 1 nil
                       (lambda ()
@@ -241,14 +242,11 @@
   :validate-custom
   ;; Without this matching parens aren't highlighted in region.
   (show-paren-priority -50)
-  (show-paren-delay 0)
+  (show-paren-delay 0.3)
   ;; Highlight entire bracket expression.
   (show-paren-style 'expression)
   :config
-  (show-paren-mode +1)
-  (set-face-attribute 'show-paren-match nil
-                      :background nil
-                      :foreground "#FA009A"))
+  (show-paren-mode +1))
 
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)

@@ -47,6 +47,11 @@
     (set-face-attribute 'mode-line-inactive nil :box nil)
     (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
+(with-eval-after-load 'paren
+  (set-face-attribute 'show-paren-match nil
+                      :background nil
+                      :foreground "#FA009A"))
+
 (with-eval-after-load 'org-indent
   (set-face-attribute 'org-indent nil :background "#212121"))
 
