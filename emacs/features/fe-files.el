@@ -29,21 +29,21 @@
     (find-file (current-kill 0))))
 
 (use-package autorevert
-  :commands auto-revert-mode
+  :defer 10
   :validate-custom
-  ;; Auto refresh dired.
-  ;; https://mixandgo.com/learn/how-ive-convinced-emacs-to-dance-with-ruby
+  ;; Be quiet about reverts.
   (global-auto-revert-non-file-buffers t)
-
-  ;; Be quiet about dired refresh.
   (auto-revert-verbose nil)
   :config
   ;; global-auto-revert-mode can slow things down. try to enable it per active window.
-  (add-to-list 'window-state-change-functions (defun ar/window-state-state-change (state)
-						(with-current-buffer (window-buffer (old-selected-window))
-						  (auto-revert-mode -1))
-						(with-current-buffer (window-buffer (selected-window))
-						  (auto-revert-mode -1)))))
+  (add-to-list 'window-state-change-functions
+               (defun ar/window-state-state-change (state)
+                 (lexical-let ((old-buffer (window-buffer (old-selected-window)))
+                               (new-buffer (window-buffer (selected-window))))
+                   (with-current-buffer old-buffer
+                     (auto-revert-mode -1))
+                   (with-current-buffer new-buffer
+                     (auto-revert-mode +1))))))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
