@@ -8,8 +8,6 @@
 
 (require 'f)
 
-(require 'ar-platform)
-
 (defun ar/dired-split-directories (dir-a dir-b)
   (delete-other-windows)
   (split-window-right)
