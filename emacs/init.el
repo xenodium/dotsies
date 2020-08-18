@@ -12,6 +12,9 @@
 (setq gc-cons-threshold (* 384 1024 1024)
       gc-cons-percentage 0.6)
 
+;; Do not load outdated byte code files.
+(setq load-prefer-newer t)
+
 ;; Default was too low.
 ;; Increase for better lsp performance.
 (setq read-process-output-max (* 3 1024 1024)) ;; 3mb
@@ -21,13 +24,18 @@
 (setq max-lisp-eval-depth 10000)
 (setq max-specpdl-size 10000)
 
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L184
+(setq auto-mode-case-fold nil)
+
 ;;; Temporarily avoid loading any modes during init (undone at end).
 (defvar ar/init--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L167
+(setq ad-redefinition-action 'accept)
 
 ;;; Set to t to debug (load synchronously).
 (defvar ar/init-debug-init nil)
-
-(setq file-name-handler-alist nil)
 
 ;; Match theme color early on (smoother transition).
 ;; Theme loaded in features/ui.el.
@@ -35,6 +43,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Hide UI (early on) ;;;;
+
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L200
+(unless (daemonp)
+  (advice-add #'display-startup-echo-area-message :override #'ignore))
+
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L323
+(setq frame-inhibit-implied-resize t)
+
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L331
+(setq inhibit-compacting-font-caches t)
+
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L205
+(setq idle-update-delay 1.0)
 
 ;; Don't want a mode line while loading init.
 (setq mode-line-format nil)
@@ -62,15 +83,23 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L194
+(setq initial-major-mode 'fundamental-mode)
+
 ;; Set momentary title.
 (when (display-graphic-p)
   (setq frame-title-format "loading..."))
 
+;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L358
+(unless (daemonp)
+  (advice-add #'tty-run-terminal-initialization :override #'ignore)
+  (add-hook 'window-setup-hook
+            (defun doom-init-tty-h ()
+              (advice-remove #'tty-run-terminal-initialization #'ignore)
+              (tty-run-terminal-initialization (selected-frame) nil t))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Set up package tls ;;;;
-
-;; Do not load outdated byte code files.
-(setq load-prefer-newer t)
 
 (require 'package)
 
@@ -84,8 +113,6 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (when (file-exists-p custom-file)
   (load custom-file))
-
-(require 'tls)
 
 ;; From https://irreal.org/blog/?p=8243
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
@@ -139,6 +166,11 @@
         gc-cons-percentage 0.1)
   (run-with-idle-timer 5 t #'garbage-collect)
   (setq garbage-collection-messages t)
+
+   ;; Re-add rather than `setq', because file-name-handler-alist may have
+    ;; changed since startup, and we want to preserve those.
+  (dolist (handler file-name-handler-alist)
+    (add-to-list 'ar/init--file-name-handler-alist handler))
   (setq file-name-handler-alist ar/init--file-name-handler-alist)
 
   ;; Done loading core init.el. Announce it and let the heavy loading begin.
