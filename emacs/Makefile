@@ -14,7 +14,6 @@ init:
 	cp emacssocket ~/local/bin/
 	cp open_xcode_file_in_emacs.sh ~/local/bin/
 	make -C ar
-	make -C external
 	make -C features
 
 pylint:
