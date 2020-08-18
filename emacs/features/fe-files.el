@@ -1,4 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
+
 (use-package files
   :defer 15
   :validate-custom
@@ -21,12 +22,7 @@
   ;; Ask for confirmation.
   (confirm-kill-emacs 'yes-or-no-p)
   ;; Open that large file! YOLO. Ok, got `openwith' to handle it.
-  (large-file-warning-threshold nil)
-  :config
-  (defun ar/misc-open-clipboard-file ()
-    "Open clipboard file URL."
-    (interactive)
-    (find-file (current-kill 0))))
+  (large-file-warning-threshold nil))
 
 (use-package autorevert
   :defer 10
@@ -38,8 +34,8 @@
   ;; global-auto-revert-mode can slow things down. try to enable it per active window.
   (add-to-list 'window-state-change-functions
                (defun ar/window-state-state-change (state)
-                 (lexical-let ((old-buffer (window-buffer (old-selected-window)))
-                               (new-buffer (window-buffer (selected-window))))
+                 (let ((old-buffer (window-buffer (old-selected-window)))
+                       (new-buffer (window-buffer (selected-window))))
                    (with-current-buffer old-buffer
                      (auto-revert-mode -1))
                    (with-current-buffer new-buffer
