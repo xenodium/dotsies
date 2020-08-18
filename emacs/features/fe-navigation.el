@@ -42,7 +42,9 @@
   (ar/forward-paragraph (- n)))
 
 ;; Centers text, distributing blank space.
-(use-package olivetti :ensure t)
+(use-package olivetti
+  :ensure t
+  :defer 80)
 
 ;; Potential native replacement for centered-cursor-mode.
 ;; Breaks org mode.
@@ -114,7 +116,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t
   :bind (("C-x o" . ace-window))
   :config
-  (ar/vsetq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;; Use larger characters for ace window shortcuts.
   ;; From http://oremacs.com/2015/02/27/ace-window-leading-char
   (custom-set-faces
@@ -172,6 +174,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Programmatically get the visible end of window.
 (use-package window-end-visible
   :ensure t
+  :defer 60
   :config
   (defmacro ar/with-marked-visible-buffer (f)
     "Mark all visible lines in buffer. Unlike `mark-whole-buffer',
@@ -214,6 +217,7 @@ Repeated invocations toggle between the two most recently open buffers."
                (next-error-follow-minor-mode +1))))
 
 (use-package xref
+  :defer 60
   :config
   ;; I accidentally press these when I meant "global-map M->"
   ;; for end-of-buffer. Unsetting.

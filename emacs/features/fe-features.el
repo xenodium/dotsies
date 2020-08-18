@@ -1,12 +1,14 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Only use ar/init--idle-load with string literal paths.
 (if ar/init-debug-init
-    (defmacro ar/init--idle-load (library)
+    (defun ar/init--idle-load (library)
       (let ((now (current-time)))
         (ar/load library)))
-  (defmacro ar/init--idle-load (library)
-    `(run-with-idle-timer 0.5 nil
-                          (lambda ()
-                            (ar/load ,library)))))
+  (defun ar/init--idle-load (library)
+    (run-with-idle-timer 0.5 nil
+                         (lambda ()
+                           (ar/load library)))))
 
 ;; Load before remaining. Useful for debugging init.el issues.
 (ar/init--idle-load "~/.emacs.d/features/fe-maintenance")

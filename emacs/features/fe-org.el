@@ -396,10 +396,9 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
       ;; Use fundamental mode when editing plantuml blocks with C-c '
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
-      (require 'ar-vsetq)
       (cond ((string-equal system-type "darwin")
              ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
-             (ar/vsetq org-plantuml-jar-path "~/homebrew//Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
+             (setq org-plantuml-jar-path "~/homebrew//Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
              (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
             (t
              (message "Warning: Could not find plantuml.8018.jar")

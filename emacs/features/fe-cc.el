@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
+
 (use-package cc-mode
   :mode ("\\.m\\'" . objc-mode)
-  :after reformatter
   :hook (objc-mode . ar/objc-mode-hook-function)
   :bind (:map
          objc-mode-map
@@ -47,7 +47,8 @@
   :config
   ;; Prefer global M-a binding.
   (unbind-key "M-a" c-mode-base-map)
-  (use-package company)
+
+  (require 'company)
 
   (when (require 'reformatter nil 'noerror)
     (reformatter-define clang-format

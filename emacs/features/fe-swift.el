@@ -2,7 +2,6 @@
 
 (use-package swift-mode
   :ensure t
-  :after reformatter
   :mode ("\\.swift\\'" . swift-mode)
   :hook (swift-mode . ar/swift-mode-hook)
   :validate-custom

@@ -6,6 +6,7 @@
   :validate-custom
   (magit-diff-refine-hunk 'all)
   (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+  (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   :config
   (load "~/.emacs.d/features/config-magit"))
 

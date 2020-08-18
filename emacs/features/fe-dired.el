@@ -18,14 +18,14 @@
   :config
   (when (executable-find "fd")
     (let ((fd-command "fd . --print0"))
-      (require 'ar-vsetq)
-      (ar/vsetq projectile-hg-command fd-command)
-      (ar/vsetq projectile-git-command fd-command)
-      (ar/vsetq projectile-fossil-command fd-command)
-      (ar/vsetq projectile-bzr-command fd-command)
-      (ar/vsetq projectile-darcs-command fd-command)
-      (ar/vsetq projectile-svn-command fd-command)
-      (ar/vsetq projectile-generic-command fd-command)))
+      (require 'validate)
+      (validate-setq projectile-hg-command fd-command)
+      (validate-setq projectile-git-command fd-command)
+      (validate-setq projectile-fossil-command fd-command)
+      (validate-setq projectile-bzr-command fd-command)
+      (validate-setq projectile-darcs-command fd-command)
+      (validate-setq projectile-svn-command fd-command)
+      (validate-setq projectile-generic-command fd-command)))
 
   (defun adviced:projectile-project-root (orig-fun &rest r)
     "Same as `projectile-project-root' but return nil if remote location (ie. tramp)."

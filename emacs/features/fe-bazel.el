@@ -3,7 +3,6 @@
   :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)
          ("BUILD\\'" . bazel-mode))
-  :after reformatter
   :hook (bazel-mode . ar/bazel-mode-hook-fun)
   :init
   (defun ar/bazel-mode-hook-fun ()

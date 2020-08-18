@@ -2,9 +2,6 @@
 
 (add-to-list 'magit-no-confirm 'stage-all-changes)
 
-(with-eval-after-load 'fullframe
-  (fullframe magit-status magit-mode-quit-window))
-
 (use-package git-identity
   :ensure t
   :bind (:map magit-status-mode-map

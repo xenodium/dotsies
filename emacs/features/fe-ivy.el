@@ -101,8 +101,8 @@ For example:
     (when (or arg (not ar/counsel-ag--default-locaction))
       ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
       (setq current-prefix-arg nil)
-      (ar/vsetq ar/counsel-ag--default-locaction
-                (read-directory-name "search in: " default-directory nil t)))
+      (setq ar/counsel-ag--default-locaction
+            (read-directory-name "search in: " default-directory nil t)))
 
     (let ((kmap counsel-ag-map))
       (define-key kmap (kbd "C-x C-f") (lambda ()
@@ -171,18 +171,18 @@ For example:
                  (ivy-more-chars)
                  (let ((request-curl-options (list "-H" (string-trim (url-http-user-agent-string)))))
                    (request
-                     "https://www.hackingwithswift.com/example-code/search"
-                     :type "GET"
-                     :params (list
-                              (cons "search" input))
-                     :parser 'json-read
-                     :success (cl-function
-                               (lambda (&key data &allow-other-keys)
-                                 (ivy-update-candidates
-                                  (mapcar (lambda (item)
-                                            (let-alist item
-                                              (propertize .title 'url .url)))
-                                          data)))))
+                    "https://www.hackingwithswift.com/example-code/search"
+                    :type "GET"
+                    :params (list
+                             (cons "search" input))
+                    :parser 'json-read
+                    :success (cl-function
+                              (lambda (&key data &allow-other-keys)
+                                (ivy-update-candidates
+                                 (mapcar (lambda (item)
+                                           (let-alist item
+                                             (propertize .title 'url .url)))
+                                         data)))))
                    0)))
               :action (lambda (selection)
                         (browse-url (concat "https://www.hackingwithswift.com"
@@ -199,8 +199,8 @@ For example:
     :ensure t
     :bind
     (:map wgrep-mode-map
-     ("C-c C-c" . ar/wgrep-finish-edit)
-     ("C-c C-k" . ar/wgrep-abort-changes)))
+          ("C-c C-c" . ar/wgrep-finish-edit)
+          ("C-c C-k" . ar/wgrep-abort-changes)))
 
   (counsel-mode +1))
 
@@ -430,7 +430,7 @@ dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_en
   (when (or arg (not ar/counsel-ag--default-locaction))
     ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
     (setq current-prefix-arg nil)
-    (ar/vsetq ar/counsel-ag--default-locaction
+    (setq ar/counsel-ag--default-locaction
               (read-directory-name "search in: " default-directory nil t)))
 
   (require 'counsel) ;; counsel-ag-map
