@@ -27,7 +27,6 @@
             (prog-mode . rainbow-mode)
             (prog-mode . goto-address-prog-mode))
      :config
-     (message "--->?")
      ;; Trying without (for performance).
      ;;  (require 'flyspell)
      ;;  (require 'flycheck)
