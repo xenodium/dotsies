@@ -40,3 +40,8 @@
 (use-package git-timemachine
   :commands git-timemachine
   :ensure t)
+
+(use-package vc-hooks
+  :defer 10
+  :custom
+  (vc-handled-backends '(Git)))

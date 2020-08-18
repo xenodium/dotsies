@@ -273,6 +273,11 @@ already narrowed."
          (LaTeX-narrow-to-environment))
         (t (narrow-to-defun))))
 
+(defun ar/misc-open-clipboard-file ()
+  "Open clipboard file URL."
+  (interactive)
+  (find-file (current-kill 0)))
+
 (provide 'ar-misc)
 
 ;;; ar-misc.el ends here

@@ -52,7 +52,6 @@
 (ar/init--idle-load "~/.emacs.d/features/fe-ios")
 ;; (ar/init--idle-load "~/.emacs.d/features/fe-markdown")
 (ar/init--idle-load "~/.emacs.d/features/fe-paradox")
-(ar/init--idle-load "~/.emacs.d/features/fe-platform")
 (ar/init--idle-load "~/.emacs.d/features/fe-proced")
 (ar/init--idle-load "~/.emacs.d/features/fe-python")
 (ar/init--idle-load "~/.emacs.d/features/fe-java")
@@ -73,7 +72,7 @@
  0.5 nil
  (lambda ()
    ;; Load local elisp.
-   (dolist (file (file-expand-wildcards "~/.emacs.d/local/*.el"))
+   (dolist (file (file-expand-wildcards "~/.emacs.d/personal/*.el"))
      (ar/load file))
 
    ;; Load work elisp.
