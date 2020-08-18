@@ -107,7 +107,7 @@
                                          (re-search-forward (file-name-nondirectory ,fpath)))))
                          :action (lambda (item)
                                    (funcall (cdr item)))))))
-  
+
   (use-package org-indent
     :hook ((org-mode . org-indent-mode)))
 
@@ -482,24 +482,24 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
   ;; Follow mode narrows to task subtree only.
   (org-agenda-follow-indirect t)
   (org-agenda-block-separator ?\u2015)
-  :custom
+  :config
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
-  (org-agenda-custom-commands
-   '(("c" "Alvaro's agenda view"
-      ((agenda "" ((org-agenda-sorting-strategy
-                    (quote ((agenda time-up todo-state-down priority-down alpha-down category-keep))))))
-       (alltodo ""
-                ((org-agenda-overriding-header "Unscheduled:")
-                 (org-agenda-skip-function
-                  '(or (org-agenda-skip-entry-if 'todo '("DONE" "OBSOLETE" "CANCELLED"))
-                       (org-agenda-skip-if nil '(scheduled deadline))))))))
-     ("a" "This week"
-      ((agenda "" ((org-agenda-sorting-strategy
-                    (quote ((agenda todo-state-down priority-down alpha-down category-keep)))))))
-      nil
-      ("~/Downloads/agenda.html"))))
-  :config
+  ;; Handle in config to avoid post-custom handling during init loading.
+  (customize-set-variable org-agenda-custom-commands
+                          '(("c" "Alvaro's agenda view"
+                             ((agenda "" ((org-agenda-sorting-strategy
+                                           (quote ((agenda time-up todo-state-down priority-down alpha-down category-keep))))))
+                              (alltodo ""
+                                       ((org-agenda-overriding-header "Unscheduled:")
+                                        (org-agenda-skip-function
+                                         '(or (org-agenda-skip-entry-if 'todo '("DONE" "OBSOLETE" "CANCELLED"))
+                                              (org-agenda-skip-if nil '(scheduled deadline))))))))
+                            ("a" "This week"
+                             ((agenda "" ((org-agenda-sorting-strategy
+                                           (quote ((agenda todo-state-down priority-down alpha-down category-keep)))))))
+                             nil
+                             ("~/Downloads/agenda.html"))))
   (use-package org-super-agenda
     :ensure t
     :validate-custom
