@@ -486,7 +486,7 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
   ;; Display all unscheduled todos in same buffer as agenda.
   ;; https://blog.aaronbieber.com//2016/09/24/an-agenda-for-life-with-org-mode.html
   ;; Handle in config to avoid post-custom handling during init loading.
-  (customize-set-variable org-agenda-custom-commands
+  (customize-set-variable 'org-agenda-custom-commands
                           '(("c" "Alvaro's agenda view"
                              ((agenda "" ((org-agenda-sorting-strategy
                                            (quote ((agenda time-up todo-state-down priority-down alpha-down category-keep))))))
