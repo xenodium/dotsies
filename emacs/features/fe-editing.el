@@ -312,9 +312,7 @@
 ;; Handles escaping regexes from input. For example: no need for \(\)
 (use-package pcre2el
   :ensure t
-  :defer 30
-  :config
-  (pcre-mode +1))
+  :defer 30)
 
 (use-package re-builder
   :defer 30
