@@ -42,17 +42,17 @@
             (list "-m" "format" temp-file-path)))
   (add-hook 'swift-mode-hook 'swift-format-on-save-mode))
 
-(use-package lsp-mode
-  :ensure t
-  :hook (swift-mode . lsp-deferred)
-  :commands (lsp lsp-deferred))
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :hook (swift-mode . lsp-deferred)
+;;   :commands (lsp lsp-deferred))
 
-(use-package lsp-sourcekit
-  :ensure t
-  :after lsp-mode
-  :config
-  ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
-  (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp"))
+;; (use-package lsp-sourcekit
+;;   :ensure t
+;;   :after lsp-mode
+;;   :config
+;;   ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
+;;   (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp"))
 
 (defun ar/xcode-info ()
   (interactive)
