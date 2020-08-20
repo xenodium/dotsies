@@ -1,8 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-
-(use-package vc-git)
-
 (defhydra hydra-profile (:color blue)
   "profiling"
   ("b" ar/profiler-start-cpu "begin")

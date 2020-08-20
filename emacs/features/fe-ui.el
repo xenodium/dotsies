@@ -87,8 +87,8 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (use-package fullframe
-  :ensure t
-  :commands fullframe)
+  :defer 10
+  :ensure t)
 
 (use-package menu-bar
   ;; No need to confirm killing buffers.
