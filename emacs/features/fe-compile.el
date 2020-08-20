@@ -3,6 +3,10 @@
 (use-package compile
   :hook ((compilation-mode . goto-address-mode))
   :commands (compile ar/compile)
+  :functions
+  (previous-error-no-select
+   next-error-no-select
+   kill-buffer-and-window)
   :validate-custom
   ;; Automatically scroll build output.
   (compilation-scroll-output t)

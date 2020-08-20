@@ -40,7 +40,7 @@
   (projectile-mode))
 
 (use-package dired
-  :commands dired
+  :defer
   :hook (dired-mode . dired-hide-details-mode)
   :bind (:map global-map
               ("C-l" . dired-jump)
@@ -57,6 +57,7 @@
               ("A" . ar/dired-mark-all)
               ("M" . ar/dired-mark-all))
   :commands (dired-mode
+             dired
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-alternate-parent-dir)

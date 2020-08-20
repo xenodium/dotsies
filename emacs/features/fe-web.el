@@ -2,7 +2,7 @@
 
 (use-package enlive
   :ensure t
-  :defer 60)
+  :defer)
 
 (use-package ar-url
   :commands (ar/url-view-links-at))

@@ -205,16 +205,19 @@ So if we're connected with sudo to 'remotehost'
            (tramp-make-tramp-file-name
             method user nil host nil (or directory "") hop)))))
 
+    (use-package em-term
+      :validate-custom
+      ;; Let buffer linger, but can easily quit since view-mode
+      ;; is enabled in term-exec-hook above.
+      (eshell-destroy-buffer-when-process-dies nil))
+
     (use-package em-smart
       :hook
       ((eshell-mode . eshell-smart-initialize))
       :validate-custom
       (eshell-smart-space-goes-to-end t)
       (eshell-where-to-jump 'begin)
-      (eshell-review-quick-commands nil)
-      ;; Let buffer linger, but can easily quit since view-mode
-      ;; is enabled in term-exec-hook above.
-      (eshell-destroy-buffer-when-process-dies nil))
+      (eshell-review-quick-commands nil))
 
     ;; Avoid "WARNING: terminal is not fully functional."
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell

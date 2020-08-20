@@ -83,3 +83,15 @@
 
 ;; Start Emacs server.
 (ar/init--idle-load "~/.emacs.d/features/fe-server")
+
+
+(defun ar/maintenance-byte-compile-features-and-load ()
+  (interactive)
+  (mapc (lambda (file)
+          (byte-compile-file file t))
+        (seq-filter
+         (lambda (path)
+           (string-match-p "\\.el$" path))
+         (append
+          (directory-files "~/.emacs.d/features/")
+          (directory-files "~/.emacs.d/local/")))))

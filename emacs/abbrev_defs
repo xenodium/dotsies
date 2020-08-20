@@ -1,13 +1,6 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("Certaen" "Certain" nil :count 0)
-    ("Certaon" "Certain" nil :count 0)
-    ("Hellow" "Hello" nil :count 0)
-    ("Remocing" "Removing" nil :count 0)
-    ("inacessible" "inaccessible" nil :count 0)
-    ("serialized" "serialised" nil :count 1)
-    ("subcommands" "sub-commands" nil :count 0)
-    ("terminel" "terminal" nil :count 0)
+    ("totaling" "totalling" nil :count 0)
    ))
 

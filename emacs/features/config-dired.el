@@ -205,6 +205,7 @@
 
 (use-package dired-filter
   :ensure t
+  :hook (dired-mode . dired-filter-mode)
   :bind (:map dired-filter-map
               ("v" . dired-filter-by-videos))
   :config
