@@ -180,12 +180,9 @@
            gcs-done)
 
   ;; Additional load paths.
-  (add-to-list 'load-path "~/.emacs.d/ar")
-  (add-to-list 'load-path "~/.emacs.d/local")
-  (add-to-list 'load-path "~/.emacs.d/vendored")
   (add-to-list 'load-path "~/.emacs.d/features")
-  (add-to-list 'load-path "~/.emacs.d/downloads")
   (add-to-list 'load-path "~/.emacs.d/work")
+  (add-to-list 'load-path "~/.emacs.d/local")
 
   ;; Need these loaded ASAP (many subsequent libraries depend on them).
   (ar/load "~/.emacs.d/features/fe-package-extensions.el")
