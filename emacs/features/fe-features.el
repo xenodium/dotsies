@@ -1,11 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;; Only use ar/init--idle-load with string literal paths.
-(if ar/init-debug-init
-    (defun ar/init--idle-load (library)
-      (let ((now (current-time)))
-        (ar/load library)))
-  (defun ar/init--idle-load (library)
+(defun ar/init--idle-load (library)
+  (if ar/init-debug-init
+      (ar/load library)
     (run-with-idle-timer 0.5 nil
                          (lambda ()
                            (ar/load library)))))

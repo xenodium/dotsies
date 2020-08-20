@@ -181,7 +181,6 @@
 
   ;; Additional load paths.
   (add-to-list 'load-path "~/.emacs.d/features")
-  (add-to-list 'load-path "~/.emacs.d/work")
   (add-to-list 'load-path "~/.emacs.d/local")
 
   ;; Need these loaded ASAP (many subsequent libraries depend on them).
