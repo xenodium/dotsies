@@ -29,9 +29,17 @@
 
   (defun adviced:projectile-project-root (orig-fun &rest r)
     "Same as `projectile-project-root' but return nil if remote location (ie. tramp)."
-    (if (file-remote-p default-directory)
-        nil
-      (apply orig-fun r)))
+    (defvar adviced:projectile-project-root--cache '())
+    (let* ((dir (or (nth 0 r) default-directory))
+           (cached-root (map-elt adviced:projectile-project-root--cache
+                                 dir)))
+      (if (file-remote-p dir)
+          nil ;; Always ignore remote (pretend they are not projects)
+        (if cached-root
+            cached-root
+          (setq cached-root (apply orig-fun r))
+          (map-put adviced:projectile-project-root--cache dir cached-root)
+          cached-root))))
 
   (advice-add #'projectile-project-root
               :around
