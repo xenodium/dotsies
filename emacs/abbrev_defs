@@ -1,6 +1,6 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("totaling" "totalling" nil :count 0)
+    ("Remocing" "Removing" nil :count 0)
    ))
 
