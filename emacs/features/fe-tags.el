@@ -18,6 +18,12 @@
   :disabled ;; trying out counsel-etags
   :commands ggtags-mode)
 
+(use-package etags
+  :defer
+  :validate-custom
+  (tags-revert-without-query t)
+  (tags-add-tables nil))
+
 ;; Note: Also used by smart-jump.
 (use-package counsel-etags
   :ensure t
@@ -30,11 +36,6 @@
                                  'append
                                  'local)))
   :config
-  (use-package etags
-    :validate-custom
-    (tags-revert-without-query t)
-    (tags-add-tables nil))
-
   ;; Can also be added to ~/.ctags as --exclude="bazel-*"
   (add-to-list 'counsel-etags-ignore-filenames "bazel-*")
   (add-to-list 'counsel-etags-ignore-filenames "*/*.xcodeproj/*")
