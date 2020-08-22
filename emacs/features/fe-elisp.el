@@ -11,6 +11,7 @@
          (ielm-mode . ar/emacs-lisp-mode-hook-function))
   :config
   (require 'prog-mode)
+
   ;; Highlight bound variables and quoted exprs.
   (use-package lisp-extra-font-lock
     :ensure t
@@ -25,6 +26,10 @@
   (use-package suggest
     :ensure t
     :commands suggest)
+
+  (use-package describe-hash
+    :ensure t
+    :commands describe-hash)
 
   (defun ar/emacs-lisp-mode-hook-function ()
     "Called when entering `emacs-lisp-mode'."
