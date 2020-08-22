@@ -278,6 +278,15 @@ already narrowed."
   (interactive)
   (find-file (current-kill 0)))
 
+(defun ar/misc-download-clipboard-url ()
+  "Download clipboard URL to ~/Downloads."
+  (interactive)
+  (let ((url (current-kill 0)))
+    (assert (string-match-p "^http[s]?://\\(www\\.\\)?" url)
+            nil "Not a downloadable URL: %s" url)
+    (url-copy-file url (concat (expand-file-name "~/Downloads/")
+                               (file-name-nondirectory url)))))
+
 (provide 'ar-misc)
 
 ;;; ar-misc.el ends here

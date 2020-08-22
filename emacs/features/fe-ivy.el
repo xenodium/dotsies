@@ -2,7 +2,6 @@
 
 (use-package counsel
   :ensure t
-  ;; :defer 0.2
   :commands (ar/counsel-ag
              ar/ivy-occur)
   :bind (:map
@@ -241,7 +240,6 @@ For example:
 
 (use-package ivy
   :ensure t
-  ;; :defer 0.2
   :bind ("C-x b" . ivy-switch-buffer)
   :commands (ar/ivy-bluetooth-connect
              ivy-switch-buffer)

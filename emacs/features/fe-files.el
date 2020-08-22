@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package files
-  :defer 15
+  :defer
   :validate-custom
   ;; Automatically Kill Running Processes on Exit.
   ;; https://emacsredux.com/blog/2020/07/18/automatically-kill-running-processes-on-exit
@@ -37,9 +37,11 @@
                  (let ((old-buffer (window-buffer (old-selected-window)))
                        (new-buffer (window-buffer (selected-window))))
                    (with-current-buffer old-buffer
-                     (auto-revert-mode -1))
+                     (when buffer-file-name
+                       (auto-revert-mode -1)))
                    (with-current-buffer new-buffer
-                     (auto-revert-mode +1))))))
+                     (when buffer-file-name
+                      (auto-revert-mode +1)))))))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)

@@ -15,10 +15,9 @@
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
   (use-package ns-win
-    :defer 0.1
     ;; Easily insert # on macOS/UK keyboard.
     ;; https://coffeeandcode.neocities.org/emacs-keyboard-config-on-mac.html
-    :bind ("M-3" . ar/insert-hash)
+    :bind ("M-3" . ar/macos-insert-hash)
     :config
     (defun ar/macos-insert-hash ()
       (interactive)

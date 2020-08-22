@@ -46,6 +46,6 @@ reuse it's window, otherwise create new one."
 
 (use-package which-key
   :ensure t
-  :defer 60
+  :defer 20
   :config
   (which-key-mode))

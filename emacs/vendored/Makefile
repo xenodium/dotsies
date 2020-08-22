@@ -1,5 +1,5 @@
 all: install
 
 install:
-	mkdir -p ~/.emacs.d/vendored
-	cp -r *.el ~/.emacs.d/vendored/
+	mkdir -p ~/.emacs.d/local
+	cp -r *.el ~/.emacs.d/local

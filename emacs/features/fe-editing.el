@@ -162,32 +162,195 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
-  (load "~/.emacs.d/features/config-smartparens"))
+  (defun ar/rewrap-sexp-dwim (prefix)
+    "Like `sp-rewrap-sexp', but RET, DEL, SPC, and C-d remove pair.
+With PREFIX, add an outer pair around existing pair."
+    (interactive "P")
+    (let* ((pair-prefix (format-kbd-macro (vector (read-event "Rewrap with: " t))))
+           (clear-p (or (equal pair-prefix "RET")
+                        (equal pair-prefix "DEL")
+                        (equal pair-prefix "SPC")
+                        (equal pair-prefix "C-d")))
+           (available-pairs (sp--get-pair-list-context 'wrap))
+           (pair (--first (equal pair-prefix (car it)) available-pairs)))
+      (cond (clear-p
+             (when (sp-get-enclosing-sexp)
+               (sp-unwrap-sexp)))
+            (pair
+             (if (sp-get-enclosing-sexp)
+                 (sp-rewrap-sexp pair
+                                 prefix)
+               (save-excursion
+                 (sp-wrap-with-pair (car pair))))))))
 
-(use-package region-bindings-mode
-  :ensure t
-  :defer 10 ;; Don't lazy-load, to enable for regions.
-  :bind (:map region-bindings-mode-map
-              ("a" . mc/mark-all-dwim)
-              ("p" . mc/mark-previous-like-this)
-              ("n" . mc/mark-next-like-this)
-              ("P" . mc/unmark-previous-like-this)
-              ("N" . mc/unmark-next-like-this)
-              ("m" . mc/mark-more-like-this-extended)
-              ("h" . mc-hide-unmatched-lines-mode)
-              ("\\" . mc/vertical-align-with-space)
-              ("#" . mc/insert-numbers) ; use num prefix to set the starting number
-              ("^" . mc/edit-beginnings-of-lines)
-              ("$" . mc/edit-ends-of-lines))
-  :config
-  (region-bindings-mode-enable))
+  ;; https://www.reddit.com/r/emacs/comments/dewzuy/weekly_tipstricketc_thread/f3be8kq?utm_source=share&utm_medium=web2x
+  (defun ar/backward-up-sexp (a)
+    "Backwards up multiple sexps.
+   prefix command interpretation:
+     0    → to beginning of all nested sexps
+     -    → to end of all nested sexps
+     x|+x → x-times go back out of sexps to beginning
+     -x   → x-times go out of sexps to end
+     universal-command interpreted as 0"
+    (interactive "P")
+    (condition-case err
+        (let ((arg)
+              (loop))
+          (cond
+           ((null a) ;; back-up once
+            (setq arg -1
+                  loop nil))
+           ((eq a '-) ;; up to end of all sexps
+            (setq arg 1
+                  loop t))
+           ((numberp a)
+            (cond
+             ((= a 0) ;; back-up to begin of all sexps
+              (setq arg -1
+                    loop t))
+             (t (setq arg (- a) ;; do it a times
+                      loop nil))))
+           (t (setq arg -1 ;; interpret `universal-command'
+                    loop t)))
+          (while (progn  ;; do-while loop
+                   (up-list arg t t)
+                   loop)))
+      (scan-error ;; stay quiet
+       nil)))
+  (defun ar/kill-sexp (&optional arg)
+    "If inside symbol, kill from position to end of symbol.  With any ARG, kill current sexp."
+    (interactive "P")
+    (if (or arg
+            (not (sp-point-in-symbol)))
+        (sp-kill-sexp)
+      (kill-sexp)))
+  (defun ar/forward-sexp (&optional arg)
+    (interactive "P")
+    (if arg
+        (skip-syntax-forward "^ ()")
+      (sp-forward-sexp)))
+
+  (defun ar/backward-sexp (&optional arg)
+    (interactive "P")
+    (if arg
+        (skip-syntax-backward "^ ()")
+      (sp-backward-sexp)))
+
+  (require 'smartparens-config)
+
+  (require 'smartparens-html)
+
+  (require 'smartparens-python)
+
+  ;; Removes \\(
+  (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
+
+  (sp-local-pair 'swift-mode "\\(" ")")
+
+  (defun ar/create-newline-and-enter-sexp (&rest _ignored)
+    "Open a new brace or bracket expression, with relevant newlines and indent. "
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (sp-local-pair 'prog-mode "{" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+
+  (sp-local-pair 'prog-mode "[" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+
+  (sp-local-pair 'prog-mode "(" nil :post-handlers '((ar/create-newline-and-enter-sexp "RET")))
+
+  (defun ar/sp-prog-skip-match-angle-bracket (_ms _mb me)
+    "Non-nil if we should ignore the bracket as valid delimiter."
+    (save-excursion
+      (goto-char me)
+      (let ((on-fn-return-type
+             (sp--looking-back-p (rx "->") nil))
+            (on-match-branch
+             (sp--looking-back-p (rx "=>") nil))
+            (on-comparison
+             (sp--looking-back-p (rx (or
+                                      (seq space "<")
+                                      (seq space ">")
+                                      (seq space "<<")
+                                      (seq space ">>")))
+                                 nil)))
+        (or on-comparison on-fn-return-type on-match-branch))))
+
+  (defun ar/sp-prog-filter-angle-brackets (_id action context)
+    "Non-nil if we should allow ID's ACTION in CONTEXT for angle brackets."
+    ;; See the docstring for `sp-pair' for the possible values of ID,
+    ;; ACTION and CONTEXT.
+    (cond
+     ;; Inside strings, don't do anything with < or >.
+     ((eq context 'string)
+      nil)
+     ;; Don't do any smart pairing inside comments either.
+     ((eq context 'comment)
+      nil)
+     ;; Otherwise, we're in code.
+     ((eq context 'code)
+      (let ((on-fn-return-type
+             (looking-back (rx "->") nil))
+            (on-match-branch
+             (looking-back (rx "=>") nil))
+            (on-comparison
+             (looking-back (rx (or
+                                (seq space "<")
+                                (seq space ">")
+                                (seq space "<<")
+                                (seq space ">>")))
+                           nil)))
+        (cond
+         ;; Only insert a matching > if we're not looking at a
+         ;; comparison.
+         ((eq action 'insert)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
+         ;; Always allow wrapping in a pair if the region is active.
+         ((eq action 'wrap)
+          (not on-match-branch))
+         ;; When pressing >, autoskip if we're not looking at a
+         ;; comparison.
+         ((eq action 'autoskip)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch)))
+         ;; Allow navigation, highlighting and strictness checks if it's
+         ;; not a comparison.
+         ((eq action 'navigate)
+          (and (not on-comparison) (not on-fn-return-type) (not on-match-branch))))))))
+
+  (sp-local-pair 'protobuf-mode "'" "'")
+
+  (sp-local-pair 'prog-mode "/*" "*/")
+
+  (sp-local-pair 'prog-mode "<" ">"
+                 :when '(ar/sp-prog-filter-angle-brackets)
+                 :skip-match 'ar/sp-prog-skip-match-angle-bracket)
+
+  (defun adviced:kill-region-advice (orig-fun &rest r)
+    "Advice function around `kill-region' (ORIG-FUN and R)."
+    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
+            mark-active)
+        (apply orig-fun r)
+      ;; Kill entire line.
+      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
+            (offset (- (point)
+                       (line-beginning-position))))
+        (apply orig-fun (list (line-beginning-position)
+                              (line-end-position)
+                              nil))
+        (delete-char 1)
+        (forward-char (min offset
+                           (- (line-end-position)
+                              (line-beginning-position)))))))
+
+  (advice-add #'kill-region
+              :around
+              #'adviced:kill-region-advice))
 
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state
   :ensure t
-  :defer 20
-  :config
-  (region-state-mode))
+  :hook ((prog-mode . region-state-mode)))
 
 (use-package multiple-cursors :ensure t
   :after region-bindings-mode
@@ -238,15 +401,13 @@
   (delete-selection-mode +1))
 
 (use-package paren
-  :defer 5
+  :hook ((prog-mode . show-paren-mode))
   :validate-custom
   ;; Without this matching parens aren't highlighted in region.
   (show-paren-priority -50)
   (show-paren-delay 0.3)
   ;; Highlight entire bracket expression.
-  (show-paren-style 'expression)
-  :config
-  (show-paren-mode +1))
+  (show-paren-style 'expression))
 
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
@@ -303,21 +464,67 @@
   ;; nil means no limit. Always show result.
   (eval-expression-print-level nil)
   :config
-  (load "~/.emacs.d/features/config-simple"))
+  (defun ar/yank-line-below (arg)
+    "Yank to line below. With ARG, repeat."
+    (interactive "p")
+    (let ((lines))
+      (dotimes (_i arg)
+        (setq lines
+              (concat lines
+                      (current-kill 0)
+                      "\n")))
+      (setq lines (string-remove-suffix "\n" lines))
+      (save-excursion
+        (end-of-line)
+        (newline)
+        (insert lines))
+      (forward-line)))
+
+  (defun adviced:read-shell-command (orig-fun &rest r)
+    "Advice around `read-shell-command' to replace $f with buffer file name."
+    (let ((command (apply orig-fun r)))
+      (if (string-match-p "\\$f" command)
+          (replace-regexp-in-string "\\$f"
+                                    (or (buffer-file-name)
+                                        (user-error "No file file visited to replace $f"))
+                                    command)
+        command)))
+
+  (advice-add #'read-shell-command
+              :around
+              #'adviced:read-shell-command)
+
+  ;; From https://github.com/daschwa/emacs.d
+  (defadvice kill-ring-save (before slick-copy activate compile)
+    "When called interactively with no active region, copy a single
+line instead."
+    (interactive
+     (if mark-active
+         (list (region-beginning) (region-end))
+       (message "Copied line")
+       (list (line-beginning-position) (line-end-position)))))
+
+  (use-package region-bindings-mode
+    :ensure t
+    :demand
+    :bind (:map region-bindings-mode-map
+                ("a" . mc/mark-all-dwim)
+                ("p" . mc/mark-previous-like-this)
+                ("n" . mc/mark-next-like-this)
+                ("P" . mc/unmark-previous-like-this)
+                ("N" . mc/unmark-next-like-this)
+                ("m" . mc/mark-more-like-this-extended)
+                ("h" . mc-hide-unmatched-lines-mode)
+                ("\\" . mc/vertical-align-with-space)
+                ("#" . mc/insert-numbers) ; use num prefix to set the starting number
+                ("^" . mc/edit-beginnings-of-lines)
+                ("$" . mc/edit-ends-of-lines))
+    :config
+    (region-bindings-mode-enable)))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
   :mode ("rc$" . conf-mode))
-
-;; Handles escaping regexes from input. For example: no need for \(\)
-(use-package pcre2el
-  :ensure t
-  :defer 30)
-
-(use-package re-builder
-  :defer 30
-  :validate-custom
-  (reb-re-syntax 'string))
 
 (use-package diverted
   :defer 20

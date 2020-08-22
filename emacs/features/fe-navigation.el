@@ -44,7 +44,7 @@
 ;; Centers text, distributing blank space.
 (use-package olivetti
   :ensure t
-  :defer 80)
+  :commands olivetti-mode)
 
 ;; Potential native replacement for centered-cursor-mode.
 ;; Breaks org mode.
@@ -174,7 +174,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Programmatically get the visible end of window.
 (use-package window-end-visible
   :ensure t
-  :defer 60
+  :defer
   :config
   (defmacro ar/with-marked-visible-buffer (f)
     "Mark all visible lines in buffer. Unlike `mark-whole-buffer',
@@ -196,9 +196,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (("M-e" . avy-goto-char-timer)))
 
 (use-package subword
-  :defer 60
-  :config
-  (global-subword-mode +1))
+  :hook ((prog-mode . subword-mode)))
 
 (use-package goto-line-preview
   :ensure t
@@ -217,7 +215,7 @@ Repeated invocations toggle between the two most recently open buffers."
                (next-error-follow-minor-mode +1))))
 
 (use-package xref
-  :defer 60
+  :defer
   :config
   ;; I accidentally press these when I meant "global-map M->"
   ;; for end-of-buffer. Unsetting.

@@ -9,6 +9,7 @@
 
 ;; Make URLs and e-mail addresses clickable or activatable wit <RET>.
 (use-package goto-addr
+  :functions (goto-address-at-point)
   :bind (:map goto-address-highlight-keymap
               ("<RET>" . goto-address-at-point)
               ("M-<RET>" . newline))
@@ -31,17 +32,5 @@
 
 (use-package web-mode
   :ensure t
-  :defer 80
-  :config
-  (setq web-mode-auto-close-style 2))
-
-(use-package url-handlers
-  :commands ar/download-clipboard-url
-  :config
-  (defun ar/download-clipboard-url ()
-    "Download clipboard URL to current directory."
-    (interactive)
-    (let ((url (current-kill 0)))
-      (assert (string-match-p "^http[s]?://\\(www\\.\\)?" url)
-              nil "Not a downloadable URL: %s" url)
-      (url-copy-file url (concat default-directory (file-name-nondirectory url))))))
+  :validate-custom
+  (web-mode-auto-close-style 2))
