@@ -8,7 +8,9 @@
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("M-[" . org-metaleft)
-              ("M-]" . org-metaright))
+              ("M-]" . org-metaright)
+              ("C-c C-n" . ar/org-next-entry-or-next-visible-header)
+              ("C-c C-p" . ar/org-previous-entry-or-previous-visible-header))
   :custom
   (org-todo-keywords
    '((sequence
@@ -90,6 +92,19 @@
     (interactive "P")
     (end-of-line)
     (call-interactively 'org-meta-return))
+
+  ;; https://ag91.github.io/blog/2019/07/01/how-to-jump-to-next-bullet-point-in-org-mode/
+  (defun ar/org-next-entry-or-next-visible-header ()
+    (interactive)
+    (condition-case err
+        (org-next-item)
+      (error (org-next-visible-heading 1))))
+
+  (defun ar/org-previous-entry-or-previous-visible-header ()
+    (interactive)
+    (condition-case err
+        (org-previous-item)
+      (error (org-previous-visible-heading 1))))
 
   (use-package company-org-block)
 
