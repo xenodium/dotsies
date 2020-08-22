@@ -524,7 +524,7 @@ line instead."
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
-  :mode ("rc$" . conf-mode))
+  :mode ("rc?\\'" . conf-mode))
 
 (use-package diverted
   :defer 20
