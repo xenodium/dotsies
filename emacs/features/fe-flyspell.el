@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package flyspell
-  :hook ((text-mode . flyspell-mode))
+  :defer
   :bind (:map
          flyspell-mode-map
          ("C-M-i" . flyspell-correct-wrapper))
@@ -45,6 +45,11 @@
       (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")))
      (t
       (error "No speller installed")))))
+
+(use-package wucuo
+  :ensure t
+  :hook ((text-mode . wucuo-start)
+         (prog-mode . wucuo-start)))
 
 (use-package mw-thesaurus
   :ensure t

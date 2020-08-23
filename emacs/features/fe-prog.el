@@ -14,9 +14,6 @@
          prog-mode-map
          ("C-x C-q" . view-mode))
   :hook ((prog-mode . company-mode)
-         ;; Trying without (for performance).
-         ;;         (prog-mode . flycheck-mode)
-         ;;         (prog-mode . flyspell-prog-mode)
          (prog-mode . yas-minor-mode)
          ;; Trying to go without.
          ;; (prog-mode . centered-cursor-mode)
@@ -24,7 +21,6 @@
          (prog-mode . goto-address-prog-mode))
   :config
   ;; Trying without (for performance).
-  ;;  (require 'flyspell)
   ;;  (require 'flycheck)
 
   ;; Highlight hex strings in respective color.
