@@ -263,6 +263,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     (ar/ox-html-setup))
 
   (use-package ob
+    :demand t
     :bind (:map org-mode-map
                 ("C-c C-c" . org-ctrl-c-ctrl-c))
     :validate-custom
@@ -270,6 +271,25 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     ;; We explicitly want org babel confirm evaluations.
     (org-confirm-babel-evaluate t)
     :config
+    ;; Keep at the top and let other packages append to `org-babel-load-languages'.
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((R . t)
+       (ditaa . t)
+       (dot . t)
+       (emacs-lisp . t)
+       (gnuplot . t)
+       (haskell . nil)
+       (js . t)
+       (objc . t)
+       (ocaml . nil)
+       (python . t)
+       (ruby . t)
+       (screen . nil)
+       (shell . t)
+       (sql . nil)
+       (sqlite . t)))
+
     (use-package ob-python
       :validate-custom
       ;; Make python source blocks export and output results by default.
@@ -420,25 +440,7 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
              (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
 
     (use-package gnuplot
-      :ensure t)
-
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((R . t)
-       (ditaa . t)
-       (dot . t)
-       (emacs-lisp . t)
-       (gnuplot . t)
-       (haskell . nil)
-       (js . t)
-       (objc . t)
-       (ocaml . nil)
-       (python . t)
-       (ruby . t)
-       (screen . nil)
-       (shell . t)
-       (sql . nil)
-       (sqlite . t))))
+      :ensure t))
 
   (use-package org-crypt
     :custom
