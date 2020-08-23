@@ -21,6 +21,7 @@
 (ar/init--idle-load "~/.emacs.d/features/fe-org")
 (ar/init--idle-load "~/.emacs.d/features/fe-editing")
 (ar/init--idle-load "~/.emacs.d/features/fe-modal")
+(ar/init--idle-load "~/.emacs.d/features/fe-bazel")
 
 ;; Primary.
 (ar/init--idle-load "~/.emacs.d/features/fe-flycheck")
