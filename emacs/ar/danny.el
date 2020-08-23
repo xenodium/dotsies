@@ -6,7 +6,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'dash)
 (require 'f)
 (require 'filenotify)
@@ -167,7 +167,7 @@ For example \"crdownload$\" and \"part$\".")
       (lambda (fpath)
         (when (file-newer-than-file-p fpath newest-fpath)
           (setq newest-fpath fpath))))
-    (assert newest-fpath nil "No files available")
+    (cl-assert newest-fpath nil "No files available")
     (danny--choose-action newest-fpath)))
 
 (defun danny--move-file (src-fpath dst-dpath)

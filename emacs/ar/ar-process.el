@@ -6,7 +6,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 
 (defun ar/process-call (program &rest arguments)
   "Call PROGRAM with ARGUMENTS.  Look out for *PROGRAM* buffer output."
@@ -25,7 +25,7 @@
 
 (defun ar/process-assert-binary-installed (binary-name &optional install-message)
   "Assert BINARY-NAME is in PATH.  Show INSTALL-MESSAGE for instructions."
-  (assert (ar/process-binary-installed-p binary-name) nil (concat (format "%s not found. "
+  (cl-assert (ar/process-binary-installed-p binary-name) nil (concat (format "%s not found. "
                                                                           binary-name)
                                                                   install-message)))
 

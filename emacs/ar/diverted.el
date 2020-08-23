@@ -7,10 +7,10 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'seq)
 
-(defstruct diverted-event
+(cl-defstruct diverted-event
   from ;; Initial function (eg. 'mark-defun)
   to ;; Follow-up function (eg. 'indent-for-tab-command)
   breadcrumb)

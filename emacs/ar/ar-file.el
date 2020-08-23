@@ -9,35 +9,14 @@
 (require 'ar-string)
 (require 'files)
 (require 'simple)
-(require 'cl)
+(require 'cl-lib)
 
-(defun ar/file-file-p (path)
-  "Return t if PATH is file.  nil otherwise."
-  (and (file-exists-p path)
-       (not (nth 0 (file-attributes path 'string)))))
-
-(defun ar/file-modification-time (file-path)
-  "Return modification time for FILE-PATH or error."
-  (assert (ar/file-file-p file-path) nil "File not found %s: " file-path)
-  (nth 5 (file-attributes  file-path 'string)))
-
-(defun ar/file-last-modified (file-paths)
-  "Return last modified file path in FILE-PATHS."
-  (assert (> (length file-paths) 0) nil "You need at least on path in FILE-PATHS")
-  (let ((newest-file-path (nth 0 file-paths)))
-    (mapc (lambda (file-path)
-            (when (and (ar/file-file-p file-path)
-                       (time-less-p (ar/file-modification-time newest-file-path)
-                                    (ar/file-modification-time file-path)))
-              (setq newest-file-path file-path))
-            (message file-path))
-          file-paths)
-    newest-file-path))
 
 ;; Move buffer file.
 ;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 (defun ar/file-move (dir)
-  "Move both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
+  "Move both current buffer and file it's visiting to DIR."
+  (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
          (dir (if (string-match dir "\\(?:/\\|\\\\)$")
@@ -70,8 +49,8 @@
 
 (defun ar/file-find (filename-pattern mod-function &rest search-paths)
   "Find file with FILENAME-PATTERN, map MOD-FUNCTION to results, look in SEARCH-PATHS."
-  (assert filename-pattern nil "Missing FILENAME-PATTERN")
-  (assert search-paths nil "Missing SEARCH-PATHS")
+  (cl-assert filename-pattern nil "Missing FILENAME-PATTERN")
+  (cl-assert search-paths nil "Missing SEARCH-PATHS")
   (let* ((search-paths-string (mapconcat 'expand-file-name
                                          search-paths
                                          " "))
@@ -149,19 +128,19 @@ Append `ar/file-build-file-names' to search for other file names."
 (defun ar/file-find-duplicate-filenames ()
   "Find files recursively which have the same name."
   (interactive)
-  (let ((files-hash-table (make-hash-table :test 'equal))
-        (duplicate-file-names '())
-        (record-function (lambda (path)
-                           "Add to hash-table, key=filename value=paths."
-                           ;; nil means file.
-                           (unless (nth 0 (file-attributes path 'string))
-                             (let ((key (file-name-nondirectory path))
-                                   (values))
-                               (setq values (gethash key files-hash-table))
-                               (unless values
-                                 (setq values '()))
-                               (push path values)
-                               (puthash key values files-hash-table))))))
+  (let* ((files-hash-table (make-hash-table :test 'equal))
+         (duplicate-file-names '())
+         (record-function (lambda (path)
+                            "Add to hash-table, key=filename value=paths."
+                            ;; nil means file.
+                            (unless (nth 0 (file-attributes path 'string))
+                              (let ((key (file-name-nondirectory path))
+                                    (values))
+                                (setq values (gethash key files-hash-table))
+                                (unless values
+                                  (setq values '()))
+                                (push path values)
+                                (puthash key values files-hash-table))))))
     (mapc record-function
           (ar/file-find "\\*" nil default-directory))
     (maphash (lambda (key paths)
@@ -177,12 +156,6 @@ Append `ar/file-build-file-names' to search for other file names."
     (mapc (lambda (duplicate-file-name)
             (insert (format "%s\n" duplicate-file-name)))
           duplicate-file-names)))
-
-(defun ar/file-dir-locals-directory ()
-  "Get closest .dir-locals.el directory."
-  (file-name-directory (if (stringp (dir-locals-find-file default-directory))
-                           (dir-locals-find-file default-directory)
-                         (car (dir-locals-find-file default-directory)))))
 
 (defun ar/file-assert-file-exists (file-path)
   "Assert FILE-PATH exists."
