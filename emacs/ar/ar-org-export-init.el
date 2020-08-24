@@ -17,8 +17,8 @@
 (load "~/.emacs.d/features/fe-mac.el")
 (load "~/.emacs.d/features/fe-linux.el")
 (load "~/.emacs.d/features/fe-org.el")
-(load "~/.emacs.d/ar/ar-ox-html.el")
-(load "~/.emacs.d/ar/ar-org-split-export.el")
+(load "~/.emacs.d/local/ar-ox-html.el")
+(load "~/.emacs.d/local/ar-org-split-export.el")
 
 (use-package whitespace)
 

@@ -69,7 +69,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
   "Exports all posts into single page under all/index.html."
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
-                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-all)\" && ")
+                               (expand-file-name "~/.emacs.d/local/ar-org-export-init.el --execute \"(ar/ox-html-export-all)\" && ")
                                "open " (format "file:%s" (expand-file-name
                                                           "~/stuff/active/blog/all/index.html")))
                        "*org html export*"))
@@ -120,7 +120,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
   "Export blog to HTML index (only headings) to index.html (asynchronously)."
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory) " --batch -Q -l "
-                               (expand-file-name "~/.emacs.d/ar/ar-org-export-init.el --execute \"(ar/ox-html-export-index)\" && ")
+                               (expand-file-name "~/.emacs.d/local/ar-org-export-init.el --execute \"(ar/ox-html-export-index)\" && ")
                                "open " (format "file:%s" (expand-file-name
                                                           "~/stuff/active/blog/index.html")))
                        "*org html export*"))

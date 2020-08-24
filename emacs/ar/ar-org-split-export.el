@@ -7,7 +7,7 @@
   (interactive)
   (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
                                " --batch -Q"
-                               " -l "(expand-file-name "~/.emacs.d/ar/ar-org-export-init.el")
+                               " -l "(expand-file-name "~/.emacs.d/local/ar-org-export-init.el")
                                " --execute '(ar/org-split-export)'")
                        "*org html export*"))
 
@@ -58,7 +58,7 @@
     (assert (eq major-mode 'org-mode))
     (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
                                  " --batch -Q"
-                                 " -l "(expand-file-name "~/.emacs.d/ar/ar-org-export-init.el")
+                                 " -l "(expand-file-name "~/.emacs.d/local/ar-org-export-init.el")
                                  (format " --execute '(ar/org-split-export-headline \"%s\" \"%s\" \"%s\" %d t)'"
                                          (expand-file-name "~/stuff/active/blog/index.org")
                                          ;; TODO: Remove this param and let ar/org-split-export-headline get the value.
