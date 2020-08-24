@@ -1,6 +1,6 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("translade" "translate" nil :count 0)
+    ("immediatly" "immediately" nil :count 0)
    ))
 
