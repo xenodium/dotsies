@@ -1,6 +1,8 @@
-#name : Swift Initializer Declaration
-#key : init
+# -*- mode: snippet -*-
+# name: init with assignment
+# key: /init
 # --
-init(${1:parameters}) {
-    ${2:statements}
+public init(${1:, args}) {
+  ${1:$(swift-snippet-init-assignments yas-text)}
+  $0
 }
