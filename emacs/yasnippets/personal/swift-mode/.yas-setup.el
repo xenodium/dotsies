@@ -9,21 +9,18 @@
                                     (goto-char start-point)
                                     (current-indentation))
                                   ?\s)))
-    (mapconcat (lambda (arg)
-                 (if (string-match "^\\*" (car arg))
-                     ""
-                   (format "self.%s = %s\n%s"
-                           (car arg)
-                           (car arg)
-                           indentation)))
-               (swift-snippet-split-args arg-string)
-               "")))
+    (string-trim (mapconcat (lambda (arg)
+                              (if (string-match "^\\*" arg)
+                                  ""
+                                (format "self.%s = %s\n%s"
+                                        arg arg indentation)))
+                            (swift-snippet-split-args arg-string)
+                            ""))))
 
 (defun swift-snippet-split-args (arg-string)
   "Split a python argument string into ((name, default)..) tuples"
   (mapcar (lambda (x)
-            (list
-             (if (and x (string-match "\\([[:alnum:]]*\\):" x))
-                 (match-string-no-properties 1 x)
-               x)))
+            (if (and x (string-match "\\([[:alnum:]]*\\):" x))
+                (match-string-no-properties 1 x)
+              x))
           (split-string arg-string "[[:blank:]]*,[[:blank:]]*" t)))
