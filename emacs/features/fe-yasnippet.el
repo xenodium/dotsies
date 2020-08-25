@@ -6,6 +6,8 @@
   (yas-triggers-in-field t)
   :commands (yas-expand
              yas-minor-mode)
+  :hook ((prog-mode . yas-minor-mode)
+         (org-mode . yas-minor-mode))
   :config
   (use-package ar-yas
     :commands (ar/yas-install--github-yasnippets

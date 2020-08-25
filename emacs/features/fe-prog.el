@@ -14,7 +14,6 @@
          prog-mode-map
          ("C-x C-q" . view-mode))
   :hook ((prog-mode . company-mode)
-         (prog-mode . yas-minor-mode)
          ;; Trying to go without.
          ;; (prog-mode . centered-cursor-mode)
          (prog-mode . rainbow-mode)

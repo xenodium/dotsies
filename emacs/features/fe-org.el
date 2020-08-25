@@ -68,7 +68,6 @@
   (org-return-follows-link t)
   :hook ((org-mode . ar/org-mode-hook-function)
          (org-mode . visual-line-mode)
-         (org-mode . yas-minor-mode)
          (org-mode . smartparens-mode)
          (org-mode . org-display-inline-images))
   :config
