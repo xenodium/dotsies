@@ -112,7 +112,7 @@
 (defun ar/file-open-either-closest (start-fname &rest fnames)
   "Open the closest file, start at START-FNAME and go to parent dir until finding filename in FNAMES."
   (let ((closest-fname (apply #'ar/file-either-closest start-fname fnames)))
-    (assert closest-fname nil "No %s found" fnames)
+    (cl-assert closest-fname nil "No %s found" fnames)
     (switch-to-buffer (find-file-noselect closest-fname))
     closest-fname))
 
@@ -159,7 +159,7 @@ Append `ar/file-build-file-names' to search for other file names."
 
 (defun ar/file-assert-file-exists (file-path)
   "Assert FILE-PATH exists."
-  (assert (file-exists-p file-path) nil (format "File not found: %s" file-path))
+  (cl-assert (file-exists-p file-path) nil (format "File not found: %s" file-path))
   file-path)
 
 (provide 'ar-file)

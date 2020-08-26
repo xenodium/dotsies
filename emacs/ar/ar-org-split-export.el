@@ -2,6 +2,7 @@
 (require 'ar-ox-html)
 (require 'f)
 (require 's)
+(require 'cl-lib)
 
 (defun ar/org-split-export-async ()
   (interactive)
@@ -55,7 +56,7 @@
   "Export current headline to HTML asynchronously."
   (interactive)
   (let ((headline (ar/org-element-at-heading-1)))
-    (assert (eq major-mode 'org-mode))
+    (cl-assert (eq major-mode 'org-mode))
     (async-shell-command (concat (expand-file-name invocation-name invocation-directory)
                                  " --batch -Q"
                                  " -l "(expand-file-name "~/.emacs.d/local/ar-org-export-init.el")
@@ -73,7 +74,7 @@
   "Export current headline to HTML."
   (interactive)
   (let ((headline (ar/org-element-at-heading-1)))
-    (assert (eq major-mode 'org-mode))
+    (cl-assert (eq major-mode 'org-mode))
     (ar/org-split-export-headline (expand-file-name "~/stuff/active/blog/index.org")
                                   (ar/org-split-export--parse-headline-title
                                    (org-element-property :raw-value headline))
