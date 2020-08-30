@@ -246,6 +246,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
   (use-package ar-ox-html
     :commands (ar/org-split-export-headline
                ar/org-split-export-async
+               ar/ox-export-index-async
                ar/ox-html-export-all-async
                ar/ox-html-export-all
                ar/org-export-current-headline-async)
