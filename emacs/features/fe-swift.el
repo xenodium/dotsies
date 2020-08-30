@@ -64,7 +64,12 @@
 
   (defun ar/xcode-info ()
     (interactive)
-    (shell-command "system_profiler SPDeveloperToolsDataType"))
+    (let ((buffer "*Xcode info*"))
+      (shell-command "system_profiler SPDeveloperToolsDataType" buffer)
+      ;; Select window and make read-only (q closes window).
+      (with-current-buffer buffer
+        (view-mode +1)
+        (select-window (get-buffer-window buffer)))))
 
   (defun ar/swift-public-interface ()
     "Open an occur buffer with file's public interface."
