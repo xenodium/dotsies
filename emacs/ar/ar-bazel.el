@@ -195,8 +195,12 @@ bazel-bin, bazel-genfiles, and bazel-out.")
           ".bazelrules"))
 
 (defmacro ar/bazel--async-body-named (name &rest body)
-  "Execute asynchronous BODY with NAME."
-  (let* ((body-string (replace-regexp-in-string "^(" "(progn " ;; "((...))" -> "(prog (...))"
+  "Execute asynchronous BODY with NAME. If first item in BODY is a
+ function, execute on process completion."
+  (declare (indent 1))
+  (let* ((completion (when (functionp (seq-first body))
+                        (seq-first body)))
+         (body-string (replace-regexp-in-string "^(" "(progn " ;; "((...))" -> "(prog (...))"
                                                 (format "%s" (prin1-to-string (cdr (macroexp-parse-body body))))
                                                 t t)))
     `(let* ((emacs-bin (concat (expand-file-name invocation-name invocation-directory)))
@@ -235,7 +239,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                                (lambda (process state)
                                  (if (= (process-exit-status process) 0)
                                      (message "%s finished ✔" ,name)
-                                   (message "%s failed ❌, see %s" ,name buffer))))))))
+                                   (message "%s failed ❌, see %s" ,name buffer))
+                                 (when ,completion
+                                   (funcall ,completion))))))))
 
 (defun ar/bazel--write-rules-cache (rules &optional fpath)
   "Write bazel absolute RULES at FPATH."
