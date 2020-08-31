@@ -145,10 +145,12 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
+  (require 'cl-lib)
+
   (defun ar/dired-convert-audio-to-mp3 (&optional arg)
     "Convert audio file to mp3."
     (interactive "P")
-    (assert (executable-find "convert") nil "Install ffmpeg")
+    (cl-assert (executable-find "convert") nil "Install ffmpeg")
     (mapc
      (lambda (fpath)
        (let* ((src-fpath fpath)
@@ -171,7 +173,7 @@
   (defun ar/dired-convert-image (&optional arg)
     "Convert image files to other formats."
     (interactive "P")
-    (assert (or (executable-find "convert") (executable-find "magick.exe")) nil "Install imagemagick")
+    (cl-assert (or (executable-find "convert") (executable-find "magick.exe")) nil "Install imagemagick")
     (let* ((dst-fpath)
            (src-fpath)
            (src-ext)
@@ -207,10 +209,49 @@
             (kill-buffer (process-buffer process)))))
        (dired-map-over-marks (dired-get-filename) arg))))
 
+  (defun ar/dired-video-to-gif (&optional arg)
+    (interactive "P")
+    (cl-assert (executable-find "ffmpeg") nil "ffmpeg not installed")
+    (cl-assert (executable-find "gifsicle") nil "gifsicle not installed")
+    (mapc
+     (lambda (fpath)
+       (let* ((src-fpath fpath)
+              (base-name (file-name-nondirectory (file-name-sans-extension src-fpath)))
+              (dst-fpath (format "%s.gif" (file-name-sans-extension src-fpath)))
+              (every (string-to-number
+                      (completing-read "Speed up x times: " '("1" "2" "3" "4"))))
+              (process (lambda (&rest args)
+                         (with-temp-buffer
+                           (let ((out (list :exit-status
+                                            (apply 'call-process (seq-concatenate
+                                                                  'list
+                                                                  (list (car args) nil t nil)
+                                                                  (cdr args)))
+                                            :output
+                                            (buffer-string))))
+                             (cl-assert (eq (map-elt out :exit-status)
+                                            0) nil (map-elt out :output))
+                             out)))))
+         (message "Processing %s" (file-name-nondirectory src-fpath))
+         (funcall process "ffmpeg" "-y" "-i" src-fpath "-pix_fmt" "rgb24" "-r" "15" dst-fpath)
+         (apply process (seq-concatenate
+                         'list
+                         (list "gifsicle" "-U" dst-fpath)
+                         ;; Returns #0 #1 #2 ... #framecount.
+                         (seq-map (lambda (n)
+                                    (format "#%d" n))
+                                  (range 0 (string-to-number
+                                            ;; Get total grame count.
+                                            (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
+                                         every))
+                         (list "-O2" "-o" dst-fpath)))
+         (message "Created %s" (file-name-nondirectory dst-fpath))))
+     (dired-map-over-marks (dired-get-filename) arg)))
+
   (defun ar/dired-create-icns-iconset (&optional arg)
     "Convert image ios icns and iconset (needs 1024x1024)."
     (interactive "P")
-    (assert (executable-find "sips") nil "sips not installed")
+    (cl-assert (executable-find "sips") nil "sips not installed")
     (mapc
      (lambda (fpath)
        (let* ((src-fpath fpath)
