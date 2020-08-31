@@ -202,6 +202,7 @@ Based on `elfeed-search-print-entry--default'."
 
   (setq elfeed-feeds '(
                        ("http://1w6.org/rss.xml" blog emacs draketo)
+                       ("https://blog.polaris64.net/index.xml" blog emacs Polaris64)
                        ("http://www.mycpu.org/feed.xml" blog emacs mycpu)
                        ("https://qiita.com/advent-calendar/2019/emacs/feed" blog emacs EmacsAdventCalendar2019)
                        ("https://genehack.blog/atom.xml" blog emacs genehack)
