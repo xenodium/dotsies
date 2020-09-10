@@ -261,6 +261,9 @@ For example:
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
          ("M-o" . ar/insert-current-file-name-at-point)
+         :map
+         sh-mode-map
+         ("C-c C-r" . ivy-resume)
          :map ivy-minibuffer-map
          ("C-g" . ar/ivy-keyboard-quit-dwim)
          ("C--" . ivy-minibuffer-shrink)

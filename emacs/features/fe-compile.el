@@ -20,6 +20,9 @@
          ("}" . compilation-next-file)
          ("q" . kill-buffer-and-window)
          :map
+         sh-mode-map
+         ("C-c C-c" . ar/compile)
+         :map
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
