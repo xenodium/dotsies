@@ -1,0 +1,50 @@
+* Git
+** .gitconfig file
+
+#+begin_src gitconfig :tangle ~/.gitconfig
+  [core]
+          editor = emacsclient -t
+
+  [rerere]
+          enabled = true
+
+  [color]
+          ui = auto
+
+  [merge]
+          conflictStyle = diff3
+
+  [diff]
+          # Remove `a/` and `b/` prefixes from diffs.
+          noprefix = true
+#+end_src
+
+** Update git author info in history
+
+#+begin_src sh
+  cd path/to/repo
+
+  git filter-branch -f --env-filter '
+
+  OLD_EMAIL="my-old-email@someplace.com"
+  CORRECT_NAME="username"
+  CORRECT_EMAIL="my-new-email@someplace.com"
+
+  if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+  then
+      export GIT_COMMITTER_NAME="$CORRECT_NAME"
+      export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+  fi
+  if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+  then
+      export GIT_AUTHOR_NAME="$CORRECT_NAME"
+      export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+  fi
+  ' --tag-name-filter cat -- --branches --tags
+#+end_src
+
+** Force push (updated history)
+
+#+begin_src sh
+  git push --force --tags origin 'refs/heads/*'
+#+end_src
