@@ -129,16 +129,14 @@
   :bind
   (:map
    smartparens-strict-mode-map
-   ;; I prefer keeping C-w to DWIM kill, provided by
-   ;; `adviced:kill-region-advice'. Removing remap.
-   ([remap kill-region] . kill-region)
+   ([remap kill-region] . nil) ;; Unsets C-w override.
    :map prog-mode-map
    ("C-<right>" . sp-forward-slurp-sexp)
    ("C-<left>" . sp-forward-barf-sexp)
    ("M-<right>" . sp-backward-barf-sexp)
    ("M-<left>"  . sp-backward-slurp-sexp)
    :map smartparens-mode-map
-   ([remap kill-region] . kill-region)
+   ([remap kill-region] . nil) ;; Unsets C-w override.
    ("C-c e" . sp-change-enclosing)
    ("M-'" . ar/rewrap-sexp-dwim)
    ("M-k" . sp-backward-kill-sexp)
@@ -324,28 +322,14 @@ With PREFIX, add an outer pair around existing pair."
 
   (sp-local-pair 'prog-mode "<" ">"
                  :when '(ar/sp-prog-filter-angle-brackets)
-                 :skip-match 'ar/sp-prog-skip-match-angle-bracket)
+                 :skip-match 'ar/sp-prog-skip-match-angle-bracket))
 
-  (defun adviced:kill-region-advice (orig-fun &rest r)
-    "Advice function around `kill-region' (ORIG-FUN and R)."
-    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
-            mark-active)
-        (apply orig-fun r)
-      ;; Kill entire line.
-      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
-            (offset (- (point)
-                       (line-beginning-position))))
-        (apply orig-fun (list (line-beginning-position)
-                              (line-end-position)
-                              nil))
-        (delete-char 1)
-        (forward-char (min offset
-                           (- (line-end-position)
-                              (line-beginning-position)))))))
-
-  (advice-add #'kill-region
-              :around
-              #'adviced:kill-region-advice))
+;; If no region active, operate on line.
+;; For example C-w would kill like if no region is active.
+(use-package whole-line-or-region
+  :ensure t
+  :config
+  (whole-line-or-region-global-mode))
 
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state
