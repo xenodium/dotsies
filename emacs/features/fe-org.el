@@ -288,7 +288,16 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
        (screen . nil)
        (shell . t)
        (sql . nil)
+       (sh . nil)
        (sqlite . t)))
+
+    (use-package ob-tangle
+      :commands ar/ob-tangle-current-block
+      :config
+      (defun ar/org-babel-tangle-current-block ()
+        "Like `org-babel-tangle' but for current block."
+        (interactive)
+        (org-babel-tangle '(4))))
 
     (use-package ob-python
       :validate-custom
