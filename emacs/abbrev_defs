@@ -1,6 +1,8 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("chaging" "changing" nil :count 0)
+    ("Prehead" "Preheat" nil :count 0)
+    ("chesse" "cheese" nil :count 0)
+    ("throughly" "thoroughly" nil :count 2)
    ))
 
