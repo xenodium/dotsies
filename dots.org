@@ -1,7 +1,7 @@
 * Git
 ** .gitconfig file
 
-#+begin_src gitconfig :tangle ~/.gitconfig
+#+begin_src gitconfig :tangle ~/.gitconfigC-SPC
   [core]
           editor = emacsclient -t
 
@@ -47,4 +47,12 @@
 
 #+begin_src sh
   git push --force --tags origin 'refs/heads/*'
+#+end_src
+
+* Mpv
+
+** mpv.conf
+
+#+begin_src conf :mkdirp yes :tangle ~/.mpv/mpv.conf
+  ontop
 #+end_src
