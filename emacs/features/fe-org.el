@@ -310,12 +310,19 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     (use-package ob-kotlin
       :ensure t)
 
+    (use-package ob-applescript
+      :ensure t
+      :config
+      (org-babel-do-load-languages 'org-babel-load-languages
+                                   (append org-babel-load-languages
+                                           '((applescript . t)))))
+
     (use-package ob-swift
       :ensure t
       :config
       (org-babel-do-load-languages 'org-babel-load-languages
                                    (append org-babel-load-languages
-                                           '((swift     . t))))
+                                           '((swift . t))))
 
       (defun ar/org-refresh-inline-images ()
         (when org-inline-image-overlays
