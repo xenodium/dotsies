@@ -1,5 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package sh-script
+  :after ivy
+  :bind (:map
+         sh-mode-map
+         ("C-c C-c" . ar/compile)
+         ("C-c C-r" . ivy-resume)))
+
 (use-package newcomment
   :bind (:map
          prog-mode-map
