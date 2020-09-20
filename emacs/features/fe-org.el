@@ -799,7 +799,8 @@ If VANILLA is non-nil, run the standard `org-capture'."
          ("+" . ar/org-capture-priority-up-dwim)
          ("-" . ar/org-capture-priority-down-dwim)
          ("M-<right>" . ar/org-capture-schedule-day-later-dwim)
-         ("M-<left>"  . ar/org-capture-schedule-day-earlier-dwim))
+         ("M-<left>"  . ar/org-capture-schedule-day-earlier-dwim)
+         ("C-c C-c" . org-capture-refile))
   :commands (ar/org-capture-todo
              org-capture)
   :custom
