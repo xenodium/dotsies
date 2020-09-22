@@ -2,7 +2,9 @@
 
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status)
+  :bind (("C-x g" . magit-status)
+         :map git-rebase-mode-map
+         ("a" . ar/magit-change-commit-author))
   :validate-custom
   (magit-diff-refine-hunk 'all)
   (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
@@ -38,6 +40,25 @@
         (setq end (point))
         (setq files (s-lines (buffer-substring-no-properties beg end))))
       (dired (cons "dired-untracked" files))))
+
+  ;; https://gist.github.com/danielmartin/34bc36dafd8f900de483394087230f48
+  (defun ar/magit-change-commit-author (arg)
+    "Change the commit author during an interactive rebase in Magit.
+With a prefix argument, insert a new change commit author command
+even when there is already another rebase command on the current
+line.  With empty input, remove the change commit author action
+on the current line, if any."
+    (interactive "P")
+    (let ((author
+           (magit-transient-read-person "Select a new author for this commit"
+                                        nil
+                                        nil)))
+      (git-rebase-set-noncommit-action
+       "exec"
+       (lambda (_) (if author
+                       (format "git commit --amend --author='%s'" author)
+                     ""))
+       arg)))
 
   (defun ar/magit-soft-reset-head~1 ()
     "Soft reset current git repo to HEAD~1."
