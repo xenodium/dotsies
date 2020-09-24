@@ -40,4 +40,12 @@
 
   ;; Convert binary plists to xml using host utilities.
   (use-package ar-osx
-    :commands ar/osx-convert-plist-to-xml))
+    :commands ar/osx-convert-plist-to-xml)
+
+  (use-package musica
+    :bind (("C-c m r" . musica-search)
+           ("C-c m i" . musica-info)
+           ("C-c m n" . musica-play-next)
+           ("C-c m p" . musica-play-previous)
+           ("C-c m SPC" . musica-play-pause)
+           ("C-c m r" . musica-play-next-random))))
