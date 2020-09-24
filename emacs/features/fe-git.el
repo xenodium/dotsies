@@ -2,15 +2,18 @@
 
 (use-package magit
   :ensure t
-  :bind (("C-x g" . magit-status)
-         :map git-rebase-mode-map
-         ("a" . ar/magit-change-commit-author))
+  :bind (("C-x g" . magit-status))
   :validate-custom
   (magit-diff-refine-hunk 'all)
   (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
   (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
+
+  (use-package git-rebase
+    :commands git-rebase-mode
+    :bind (:map git-rebase-mode-map
+                ("a" . ar/magit-change-commit-author)))
 
   (use-package git-identity
     :ensure t
