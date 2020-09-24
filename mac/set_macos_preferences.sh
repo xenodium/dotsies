@@ -81,7 +81,6 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Disable the warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
-
 # Avoid creating .DS_Store files on network or USB volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
@@ -111,17 +110,3 @@ defaults write com.apple.dock autohide -bool true
 # Privacy: don’t send search queries to Apple
 defaults write com.apple.Safari UniversalSearchEnabled -bool false
 defaults write com.apple.Safari SuppressSearchSuggestions -bool true
-
-# Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
-
-# Add the keyboard shortcut ⌘ + Enter to send an email in Mail.app
-defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
-
-# Display emails in threaded mode, sorted by date (oldest at the top)
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortedDescending" -string "yes"
-defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -string "received-date"
-
-# Disable inline attachments (just show the icons)
-defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
