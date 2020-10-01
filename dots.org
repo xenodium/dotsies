@@ -56,3 +56,109 @@
 #+begin_src conf :mkdirp yes :tangle ~/.mpv/mpv.conf
   ontop
 #+end_src
+
+* Karabiner
+#+begin_src json :mkdirp yes :tangle ~/.config/karabiner/karabiner.json
+  {
+      "global": {
+          "check_for_updates_on_startup": true,
+          "show_in_menu_bar": true,
+          "show_profile_name_in_menu_bar": false
+      },
+      "profiles": [
+          {
+              "complex_modifications": {
+                  "parameters": {
+                      "basic.simultaneous_threshold_milliseconds": 50,
+                      "basic.to_delayed_action_delay_milliseconds": 500,
+                      "basic.to_if_alone_timeout_milliseconds": 1000,
+                      "basic.to_if_held_down_threshold_milliseconds": 500,
+                      "mouse_motion_to_scroll.speed": 100
+                  },
+                  "rules": [
+                      {
+                          "description": "Ctrl+p/Ctrl+n to arrow up/down",
+                          "manipulators": [
+                              {
+                                  "from": {
+                                      "key_code": "p",
+                                      "modifiers": {
+                                          "mandatory": [
+                                              "control"
+                                          ]
+                                      }
+                                  },
+                                  "to": [
+                                      {
+                                          "key_code": "up_arrow"
+                                      }
+                                  ],
+                                  "type": "basic"
+                              },
+                              {
+                                  "from": {
+                                      "key_code": "n",
+                                      "modifiers": {
+                                          "mandatory": [
+                                              "control"
+                                          ]
+                                      }
+                                  },
+                                  "to": [
+                                      {
+                                          "key_code": "down_arrow"
+                                      }
+                                  ],
+                                  "type": "basic"
+                              }
+                          ]
+                      },
+                      {
+                          "description": "Ctrl+G to Escape",
+                          "manipulators": [
+                              {
+                                  "description": "emacs like escape",
+                                  "from": {
+                                      "key_code": "g",
+                                      "modifiers": {
+                                          "mandatory": [
+                                              "left_control"
+                                          ]
+                                      }
+                                  },
+                                  "to": [
+                                      {
+                                          "key_code": "escape"
+                                      }
+                                  ],
+                                  "conditions": [
+                                      {
+                                          "type": "frontmost_application_unless",
+                                          "bundle_identifiers": [
+                                              "^org\\.gnu\\.Emacs"
+                                          ]
+                                      }
+                                  ],
+                                  "type": "basic"
+                              }
+                          ]
+                      }
+                  ]
+              },
+              "devices": [],
+              "fn_function_keys": [],
+              "name": "Default profile",
+              "parameters": {
+                  "delay_milliseconds_before_open_device": 1000
+              },
+              "selected": true,
+              "simple_modifications": [],
+              "virtual_hid_keyboard": {
+                  "country_code": 0,
+                  "mouse_key_xy_scale": 100
+              }
+          }
+      ]
+  }
+
+#+end_src
