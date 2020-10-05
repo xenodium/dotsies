@@ -294,7 +294,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
     (use-package ob-tangle
       :commands ar/ob-tangle-current-block
       :config
-      (defun ar/org-babel-tangle-current-block ()
+      (defun ar/ob-tangle-current-block ()
         "Like `org-babel-tangle' but for current block."
         (interactive)
         (org-babel-tangle '(4))))
