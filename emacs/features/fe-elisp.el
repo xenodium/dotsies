@@ -4,6 +4,10 @@
   :commands ielm
   :hook ((ielm-mode . company-mode)))
 
+(use-package pcre2el
+  :ensure t
+  :commands pcre-mode)
+
 (use-package elisp-mode
   :bind ("C-x C-e" . ar/eval-last-sexp)
   :hook ((emacs-lisp-mode . pcre-mode)
