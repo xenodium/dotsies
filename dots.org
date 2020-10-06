@@ -57,6 +57,136 @@
   ontop
 #+end_src
 
+* Bash
+
+Tangle .bash_overrides blaock and then execute following block to patch .bash_profile and .bashrc.
+
+#+begin_src sh :tangle ~/.bash_overrides
+  export TERM="screen-256color"
+
+  ### Environment variables ### start
+
+  if [[ -z $STUFF_DIR ]]; then
+     export STUFF_DIR=~/stuff
+  fi
+
+  export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
+
+  ### Environment variables ### end
+
+  ### Functions ### start
+
+  err() {
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@">&2
+  }
+
+  get_stuff_dir() {
+    stuff_dir="${STUFF_DIR}"
+    if [[ -z ${stuff_dir} ]]; then
+      err "Error: STUFF_DIR env variable not set."
+      return
+    fi
+
+    echo "${stuff_dir}"
+  }
+
+  cd_stuff() {
+    cd $(get_stuff_dir)
+  }
+
+  get_inactive_dir() {
+    echo "$(get_stuff_dir)/inactive"
+  }
+
+  get_active_dir() {
+    echo "$(get_stuff_dir)/active"
+  }
+
+  get_downloads_dir() {
+    echo "$HOME/Downloads"
+  }
+
+  cd_active() {
+    cd $(get_active_dir)
+  }
+
+  cd_downloads() {
+    cd $(get_downloads_dir)
+  }
+
+  cd_inactive() {
+    cd $(get_inactive_dir)
+  }
+
+  if [ -z "$INSIDE_EMACS" ]; then
+      update_terminal_cwd() {
+   # Identify the directory using a "file:" scheme URL, including
+   # the host name to disambiguate local vs. remote paths.
+
+   # Percent-encode the pathname.
+   local url_path=''
+   {
+       # Use LC_CTYPE=C to process text byte-by-byte. Ensure that
+       # LC_ALL isn't set, so it doesn't interfere.
+       local i ch hexch LC_CTYPE=C LC_ALL=
+       for ((i = 0; i < ${#PWD}; ++i)); do
+    ch="${PWD:i:1}"
+    if [[ "$ch" =~ [/._~A-Za-z0-9-] ]]; then
+        url_path+="$ch"
+    else
+        printf -v hexch "%02X" "'$ch"
+        # printf treats values greater than 127 as
+        # negative and pads with "FF", so truncate.
+        url_path+="%${hexch: -2:2}"
+    fi
+       done
+   }
+
+   printf '\e]7;%s\a' "file://$HOSTNAME$url_path"
+      }
+      PROMPT_COMMAND="update_terminal_cwd${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+  fi
+
+  ### Functions ### end
+
+  ### Bash History ### start
+
+  # Increase history size.
+  export HISTSIZE=32768
+
+  ### Bash History ### end
+
+  ### Aliases ### start
+
+  alias ec="emacsclient -n"
+  alias a="cd_active"
+  alias d="cd_downloads"
+  alias i="cd_inactive"
+  alias tail_ios="tail -f ~/Library/Logs/iOS\ Simulator/7.1/system.log"
+  alias grep="grep --color=always"
+  alias git_gc="git gc --aggressive --prune=now"
+
+  ### Aliases ### end
+#+end_src
+
+Patch .bash_profile and .bashrc.
+
+#+begin_src bash
+  #!/bin/bash
+
+  if ! grep -q 'bash_overrides' ~/.bash_profile; then
+   echo 'adding .bash_overrides to .bash_profile'
+   echo 'source ~/.bash_overrides' >> ~/.bash_profile
+  fi
+
+  if ! grep -q 'bash_overrides' ~/.bashrc; then
+   echo 'adding .bash_overrides to .bashrc'
+   echo 'source ~/.bash_overrides' >> ~/.bashrc
+  fi
+
+  source ~/.bash_profile
+#+end_src
+
 * Karabiner
 #+begin_src json :mkdirp yes :tangle ~/.config/karabiner/karabiner.json
   {
