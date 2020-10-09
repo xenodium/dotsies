@@ -119,11 +119,11 @@ For example:
       (cond ((executable-find "rg")
              (counsel-rg nil ar/counsel-ag--default-locaction))
             ((executable-find "pt")
-             (counsel-pt nil ar/counsel-ag--default-locaction))
+             (counsel-pt))
             ((executable-find "ag")
              (counsel-ag nil ar/counsel-ag--default-locaction))
             (t
-             (counsel-ack nil ar/counsel-ag--default-locaction)))))
+             (counsel-ack)))))
 
   (defun ar/wgrep-finish-edit ()
     (interactive)
