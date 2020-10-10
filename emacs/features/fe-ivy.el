@@ -96,11 +96,11 @@ For example:
      `(("i" ,'ar/counsel-ag--strip-insert-item
         "insert")))
 
-    (defvar ar/counsel-ag--default-locaction nil)
-    (when (or arg (not ar/counsel-ag--default-locaction))
+    (defvar ar/counsel-ag--default-location nil)
+    (when (or arg (not ar/counsel-ag--default-location))
       ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
       (setq current-prefix-arg nil)
-      (setq ar/counsel-ag--default-locaction
+      (setq ar/counsel-ag--default-location
             (read-directory-name "search in: " default-directory nil t)))
 
     (let ((kmap counsel-ag-map))
@@ -117,13 +117,13 @@ For example:
                                            (ivy-alt-done)
                                          (ivy-call))))
       (cond ((executable-find "rg")
-             (counsel-rg nil ar/counsel-ag--default-locaction))
+             (counsel-rg nil ar/counsel-ag--default-location))
             ((executable-find "pt")
-             (counsel-pt nil ar/counsel-ag--default-locaction))
+             (counsel-pt))
             ((executable-find "ag")
-             (counsel-ag nil ar/counsel-ag--default-locaction))
+             (counsel-ag nil ar/counsel-ag--default-location))
             (t
-             (counsel-ack nil ar/counsel-ag--default-locaction)))))
+             (counsel-ack)))))
 
   (defun ar/wgrep-finish-edit ()
     (interactive)
