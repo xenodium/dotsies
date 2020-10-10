@@ -126,7 +126,7 @@
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
 (setq package-archives
-      '(("melpa" . "http://melpa.org/packages/")
+      '(("melpa" . "https://melpa.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")
         ("gnu" . "https://elpa.gnu.org/packages/")))
