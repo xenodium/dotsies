@@ -1,6 +1,13 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("excercise" "exercise" nil :count 0)
+    ("Cinamon" "Cinnamon" nil :count 0)
+    ("Excercice" "Exercise" nil :count 0)
+    ("cardamon" "cardamom" nil :count 1)
+    ("componets" "components" nil :count 0)
+    ("enojoy" "enjoy" nil :count 0)
+    ("excersise" "exercise" nil :count 0)
+    ("imxing" "mixing" nil :count 0)
+    ("resposibilities" "responsibilities" nil :count 0)
    ))
 
