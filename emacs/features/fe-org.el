@@ -215,6 +215,22 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                                                 (org-element-property :raw-value headline)))))))
         fpaths))
 
+    (defun ar/export-blog--post-process-rss (fpath)
+      "Post-process (clean) feed at FPATH."
+      (with-current-buffer (find-file-noselect
+                            (expand-file-name fpath) t)
+        (text-mode)
+        (save-excursion
+          (save-restriction
+            (widen)
+            (goto-char 0)
+            (replace-string "( <span" "(<span")
+            (goto-char 0)
+            (replace-string "/index.html</link>" "</link>")
+            (goto-char 0)
+            (replace-string "/index.html</guid>" "</guid>")
+            (save-buffer)))))
+
     (defun ar/export-blog-feed ()
       (interactive)
       (let ((webfeeder-date-function 'ar/blog-date)
@@ -225,7 +241,9 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                          (ar/blog-entry-fpaths)
                          :title "Alvaro Ramirez's notes"
                          :description "Alvaro's notes from a hacked up org HTML export."
-                         :builder 'webfeeder-make-rss)))
+                         :builder 'webfeeder-make-rss)
+        (ar/export-blog--post-process-rss (concat (file-name-as-directory default-directory)
+                                           "rss.xml"))))
 
     (defun ar/export-blog-emacs-feed ()
       (interactive)
@@ -237,7 +255,9 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                          (ar/blog-entry-fpaths "emacs")
                          :title "Alvaro Ramirez's Emacs notes"
                          :description "Alvaro's Emacs notes from a hacked up org HTML export."
-                         :builder 'webfeeder-make-rss))))
+                         :builder 'webfeeder-make-rss)
+        (ar/export-blog--post-process-rss (concat (file-name-as-directory default-directory)
+                                           "emacs/rss.xml")))))
 
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image
