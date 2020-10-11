@@ -71,6 +71,29 @@
         (view-mode +1)
         (select-window (get-buffer-window buffer)))))
 
+  (defun ar/swift-package-init ()
+    "Execute `swift package init', with optional name and completing type."
+    (interactive)
+    (let* ((name (read-string "name (default): "))
+           (type (completing-read
+                  "project type: "
+                  ;; Splits "--type empty|library|executable|system-module|manifest"
+                  (split-string
+                   (nth 1 (split-string
+                           (string-trim
+                            (seq-find
+                             (lambda (line)
+                               (string-match "--type" line))
+                             (process-lines "swift" "package" "init" "--help")))
+                           "   "))
+                   "|")))
+           (command (format "swift package init --type %s" type)))
+      (unless (string-empty-p name)
+        (append command "--name " name))
+      (shell-command command))
+    (dired default-directory)
+    (revert-buffer))
+
   (defun ar/swift-public-interface ()
     "Open an occur buffer with file's public interface."
     (interactive)
