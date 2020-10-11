@@ -798,7 +798,7 @@ If VANILLA is non-nil, run the standard `org-capture'."
          ("-" . ar/org-capture-priority-down-dwim)
          ("M-<right>" . ar/org-capture-schedule-day-later-dwim)
          ("M-<left>"  . ar/org-capture-schedule-day-earlier-dwim)
-         ("C-c C-c" . org-capture-refile))
+         ("C-c C-c" . ar/org-capture-finalize-dwim))
   :commands (ar/org-capture-todo
              org-capture)
   :custom
@@ -806,6 +806,13 @@ If VANILLA is non-nil, run the standard `org-capture'."
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
       "* TODO %?\nSCHEDULED: %t" :prepend t)))
   :config
+  (defun ar/org-capture-finalize-dwim (prefix)
+    "With prefix, invoke `org-capture-finalize' else invoke `org-capture-finalize'."
+    (interactive "P")
+    (if prefix
+        (org-capture-refile)
+      (org-capture-finalize)))
+
   (defun ar/org-capture-schedule-day-earlier-dwim ()
     (interactive)
     (if (ar/org-capture--special-pos-p)
