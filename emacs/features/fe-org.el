@@ -461,8 +461,6 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
   (use-package org-crypt
     :custom
     (org-tags-exclude-from-inheritance (quote ("crypt")))
-    ;;  Set to nil to use symmetric encryption.
-    (org-crypt-key nil)
     :validate-custom
     (org-crypt-disable-auto-save nil)
     :config
