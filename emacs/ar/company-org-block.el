@@ -53,8 +53,20 @@ begining of line, otherwise detect completion anywhere.")
                                      ;; May be multiple words.
                                      ;; Take the first one.
                                      (nth 0 (split-string insertion)))
-    (company-org-block--wrap-point (format "src %s" insertion)
-                                   "src")))
+    ;; Construct headers from lang-specific headers.
+    ;; For example, org-babel-default-header-args:python.
+    (let* ((lang-headers-var (intern
+			      (concat "org-babel-default-header-args:" insertion)))
+           (headers (if (boundp lang-headers-var)
+                        (seq-reduce (lambda (value element)
+                                      (format "%s %s %s"
+                                              value
+                                              (car element)
+                                              (cdr element)))
+                                    (eval lang-headers-var t) "")
+                      "")))
+      (company-org-block--wrap-point (format "src %s%s" insertion headers)
+                                     "src"))))
 
 (defun company-org-block--wrap-point (begin end)
   "Wrap point with block using BEGIN and END.  For example:
