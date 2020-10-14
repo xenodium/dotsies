@@ -165,27 +165,6 @@
       (error "Unrecognized platform"))
     (shell-command command)))
 
-;; Based on http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
-(defun ar/misc-open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
-
-Version 2015-01-26
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
-  (interactive)
-  (if (eq major-mode 'eww-mode)
-      (eww-browse-with-external-browser eww-current-url)
-    (let* ((ξfile-list
-            (cond ((eq major-mode 'dired-mode)
-                   (dired-get-marked-files))
-                  (t
-                   (list (buffer-file-name)))))
-           (ξdo-it-p (if (<= (length ξfile-list) 5)
-                         t
-                       (y-or-n-p "Open more than 5 files? "))))
-      (when ξdo-it-p
-        (mapc (ar/misc--open-in-external-app-function) ξfile-list)))))
-
 (defun ar/misc-open-file-at-point ()
   "Open the file path at point.
 If there is text selection, uses the text selection for path.
@@ -235,17 +214,6 @@ URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
                   (find-file (concat ξpath ".el"))
                 (when (y-or-n-p (format "File doesn't exist: %s.  Create? " ξpath))
                   (find-file ξpath ))))))))))
-
-(defun ar/misc--open-in-external-app-function ()
-  "Return a function to open FPATH externally."
-  (cond
-   ((string-equal system-type "darwin")
-    (lambda (fPath)
-      (shell-command (format "open \"%s\"" fPath))))
-   ((string-equal system-type "gnu/linux")
-    (lambda (fPath)
-      (let ((process-connection-type nil))
-        (start-process "" nil "xdg-open" fPath))))))
 
 ;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun ar/misc-narrow-or-widen-dwim (p)

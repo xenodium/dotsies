@@ -2,6 +2,7 @@
 
 (use-package crux
   :ensure t
+  :commands crux-open-with
   :bind
   (("C-x C-d" . crux-duplicate-current-line-or-region))
   :config

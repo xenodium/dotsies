@@ -9,7 +9,6 @@
              ar/misc-open-clipboard-file
              ar/misc-hash-region
              ar/misc-open-file-at-point
-             ar/misc-open-in-external-app
              ar/misc-new-browser-tab
              ar/misc-download-clipboard-url
              ar/misc-diff-last-2-yanks))
