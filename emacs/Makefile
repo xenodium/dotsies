@@ -15,6 +15,7 @@ init:
 	cp open_xcode_file_in_emacs.sh ~/local/bin/
 	make -C ar
 	make -C features
+	make -C vendored
 
 pylint:
 	cp -i python/pylintrc ~/.pylintrc
