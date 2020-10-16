@@ -14,6 +14,9 @@
 (defvar company-org-block-bol-p t "If t, detect completion when at
 begining of line, otherwise detect completion anywhere.")
 
+(defvar company-org-block-explicit-defaults-p t "If t, insert
+org-babel-default-header-args:lang into block header.")
+
 (defvar company-org--regexp "<\\([^ ]*\\)")
 
 (defun company-org-block (command &optional arg &rest ignored)
@@ -38,7 +41,8 @@ begining of line, otherwise detect completion anywhere.")
                (append
                 (mapcar #'prin1-to-string
                         (map-keys org-babel-load-languages))
-                (map-values org-structure-template-alist)))))
+                (map-values org-structure-template-alist)
+                (map-values org-babel-tangle-lang-exts)))))
 
 (defun company-org-block--template-p (template)
   (seq-contains (map-values org-structure-template-alist)
@@ -57,7 +61,8 @@ begining of line, otherwise detect completion anywhere.")
     ;; For example, org-babel-default-header-args:python.
     (let* ((lang-headers-var (intern
 			      (concat "org-babel-default-header-args:" insertion)))
-           (headers (if (boundp lang-headers-var)
+           (headers (if (and company-org-block-explicit-defaults-p
+                             (boundp lang-headers-var))
                         (seq-reduce (lambda (value element)
                                       (format "%s %s %s"
                                               value
