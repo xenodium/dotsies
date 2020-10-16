@@ -10,6 +10,7 @@ init:
 	curl https://raw.githubusercontent.com/xenodium/company-async-files/master/company-async-files.el -o ~/.emacs.d/local/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
 	curl https://raw.githubusercontent.com/xenodium/tmtxt-async-tasks/master/tmtxt-async-tasks.el -o ~/.emacs.d/local/tmtxt-async-tasks.el || echo "No internet connection... skipping tmtxt-async-task install."
 	curl https://raw.githubusercontent.com/xenodium/tmtxt-dired-async/master/tmtxt-dired-async.el -o ~/.emacs.d/local/tmtxt-dired-async.el || echo "No internet connection... skipping tmtxt-dired-async install."
+	curl https://raw.githubusercontent.com/xenodium/org-starless/master/org-starless.el -o ~/.emacs.d/local/org-starless.el || echo "No internet connection... skipping org-starless install."
 	mkdir -p ~/local/bin/
 	cp emacssocket ~/local/bin/
 	cp open_xcode_file_in_emacs.sh ~/local/bin/

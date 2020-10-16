@@ -129,12 +129,16 @@
     :validate-custom
     (org-goto-auto-isearch nil))
 
-  (use-package org-bullets
-    :ensure t
-    :hook (org-mode . org-bullets-mode)
-    :validate-custom
-    (org-bullets-bullet-list
-     '("◉" "◎" "⚫" "○" "►" "◇")))
+  (use-package org-starless
+    :hook (org-mode . org-starless-mode))
+
+  ;; Trying out starless.
+  ;; (use-package org-bullets
+  ;;   :ensure t
+  ;;   :hook (org-mode . org-bullets-mode)
+  ;;   :validate-custom
+  ;;   (org-bullets-bullet-list
+  ;;    '("◉" "◎" "⚫" "○" "►" "◇")))
 
   (use-package org-faces
     :validate-custom
