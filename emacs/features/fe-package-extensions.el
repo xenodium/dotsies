@@ -24,7 +24,7 @@
            (native-comp-available-p))
       (progn
 	(message "Native comp is available")
-        (add-to-list 'exec-path (expand-file-name "~/homebrew/opt/gccemacs/bin"))
+        (add-to-list 'exec-path (expand-file-name "~/homebrew/opt/gccemacs/bin") t)
 	(setenv "LIBRARY_PATH" (concat (getenv "LIBRARY_PATH")
                                        (when (getenv "LIBRARY_PATH")
                                          ":")
