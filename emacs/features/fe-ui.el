@@ -35,25 +35,6 @@
   :ensure t
   :config
   (load-theme 'material t)
-  (with-eval-after-load 'font-lock
-    (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
-    (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
-    (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
-    (set-face-attribute 'font-lock-string-face nil :foreground "#C3E88D")
-    (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
-    (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370"))
-
-  (with-eval-after-load 'em-prompt
-    (set-face-attribute 'eshell-prompt nil :foreground "#eeffff"))
-
-  (with-eval-after-load 'company
-    (set-face-attribute 'company-preview-search nil :foreground "sandy brown" :background nil)
-    (set-face-attribute 'company-preview-common nil :inherit 'company-tooltip :background "#383c44"))
-
-  (with-eval-after-load 'company-box
-    (set-face-attribute 'company-box-background nil :inherit 'company-tooltip :background "#383c44" :box '(:line-width 5 :color "grey75" :style released-button))
-    (set-face-attribute 'company-box-annotation nil :inherit 'company-tooltip-annotation :background "#383c44" :foreground "dim gray")
-    (set-face-attribute 'company-box-selection nil :inherit 'company-tooltip-selection :foreground "sandy brown"))
 
   (with-eval-after-load 'faces
     ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
@@ -81,6 +62,27 @@
       (set-face-attribute 'mode-line nil :box nil)
       (set-face-attribute 'mode-line-inactive nil :box nil)
       (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
+
+  (with-eval-after-load 'font-lock
+    (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
+    (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
+    (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
+    (set-face-attribute 'font-lock-string-face nil :foreground "#C3E88D")
+    (set-face-attribute 'font-lock-type-face nil :foreground "#FFCB6B")
+    (set-face-attribute 'font-lock-variable-name-face nil :foreground "#FF5370"))
+
+  (with-eval-after-load 'em-prompt
+    (set-face-attribute 'eshell-prompt nil :foreground "#eeffff"))
+
+  (with-eval-after-load 'company
+    (set-face-attribute 'company-preview-search nil :foreground "sandy brown" :background nil)
+    (set-face-attribute 'company-preview-common nil :inherit 'default :foreground nil :background "#212121"))
+
+  (with-eval-after-load 'company-box
+    (set-face-attribute 'company-box-candidate  nil :inherit 'default :foreground "#eeffff" :background "#212121" :box nil)
+    (set-face-attribute 'company-box-background nil :inherit 'default :background "#212121" :box nil)
+    (set-face-attribute 'company-box-annotation nil :inherit 'company-tooltip-annotation :background "#383c44" :foreground "dim gray")
+    (set-face-attribute 'company-box-selection nil :inherit 'company-tooltip-selection :foreground "sandy brown"))
 
   (with-eval-after-load 'paren
     (set-face-attribute 'show-paren-match nil
