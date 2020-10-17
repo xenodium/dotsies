@@ -10,6 +10,15 @@
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
+  ;; Open git file at remote/repo location.
+  (use-package browse-at-remote
+    :ensure t
+    :config
+    (transient-append-suffix 'magit-file-dispatch "m"
+      '("o" "Browse file" browse-at-remote))
+    (transient-replace-suffix 'magit-dispatch "o"
+      '("o" "Browse file" browse-at-remote)))
+
   (use-package git-rebase
     :commands git-rebase-mode
     :bind (:map git-rebase-mode-map
