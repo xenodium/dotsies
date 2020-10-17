@@ -81,7 +81,7 @@
   (with-eval-after-load 'company-box
     (set-face-attribute 'company-box-candidate  nil :inherit 'default :foreground "#eeffff" :background "#212121" :box nil)
     (set-face-attribute 'company-box-background nil :inherit 'default :background "#212121" :box nil)
-    (set-face-attribute 'company-box-annotation nil :inherit 'company-tooltip-annotation :background "#383c44" :foreground "dim gray")
+    (set-face-attribute 'company-box-annotation nil :inherit 'company-tooltip-annotation :background "#212121" :foreground "dim gray")
     (set-face-attribute 'company-box-selection nil :inherit 'company-tooltip-selection :foreground "sandy brown"))
 
   (with-eval-after-load 'paren
