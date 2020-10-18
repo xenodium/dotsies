@@ -11,11 +11,24 @@
 (require 'org)
 (require 'seq)
 
-(defvar company-org-block-bol-p t "If t, detect completion when at
-begining of line, otherwise detect completion anywhere.")
+(defcustom company-org-block-complete-at-bol t
+  "If t, detect completion when at begining of line, otherwise detect
+ completion anywhere."
+  :type 'boolean)
 
-(defvar company-org-block-explicit-defaults-p t "If t, insert
-org-babel-default-header-args:lang into block header.")
+(defcustom company-org-block-explicit-lang-defaults t
+  "If t, insert org-babel-default-header-args:lang into block header."
+  :type 'boolean)
+
+(defcustom company-org-block-edit-mode 'auto
+  "Customize whether edit mode, post completion was inserted."
+  :type '(choice
+	  (const :tag "nil: no edit after insertion" nil)
+	  (const :tag "prompt: ask before edit" prompt)
+	  (const :tag "auto edit, no prompt" auto)))
+
+;; (defvar company-org-block-auto-major-edit t "If t, enter
+;; major mode after completion.")
 
 (defvar company-org--regexp "<\\([^ ]*\\)")
 
@@ -57,21 +70,13 @@ org-babel-default-header-args:lang into block header.")
                                      ;; May be multiple words.
                                      ;; Take the first one.
                                      (nth 0 (split-string insertion)))
-    ;; Construct headers from lang-specific headers.
-    ;; For example, org-babel-default-header-args:python.
-    (let* ((lang-headers-var (intern
-			      (concat "org-babel-default-header-args:" insertion)))
-           (headers (if (and company-org-block-explicit-defaults-p
-                             (boundp lang-headers-var))
-                        (seq-reduce (lambda (value element)
-                                      (format "%s %s %s"
-                                              value
-                                              (car element)
-                                              (cdr element)))
-                                    (eval lang-headers-var t) "")
-                      "")))
-      (company-org-block--wrap-point (format "src %s%s" insertion headers)
-                                     "src"))))
+
+    (company-org-block--wrap-point (format "src %s%s"
+                                           insertion
+                                           (if company-org-block-explicit-lang-defaults
+                                               (company-org-block--lang-header-defaults "insertion")
+                                             ""))
+                                   "src")))
 
 (defun company-org-block--wrap-point (begin end)
   "Wrap point with block using BEGIN and END.  For example:
@@ -82,15 +87,42 @@ org-babel-default-header-args:lang into block header.")
   (insert (make-string org-edit-src-content-indentation ?\s))
   ;; Saving excursion restores point to location inside code block.
   (save-excursion
-    (insert (format "\n#+end_%s" end))))
+    (insert (format "\n#+end_%s" end)))
+  (cond ((eq company-org-block-edit-mode 'auto)
+         (org-edit-special))
+        ((and (eq company-org-block-edit-mode 'prompt)
+              (yes-or-no-p "Edit now?"))
+         (org-edit-special))))
 
 (defun company-org-block--grab-symbol-cons ()
   "Return cons with symbol and t whenever prefix of < is found.
 For example: \"<e\" -> (\"e\" . t)"
-  (when (looking-back (if company-org-block-bol-p
+  (when (looking-back (if company-org-block-complete-at-bol
                           (concat "^" company-org--regexp)
                         company-org--regexp)
                       (line-beginning-position))
     (cons (match-string-no-properties 1) t)))
+
+(defun company-org-block--lang-header-defaults (lang)
+  "Resolve and concatenate all header defaults for LANG.
+
+For example: \"python\" resolves to:
+
+((:exports . \"both\")
+ (:results . \"output\"))
+
+and returns:
+
+\" :exports both :results output\""
+  (let ((lang-headers-var (intern
+			   (concat "org-babel-default-header-args:" lang))))
+    (if (boundp lang-headers-var)
+        (seq-reduce (lambda (value element)
+                      (format "%s %s %s"
+                              value
+                              (car element)
+                              (cdr element)))
+                    (eval lang-headers-var t) "")
+      "")))
 
 (provide 'company-org-block)
