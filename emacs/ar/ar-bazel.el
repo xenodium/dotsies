@@ -10,6 +10,7 @@
 (require 's)
 (require 'f)
 (require 'dash)
+(require 'cl-lib)
 
 (defvar ar/bazel-compile-command "bazel build")
 
@@ -30,7 +31,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (let ((closest-build-file (ar/file-either-closest (if (equal major-mode 'dired-mode)
                                                         default-directory
                                                       (buffer-file-name)) "BUILD")))
-    (assert closest-build-file nil "No BUILD found.")
+    (cl-assert closest-build-file nil "No BUILD found.")
     (format "%s:%s"
             (ar/bazel-qualified-package-path closest-build-file)
             (completing-read "build rule: " (ar/bazel-rule-names-in-build-file-path closest-build-file)))))
@@ -101,7 +102,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-workspace-path ()
   "Get bazel project path."
   (let ((workspace (locate-dominating-file default-directory "WORKSPACE")))
-    (assert workspace nil "Not in a bazel project.")
+    (cl-assert workspace nil "Not in a bazel project.")
     (expand-file-name workspace)))
 
 (defun ar/bazel-workspace-build-files ()
