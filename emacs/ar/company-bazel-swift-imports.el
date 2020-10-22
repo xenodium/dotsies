@@ -1,4 +1,4 @@
-;;; company-swimports.el --- Company backend for Swift bazel imports.
+;;; company-bazel-swift-imports.el --- Company backend for Swift bazel imports.
 
 ;;; Commentary:
 ;; Company backend for Swift bazel imports helpers.
@@ -11,7 +11,7 @@
 (require 'ar-bazel)
 (require 's)
 
-(defun company-swimports--grap-symbol-cons ()
+(defun company-bazel-swift-imports--grap-symbol-cons ()
   "Return cons with symbol and t whenever prefix of \"import \" is found.
 For example:
     \"import A\" -> (\"A\" . t)
@@ -22,20 +22,21 @@ For example:
         (cons (match-string-no-properties 2) t)
       nil)))
 
-(defun company-swimports (command &optional arg &rest ignored)
+
+(defun company-bazel-swift-imports (command &optional arg &rest ignored)
   "Company backend for completing Swift imports in a Bazel project."
   (interactive (list 'interactive))
-  (case command
-    (interactive (company-begin-backend 'company-swimports))
+  (cl-case command
+    (interactive (company-begin-backend 'company-bazel-swift-imports))
     (prefix
-     (company-swimports--grap-symbol-cons))
+     (company-bazel-swift-imports--grap-symbol-cons))
     (candidates
-     (company-swimports-candidates (company-swimports--grap-symbol-cons)))
+     (company-bazel-swift-imports-candidates (company-bazel-swift-imports--grap-symbol-cons)))
     (post-completion (when (looking-at-p "\"")
                        (forward-char)
                        (insert ",")))))
 
-(defun company-swimports-candidates (value)
+(defun company-bazel-swift-imports-candidates (value)
   "Get candidates for VALUE."
   (if (consp value)
       (let ((search-term (car value))
@@ -55,6 +56,6 @@ For example:
                 item))
             (ar/bazel-workspace-build-rules)))))))
 
-(provide 'company-swimports)
+(provide 'company-bazel-swift-imports)
 
-;;; company-swimports.el ends here
+;;; company-bazel-swift-imports.el ends here

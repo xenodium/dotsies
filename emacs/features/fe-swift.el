@@ -18,12 +18,12 @@
                                lint-config-file)
                               ".swiftlint.yml")))
       (message "No buffer filename in swift mode."))
-    (setq-local company-backends '(company-swimports company-capf)))
+    (setq-local company-backends '(company-bazel-swift-imports company-capf)))
 
   (require 'flycheck)
   (add-to-list 'flycheck-checkers 'swiftlint)
 
-  (require 'company-swimports)
+  (require 'company-bazel-swift-imports)
   (require 'flycheck-swiftlint)
 
   ;; Unset swift-mode:send-region. I prefer my default (ivy-resume).
@@ -50,18 +50,20 @@
             (list "-m" "format" temp-file-path)))
   (add-hook 'swift-mode-hook 'swift-format-on-save-mode)
 
-  ;; (use-package lsp-mode
-  ;;   :ensure t
-  ;;   :hook (swift-mode . lsp-deferred)
-  ;;   :commands (lsp lsp-deferred))
+  (use-package lsp-mode
+    :ensure t
+    :hook (swift-mode . lsp-deferred)
+    :commands (lsp lsp-deferred))
 
-  ;; (use-package lsp-sourcekit
-  ;;   :ensure t
-  ;;   :after lsp-mode
-  ;;   :config
-  ;;   ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
-  ;;   ;; (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")
-  ;;   (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp"))
+  (use-package lsp-sourcekit
+    :ensure t
+    :after lsp-mode
+    :config
+    ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
+    ;; (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")
+    ;; (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp")
+    (setq lsp-sourcekit-executable "/Users/alvaroramirez/.vscode/extensions/google.nextcode-1.3.4/bin/sourcekit-lsp")
+    )
 
   (defun ar/xcode-info ()
     (interactive)
