@@ -27,7 +27,7 @@ The prefix is typically seen in deps. For example:
 (defun company-bazel (command &optional arg &rest ignored)
   "Company backend for completing dependencies in BUILD files. See company.el for COMMAND, ARG, IGNORED details."
   (interactive (list 'interactive))
-  (case command
+  (cl-case command
     (interactive (company-begin-backend 'company-bazel))
     (prefix
      (company-bazel--grap-symbol-cons))
