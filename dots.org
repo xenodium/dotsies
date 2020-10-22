@@ -280,10 +280,10 @@ Patch .bash_profile and .bashrc.
                                   ],
                                   "conditions": [
                                       {
-                                          "type": "frontmost_application_unless",
+                                          "type": "frontmost_application_if",
                                           "bundle_identifiers": [
-                                              "^org\\.gnu\\.Emacs",
-                                              "^com\\.apple\\.Terminal"
+                                              "^com\\.google\\.Chrome",
+                                              "^org\\.mozilla\\.firefox"
                                           ]
                                       }
                                   ],
@@ -305,10 +305,10 @@ Patch .bash_profile and .bashrc.
                                   ],
                                   "conditions": [
                                       {
-                                          "type": "frontmost_application_unless",
+                                          "type": "frontmost_application_if",
                                           "bundle_identifiers": [
-                                              "^org\\.gnu\\.Emacs",
-                                              "^com\\.apple\\.Terminal"
+                                              "^com\\.google\\.Chrome",
+                                              "^org\\.mozilla\\.firefox"
                                           ]
                                       }
                                   ],
