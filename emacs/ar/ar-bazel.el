@@ -12,8 +12,6 @@
 (require 'dash)
 (require 'cl-lib)
 
-(defvar ar/bazel-compile-command "bazel build")
-
 (defvar ar/bazel-command "bazel"
   "With a \"bazel\" prefix, we'd get linked directories like:
 bazel-bin, bazel-genfiles, and bazel-out.")
@@ -21,10 +19,13 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-compile ()
   "Invoke `'compile with `'completing-read a build rule in either current or parent directories."
   (interactive)
-  (compile (format "%s %s" ar/bazel-compile-command
+  (compile (format "%s %s" (ar/bazel-compile-command)
                    ;; Use for narrowing down rules to closest package.
                    ;; (ar/bazel-completing-read-build-rule)
                    (completing-read "build rule: " (ar/bazel-workspace-build-rules)))))
+
+(defun ar/bazel-compile-command ()
+  (format "%s build" ar/bazel-command))
 
 (defun ar/bazel-completing-read-build-rule ()
   "Find a build file in current or parent directories and `'completing-read a build rule."
