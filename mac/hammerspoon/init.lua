@@ -308,15 +308,37 @@ hs.hotkey.bind({"alt"}, "G", hs.grid.show)
 
 function reframeFocusedWindow()
    local win = hs.window.focusedWindow()
-   local f = win:frame()
-   local screen = win:screen():frame()
+   local maximizedFrame = win:screen():frame()
+   maximizedFrame.x = maximizedFrame.x + 15
+   maximizedFrame.y = maximizedFrame.y + 15
+   maximizedFrame.w = maximizedFrame.w - 30
+   maximizedFrame.h = maximizedFrame.h - 30
 
-   f.x = screen.x + 15
-   f.y = screen.y + 15
-   f.w = screen.w - 30
-   f.h = screen.h - 30
+   local leftFrame = win:screen():frame()
+   leftFrame.x = leftFrame.x + 15
+   leftFrame.y = leftFrame.y + 15
+   leftFrame.w = leftFrame.w - 250
+   leftFrame.h = leftFrame.h - 30
 
-   win:setFrame(f)
+   local rightFrame = win:screen():frame()
+   rightFrame.x = rightFrame.w - 250 + 15
+   rightFrame.y = rightFrame.y + 15
+   rightFrame.w = 250 - 15 - 15
+   rightFrame.h = rightFrame.h - 30
+
+   -- Make space on right
+   if win:frame() == maximizedFrame then
+     win:setFrame(leftFrame)
+     return
+   end
+
+   -- Make space on left
+   if win:frame() == leftFrame then
+     win:setFrame(rightFrame)
+     return
+   end
+
+   win:setFrame(maximizedFrame)
 end
 
 hs.hotkey.bind({"alt"}, "F", reframeFocusedWindow)
