@@ -160,6 +160,22 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
+
+  (defun ar/wrap-all-in-region ()
+    "Wrap all strings in region with double quotes."
+    (interactive)
+    (unless (region-active-p)
+      (user-error "no region active"))
+    (let ((replacement (string-join
+                        (mapcar (lambda (item)
+                                  (format "\"%s\"" item))
+                                (split-string (buffer-substring (region-beginning)
+                                                                (region-end))))
+                        " ")))
+      (delete-region (region-beginning)
+                     (region-end))
+      (insert replacement)))
+
   (defun ar/rewrap-sexp-dwim (prefix)
     "Like `sp-rewrap-sexp', but RET, DEL, SPC, and C-d remove pair.
 With PREFIX, add an outer pair around existing pair."
