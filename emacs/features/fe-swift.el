@@ -65,6 +65,19 @@
     (setq lsp-sourcekit-executable "/Users/alvaroramirez/.vscode/extensions/google.nextcode-1.3.4/bin/sourcekit-lsp")
     )
 
+  (defun ar/xcode-signing-info ()
+    "Copy an Xcode signing identity."
+    (interactive)
+    (let ((identities (seq-filter (lambda (line)
+                                    (string-match "\"$" line))
+                                  (process-lines "security" "find-identity" "-v" "-p" "codesigning")))
+          (choice))
+      (when (seq-empty-p identities)
+        (error "No identifies found"))
+      (setq choice (completing-read "Identity: " identities))
+      (kill-new choice)
+      (message "Copied: %s" choice)))
+
   (defun ar/xcode-info ()
     (interactive)
     (let ((buffer "*Xcode info*"))
