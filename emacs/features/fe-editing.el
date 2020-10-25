@@ -160,20 +160,20 @@
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode))
   :config
-
-  (defun ar/wrap-all-in-region ()
-    "Wrap all strings in region with double quotes."
-    (interactive)
+  (defun ar/toggle-quote-wrap-all-in-region (beg end)
+    "Toggle wrapping all items in region with double quotes."
+    (interactive (list (mark) (point)))
     (unless (region-active-p)
-      (user-error "no region active"))
-    (let ((replacement (string-join
+      (user-error "no region to wrap"))
+    (let ((deactivate-mark nil)
+          (replacement (string-join
                         (mapcar (lambda (item)
-                                  (format "\"%s\"" item))
-                                (split-string (buffer-substring (region-beginning)
-                                                                (region-end))))
+                                  (if (string-match-p "^\".*\"$" item)
+                                      (string-trim item "\"" "\"")
+                                    (format "\"%s\"" item)))
+                                (split-string (buffer-substring beg end)))
                         " ")))
-      (delete-region (region-beginning)
-                     (region-end))
+      (delete-region beg end)
       (insert replacement)))
 
   (defun ar/rewrap-sexp-dwim (prefix)
