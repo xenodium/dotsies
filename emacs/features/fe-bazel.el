@@ -9,6 +9,10 @@
     (when (require 'reformatter nil 'noerror)
       (buildifier-on-save-mode +1))
 
+    ;; Automatic rule caching.
+    (ar/bazel-cache-build-rules)
+    (add-hook #'after-save-hook #'ar/bazel-cache-build-rules nil t)
+
     (setq-local company-backends '(company-bazel company-rfiles)))
   :config
   (use-package ar-bazel)
