@@ -308,6 +308,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
        (js . t)
        (objc . t)
        (ocaml . nil)
+       (C . t)
        (python . t)
        (ruby . t)
        (screen . nil)
