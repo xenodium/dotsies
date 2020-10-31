@@ -468,7 +468,16 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
       (use-package org-src
         :validate-custom
         ;; When editing src block (via `org-edit-special'), use current window.
-        (org-src-window-setup 'current-window))
+        (org-src-window-setup 'current-window)
+        :config
+        (defun adviced:org-edit-src-save (orig-fun &rest r)
+          "Run `before-save-hook' on source block major mode (helps with formatters)."
+          (with-demoted-errors (run-hooks #'before-save-hook))
+          (apply orig-fun r))
+
+        (advice-add #'org-edit-src-save
+                    :around
+                    #'adviced:org-edit-src-save))
 
       ;; Use fundamental mode when editing plantuml blocks with C-c '
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
