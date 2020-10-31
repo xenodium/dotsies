@@ -317,6 +317,31 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
        (sh . nil)
        (sqlite . t)))
 
+    ;; http://xenodium.com/emacs-chaining-org-babel-blocks
+    (defun adviced:org-babel-execute-src-block (&optional orig-fun arg info params)
+      "Include other source blocks using the :include header param."
+      (let ((body (nth 1 info))
+            (include (assoc :include (nth 2 info)))
+            (named-blocks (org-element-map (org-element-parse-buffer)
+                              'src-block (lambda (item)
+                                           (when (org-element-property :name item)
+                                             (cons (org-element-property :name item)
+                                                   item))))))
+        (while include
+          (unless (cdr include)
+            (user-error ":include without value" (cdr include)))
+          (unless (assoc (cdr include) named-blocks)
+            (user-error "source block \"%s\" not found" (cdr include)))
+          (setq body (concat (org-element-property :value (cdr (assoc (cdr include) named-blocks)))
+                             body))
+          (setf (nth 1 info) body)
+          (setq include (assoc :include
+                               (org-babel-parse-header-arguments
+                                (org-element-property :parameters (cdr (assoc (cdr include) named-blocks)))))))
+        (funcall orig-fun arg info params)))
+
+    (advice-add 'org-babel-execute-src-block :around 'adviced:org-babel-execute-src-block)
+
     (use-package ob-tangle
       :commands ar/ob-tangle-current-block
       :config
