@@ -845,7 +845,10 @@ If VANILLA is non-nil, run the standard `org-capture'."
     "With prefix, invoke `org-capture-finalize' else invoke `org-capture-finalize'."
     (interactive "P")
     (if prefix
-        (org-capture-refile)
+        ;; Prefix has been handled. Do not propagate as it would mean something
+        ;; else in org commands.
+        (let ((current-prefix-arg nil))
+          (call-interactively #'org-capture-refile))
       (org-capture-finalize)))
 
   (defun ar/org-capture-schedule-day-earlier-dwim ()
