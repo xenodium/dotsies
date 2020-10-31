@@ -40,7 +40,7 @@
   (reformatter-define swift-format
     :program "swift-format"
     :args (let ((buffer (current-buffer))
-                (config-file (locate-dominating-file (buffer-file-name)
+                (config-file (locate-dominating-file default-directory
                                                      ".swift-format.json"))
                 (temp-file-path (make-temp-file "swift-format-")))
             (with-temp-file temp-file-path
