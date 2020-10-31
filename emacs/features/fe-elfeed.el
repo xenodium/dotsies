@@ -202,6 +202,7 @@ Based on `elfeed-search-print-entry--default'."
 
   (setq elfeed-feeds '(
                        ("http://1w6.org/rss.xml" blog emacs draketo)
+                       ("http://www.nextpoint.se/?feed=comments-rss2" blog emacs nextpoint)
                        ("http://200ok.ch/atom.xml" blog emacs 200ok)
                        ("http://akkartik.name/feeds.xml" blog dev)
                        ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
