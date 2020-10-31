@@ -248,7 +248,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                          :description "Alvaro's notes from a hacked up org HTML export."
                          :builder 'webfeeder-make-rss)
         (ar/export-blog--post-process-rss (concat (file-name-as-directory default-directory)
-                                           "rss.xml"))))
+                                                  "rss.xml"))))
 
     (defun ar/export-blog-emacs-feed ()
       (interactive)
@@ -262,7 +262,7 @@ Fetch and propose title from URL (if one is found). Default to `org-insert-link'
                          :description "Alvaro's Emacs notes from a hacked up org HTML export."
                          :builder 'webfeeder-make-rss)
         (ar/export-blog--post-process-rss (concat (file-name-as-directory default-directory)
-                                           "emacs/rss.xml")))))
+                                                  "emacs/rss.xml")))))
 
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image
