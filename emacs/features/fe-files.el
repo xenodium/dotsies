@@ -22,7 +22,17 @@
   ;; Ask for confirmation.
   (confirm-kill-emacs 'yes-or-no-p)
   ;; Open that large file! YOLO. Ok, got `openwith' to handle it.
-  (large-file-warning-threshold nil))
+  (large-file-warning-threshold nil)
+  :config
+  (defun ar/files-create-non-existent-directory ()
+    "Create a non-existent directory."
+    (when-let ((parent-directory (file-name-directory buffer-file-name)))
+      (when (and (not (file-exists-p parent-directory))
+                 (y-or-n-p (format "Create `%s' dir? " parent-directory)))
+        (make-directory parent-directory t))))
+
+  (add-to-list 'find-file-not-found-functions
+               #'ar/files-create-non-existent-directory))
 
 (use-package autorevert
   :defer 10
@@ -41,7 +51,7 @@
                        (auto-revert-mode -1)))
                    (with-current-buffer new-buffer
                      (when buffer-file-name
-                      (auto-revert-mode +1)))))))
+                       (auto-revert-mode +1)))))))
 
 ;; Avoid creating lock files (ie. .#some-file.el)
 (setq create-lockfiles nil)
