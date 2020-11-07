@@ -2,7 +2,7 @@
 
 (when (display-graphic-p)
   ;; No title. See init.el for initial value.
-  (setq frame-title-format nil)
+  (setq-default frame-title-format nil)
   ;; Hide the cursor in inactive windows.
   (setq cursor-in-non-selected-windows nil)
   ;; Avoid native dialogs.
