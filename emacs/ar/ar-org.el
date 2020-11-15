@@ -11,6 +11,7 @@
 (require 'org)
 (require 'dash)
 (require 's)
+(require 'cl-lib)
 
 (defvar ar/org-short-link-regex "^http://goo.gl")
 
@@ -37,7 +38,7 @@
       (save-restriction
         (widen)
         (goto-char (point-min))
-        (assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" "short-links"))
+        (cl-assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" "short-links"))
                 (format "Cannot find %s#%s" path "short-links"))
         (goto-char (ar/buffer-first-match-beginning))
         (org-end-of-meta-data t)
@@ -336,7 +337,7 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
 (defun ar/org-insert-clipboard-link ()
   "Insert a bookmark link from clipboard."
   (interactive)
-  (assert (string-match-p "^http" (current-kill 0)) nil "Not URL in clipboard")
+  (cl-assert (string-match-p "^http" (current-kill 0)) nil "Not URL in clipboard")
   (org-cliplink-retrieve-title
    (current-kill 0)
    (lambda (url default-description)
@@ -396,7 +397,7 @@ HTTPS Is Easy | Irreal => HTTPS Is Easy (Irreal)"
       (save-restriction
         (widen)
         (goto-char (point-min))
-        (assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
+        (cl-assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" id))
                 (format "Cannot find %s#%s" path id))
         (goto-char (ar/buffer-first-match-beginning))
         (org-end-of-meta-data t)
