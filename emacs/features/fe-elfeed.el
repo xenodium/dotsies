@@ -204,6 +204,7 @@ Based on `elfeed-search-print-entry--default'."
                        ("http://1w6.org/rss.xml" blog emacs draketo)
                        ("https://feeds.feedburner.com/JakeMccrarysMusings" blog emacs JakeMccrary)
                        ("http://www.nextpoint.se/?feed=comments-rss2" blog emacs nextpoint)
+                       ("https://www.philnewton.net/blog/feed/" blog emacs PhilNewtow)
                        ("http://200ok.ch/atom.xml" blog emacs 200ok)
                        ("http://akkartik.name/feeds.xml" blog dev)
                        ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
