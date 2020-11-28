@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-
+(require 'cl-lib)
 (use-package ediff
   :validate-custom
   (ediff-window-setup-function #'ediff-setup-windows-plain)
@@ -206,21 +206,21 @@ Else call `ediff-buffers'."
       (with-current-buffer buf1
         (read-only-mode -1)
         (erase-buffer)
-        (assert (eq 0 (shell-command (format "cd \"%s\"; %s \"%s\"" dir1-path (apply expand-cmd-fun
+        (cl-assert (eq 0 (shell-command (format "cd \"%s\"; %s \"%s\"" dir1-path (apply expand-cmd-fun
                                                                                      (list arch1-path)) arch1-path)
                                      "*archive diff*"))
                 nil (format "Could not extract %s" arch1-path))
-        (assert (eq 0 (shell-command (format "cd \"%s\"; %s" dir1-path find-cmd) buf1))
+        (cl-assert (eq 0 (shell-command (format "cd \"%s\"; %s" dir1-path find-cmd) buf1))
                 nil (format "Could not list files in %s" dir1-path))
         (read-only-mode +1))
       (with-current-buffer buf2
         (read-only-mode -1)
         (erase-buffer)
-        (assert (eq 0 (shell-command (format "cd \"%s\"; %s \"%s\"" dir2-path (apply expand-cmd-fun
+        (cl-assert (eq 0 (shell-command (format "cd \"%s\"; %s \"%s\"" dir2-path (apply expand-cmd-fun
                                                                                      (list arch2-path)) arch2-path)
                                      "*archive diff*"))
                 nil (format "Could not extract %s" arch2-path))
-        (assert (eq 0 (shell-command (format "cd \"%s\"; %s" dir2-path find-cmd) buf2))
+        (cl-assert (eq 0 (shell-command (format "cd \"%s\"; %s" dir2-path find-cmd) buf2))
                 nil (format "Could not list files in %s" dir2-path))
         (read-only-mode +1))
       (ediff-buffers buf1 buf2))))

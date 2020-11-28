@@ -293,9 +293,9 @@ With prefix argument, use full path."
   (defun ar/ivy-bluetooth-connect ()
     "Connect to paired bluetooth device."
     (interactive)
-    (assert (string-equal system-type "darwin")
+    (cl-assert (string-equal system-type "darwin")
             nil "macOS only. Sorry :/")
-    (assert (executable-find "BluetoothConnector")
+    (cl-assert (executable-find "BluetoothConnector")
             nil "Install BluetoothConnector from https://github.com/lapfelix/BluetoothConnector")
     (ivy-read "(Dis)connect: "
               (seq-map

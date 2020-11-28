@@ -10,6 +10,7 @@
 (require 'find-dired)
 (require 's)
 (require 'f)
+(require 'cl-lib)
 
 (defvar ar/counsel-find--paths nil
   "Find in paths.")
@@ -63,7 +64,7 @@ C-x C-f changes the search path."
               :caller 'ar/counsel-find)))
 
 (defun ar/counsel-find--common-parent ()
-  (assert (> (length ar/counsel-find--paths)
+  (cl-assert (> (length ar/counsel-find--paths)
              0))
   (f-common-parent ar/counsel-find--paths))
 
@@ -152,7 +153,7 @@ Mostly copied from counsel.el, but makes find command results relative to common
 (defun ar/counsel-find--dired (dpaths args)
   "Run `find' and go into Dired mode on a buffer of the output.
 The command run is essentially: find DPATHS \\( ARGS \\) -ls"
-  (assert (> (length dpaths) 0) nil "Needs at least one directory path to find from")
+  (cl-assert (> (length dpaths) 0) nil "Needs at least one directory path to find from")
   (let ((dired-buffers dired-buffers)
         (command))
     (pop-to-buffer-same-window (get-buffer-create "*Find*"))
