@@ -202,13 +202,17 @@ Based on `elfeed-search-print-entry--default'."
 
   (setq elfeed-feeds '(
                        ("http://1w6.org/rss.xml" blog emacs draketo)
+                       ("https://feeds.feedburner.com/JakeMccrarysMusings" blog emacs JakeMccrary)
                        ("http://www.nextpoint.se/?feed=comments-rss2" blog emacs nextpoint)
+                       ("https://www.philnewton.net/blog/feed/" blog emacs PhilNewtow)
                        ("http://200ok.ch/atom.xml" blog emacs 200ok)
                        ("http://akkartik.name/feeds.xml" blog dev)
                        ("http://amitp.blogspot.com/feeds/posts/default" blog emacs AmitPatel)
                        ("http://beard.institute/index.xml" blog emacs BeardInstitute)
                        ("http://ben-evans.com/benedictevans?format=RSS" blog dev Ben-Evans)
+                       ("https://xpressrazor.wordpress.com/feed" log emacs xpressrazor)
                        ("http://blog.davep.org/feed.xml" blog emacs davep)
+                       ("https://whhone.com/index.xml" blog emacs whhone)
                        ("http://blog.josephholsten.com/feed.xml" blog hammerspoon dev Libera-Ideoj)
                        ("http://blog.nawaz.org/feeds/all.atom.xml" blog emacs BeetleSpace)
                        ("http://buddhistinspiration.blogspot.com/feeds/posts/default" blog mindful BuddistInspiration)

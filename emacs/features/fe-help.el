@@ -47,5 +47,11 @@ reuse it's window, otherwise create new one."
 (use-package which-key
   :ensure t
   :defer 20
+  :validate-custom
+  ;; Make which key panel only appear after C-h.
+  ;; Helps with latency.
+  (which-key-show-early-on-C-h t)
+  (which-key-idle-delay (float 10000))
+  (which-key-idle-secondary-delay (float 0.05))
   :config
   (which-key-mode))
