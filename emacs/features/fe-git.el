@@ -145,7 +145,7 @@ on the current line, if any."
 (defun ar/git-clone-clipboard-url ()
   "Clone git URL in clipboard asynchronously and open in dired when finished."
   (interactive)
-  (cl-assert (string-match-p "^http" (current-kill 0)) nil "No URL in clipboard")
+  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
          (download-dir (expand-file-name "~/Downloads/"))
          (project-dir (concat (file-name-as-directory download-dir)
