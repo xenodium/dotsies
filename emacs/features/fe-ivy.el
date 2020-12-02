@@ -10,7 +10,9 @@
          ("M-y" . counsel-yank-pop)
          ("M-x" . counsel-M-x)
          :map counsel-ag-map
-         ("C-c C-e" . ar/ivy-occur))
+         ("C-c C-e" . ar/ivy-occur)
+         :map minibuffer-local-map
+         ("C-r" . ar/counsel-minibuffer-history))
   :validate-custom
   ;; https://oremacs.com/2017/08/04/ripgrep/
   (counsel-grep-base-command (if (executable-find "rg")
@@ -20,6 +22,17 @@
   (push '(counsel-M-x . "") ivy-initial-inputs-alist)
   (push '(counsel-rg . "--glob ** -- ") ivy-initial-inputs-alist)
   (push '(counsel-ag . "--file-search-regex . -- ") ivy-initial-inputs-alist)
+
+  (defun ar/counsel-minibuffer-history ()
+    "Like `counsel-minibuffer-history' but clears minibuffer on history item selection."
+    (interactive)
+    (let ((enable-recursive-minibuffers t))
+      (ivy-read "History: " (ivy-history-contents minibuffer-history-variable)
+                :keymap ivy-reverse-i-search-map
+                :action (lambda (x)
+                          (delete-minibuffer-contents)
+                          (insert (substring-no-properties (car x))))
+                :caller 'counsel-minibuffer-history)))
 
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
