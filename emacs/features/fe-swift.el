@@ -5,7 +5,7 @@
   :mode ("\\.swift\\'" . swift-mode)
   :hook (swift-mode . ar/swift-mode-hook)
   :validate-custom
-  (swift-mode:basic-offset 2)
+  (swift-basic-offset 2)
   :config
   (defun ar/swift-mode-hook ()
     "Called when entering `swift-mode'."
