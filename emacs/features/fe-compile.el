@@ -40,12 +40,12 @@
 
   (defun ar/compile--history-add (command project-root directory)
     (let* ((history (ar/compile--history-read)))
-      (map-put history command (list project-root directory))
+      (map-put history (string-trim command) (list project-root directory))
       (ar/compile--history-write history)))
 
   (defun ar/compile--history-get (command)
     (let* ((history (ar/compile--history-read)))
-      (map-elt history command)))
+      (map-elt history (string-trim command))))
 
   (defun ar/compile (prefix)
     (interactive "p")
