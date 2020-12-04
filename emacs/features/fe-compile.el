@@ -23,7 +23,7 @@
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
-  ;; https://www.emacswiki.org/emacs/CompileCommand#toc4
+
   (defun ar/compile (pfx)
     """Run the same compile as the last time.
 
@@ -53,31 +53,50 @@ M-x compile.
       (prin1 hashtable (current-buffer))
       (write-file (ar/compile--history-path) nil)))
 
-  (defun ar/compile--history-add (project-root command directory)
-    (let* ((history (ar/compile--history-read))
-           (project-history (or (map-elt history project-root)
-                                (make-hash-table :test 'equal))))
-      (map-put project-history command directory)
-      (map-put history project-root project-history)
+  (defun ar/compile--history-add (command project-root directory)
+    (let* ((history (ar/compile--history-read)))
+      (map-put history command (list project-root directory))
       (ar/compile--history-write history)))
 
-  (defun ar/compile--history-get-directory (project-root command)
-    (let* ((history (ar/compile--history-read))
-           (project-history (map-elt history project-root)))
-      (map-elt project-history command)))
+  (defun ar/compile--history-get (command)
+    (let* ((history (ar/compile--history-read)))
+      (map-elt history command)))
 
-  ;; Consider:
-  ;;  1. Only writing path to cache if successful.
-  ;;  2. Flatten cache command -> (project-root . default-directory)
-  ;; (defun ar/compile ()
-  ;;   (interactive)
-  ;;   (let* ((command (compilation-read-command compile-command))
-  ;;          (project-root (projectile-project-root))
-  ;;          (default-directory (or (ar/compile--history-get-directory project-root
-  ;;                                                                    command)
-  ;;                                 default-directory)))
-  ;;     (compile command)
-  ;;     (ar/compile--history-add project-root command default-directory)))
+  (defun ar/compile (prefix)
+    (interactive "p")
+    (if (and (eq prefix 1) compilation-last-buffer)
+        ;; Retry using last compile command.
+        (progn
+          (set-buffer compilation-last-buffer)
+          (revert-buffer t t))
+      ;; Compile using environment caching.
+      (let* ((command (compilation-read-command compile-command))
+             (project-root (projectile-project-root))
+             (cache (ar/compile--history-get command))
+             (cached-root (nth 0 cache))
+             (cached-directory (nth 1 cache))
+             (potential-directory (when cached-directory
+                                    (concat project-root cached-directory)))
+             (current-directory default-directory)
+             ;; Overriding default-directory for compile command.
+             (default-directory (if (and potential-directory (file-exists-p potential-directory))
+                                    potential-directory
+                                  default-directory)))
+        (setq ar/compile--command command)
+        (setq ar/compile--project-root project-root)
+        (setq ar/compile--directory (if project-root
+                                        (file-relative-name current-directory project-root)
+                                      current-directory))
+        (compile command))))
+
+  (defun ar/compile-cache-env (buffer string)
+    (when (and (string-match "finished" string)
+               (boundp 'ar/compile--command)
+               (boundp 'ar/compile--directory)
+               (boundp 'ar/compile--project-root))
+      (ar/compile--history-add ar/compile--command
+                               ar/compile--project-root
+                               ar/compile--directory)))
 
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
@@ -106,4 +125,4 @@ M-x compile.
 
   ;; Automatically hide successful builds window.
   ;; Trying out without for a little while.
-  (setq compilation-finish-functions #'ar/compile-autoclose))
+  (setq compilation-finish-functions (list #'ar/compile-autoclose #'ar/compile-cache-env)))
