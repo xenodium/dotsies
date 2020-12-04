@@ -24,7 +24,7 @@
          ("C-c C-c" . ar/compile))
   :config
   (defun ar/compile--history-path ()
-    (concat (file-name-as-directory (expand-file-name "~/.emacs.d/")) ".comphist.el"))
+    (concat user-emacs-directory ".comphist.el"))
 
   (defun ar/compile--history-read ()
     (if (not (file-exists-p (ar/compile--history-path)))
