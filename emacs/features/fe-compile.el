@@ -38,6 +38,47 @@ M-x compile.
           (revert-buffer t t))
       (call-interactively 'compile)))
 
+  (defun ar/compile--history-path ()
+    (concat (file-name-as-directory (expand-file-name "~/.emacs.d/")) ".comphist.el"))
+
+  (defun ar/compile--history-read ()
+    (if (not (file-exists-p (ar/compile--history-path)))
+        (make-hash-table :test 'equal)
+      (with-temp-buffer
+        (insert-file-contents (ar/compile--history-path))
+        (read (current-buffer)))))
+
+  (defun ar/compile--history-write (hashtable)
+    (with-temp-buffer
+      (prin1 hashtable (current-buffer))
+      (write-file (ar/compile--history-path) nil)))
+
+  (defun ar/compile--history-add (project-root command directory)
+    (let* ((history (ar/compile--history-read))
+           (project-history (or (map-elt history project-root)
+                                (make-hash-table :test 'equal))))
+      (map-put project-history command directory)
+      (map-put history project-root project-history)
+      (ar/compile--history-write history)))
+
+  (defun ar/compile--history-get-directory (project-root command)
+    (let* ((history (ar/compile--history-read))
+           (project-history (map-elt history project-root)))
+      (map-elt project-history command)))
+
+  ;; Consider:
+  ;;  1. Only writing path to cache if successful.
+  ;;  2. Flatten cache command -> (project-root . default-directory)
+  ;; (defun ar/compile ()
+  ;;   (interactive)
+  ;;   (let* ((command (compilation-read-command compile-command))
+  ;;          (project-root (projectile-project-root))
+  ;;          (default-directory (or (ar/compile--history-get-directory project-root
+  ;;                                                                    command)
+  ;;                                 default-directory)))
+  ;;     (compile command)
+  ;;     (ar/compile--history-add project-root command default-directory)))
+
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
     (let ((was-read-only buffer-read-only))
