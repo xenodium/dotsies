@@ -64,7 +64,10 @@ M-x compile.
 
   (defun ar/compile (prefix)
     (interactive "p")
-    (if (and (eq prefix 1) compilation-last-buffer)
+    (if (and (eq prefix 1)
+             ;; Check if command invoked via binding.
+             (eq (key-binding (this-command-keys)) this-command)
+             (buffer-live-p compilation-last-buffer))
         ;; Retry using last compile command.
         (progn
           (set-buffer compilation-last-buffer)
@@ -75,18 +78,16 @@ M-x compile.
              (cache (ar/compile--history-get command))
              (cached-root (nth 0 cache))
              (cached-directory (nth 1 cache))
-             (potential-directory (when cached-directory
+             (potential-directory (when (and cached-directory
+                                             (file-exists-p (concat project-root cached-directory)))
                                     (concat project-root cached-directory)))
-             (current-directory default-directory)
              ;; Overriding default-directory for compile command.
-             (default-directory (if (and potential-directory (file-exists-p potential-directory))
-                                    potential-directory
-                                  default-directory)))
+             (default-directory (or potential-directory default-directory)))
         (setq ar/compile--command command)
         (setq ar/compile--project-root project-root)
         (setq ar/compile--directory (if project-root
-                                        (file-relative-name current-directory project-root)
-                                      current-directory))
+                                        (file-relative-name default-directory project-root)
+                                      default-directory))
         (compile command))))
 
   (defun ar/compile-cache-env (buffer string)
@@ -96,7 +97,10 @@ M-x compile.
                (boundp 'ar/compile--project-root))
       (ar/compile--history-add ar/compile--command
                                ar/compile--project-root
-                               ar/compile--directory)))
+                               ar/compile--directory)
+      (makunbound 'ar/compile--command)
+      (makunbound 'ar/compile--directory)
+      (makunbound 'ar/compile--project-root)))
 
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
