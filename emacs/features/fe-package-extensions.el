@@ -24,7 +24,9 @@
            (native-comp-available-p))
       (progn
 	(message "Native comp is available")
-        (add-to-list 'exec-path (expand-file-name "~/homebrew/opt/gccemacs/bin") t)
+        ;; Using Emacs.app/Contents/MacOS/bin since it was compiled with
+        ;; ./configure --prefix="$PWD/nextstep/Emacs.app/Contents/MacOS"
+        (add-to-list 'exec-path (concat invocation-directory "bin") t)
 	(setenv "LIBRARY_PATH" (concat (getenv "LIBRARY_PATH")
                                        (when (getenv "LIBRARY_PATH")
                                          ":")
