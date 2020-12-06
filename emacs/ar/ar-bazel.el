@@ -148,16 +148,34 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-cache-build-rules ()
   "Cache absolute bazel build rules."
   (interactive)
-  (ar/bazel--async-body-named "bazel-cache"
-    (require 'subr-x)
-    (require 'projectile)
-    (require 'ar-bazel)
-    (let ((start-time (current-time)))
-      (ar/bazel--write-rules-cache
-       (ar/bazel-workspace-build-rules t)
-       (ar/bazel--rules-cache-fpath))
-      (message "Cached bazel rules in %.2f seconds." (float-time
-                                                      (time-subtract (current-time) start-time))))))
+  (let* ((proc-name "bazel-cache")
+         (buffer (get-buffer-create (format "%s*" proc-name)))
+         (emacs-bin (file-truename (expand-file-name invocation-name
+                                                     invocation-directory))))
+    (message "%s started" proc-name)
+    (with-current-buffer buffer
+      (erase-buffer))
+    (set-process-sentinel
+     (start-process proc-name buffer emacs-bin
+                    "--quick" "--batch" "--eval"
+                    (prin1-to-string
+                     `(progn
+                        (interactive)
+                        (setq load-path ',load-path)
+                        (require 'subr-x)
+                        (require 'projectile)
+                        (require 'ar-bazel)
+                        (let ((start-time (current-time)))
+                          (ar/bazel--write-rules-cache
+                           (ar/bazel-workspace-build-rules t)
+                           (ar/bazel--rules-cache-fpath))
+                          (message "Cached bazel rules in %.2f seconds."
+                                   (float-time
+                                    (time-subtract (current-time) start-time)))))))
+     (lambda (process state)
+       (if (= (process-exit-status process) 0)
+           (message "%s finished" proc-name)
+         (message "%s failed, see *%s*" proc-name proc-name))))))
 
 (defun ar/bazel-insert-rule ()
   "Insert a qualified build rule, with completion."
@@ -195,55 +213,6 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   "Bazel rules cache path for current project."
   (concat (file-name-as-directory (ar/bazel-workspace-path))
           ".bazelrules"))
-
-(defmacro ar/bazel--async-body-named (name &rest body)
-  "Execute asynchronous BODY with NAME. If first item in BODY is a
- function, execute on process completion."
-  (declare (indent 1))
-  (let* ((completion (when (functionp (seq-first body))
-                       (seq-first body)))
-         (body-string (replace-regexp-in-string "^(" "(progn " ;; "((...))" -> "(prog (...))"
-                                                (format "%s" (prin1-to-string (cdr (macroexp-parse-body body))))
-                                                t t)))
-    `(let* ((emacs-bin (concat (expand-file-name invocation-name invocation-directory)))
-            (calling-dpath default-directory)
-            (fpath (concat (temporary-file-directory)
-                           (format "%s.el" ,name)))
-            (recentf-exclude (list (file-name-nondirectory fpath)))
-            (file-content)
-            (buffer (get-buffer-create (format "*%s*" ,name))))
-       (when (get-buffer-process buffer)
-         (error "Pending process for %s" buffer))
-       (with-current-buffer (find-file-noselect fpath t)
-         (setq default-directory calling-dpath)
-         (delete-region (point-min) (point-max))
-         (insert ";; Script:\n\n")
-         (insert (format "(setq default-directory \"%s\")\n" calling-dpath))
-         (insert "(setq load-path '(\n")
-         (mapc (lambda (path)
-                 (insert (format "\"%s\"\n" path)))
-               load-path)
-         (insert "))\n")
-         (insert ,body-string)
-         (setq file-content (buffer-string))
-         (write-file fpath nil)
-         (kill-buffer (current-buffer)))
-       (with-current-buffer buffer
-         (delete-region (point-min) (point-max))
-         (insert (format "%s\n\n" file-content))
-         (insert ";; Output:\n\n"))
-       (let ((display-buffer-alist (list (list buffer 'display-buffer-no-window))))
-         (message "%s started..." ,name)
-         (set-process-sentinel (start-process "emacs"
-                                              buffer
-                                              emacs-bin
-                                              "--batch" "-Q" "-l" fpath)
-                               (lambda (process state)
-                                 (if (= (process-exit-status process) 0)
-                                     (message "%s finished ✔" ,name)
-                                   (message "%s failed ❌, see %s" ,name buffer))
-                                 (when ,completion
-                                   (funcall ,completion))))))))
 
 (defun ar/bazel--write-rules-cache (rules &optional fpath)
   "Write bazel absolute RULES at FPATH."
