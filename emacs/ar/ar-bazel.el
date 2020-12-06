@@ -13,16 +13,15 @@
   "With a \"bazel\" prefix, we'd get linked directories like:
 bazel-bin, bazel-genfiles, and bazel-out.")
 
+(defvar ar/bazel-compile-subcommand "build" "Compile subcommand.")
+
 (defun ar/bazel-compile ()
   "Invoke `'compile with `'completing-read a build rule in either current or parent directories."
   (interactive)
-  (compile (format "%s %s" (ar/bazel-compile-command)
+  (compile (format "%s %s" ar/bazel-command ar/bazel-compile-subcommand
                    ;; Use for narrowing down rules to closest package.
                    ;; (ar/bazel-completing-read-build-rule)
                    (completing-read "build rule: " (ar/bazel-workspace-build-rules)))))
-
-(defun ar/bazel-compile-command ()
-  (format "%s build" ar/bazel-command))
 
 (defun ar/bazel-completing-read-build-rule ()
   "Find a build file in current or parent directories and `'completing-read a build rule."
@@ -35,20 +34,16 @@ bazel-bin, bazel-genfiles, and bazel-out.")
             (ar/bazel-qualified-package-path closest-build-file)
             (completing-read "build rule: " (ar/bazel-rule-names-in-build-file-path closest-build-file)))))
 
-(defun ar/bazel-build-rule-names (str)
-  "Return build rule names in STR."
-  (let ((start-pos))
-    ;; match all: name = "rulename"
-    (cl-loop for match-pos = (string-match "name *= *\"\\(.*\\)\"" str start-pos)
-             while match-pos
-             collect (match-string 1 str)
-             do (setf start-pos (1+ match-pos)))))
-
 (defun ar/bazel-rule-names-in-build-file-path (file-path)
   "Get rule names in build FILE-PATH."
-  (ar/bazel-build-rule-names (with-temp-buffer
-                               (insert-file-contents file-path)
-                               (buffer-string))))
+  (let ((rule-names))
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (goto-char 1)
+      ;; match all: name = "rulename"
+      (while (search-forward-regexp "name *= *\"\\(.*\\)\"" nil t 1)
+        (push (match-string-no-properties 1) rule-names)))
+    rule-names))
 
 (defun ar/bazel-qualified-rule-names-in-build-file-path (file-path)
   "Get qualified rule names in build FILE-PATH."
@@ -59,8 +54,9 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defun ar/bazel-qualified-package-path (path)
   "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
-  (replace-regexp-in-string (ar/bazel-workspace-path) "//"
-                            (string-remove-suffix "/" (file-name-directory (expand-file-name path)))))
+  (concat "//" (directory-file-name (or (file-name-directory (file-relative-name path
+                                                                                 (ar/bazel-workspace-path)))
+                                        ""))))
 
 (defun ar/bazel-linked-dpath (name)
   "Append NAME to bazel root path and return it."
@@ -134,13 +130,12 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   "Get all workspace qualified rules.  If FRESH-READ, skip cache."
   (if fresh-read
       (let* ((counter 0)
-             (build-files)
-             (length))
-        (setq build-files (ar/bazel-workspace-build-files))
-        (setq length (length build-files))
+             (build-files (ar/bazel-workspace-build-files))
+             (length (length build-files)))
         (seq-mapcat (lambda (build-file)
                       (setq counter (1+ counter))
-                      (message "Reading (%d/%d) %s" counter length build-file)
+                      (message "(%d/%d) %s" counter length
+                               (ar/bazel-qualified-package-path build-file))
                       (ar/bazel-qualified-rule-names-in-build-file-path build-file))
                     build-files))
     (ar/bazel--read-rules-cache)))
@@ -149,7 +144,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   "Cache absolute bazel build rules."
   (interactive)
   (let* ((proc-name "bazel-cache")
-         (buffer (get-buffer-create (format "%s*" proc-name)))
+         (buffer (get-buffer-create (format "*%s*" proc-name)))
          (emacs-bin (file-truename (expand-file-name invocation-name
                                                      invocation-directory))))
     (message "%s started" proc-name)
