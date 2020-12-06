@@ -6,10 +6,7 @@
 
 ;;; Code:
 
-(require 'ar-file)
-(require 's)
-(require 'f)
-(require 'dash)
+(require 'seq)
 (require 'cl-lib)
 
 (defvar ar/bazel-command "bazel"
@@ -29,9 +26,10 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defun ar/bazel-completing-read-build-rule ()
   "Find a build file in current or parent directories and `'completing-read a build rule."
-  (let ((closest-build-file (ar/file-either-closest (if (equal major-mode 'dired-mode)
-                                                        default-directory
-                                                      (buffer-file-name)) "BUILD")))
+  (let ((closest-build-file (concat (locate-dominating-file (if (equal major-mode 'dired-mode)
+                                                                default-directory
+                                                              (buffer-file-name)) "BUILD")
+                                    "BUILD")))
     (cl-assert closest-build-file nil "No BUILD found.")
     (format "%s:%s"
             (ar/bazel-qualified-package-path closest-build-file)
@@ -39,11 +37,12 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defun ar/bazel-build-rule-names (str)
   "Return build rule names in STR."
-  (mapcar (lambda (match)
-            (nth 1 match))
-          ;; match: name = "rulename"
-          (s-match-strings-all "name *= *\"\\(.*\\)\""
-                               str)))
+  (let ((start-pos))
+    ;; match all: name = "rulename"
+    (cl-loop for match-pos = (string-match "name *= *\"\\(.*\\)\"" str start-pos)
+             while match-pos
+             collect (match-string 1 str)
+             do (setf start-pos (1+ match-pos)))))
 
 (defun ar/bazel-rule-names-in-build-file-path (file-path)
   "Get rule names in build FILE-PATH."
@@ -54,13 +53,14 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 (defun ar/bazel-qualified-rule-names-in-build-file-path (file-path)
   "Get qualified rule names in build FILE-PATH."
   (let ((package-path (ar/bazel-qualified-package-path file-path)))
-    (-map (lambda (rule-name)
-            (format "%s:%s" package-path rule-name))
-          (ar/bazel-rule-names-in-build-file-path file-path))))
+    (mapcar (lambda (rule-name)
+              (format "%s:%s" package-path rule-name))
+            (ar/bazel-rule-names-in-build-file-path file-path))))
 
 (defun ar/bazel-qualified-package-path (path)
   "Convert PATH to workspace-qualified package: /some/path/workspace/package/BUILD => //package."
-  (replace-regexp-in-string (ar/bazel-workspace-path) "//" (s-chop-suffix "/" (file-name-directory (expand-file-name path)))))
+  (replace-regexp-in-string (ar/bazel-workspace-path) "//"
+                            (string-remove-suffix "/" (file-name-directory (expand-file-name path)))))
 
 (defun ar/bazel-linked-dpath (name)
   "Append NAME to bazel root path and return it."
@@ -68,7 +68,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
                        (format "%s-%s/"
                                ar/bazel-command
                                name))))
-    (unless (f-exists-p dpath)
+    (unless (file-exists-p dpath)
       (message "Path not found:\"%s\" (is `ar/bazel-command' = '%s' correct?)"
                dpath ar/bazel-command))
     dpath))
@@ -138,26 +138,25 @@ bazel-bin, bazel-genfiles, and bazel-out.")
              (length))
         (setq build-files (ar/bazel-workspace-build-files))
         (setq length (length build-files))
-        (-mapcat (lambda (build-file)
-                   (setq counter (1+ counter))
-                   (message "Reading (%d/%d) %s" counter length build-file)
-                   (ar/bazel-qualified-rule-names-in-build-file-path build-file))
-                 build-files))
+        (seq-mapcat (lambda (build-file)
+                      (setq counter (1+ counter))
+                      (message "Reading (%d/%d) %s" counter length build-file)
+                      (ar/bazel-qualified-rule-names-in-build-file-path build-file))
+                    build-files))
     (ar/bazel--read-rules-cache)))
 
 (defun ar/bazel-cache-build-rules ()
   "Cache absolute bazel build rules."
   (interactive)
   (ar/bazel--async-body-named "bazel-cache"
-   (require 'subr-x)
-   (require 'projectile)
-   (require 'ar-bazel)
-   (let ((start-time (current-time)))
-     (ar/bazel--write-rules-cache
-      (ar/bazel-workspace-build-rules t)
-      (ar/bazel--rules-cache-fpath))
-     (message "Cached rules in %.2f seconds." (float-time
-                                                 (time-subtract (current-time) start-time))))))
+    (require 'subr-x)
+    (require 'projectile)
+    (let ((start-time (current-time)))
+      (ar/bazel--write-rules-cache
+       (ar/bazel-workspace-build-rules t)
+       (ar/bazel--rules-cache-fpath))
+      (message "Cached rules in %.2f seconds." (float-time
+                                                (time-subtract (current-time) start-time))))))
 
 (defun ar/bazel-insert-rule ()
   "Insert a qualified build rule, with completion."
@@ -201,7 +200,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
  function, execute on process completion."
   (declare (indent 1))
   (let* ((completion (when (functionp (seq-first body))
-                        (seq-first body)))
+                       (seq-first body)))
          (body-string (replace-regexp-in-string "^(" "(progn " ;; "((...))" -> "(prog (...))"
                                                 (format "%s" (prin1-to-string (cdr (macroexp-parse-body body))))
                                                 t t)))
@@ -253,7 +252,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
 
 (defun ar/bazel--read-rules-cache ()
   "Read history hash in HASH-FPATH."
-  (if (not (f-exists? (ar/bazel--rules-cache-fpath)))
+  (if (not (file-exists-p (ar/bazel--rules-cache-fpath)))
       (list)
     (with-temp-buffer
       (insert-file-contents (ar/bazel--rules-cache-fpath))
