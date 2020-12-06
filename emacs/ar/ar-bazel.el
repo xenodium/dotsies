@@ -151,12 +151,13 @@ bazel-bin, bazel-genfiles, and bazel-out.")
   (ar/bazel--async-body-named "bazel-cache"
     (require 'subr-x)
     (require 'projectile)
+    (require 'ar-bazel)
     (let ((start-time (current-time)))
       (ar/bazel--write-rules-cache
        (ar/bazel-workspace-build-rules t)
        (ar/bazel--rules-cache-fpath))
-      (message "Cached rules in %.2f seconds." (float-time
-                                                (time-subtract (current-time) start-time))))))
+      (message "Cached bazel rules in %.2f seconds." (float-time
+                                                      (time-subtract (current-time) start-time))))))
 
 (defun ar/bazel-insert-rule ()
   "Insert a qualified build rule, with completion."
