@@ -4,12 +4,11 @@
   :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)
          ("BUILD\\'" . bazel-mode))
+  :validate-custom
+  (bazel-mode-buildifier-before-save t)
   :hook (bazel-mode . ar/bazel-mode-hook-fun)
   :init
   (defun ar/bazel-mode-hook-fun ()
-    (when (require 'reformatter nil 'noerror)
-      (buildifier-on-save-mode +1))
-
     ;; Automatic rule caching.
     (ar/bazel-cache-build-rules)
     (add-hook #'after-save-hook #'ar/bazel-cache-build-rules nil t)
@@ -19,10 +18,6 @@
   (use-package ar-bazel)
   (use-package company-bazel)
   (use-package ar-counsel-find)
-
-  (when (require 'reformatter nil 'noerror)
-    (reformatter-define buildifier
-      :program "buildifier"))
 
   (defun ar/bazel-find-staged ()
     "Call the \"find\" shell command and fuzzy narrow using ivy."
