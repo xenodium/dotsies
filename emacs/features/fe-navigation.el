@@ -151,6 +151,8 @@ Repeated invocations toggle between the two most recently open buffers."
    :heuristic 'error
    :async nil)
 
+  (smart-jump-register :modes 'bazel-mode)
+
   (defun adviced:dumb-jump-run-command (run-command-fun &rest r)
     "Ignore RUN-COMMAND-FUN and R if project path in excluded-args."
     (let ((proj (nth 1 r))
