@@ -104,6 +104,9 @@
   (let ((closest-fname (apply #'ar/file-either-closest start-fname fnames)))
     (cl-assert closest-fname nil "No %s found" fnames)
     (switch-to-buffer (find-file-noselect closest-fname))
+    (goto-char (point-min))
+    (search-forward (file-name-nondirectory start-fname))
+    (backward-char (length (file-name-nondirectory start-fname)))
     closest-fname))
 
 (defvar ar/file-build-file-names '("BUILD" "SConstruct" "Makefile" "Package.swift"))

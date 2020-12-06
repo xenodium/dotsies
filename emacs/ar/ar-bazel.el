@@ -188,7 +188,7 @@ bazel-bin, bazel-genfiles, and bazel-out.")
     (find-file (concat (file-name-as-directory package-dpath) "BUILD"))
     (goto-char (point-min))
     ;; search for "source.swift"
-    (re-search-forward needle)
+    (search-forward needle)
     (backward-char (length needle))))
 
 (defun ar/bazel--rules-cache-fpath ()
