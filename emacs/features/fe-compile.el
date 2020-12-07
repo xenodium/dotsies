@@ -23,30 +23,6 @@
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
-  (defun ar/compile--history-path ()
-    (concat user-emacs-directory ".comphist.el"))
-
-  (defun ar/compile--history-read ()
-    (if (not (file-exists-p (ar/compile--history-path)))
-        (make-hash-table :test 'equal)
-      (with-temp-buffer
-        (insert-file-contents (ar/compile--history-path))
-        (read (current-buffer)))))
-
-  (defun ar/compile--history-write (hashtable)
-    (with-temp-buffer
-      (prin1 hashtable (current-buffer))
-      (write-file (ar/compile--history-path) nil)))
-
-  (defun ar/compile--history-add (command project-root directory)
-    (let* ((history (ar/compile--history-read)))
-      (map-put history (string-trim command) (list project-root directory))
-      (ar/compile--history-write history)))
-
-  (defun ar/compile--history-get (command)
-    (let* ((history (ar/compile--history-read)))
-      (map-elt history (string-trim command))))
-
   (defun ar/compile (prefix)
     (interactive "p")
     (if (and (eq prefix 1)
@@ -75,6 +51,36 @@
                                       default-directory))
         (compile command))))
 
+  (defun ar/compile-forget-command ()
+    (interactive)
+    (let* ((history (ar/compile--history-read))
+           (command (completing-read "Forget compile command: " (map-keys history))))
+      (ar/compile--history-write (map-delete history command))))
+
+  (defun ar/compile--history-path ()
+    (concat user-emacs-directory ".comphist.el"))
+
+  (defun ar/compile--history-read ()
+    (if (not (file-exists-p (ar/compile--history-path)))
+        (make-hash-table :test 'equal)
+      (with-temp-buffer
+        (insert-file-contents (ar/compile--history-path))
+        (read (current-buffer)))))
+
+  (defun ar/compile--history-write (hashtable)
+    (with-temp-buffer
+      (prin1 hashtable (current-buffer))
+      (write-file (ar/compile--history-path) nil)))
+
+  (defun ar/compile--history-add (command project-root directory)
+    (let* ((history (ar/compile--history-read)))
+      (map-put history (string-trim command) (list project-root directory))
+      (ar/compile--history-write history)))
+
+  (defun ar/compile--history-get (command)
+    (let* ((history (ar/compile--history-read)))
+      (map-elt history (string-trim command))))
+
   (defun ar/compile-cache-env (buffer string)
     (when (and (string-match "finished" string)
                (boundp 'ar/compile--command)
@@ -101,7 +107,7 @@
 
   ;; Automatically hide successful builds window.
   ;; Trying out without for a little while.
-  (setq compilation-finish-functions (list #'ar/compile-autoclose #'ar/compile-cache-env))
+  (setq compilation-finish-functions (list #'ar/compile-cache-env #'ar/compile-autoclose))
 
   ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
