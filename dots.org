@@ -207,7 +207,7 @@ Patch .bash_profile and .bashrc.
                   },
                   "rules": [
                       {
-                          "description": "Ctrl-p/Ctrl-n to arrow up/down",
+                          "description": "Ctrl-p/n/b/f to arrow up/down/left/right",
                           "manipulators": [
                               {
                                   "from": {
@@ -246,6 +246,56 @@ Patch .bash_profile and .bashrc.
                                   "to": [
                                       {
                                           "key_code": "down_arrow"
+                                      }
+                                  ],
+                                  "conditions": [
+                                      {
+                                          "type": "frontmost_application_unless",
+                                          "bundle_identifiers": [
+                                              "^org\\.gnu\\.Emacs",
+                                              "^com\\.apple\\.Terminal"
+                                          ]
+                                      }
+                                  ],
+                                  "type": "basic"
+                              },
+                              {
+                                  "from": {
+                                      "key_code": "b",
+                                      "modifiers": {
+                                          "mandatory": [
+                                              "control"
+                                          ]
+                                      }
+                                  },
+                                  "to": [
+                                      {
+                                          "key_code": "left_arrow"
+                                      }
+                                  ],
+                                  "conditions": [
+                                      {
+                                          "type": "frontmost_application_unless",
+                                          "bundle_identifiers": [
+                                              "^org\\.gnu\\.Emacs",
+                                              "^com\\.apple\\.Terminal"
+                                          ]
+                                      }
+                                  ],
+                                  "type": "basic"
+                              },
+                              {
+                                  "from": {
+                                      "key_code": "f",
+                                      "modifiers": {
+                                          "mandatory": [
+                                              "control"
+                                          ]
+                                      }
+                                  },
+                                  "to": [
+                                      {
+                                          "key_code": "right_arrow"
                                       }
                                   ],
                                   "conditions": [
