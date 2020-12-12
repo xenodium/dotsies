@@ -273,7 +273,6 @@ For example:
   (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
-         ("M-o" . ar/insert-current-file-name-at-point)
          :map ivy-minibuffer-map
          ("C-g" . ar/ivy-keyboard-quit-dwim)
          ("C--" . ivy-minibuffer-shrink)
@@ -287,21 +286,6 @@ For example:
     "Reset ivy height considering frame height."
     (interactive)
     (setq ivy-height (round (* 0.01666 (display-pixel-height)))))
-
-  ;; From http://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
-  (defun ar/insert-current-file-name-at-point (&optional full-path)
-    "Insert the current filename at point.
-With prefix argument, use full path."
-    (interactive "P")
-    (let* ((buffer
-	    (if (minibufferp)
-	        (window-buffer
-	         (minibuffer-selected-window))
-	      (current-buffer)))
-	   (filename (buffer-file-name buffer)))
-      (if filename
-	  (insert (if full-path filename (file-name-nondirectory filename)))
-        (error (format "Buffer %s is not visiting a file" (buffer-name buffer))))))
 
   (defun ar/ivy-keyboard-quit-dwim ()
     "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
@@ -405,7 +389,7 @@ dash-apple-api://load?request_key=hsM5TRxINf#<dash_entry_language=swift><dash_en
     ;; Prefix consumed by ar/counsel-ag. Avoid counsel-ag from using.
     (setq current-prefix-arg nil)
     (setq ar/counsel-ag--default-locaction
-              (read-directory-name "search in: " default-directory nil t)))
+          (read-directory-name "search in: " default-directory nil t)))
 
   (require 'counsel) ;; counsel-ag-map
   (let ((kmap counsel-ag-map))

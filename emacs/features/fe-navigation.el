@@ -63,7 +63,7 @@
 (use-package window
   :bind (("C-x 2" . ar/vsplit-last-buffer)
          ("C-x 3" . ar/hsplit-last-buffer)
-         ("C-<tab>" . other-window)
+         ("M-o" . other-window)
          ("M-}" . next-buffer)
          ("M-{" . next-buffer))
   :chords (("BB" . other-window)
