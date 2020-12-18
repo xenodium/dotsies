@@ -53,7 +53,13 @@
   (use-package lsp-mode
     :ensure t
     :hook (swift-mode . lsp-deferred)
-    :commands (lsp lsp-deferred))
+    :commands (lsp lsp-deferred)
+    :bind
+    (:map
+     lsp-signature-mode-map
+     ;; Unset, as I prefer overlay-jump.
+     ([remap lsp-signature-next] . nil)
+     ([remap lsp-signature-previous] . nil)))
 
   (use-package lsp-sourcekit
     :ensure t
