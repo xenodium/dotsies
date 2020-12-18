@@ -7,7 +7,7 @@
          ("C-c s" . hydra-search/body)
          ("C-c x" . hydra-quick-insert/body)
          ("C-c o" . ar/hydra-open-dwim)
-         ("C-c g" . hydra-git-gutter/body)
+         ("C-c g" . diff-hl/body)
          ("C-c 1" . hydra-profile/body))
   :validate-custom
   (hydra-is-helpful t)
@@ -70,37 +70,28 @@ Open: _p_oint _e_xternally
     ("b" ar/file-open-closest-build-file-dwim "build file")
     ("q" nil "cancel"))
 
-  ;; https://github.com/abo-abo/hydra/wiki/Version-Control#git-gutter
-  (defhydra hydra-git-gutter (:body-pre (git-gutter-mode +1)
-                                        :hint nil)
+  (defhydra diff-hl (:body-pre (diff-hl-mode +1)
+                               :hint nil)
     "
-Git gutter:
+diff hl:
   _n_: next hunk        _s_tage hunk   _q_uit
-  _p_: previous hunk    _k_ill hunk    _Q_uit and deactivate git-gutter
+  _p_: previous hunk    _k_ill hunk
   ^ ^                   _d_iff hunk
   _<_: first hunk
-  _>_: last hunk        set start _R_evision
+  _>_: last hunk
 "
-    ("n" git-gutter:next-hunk)
-    ("p" git-gutter:previous-hunk)
+    ("n" diff-hl-next-hunk)
+    ("p" diff-hl-previous-hunk)
     ("<" (progn (goto-char (point-min))
-                (git-gutter:next-hunk 1)))
+                (diff-hl-next-hunk 1)))
     (">" (progn (goto-char (point-min))
-                (git-gutter:previous-hunk 1)))
-    ("s" git-gutter:stage-hunk)
+                (diff-hl-previous-hunk 1)))
     ("k" (lambda ()
            (interactive)
-           (git-gutter:revert-hunk)
-           (call-interactively #'git-gutter:next-hunk)) nil)
-    ("d" git-gutter:popup-hunk)
-    ("R" git-gutter:set-start-revision)
-    ("q" nil :color blue)
-    ("Q" (progn (git-gutter-mode -1)
-                ;; git-gutter-fringe doesn't seem to
-                ;; clear the markup right away
-                (sit-for 0.1)
-                (git-gutter:clear))
-     :color blue))
+           (diff-hl-revert-hunk)
+           (call-interactively #'diff-hl-next-hunk)) nil)
+    ("d" diff-hl-diff-goto-hunk)
+    ("q" nil :color blue))
 
   (defhydra hydra-vc-log-edit (:color blue :hint nil)
     "
