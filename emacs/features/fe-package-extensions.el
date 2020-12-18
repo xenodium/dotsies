@@ -26,7 +26,7 @@
 	(message "Native comp is available")
         ;; Using Emacs.app/Contents/MacOS/bin since it was compiled with
         ;; ./configure --prefix="$PWD/nextstep/Emacs.app/Contents/MacOS"
-        (add-to-list 'exec-path (concat invocation-directory "bin") t)
+        (add-to-list 'exec-path (concat invocation-directory (file-name-as-directory "bin")))
 	(setenv "LIBRARY_PATH" (concat (getenv "LIBRARY_PATH")
                                        (when (getenv "LIBRARY_PATH")
                                          ":")
