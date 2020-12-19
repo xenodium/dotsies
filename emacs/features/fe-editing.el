@@ -140,10 +140,12 @@
    ("C-c e" . sp-change-enclosing)
    ("M-'" . ar/rewrap-sexp-dwim)
    ("M-k" . sp-backward-kill-sexp)
-   ("C-M-f" . ar/forward-sexp)
-   ("C-M-b" . ar/backward-sexp)
-   ("C-M-n" . sp-forward-sexp)
-   ("C-M-p" . sp-backward-sexp)
+   ;; sp- equivalents choke on Swift' "\()", breaking navigation
+   ;; in surrounding pairs. Use forward/backward-sexp instead.
+   ("C-M-f" . forward-sexp)
+   ("C-M-b" . backward-sexp)
+   ("C-M-n" . forward-sexp)
+   ("C-M-p" . backward-sexp)
    ("C-M-a" . sp-beginning-of-sexp)
    ("C-M-e" . sp-end-of-sexp)
    ("C-M-u" . ar/backward-up-sexp-dwim)
@@ -243,17 +245,6 @@ With PREFIX, add an outer pair around existing pair."
             (not (sp-point-in-symbol)))
         (sp-kill-sexp)
       (kill-sexp)))
-  (defun ar/forward-sexp (&optional arg)
-    (interactive "P")
-    (if arg
-        (skip-syntax-forward "^ ()")
-      (sp-forward-sexp)))
-
-  (defun ar/backward-sexp (&optional arg)
-    (interactive "P")
-    (if arg
-        (skip-syntax-backward "^ ()")
-      (sp-backward-sexp)))
 
   (require 'smartparens-config)
 
@@ -261,10 +252,8 @@ With PREFIX, add an outer pair around existing pair."
 
   (require 'smartparens-python)
 
-  ;; Removes \\(
-  (sp-local-pair 'swift-mode "\\\\(" nil :actions nil)
-
-  (sp-local-pair 'swift-mode "\\(" ")")
+  ;; Don't eagerly escape Swift style string interpolation.
+  (sp-local-pair 'swift-mode "\\(" ")" :when '(sp-in-string-p))
 
   (defun ar/create-newline-and-enter-sexp (&rest _ignored)
     "Open a new brace or bracket expression, with relevant newlines and indent. "
