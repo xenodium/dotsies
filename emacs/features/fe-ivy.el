@@ -269,8 +269,6 @@ For example:
   (ivy-display-style 'fancy)
   (ivy-wrap nil)
   (enable-recursive-minibuffers t)
-  :init
-  (global-unset-key (kbd "M-o"))
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
          :map ivy-minibuffer-map
