@@ -145,30 +145,35 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
-  (require 'cl-lib)
-
   (defun ar/dired-convert-audio-to-mp3 (&optional arg)
-    "Convert audio file to mp3."
     (interactive "P")
-    (cl-assert (executable-find "convert") nil "Install ffmpeg")
-    (mapc
-     (lambda (fpath)
-       (let* ((src-fpath fpath)
-              (ext (file-name-extension src-fpath))
-              (dst-fpath (concat (file-name-sans-extension src-fpath)
-                                 ".mp3")))
-         (message "ffmpeg %s ..." (file-name-nondirectory dst-fpath))
-         (set-process-sentinel (start-process "ffmpeg"
-                                              (generate-new-buffer (format "*ffmpeg %s*" (file-name-nondirectory src-fpath)))
-                                              "ffmpeg" "-loglevel" "error" "-n" "-i" src-fpath "-acodec" "libmp3lame" dst-fpath)
-                               (lambda (process state)
-                                 (if (= (process-exit-status process) 0)
-                                     (message "ffmpeg %s ✔" (file-name-nondirectory dst-fpath))
-                                   (message "ffmpeg %s ❌" (file-name-nondirectory dst-fpath))
-                                   (message (with-current-buffer (process-buffer process)
-                                              (buffer-string))))
-                                 (kill-buffer (process-buffer process))))))
-     (dired-map-over-marks (dired-get-filename) arg)))
+    (require 'cl-lib)
+    (mapc (lambda (fpath)
+            (let* ((src-fpath fpath)
+                   (ext (file-name-extension src-fpath))
+                   (dst-fpath (concat (file-name-sans-extension src-fpath) ".mp3"))
+                   (buffer (generate-new-buffer (format "*ffmpeg %s*" (file-name-nondirectory src-fpath))))
+                   (command (format "ffmpeg -stats -loglevel error -n -i %s -acodec libmp3lame %s"
+                                    (shell-quote-argument src-fpath)
+                                    (shell-quote-argument dst-fpath))))
+              ;; Suppress automatically displaying buffer.
+              (add-to-list 'display-buffer-alist (cons (regexp-quote (buffer-name buffer))
+                                                       (cons #'display-buffer-no-window nil)))
+              (message "started: \"%s\"" command)
+              (async-shell-command command buffer)
+              (let ((nonce (make-symbol "nonce")))
+                ;; Momentarily add sentinel via advice.
+                (add-function :after (process-sentinel (get-buffer-process buffer))
+                              (lambda (process _)
+                                ;; Remove temprary advice.
+                                (remove-function (process-filter process) nonce)
+                                (if (= (process-exit-status process) 0)
+                                    (message "finished: \"%s\"" command)
+                                  (message "error: \"%s\"" command)
+                                  (message (with-current-buffer buffer (buffer-string))))
+                                (kill-buffer buffer))
+                              `((name . ,nonce))))))
+          (dired-map-over-marks (dired-get-filename) arg)))
 
   (defun ar/dired-convert-image (&optional arg)
     "Convert image files to other formats."
