@@ -9,6 +9,7 @@
 (require 'f)
 (require 'dash)
 (require 'simple)
+(require 'cl-lib)
 
 (defun ar/ios-sim-booted-id ()
   "Booted simulator ID."
@@ -22,7 +23,7 @@
 (defun ar/ios-sim-app-directories ()
   "Get all app directories for booted simulator."
   (let ((booted-sim-id (ar/ios-sim-booted-id)))
-    (assert booted-sim-id nil "No booted simulator")
+    (cl-assert booted-sim-id nil "No booted simulator")
     (f-directories (expand-file-name (format "~/Library/Developer/CoreSimulator/Devices/%s/data/Containers/Data/Application" booted-sim-id)))))
 
 (defun ar/ios-sim-app-bundle-ids ()
@@ -52,7 +53,7 @@
          (path (ar/ios-sim-app-directory (if (> (length bundle-id) 0)
                                              bundle-id
                                            ar/ios-sim--last-bundle-id))))
-    (assert path nil "Not found")
+    (cl-assert path nil "Not found")
     (when (> (length bundle-id) 0)
       (setq ar/ios-sim--last-bundle-id bundle-id))
     (find-file path)))
