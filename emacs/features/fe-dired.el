@@ -53,6 +53,8 @@
   :bind (:map global-map
               ("C-l" . dired-jump)
               :map dired-mode-map
+              ([remap dired-do-async-shell-command] . ar/dired-do-async-shell-command)
+              ([remap dired-do-shell-command] . ar/dired-do-async-shell-command)
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
@@ -252,6 +254,38 @@
                          (list "-O2" "-o" dst-fpath)))
          (message "Created %s" (file-name-nondirectory dst-fpath))))
      (dired-map-over-marks (dired-get-filename) arg)))
+
+  (defun ar/dired-do-async-shell-command ()
+  "Like `dired-do-async-shell-command' but supports $f and $f.ext and always sequential."
+  (interactive)
+  (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
+    (call-interactively #'dired-do-async-shell-command)))
+
+  (defun ar/dired-shell-stuff-it (template file-list on-each &optional _raw-arg)
+    "Similar to `dired-shell-stuff-it' in spirit, but replaces $f with file from FILE-LIST.
+In addition, $f.ext replaces the extension with ext for file in FILE-LIST. Commands are
+always executed sequentually."
+    (let ((background (string-suffix-p "&" template))
+          (command))
+      (when background
+        (setq template (string-remove-suffix "&" template)))
+      (when (string-suffix-p ";" template)
+        (setq template (string-remove-suffix ";" template)))
+      (concat
+       (string-join
+        (mapcar (lambda (path)
+                  (setq command template)
+                  ;; $f (/path/file.jpg)-> /path/file.jpg
+                  (when (string-match "[[:blank:]]\\($f\\)\\([[:blank:]]\\|$\\)" command)
+                    (setq command (replace-match (format "\"%s\"" path) nil nil command 1)))
+                  ;; $f.png (/path/file.jpg) -> /path/file.png
+                  (when (string-match "[[:blank:]]\\(\\($f\\)\\.\\([[:alnum:]]+\\)\\)\\([[:blank:]]\\|$\\)" command)
+                    (setq command (replace-match (format "\"%s.\\3\"" (file-name-sans-extension path))
+                                                 nil nil command 1)))
+                  command)
+                file-list)
+        ";")
+       (if background "&" ""))))
 
   (defun ar/dired-create-icns-iconset (&optional arg)
     "Convert image ios icns and iconset (needs 1024x1024)."

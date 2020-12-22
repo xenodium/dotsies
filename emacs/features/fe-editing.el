@@ -474,20 +474,6 @@ With PREFIX, add an outer pair around existing pair."
         (insert lines))
       (forward-line)))
 
-  (defun adviced:read-shell-command (orig-fun &rest r)
-    "Advice around `read-shell-command' to replace $f with buffer file name."
-    (let ((command (apply orig-fun r)))
-      (if (string-match-p "\\$f" command)
-          (replace-regexp-in-string "\\$f"
-                                    (or (buffer-file-name)
-                                        (user-error "No file file visited to replace $f"))
-                                    command)
-        command)))
-
-  (advice-add #'read-shell-command
-              :around
-              #'adviced:read-shell-command)
-
   ;; From https://github.com/daschwa/emacs.d
   (defadvice kill-ring-save (before slick-copy activate compile)
     "When called interactively with no active region, copy a single
