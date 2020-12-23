@@ -147,76 +147,29 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
-  (defun ar/dired-convert-audio-to-mp3 (&optional arg)
-    (interactive "P")
-    (require 'cl-lib)
-    (mapc (lambda (fpath)
-            (let* ((src-fpath fpath)
-                   (ext (file-name-extension src-fpath))
-                   (dst-fpath (concat (file-name-sans-extension src-fpath) ".mp3"))
-                   (buffer (generate-new-buffer (format "*ffmpeg %s*" (file-name-nondirectory src-fpath))))
-                   (command (format "ffmpeg -stats -loglevel error -n -i %s -acodec libmp3lame %s"
-                                    (shell-quote-argument src-fpath)
-                                    (shell-quote-argument dst-fpath))))
-              ;; Suppress automatically displaying buffer.
-              (add-to-list 'display-buffer-alist (cons (regexp-quote (buffer-name buffer))
-                                                       (cons #'display-buffer-no-window nil)))
-              (message "started: \"%s\"" command)
-              (async-shell-command command buffer)
-              (let ((nonce (make-symbol "nonce")))
-                ;; Momentarily add sentinel via advice.
-                (add-function :after (process-sentinel (get-buffer-process buffer))
-                              (lambda (process _)
-                                ;; Remove temprary advice.
-                                (remove-function (process-filter process) nonce)
-                                (if (= (process-exit-status process) 0)
-                                    (message "finished: \"%s\"" command)
-                                  (message "error: \"%s\"" command)
-                                  (message (with-current-buffer buffer (buffer-string))))
-                                (kill-buffer buffer))
-                              `((name . ,nonce))))))
-          (dired-map-over-marks (dired-get-filename) arg)))
+  (defun ar/dired--async-shell-command (command)
+    "Execute async shell COMMAND (replacing $f and $f.ext) with file
+ path and path sans extension."
+    (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
+      (dired-do-async-shell-command command
+                                    nil (dired-get-marked-files t nil nil nil t))))
 
-  (defun ar/dired-convert-image (&optional arg)
-    "Convert image files to other formats."
-    (interactive "P")
-    (cl-assert (or (executable-find "convert") (executable-find "magick.exe")) nil "Install imagemagick")
-    (let* ((dst-fpath)
-           (src-fpath)
-           (src-ext)
-           (last-ext)
-           (dst-ext))
-      (mapc
-       (lambda (fpath)
-         (setq src-fpath fpath)
-         (setq src-ext (downcase (file-name-extension src-fpath)))
-         (when (or (null dst-ext)
-                   (not (string-equal dst-ext last-ext)))
-           (setq dst-ext (completing-read "to format: "
-                                          (seq-remove (lambda (format)
-                                                        (string-equal format src-ext))
-                                                      '("jpg" "png")))))
-         (setq last-ext dst-ext)
-         (setq dst-fpath (format "%s.%s" (file-name-sans-extension src-fpath) dst-ext))
-         (message "convert %s to %s ..." (file-name-nondirectory dst-fpath) dst-ext)
-         (set-process-sentinel
-          (if (string-equal system-type "windows-nt")
-              (start-process "convert"
-                             (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
-                             "magick.exe" "convert" src-fpath dst-fpath)
-            (start-process "convert"
-                           (generate-new-buffer (format "*convert %s*" (file-name-nondirectory src-fpath)))
-                           "convert" src-fpath dst-fpath))
-          (lambda (process state)
-            (if (= (process-exit-status process) 0)
-                (message "convert %s ✔" (file-name-nondirectory dst-fpath))
-              (message "convert %s ❌" (file-name-nondirectory dst-fpath))
-              (message (with-current-buffer (process-buffer process)
-                         (buffer-string))))
-            (kill-buffer (process-buffer process)))))
-       (dired-map-over-marks (dired-get-filename) arg))))
+  (defun ar/dired-convert-audio-to-mp3 ()
+    (interactive)
+    (cl-assert (executable-find "ffmpeg") nil "ffmpeg not installed")
+    (ar/dired--async-shell-command "ffmpeg -stats -n -i $f -acodec libmp3lame $f.mp3"))
 
-  (defun ar/dired-video-to-gif (&optional arg)
+  (defun ar/dired-convert-image-to-jpg ()
+    (interactive)
+    (cl-assert (executable-find "convert") nil "Install imagemagick")
+    (ar/dired--async-shell-command "convert -verbose $f $f.jpg"))
+
+  (defun ar/dired-convert-image-to-png ()
+    (interactive)
+    (cl-assert (executable-find "convert") nil "Install imagemagick")
+    (ar/dired--async-shell-command "convert -verbose $f $f.png"))
+
+  (defun ar/dired-convert-video-to-gif (&optional arg)
     (interactive "P")
     (cl-assert (executable-find "ffmpeg") nil "ffmpeg not installed")
     (cl-assert (executable-find "gifsicle") nil "gifsicle not installed")
