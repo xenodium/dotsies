@@ -31,11 +31,12 @@
 	(setenv "LIBRARY_PATH" (concat (getenv "LIBRARY_PATH")
                                        (when (getenv "LIBRARY_PATH")
                                          ":")
-				       ;; This is where Homebrew puts gcc libraries.
+				       ;; This is where Homebrew puts libgccjit libraries.
                                        (car (file-expand-wildcards
-                                             (expand-file-name "~/homebrew/opt/gcc/lib/gcc/*")))))
+                                             (expand-file-name "~/homebrew/opt/libgccjit/lib/gcc/*")))))
 	;; Only set after LIBRARY_PATH can find gcc libraries.
-	(setq comp-deferred-compilation t))
+	(setq comp-deferred-compilation t)
+        (setq comp-speed 3))
     (message "Native comp is *not* available")))
 
 (use-package auto-compile
