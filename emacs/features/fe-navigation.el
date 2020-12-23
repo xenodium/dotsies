@@ -95,7 +95,10 @@ Repeated invocations toggle between the two most recently open buffers."
     (interactive)
     (split-window-horizontally)
     (other-window 1 nil)
-    (switch-to-next-buffer)))
+    (switch-to-next-buffer))
+  :config
+  (add-to-list 'display-buffer-alist
+               (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil))))
 
 ;; In addition to highlighting symbols, we get navigation between them.
 (use-package symbol-overlay
