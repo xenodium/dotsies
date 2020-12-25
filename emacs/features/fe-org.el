@@ -509,8 +509,8 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
 
       (cond ((string-equal system-type "darwin")
              ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
-             (setq org-plantuml-jar-path "~/homebrew//Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
-             (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+             (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2020.19/libexec/plantuml.jar")
+              (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
             (t
              (message "Warning: Could not find plantuml.8018.jar")
              (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
