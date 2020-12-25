@@ -721,7 +721,8 @@ If VANILLA is non-nil, run the standard `org-capture'."
     (if vanilla
         (org-capture)
       (let ((org-overriding-default-time (org-get-cursor-date)))
-        (org-capture nil "t"))))
+        (org-capture nil "t")))
+    (org-save-all-org-buffers))
 
   (defun ar/org-agenda-next-header ()
     "Jump to the next header in an agenda series."
