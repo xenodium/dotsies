@@ -86,10 +86,7 @@ diff hl:
                 (diff-hl-next-hunk 1)))
     (">" (progn (goto-char (point-min))
                 (diff-hl-previous-hunk 1)))
-    ("k" (lambda ()
-           (interactive)
-           (diff-hl-revert-hunk)
-           (call-interactively #'diff-hl-next-hunk)) nil)
+    ("k" diff-hl-revert-hunk nil)
     ("d" diff-hl-diff-goto-hunk)
     ("q" nil :color blue))
 
