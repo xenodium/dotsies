@@ -603,6 +603,13 @@ preferring the preferred type."
   (interactive)
   (ar/open-youtube-url (current-kill 0)))
 
+(defun ar/video-stream-clipboard-url ()
+  (interactive)
+  (let ((url (string-trim (current-kill 0)))
+        (display-buffer-alist nil))
+    (cl-assert (string-match-p "^http[s]?://" url) nil "Not a URL")
+    (async-shell-command (format "mpv \"%s\"" url))))
+
 (defun ar/open-youtube-clipboard-from-page-url ()
   "Open youtube video from page url in clipboard."
   (interactive)
