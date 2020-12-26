@@ -590,6 +590,61 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
                                            (quote ((agenda todo-state-down priority-down alpha-down category-keep)))))))
                              nil
                              ("~/Downloads/agenda.html"))))
+
+  ;; Trying out agenda children preview
+  ;; https://github.com/alphapapa/unpackaged.el#agenda-previews
+  (use-package ov
+    :ensure t
+    :bind (:map org-agenda-mode-map
+                ("<tab>" . ar/org-agenda-tab-dwim))
+    :config
+    (defun ar/org-agenda-tab-dwim (prefix)
+      (interactive "P")
+      (if prefix
+          (call-interactively 'org-agenda-goto)
+        (ar/org-agenda-toggle-preview)))
+
+    (defface ar/org-agenda-preview
+      '((t (:background "black")))
+      "Face for Org Agenda previews."
+      :group 'org)
+
+    (defun ar/org-agenda-toggle-preview ()
+      "Toggle overlay of current item in agenda."
+      (interactive)
+      (require 'dash)
+      (require 'ov)
+      (if-let* ((overlay (ov-in 'ar/org-agenda-preview t (line-end-position) (line-end-position))))
+          ;; Hide existing preview
+          (ov-reset overlay)
+        ;; Show preview
+        (let* ((entry-contents (--> (org-agenda-with-point-at-orig-entry
+                                     nil (buffer-substring (save-excursion
+                                                             (ar/org-forward-to-entry-content t)
+                                                             (point))
+                                                           (org-entry-end-position)))
+                                    s-trim
+                                    (concat "\n" it "\n"))))
+          (add-face-text-property 0 (length entry-contents)
+                                  'ar/org-agenda-preview nil entry-contents)
+          (ov (line-end-position) (line-end-position)
+              'ar/org-agenda-preview t
+              'before-string entry-contents))))
+
+    (defun ar/org-forward-to-entry-content (&optional unsafe)
+      "Skip headline, planning line, and all drawers in current entry.
+If UNSAFE is non-nil, assume point is on headline."
+      (unless unsafe
+        ;; To improve performance in loops (e.g. with `org-map-entries')
+        (org-back-to-heading))
+      (cl-loop for element = (org-element-at-point)
+               for pos = (pcase element
+                           (`(headline . ,_) (org-element-property :contents-begin element))
+                           (`(,(or 'planning 'property-drawer 'drawer) . ,_) (org-element-property :end element)))
+               while pos
+               do (goto-char pos))))
+
+
   (use-package org-super-agenda
     :ensure t
     :validate-custom
