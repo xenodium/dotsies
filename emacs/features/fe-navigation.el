@@ -46,20 +46,6 @@
   :ensure t
   :commands olivetti-mode)
 
-;; Potential native replacement for centered-cursor-mode.
-;; Breaks org mode.
-;; (setq scroll-preserve-screen-position t
-;;       scroll-conservatively 0
-;;       maximum-scroll-margin 0.5
-;;       scroll-margin 99999)
-
-(use-package centered-cursor-mode
-  :ensure t
-  :commands (centered-cursor-mode global-centered-cursor-mode)
-  :init
-  ;; Workaround to use centered-cursor-mode in --nw.
-  (defvar mouse-wheel-mode nil))
-
 (use-package window
   :bind (("C-x 2" . ar/vsplit-last-buffer)
          ("C-x 3" . ar/hsplit-last-buffer)
