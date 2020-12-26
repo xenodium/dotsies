@@ -53,7 +53,7 @@
 
 ** mpv.conf
 
-#+begin_src conf :mkdirp yes :tangle ~/.mpv/mpv.conf
+#+begin_src conf :mkdirp yes :tangle ~/.config/mpv/mpv.conf
   ontop
 #+end_src
 
