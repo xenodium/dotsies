@@ -135,11 +135,6 @@
     (use-package pcmpl-homebrew
       :ensure t)
 
-    ;; Fringe exit status indicators.
-    (use-package eshell-fringe-status
-      :ensure t
-      :hook ((eshell-mode . eshell-fringe-status-mode)))
-
     (use-package eshell-up
       :ensure t
       :config
@@ -213,11 +208,7 @@ So if we're connected with sudo to 'remotehost'
 
     (use-package em-smart
       :hook
-      ((eshell-mode . eshell-smart-initialize))
-      :validate-custom
-      (eshell-smart-space-goes-to-end t)
-      (eshell-where-to-jump 'begin)
-      (eshell-review-quick-commands nil))
+      ((eshell-mode . eshell-smart-initialize)))
 
     ;; Avoid "WARNING: terminal is not fully functional."
     ;; http://mbork.pl/2018-06-10_Git_diff_in_Eshell
@@ -279,10 +270,7 @@ So if we're connected with sudo to 'remotehost'
                                                     "uncompress")
                                                    (t
                                                     (error "Don't know how to extract %s" file)))
-                                     file)))
-
-
-    (use-package ar-eshell-config))
+                                     file))))
 
   (defun ar/shell-pop (prefix)
     "Shell pop with PREFIX to cd to working dir. Else use existing location."
