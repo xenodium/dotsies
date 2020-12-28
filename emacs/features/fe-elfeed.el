@@ -203,6 +203,7 @@ Based on `elfeed-search-print-entry--default'."
   (setq elfeed-feeds '(
                        ("http://1w6.org/rss.xml" blog emacs draketo)
                        ("https://feeds.feedburner.com/JakeMccrarysMusings" blog emacs JakeMccrary)
+                       ("https://ag91.github.io/rss.xml" blog emacs AndreaGiugliano)
                        ("https://goykhman.ca/gene/blog/2020/rss.xml" blog emacs GeneGoykhman)
                        ("http://www.nextpoint.se/?feed=comments-rss2" blog emacs nextpoint)
                        ("https://www.emadelsaid.com/feed.xml"blog emacs EmadElsaid)
