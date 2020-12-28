@@ -15,15 +15,6 @@
 (require 'iimage)
 (require 'cl-lib)
 
-(defun ar/eshell-config--prompt-char ()
-  "Return shell config character, based on current OX. For example, an  for MacOS."
-  (let ((os-char (cond ((string-equal system-type "darwin") "")
-                       ((string-equal system-type "gnu/linux") "🐧")
-                       (t "?"))))
-    (format "%s %s" os-char (if (= (user-uid) 0)
-                                "#"
-                              "$"))))
-
 (defun ar/eshell-config--shrinked-dpath ()
   "Shrinked current directory path."
   (car (shrink-path-prompt (eshell/pwd))))
@@ -46,7 +37,9 @@
           (propertize (ar/eshell-config--git-branch-prompt)
                       'face 'font-lock-function-name-face)
           " "
-          (propertize (ar/eshell-config--prompt-char) 'face 'eshell-prompt)
+          (propertize (if (= (user-uid) 0)
+                          "#"
+                        "$") 'face 'eshell-prompt)
           ;; needed for the input text to not have prompt face
           (propertize " " 'face 'default)))
 
@@ -73,36 +66,6 @@
 
 (defalias 'eshell/e 'eshell/emacs)
 (defalias 'eshell/ec 'eshell/emacs)
-
-(defun eshell-view-file (file)
-  "View FILE.  A version of `view-file' which properly rets the eshell prompt."
-  (interactive "fView file: ")
-  (unless (file-exists-p file) (error "%s does not exist" file))
-  (let ((had-a-buf (get-file-buffer file))
-        (buffer (find-file-noselect file)))
-    (if (eq (with-current-buffer buffer (get major-mode 'mode-class))
-            'special)
-        (progn
-          (switch-to-buffer buffer)
-          (message "Not using View mode because the major mode is special"))
-      (let ((undo-window (list (window-buffer) (window-start)
-                               (+ (window-point)
-                                  (length (funcall eshell-prompt-function))))))
-        (switch-to-buffer buffer)
-        (view-mode-enter (cons (selected-window) (cons nil undo-window))
-                         'kill-buffer)))))
-
-(defun eshell/less (&rest args)
-  "Invoke `view-file' on a file (ARGS).  \"less +42 foo\" will go to line 42 in the buffer for foo."
-  (while args
-    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-        (let* ((line (string-to-number (match-string 1 (pop args))))
-               (file (pop args)))
-          (eshell-view-file file)
-          (forward-line line))
-      (eshell-view-file (pop args)))))
-
-(defalias 'eshell/more 'eshell/less)
 
 (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)
 
