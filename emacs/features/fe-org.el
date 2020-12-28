@@ -4,7 +4,7 @@
   :mode ("\\.org\\'" . org-mode)
   :ensure org-plus-contrib ;; Ensure latest org installed from elpa
   :bind (:map org-mode-map
-              ("M-RET" . ar/org-meta-return)
+              ("M-<RET>" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("M-[" . org-metaleft)
