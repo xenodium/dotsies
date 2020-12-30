@@ -209,8 +209,11 @@ For example:
   ;; Trying out ivy-prescient as a replacement to smex.
   (use-package ivy-prescient
     :ensure t
+    :validate-custom
+    (ivy-prescient-retain-classic-highlighting t)
     :config
-    (ivy-prescient-mode +1))
+    (ivy-prescient-mode +1)
+    (prescient-persist-mode +1))
 
   ;; Wgrep is used by counsel-ag (to make writeable).
   (use-package wgrep
