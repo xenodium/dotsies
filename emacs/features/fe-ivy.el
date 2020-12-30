@@ -203,8 +203,14 @@ For example:
               :caller 'ar/counsel-hacking-with-swift-search))
 
   ;; Smex handles M-x command sorting. Bringing recent commands to the top.
-  (use-package smex
-    :ensure t)
+  ;; (use-package smex
+  ;;   :ensure t)
+
+  ;; Trying out ivy-prescient as a replacement to smex.
+  (use-package ivy-prescient
+    :ensure t
+    :config
+    (ivy-prescient-mode +1))
 
   ;; Wgrep is used by counsel-ag (to make writeable).
   (use-package wgrep
