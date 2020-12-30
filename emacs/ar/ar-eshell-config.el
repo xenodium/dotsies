@@ -52,21 +52,6 @@
         (concat " [" (substring branch 2)  "]")
       "")))
 
-(defun eshell/emacs (&rest args)
-  "Open a file (ARGS) in Emacs.  Some habits die hard."
-  (if (null args)
-      ;; If I just ran "emacs", I probably expect to be launching
-      ;; Emacs, which is rather silly since I'm already in Emacs.
-      ;; So just pretend to do what I ask.
-      (bury-buffer)
-    ;; We have to expand the file names or else naming a directory in an
-    ;; argument causes later arguments to be looked for in that directory,
-    ;; not the starting directory
-    (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
-
-(defalias 'eshell/e 'eshell/emacs)
-(defalias 'eshell/ec 'eshell/emacs)
-
 (validate-setq eshell-prompt-function #'ar/eshell-config--prompt-function)
 
 ;; https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org

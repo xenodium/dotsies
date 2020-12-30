@@ -243,6 +243,21 @@ So if we're connected with sudo to 'remotehost'
       "Change PWD to active dir."
       (eshell/cd "~/stuff/active/code/"))
 
+    (defun eshell/emacs (&rest args)
+      "Open a file (ARGS) in Emacs.  Some habits die hard."
+      (if (null args)
+          ;; If I just ran "emacs", I probably expect to be launching
+          ;; Emacs, which is rather silly since I'm already in Emacs.
+          ;; So just pretend to do what I ask.
+          (bury-buffer)
+        ;; We have to expand the file names or else naming a directory in an
+        ;; argument causes later arguments to be looked for in that directory,
+        ;; not the starting directory
+        (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
+
+    (defalias 'eshell/e 'eshell/emacs)
+    (defalias 'eshell/ec 'eshell/emacs)
+
     (defun eshell/extract (file)
       "One universal command to extract FILE (for bz2, gz, rar, etc.)"
       (eshell-command-result (format "%s %s" (cond ((string-match-p ".*\.tar.bz2" file)
