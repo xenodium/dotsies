@@ -41,10 +41,7 @@
       (add-to-list 'eshell-visual-commands "ncdu")
       (add-to-list 'eshell-visual-subcommands '("hg" "log" "diff"))
 
-      (setq-local company-backends '((company-yasnippet company-cd company-projectile-cd)))
-
       (yas-minor-mode +1)
-      (company-mode +1)
 
       ;; comint-magic-space needs to be whitelisted to ensure we receive company-begin events in eshell.
       (when (boundp 'company-begin-commands)
@@ -62,10 +59,12 @@
                    ("M-r" . ar/eshell-counsel-history))))
     :config
     (require 'counsel)
-    (require 'company-projectile-cd)
-    (require 'company-cd)
-        ;; Use native 'sudo', system sudo asks for password every time.
+    ;; Use native 'sudo', system sudo asks for password every time.
     (require 'em-tramp)
+
+    (use-package esh-autosuggest
+      :hook (eshell-mode . esh-autosuggest-mode)
+      :ensure t)
 
     (use-package em-hist
       :validate-custom
