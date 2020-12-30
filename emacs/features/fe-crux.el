@@ -4,7 +4,8 @@
   :ensure t
   :commands crux-open-with
   :bind
-  (("C-x C-d" . crux-duplicate-current-line-or-region))
+  (("C-x C-d" . crux-duplicate-current-line-or-region)
+   ("C-o" . crux-smart-open-line))
   :config
   ;; I used to define my own versions of these functions.
   ;; Crux packaged them up. Aliasing, to find faster.
