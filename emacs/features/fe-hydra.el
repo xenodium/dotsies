@@ -74,10 +74,10 @@ Open: _p_oint _e_xternally
                                :hint nil)
     "
 diff hl:
-  _n_: next hunk        _s_tage hunk   _q_uit
-  _p_: previous hunk    _k_ill hunk
-  ^ ^                   _d_iff hunk
-  _<_: first hunk
+  _n_: next hunk        _k_ill hunk
+  _p_: previous hunk    _d_iff hunk
+  ^ ^
+  _<_: first hunk       _q_uit
   _>_: last hunk
 "
     ("n" diff-hl-next-hunk)
