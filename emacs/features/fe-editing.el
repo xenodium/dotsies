@@ -399,9 +399,7 @@ With PREFIX, add an outer pair around existing pair."
   :validate-custom
   ;; Without this matching parens aren't highlighted in region.
   (show-paren-priority -50)
-  (show-paren-delay 0.3)
-  ;; Highlight entire bracket expression.
-  (show-paren-style 'expression))
+  (show-paren-delay 0.3))
 
 (use-package ar-text
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
