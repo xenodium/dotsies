@@ -411,6 +411,7 @@ Based on `elfeed-search-print-entry--default'."
                        ("https://news.ycombinator.com/rss" hackernews tech)
                        ("https://nickdrozd.github.io/feed.xml" blog emacs NicholasDrozd)
                        ("https://noonker.github.io/index.xml" blog emacs noonker)
+                       ("https://wandersoncferreira.github.io/index.xml" blog WandersonFerreira)
                        ("https://occasionallycogent.com/feed.xml" blog emacs JamesNorman)
                        ("https://ogbe.net/blog.xml" blog emacs dev DennisOgbe)
                        ("https://oracleyue.github.io/atom.xml" blog emacs oracleyue)
