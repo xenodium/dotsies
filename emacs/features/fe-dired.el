@@ -240,6 +240,23 @@ always executed sequentually."
         ";")
        (if background "&" ""))))
 
+  (defun ar/dired-xcode-build-dir ()
+    "Open dired buffer in current Xcode's build directory."
+    (interactive)
+    (unless (executable-find "xcodebuild")
+      (error "xcodebuild not found"))
+    (let ((default-directory (locate-dominating-file
+                              default-directory (lambda (dir)
+                                                  (seq-contains-p (directory-files dir)
+                                                                  "xcodeproj" (lambda (f ext)
+                                                                                (equal (file-name-extension f) ext)))))))
+      (unless default-directory
+        (user-error "No Xcode project found"))
+      (let-alist (seq-elt (json-read-from-string
+                           (shell-command-to-string "xcodebuild -showBuildSettings -json"))
+                          0)
+        (dired (file-name-directory .buildSettings.BUILD_DIR)))))
+
   (defun ar/dired-create-icns-iconset (&optional arg)
     "Convert image ios icns and iconset (needs 1024x1024)."
     (interactive "P")
