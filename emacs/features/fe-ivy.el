@@ -281,6 +281,7 @@ For example:
   :bind (("C-x C-b" . ivy-switch-buffer)
          ("C-c C-r" . ivy-resume)
          :map ivy-minibuffer-map
+         ("DEL" . ivy-backward-delete-char)
          ("C-g" . ar/ivy-keyboard-quit-dwim)
          ("C--" . ivy-minibuffer-shrink)
          ("C-+" . ivy-minibuffer-grow))
