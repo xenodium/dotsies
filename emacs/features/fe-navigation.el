@@ -116,12 +116,16 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure t
   :bind ("M-." . smart-jump-go)
   :commands smart-jump-go
-  :validate-custom
-  (dumb-jump-selector 'ivy)
-  (dumb-jump-force-searcher 'rg)
-  (dumb-jump-max-find-time 5)
   :config
-  (add-to-list 'dumb-jump-project-denoters "TAGS")
+  (use-package dumb-jump
+    :ensure t
+    :validate-custom
+    (dumb-jump-selector 'ivy)
+    (dumb-jump-force-searcher 'rg)
+    (dumb-jump-max-find-time 5)
+    :config
+    (add-to-list 'dumb-jump-project-denoters "TAGS"))
+
   (smart-jump-setup-default-registers)
 
   (smart-jump-register
