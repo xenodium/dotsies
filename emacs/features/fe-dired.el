@@ -225,7 +225,7 @@
                          ;; Returns #0 #1 #2 ... #framecount.
                          (seq-map (lambda (n)
                                     (format "#%d" n))
-                                  (range 0 (string-to-number
+                                  (number-sequence 0 (string-to-number
                                             ;; Get total grame count.
                                             (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
                                          every))
