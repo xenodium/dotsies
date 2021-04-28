@@ -113,7 +113,7 @@
     (set-face-attribute 'org-block nil :background nil :box nil))
 
   (with-eval-after-load 'mu4e-vars
-    (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background )
+    (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background nil)
     (set-face-attribute 'mu4e-unread-face nil :inherit 'default :weight 'bold :foreground "#2BA3FF" :underline nil))
 
   ;; No color for fringe, blends with the rest of the window.
