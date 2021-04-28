@@ -100,7 +100,7 @@
       ;; Don't let visual commands keep creating multiple buffers.
       ;; Kill it first if it already exists.
       (cl-letf (((symbol-function #'generate-new-buffer)
-                 (lambda (name)
+                 (lambda (name &optional inhibit-buffer-hooks)
                    (when (get-buffer name)
                      (kill-buffer name))
                    (get-buffer-create (generate-new-buffer-name name)))))
