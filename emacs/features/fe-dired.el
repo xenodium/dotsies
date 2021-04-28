@@ -169,6 +169,31 @@
     (cl-assert (executable-find "convert") nil "Install imagemagick")
     (ar/dired--async-shell-command "convert -verbose $f $f.png"))
 
+  (defun ar/dired-optimize-gif (&optional arg)
+    (interactive "P")
+    (cl-assert (executable-find "gifsicle") nil "gifsicle not installed")
+    (mapc
+     (lambda (fpath)
+       (let* ((src-fpath fpath)
+              (base-name (file-name-nondirectory (file-name-sans-extension src-fpath)))
+              (dst-fpath (format "%s_optimized.gif" (file-name-sans-extension src-fpath)))
+              (process (lambda (&rest args)
+                         (with-temp-buffer
+                           (let ((out (list :exit-status
+                                            (apply 'call-process (seq-concatenate
+                                                                  'list
+                                                                  (list (car args) nil t nil)
+                                                                  (cdr args)))
+                                            :output
+                                            (buffer-string))))
+                             (cl-assert (eq (map-elt out :exit-status)
+                                            0) nil (map-elt out :output))
+                             out)))))
+         (message "Processing %s" (file-name-nondirectory src-fpath))
+         (funcall process "gifsicle" "-O3" src-fpath "--lossy=80" "-o" dst-fpath)
+         (message "Created %s" (file-name-nondirectory dst-fpath))))
+     (dired-map-over-marks (dired-get-filename) arg)))
+
   (defun ar/dired-convert-video-to-gif (&optional arg)
     (interactive "P")
     (cl-assert (executable-find "ffmpeg") nil "ffmpeg not installed")

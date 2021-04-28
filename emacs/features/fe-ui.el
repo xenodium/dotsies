@@ -37,6 +37,7 @@
   (load-theme 'material t)
 
   (with-eval-after-load 'faces
+    (set-face-attribute 'header-line nil :background "#212121" :foreground "dark grey")
     ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
     (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
                         ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
@@ -112,7 +113,7 @@
     (set-face-attribute 'org-block nil :background nil :box nil))
 
   (with-eval-after-load 'mu4e-vars
-    (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold)
+    (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background )
     (set-face-attribute 'mu4e-unread-face nil :inherit 'default :weight 'bold :foreground "#2BA3FF" :underline nil))
 
   ;; No color for fringe, blends with the rest of the window.
