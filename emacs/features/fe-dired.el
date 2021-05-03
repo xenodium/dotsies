@@ -431,10 +431,11 @@ always executed sequentually."
 
 (use-package tramp
   :defer
-  :validate-custom
-  ;; Favor .ssh/config instead.
-  (tramp-use-ssh-controlmaster-options nil)
   :config
+  (use-package tramp-sh
+    :validate-custom
+    ;; Favor .ssh/config instead.
+    (tramp-use-ssh-controlmaster-options nil))
   ;; Use remote PATH on tramp (handy for eshell).
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
   ;; make sure vc stuff is not making tramp slower
