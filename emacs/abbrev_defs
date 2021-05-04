@@ -11,4 +11,6 @@
     ("resposibilities" "responsibilities" nil :count 0)
     ("watnt" "want" nil :count 0)
     ("neighborhoods" "neighbourhoods" nil :count 0)
+    ("extenstions" "extensions" nil :count 0)
    ))
+
