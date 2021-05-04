@@ -628,14 +628,11 @@ preferring the preferred type."
                        (-map (lambda (anchor)
                                (let-alist anchor
                                  .url))
-                             (-filter (lambda (anchor)
-                                        (let-alist anchor
-                                          (string-match "youtube" .url)))
-                                      (ar/url-fetch-anchor-elements (current-kill 0)))))))
+                             (ar/url-fetch-anchor-elements (current-kill 0))))))
     (cl-assert (> (length youtube-urls) 0) nil "No youtube links found")
     (if (= (length youtube-urls) 1)
-        (ar/open-youtube-url (nth 0 youtube-urls))
-      (ar/open-youtube-url (completing-read "choose:" youtube-urls)))))
+        (async-shell-command (format "mpv \"%s\"" (nth 0 youtube-urls)))
+      (async-shell-command (format "mpv \"%s\"" (completing-read "choose: " youtube-urls))))))
 
 (use-package ytel
   :ensure t
