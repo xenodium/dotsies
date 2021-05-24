@@ -15,6 +15,10 @@
          ("M-;" . 'comment-line)
          ("C-M-;" . 'comment-line)))
 
+;; Highlight TODO, FIXME....
+(use-package hl-todo :ensure t
+  :hook ((prog-mode . hl-todo-mode)))
+
 ;; prog-mode is loaded super early during launch/initialization.
 (use-package prog-mode
   :bind (:map
