@@ -1,16 +1,38 @@
-;;; company-org-block.el --- Company backend to complete org blocks.
+;;; company-org-block.el --- Org blocks company backend -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021 Alvaro Ramirez
+
+;; Package-Requires: ((emacs "25.1"))
+;; URL: https://github.com/xenodium/company-org-block
+
+;; This package is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This package is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Enable in org-mode to complete source blocks.
+;; `company-complete' org blocks using "<" as trigger
 ;;
-;; Completes only when there's a "<" before.
+;; To enable, add `company-org-block' to `company-backend'.
 
 ;;; Code:
 
+(require 'company)
 (require 'map)
 (require 'org)
 (require 'seq)
-(require 'company)
+
+(defgroup company-org-block nil
+  "Completion back-end for org blocks."
+  :group 'company)
 
 (defcustom company-org-block-complete-at-bol t
   "If t, detect completion only at the beginning of lines."
@@ -27,7 +49,7 @@
 	  (const :tag "prompt: ask before edit" prompt)
 	  (const :tag "auto edit, no prompt" auto)))
 
-(defvar company-org--regexp "<\\([^ ]*\\)")
+(defvar company-org-block--regexp "<\\([^ ]*\\)")
 
 (defun company-org-block (command &optional arg &rest _ignored)
   "A company completion backend for org blocks.
@@ -58,8 +80,8 @@ COMMAND and ARG are sent by company itself."
 
 (defun company-org-block--template-p (template)
   "Check if there is a TEMPLATE available for completion."
-  (seq-contains (map-values org-structure-template-alist)
-                template))
+  (seq-contains-p (map-values org-structure-template-alist)
+                  template))
 
 (defun company-org-block--expand (insertion)
   "Replace INSERTION with generated source block."
@@ -96,8 +118,8 @@ COMMAND and ARG are sent by company itself."
   "Return cons with symbol and t whenever prefix of < is found.
 For example: \"<e\" -> (\"e\" . t)"
   (when (looking-back (if company-org-block-complete-at-bol
-                          (concat "^" company-org--regexp)
-                        company-org--regexp)
+                          (concat "^" company-org-block--regexp)
+                        company-org-block--regexp)
                       (line-beginning-position))
     (cons (match-string-no-properties 1) t)))
 
