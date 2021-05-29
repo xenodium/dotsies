@@ -1,8 +1,7 @@
 ;;; company-org-block.el --- Org blocks company backend -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Alvaro Ramirez
-
-;; Package-Requires: ((emacs "25.1"))
+;; Author: Alvaro Ramirez
+;; Package-Requires: ((emacs "25.1") (company "0.8.0") (org "9.2.0"))
 ;; URL: https://github.com/xenodium/company-org-block
 
 ;; This package is free software; you can redistribute it and/or modify
@@ -19,7 +18,7 @@
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; `company-complete' org blocks using "<" as trigger
+;; `company-complete' org blocks using "<" as a trigger.
 ;;
 ;; To enable, add `company-org-block' to `company-backend'.
 
@@ -55,7 +54,7 @@
   "A company completion backend for org blocks.
 
 COMMAND and ARG are sent by company itself."
-  (interactive (list 'interactive))
+  (interactive (list #'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-org-block))
     (prefix (when (derived-mode-p 'org-mode)
@@ -80,8 +79,8 @@ COMMAND and ARG are sent by company itself."
 
 (defun company-org-block--template-p (template)
   "Check if there is a TEMPLATE available for completion."
-  (seq-contains-p (map-values org-structure-template-alist)
-                  template))
+  (seq-contains (map-values org-structure-template-alist)
+                template))
 
 (defun company-org-block--expand (insertion)
   "Replace INSERTION with generated source block."
