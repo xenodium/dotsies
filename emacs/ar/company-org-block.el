@@ -10,10 +10,10 @@
 (require 'map)
 (require 'org)
 (require 'seq)
+(require 'company)
 
 (defcustom company-org-block-complete-at-bol t
-  "If t, detect completion when at begining of line, otherwise detect
- completion anywhere."
+  "If t, detect completion only at the beginning of lines."
   :type 'boolean)
 
 (defcustom company-org-block-explicit-lang-defaults t
@@ -21,19 +21,18 @@
   :type 'boolean)
 
 (defcustom company-org-block-edit-mode 'auto
-  "Customize whether edit mode, post completion was inserted."
+  "Customize how to enter edit mode after block is inserted."
   :type '(choice
 	  (const :tag "nil: no edit after insertion" nil)
 	  (const :tag "prompt: ask before edit" prompt)
 	  (const :tag "auto edit, no prompt" auto)))
 
-;; (defvar company-org-block-auto-major-edit t "If t, enter
-;; major mode after completion.")
-
 (defvar company-org--regexp "<\\([^ ]*\\)")
 
-(defun company-org-block (command &optional arg &rest ignored)
-  "Complete org babel languages into source blocks."
+(defun company-org-block (command &optional arg &rest _ignored)
+  "A company completion backend for org blocks.
+
+COMMAND and ARG are sent by company itself."
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-org-block))
@@ -58,11 +57,12 @@
                 (map-values org-babel-tangle-lang-exts)))))
 
 (defun company-org-block--template-p (template)
+  "Check if there is a TEMPLATE available for completion."
   (seq-contains (map-values org-structure-template-alist)
                 template))
 
 (defun company-org-block--expand (insertion)
-  "Replace INSERTION with actual source block."
+  "Replace INSERTION with generated source block."
   (delete-region (point) (- (point) (1+ ;; Include "<" in length.
                                      (length insertion))))
   (if (company-org-block--template-p insertion)
@@ -70,7 +70,6 @@
                                      ;; May be multiple words.
                                      ;; Take the first one.
                                      (nth 0 (split-string insertion)))
-
     (company-org-block--wrap-point (format "src %s%s"
                                            insertion
                                            (if company-org-block-explicit-lang-defaults
@@ -85,7 +84,6 @@
 #+end_END"
   (insert (format "#+begin_%s\n" begin))
   (insert (make-string org-edit-src-content-indentation ?\s))
-  ;; Saving excursion restores point to location inside code block.
   (save-excursion
     (insert (format "\n#+end_%s" end)))
   (cond ((eq company-org-block-edit-mode 'auto)
@@ -108,8 +106,8 @@ For example: \"<e\" -> (\"e\" . t)"
 
 For example: \"python\" resolves to:
 
-((:exports . \"both\")
- (:results . \"output\"))
+\((:exports . \"both\")
+  (:results . \"output\"))
 
 and returns:
 
@@ -126,3 +124,5 @@ and returns:
       "")))
 
 (provide 'company-org-block)
+
+;;; company-org-block.el ends here
