@@ -13,4 +13,8 @@
     ("neighborhoods" "neighbourhoods" nil :count 0)
     ("extenstions" "extensions" nil :count 0)
     ("reenforcing" "re-enforcing" nil :count 0)
+    ("begining" "beginning" nil :count 0)
+    ("faviorite" "favourite" nil :count 0)
+    ("typycally" "typically" nil :count 0)
    ))
+
