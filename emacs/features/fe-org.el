@@ -151,23 +151,29 @@
        ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
   (defun ar/org-insert-link-dwim ()
-    "Convert selected region into a link with clipboard http URL (if one is found).
-Fetch and propose title from URL (if one is found). Default to `org-insert-link' otherwise."
+    "Like `org-insert-link' but with personal dwim preferences."
     (interactive)
-    (if (string-match-p "^http" (current-kill 0))
-        (if (and (region-active-p)
-                 ;; Not on link.
-                 (not (org-in-regexp org-link-any-re 1)))
-            (let ((region-content (buffer-substring-no-properties (region-beginning)
-                                                                  (region-end))))
-              (delete-region (region-beginning)
-                             (region-end))
-              (insert (format "[[%s][%s]]"
-                              (current-kill 0)
-                              region-content)))
-          ;; Fetch from URL.
-          (ar/org-insert-clipboard-link))
-      (call-interactively 'org-insert-link)))
+    (let* ((point-in-link (org-in-regexp org-link-any-re 1))
+           (clipboard-url (when (string-match-p "^http" (current-kill 0))
+                            (current-kill 0)))
+           (region-content (when (region-active-p)
+                             (buffer-substring-no-properties (region-beginning)
+                                                             (region-end)))))
+      (cond ((and region-content clipboard-url (not point-in-link))
+             (delete-region (region-beginning) (region-end))
+             (insert (org-make-link-string clipboard-url region-content)))
+            ((and clipboard-url (not point-in-link))
+             (insert (org-make-link-string
+                      clipboard-url
+                      (read-string "title: "
+                                   (with-current-buffer (url-retrieve-synchronously clipboard-url)
+                                     (dom-text (car
+                                                (dom-by-tag (libxml-parse-html-region
+                                                             (point-min)
+                                                             (point-max))
+                                                            'title))))))))
+            (t
+             (call-interactively 'org-insert-link)))))
 
   ;; Look into font-locking email addresses.
   ;; http://kitchingroup.cheme.cmu.edu/blog/category/email/
@@ -623,8 +629,8 @@ func screenshot(view: NSView, saveTo fileURL: URL) {
                                                              (ar/org-forward-to-entry-content t)
                                                              (point))
                                                            (org-entry-end-position)))
-                                    s-trim
-                                    (concat "\n" it "\n"))))
+                                 s-trim
+                                 (concat "\n" it "\n"))))
           (add-face-text-property 0 (length entry-contents)
                                   'ar/org-agenda-preview nil entry-contents)
           (ov (line-end-position) (line-end-position)
