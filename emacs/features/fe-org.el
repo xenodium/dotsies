@@ -67,8 +67,7 @@
 
   ;; Enable RET to follow Org links.
   (org-return-follows-link t)
-  :hook ((org-mode . ar/org-mode-hook-function)
-         (org-mode . visual-line-mode)
+  :hook ((org-mode . visual-line-mode)
          (org-mode . smartparens-mode)
          (org-mode . org-display-inline-images))
   :config
@@ -82,11 +81,6 @@
   (advice-add #'org-yank
               :around
               #'adviced:org-yank)
-
-  (defun ar/org-mode-hook-function ()
-    (use-package ar-org)
-    (setq-local company-backends '(company-org-block))
-    (company-mode +1))
 
   (defun ar/org-meta-return (&optional arg)
     (interactive "P")
@@ -106,8 +100,13 @@
         (org-previous-item)
       (error (org-previous-visible-heading 1))))
 
-  (use-package company-org-block)
-
+  (use-package company-org-block
+    :ensure t
+    :custom
+    (company-org-block-edit-style 'auto)
+    :hook ((org-mode . (lambda ()
+                         (setq-local company-backends '(company-org-block))
+                         (company-mode +1)))))
   (use-package ol
     :config
     ;; https://kitchingroup.cheme.cmu.edu/blog/2016/11/04/New-link-features-in-org-9
