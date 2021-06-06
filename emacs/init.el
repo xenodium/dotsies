@@ -165,7 +165,8 @@
   (setq gc-cons-threshold 100000000
         gc-cons-percentage 0.1)
   (run-with-idle-timer 5 t #'garbage-collect)
-  (setq garbage-collection-messages t)
+  ;; Set to 't to view when collection happens.
+  (setq garbage-collection-messages nil)
 
    ;; Re-add rather than `setq', because file-name-handler-alist may have
     ;; changed since startup, and we want to preserve those.
