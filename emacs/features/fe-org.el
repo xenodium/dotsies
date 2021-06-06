@@ -102,7 +102,7 @@
 
   (use-package company-org-block
     :ensure t
-    :custom
+    :validate-custom
     (company-org-block-edit-style 'auto)
     :hook ((org-mode . (lambda ()
                          (setq-local company-backends '(company-org-block))
