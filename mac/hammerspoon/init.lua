@@ -7,18 +7,18 @@ require("ar.window")
 hs.loadSpoon("SpoonInstall")
 
 spoon.SpoonInstall.use_syncinstall = true
-spoon.SpoonInstall:andUse("KSheet")
+-- spoon.SpoonInstall:andUse("KSheet")
 
-ksheetVisible = false
-hs.hotkey.bind({"alt"}, "H", function()
-      if ksheetVisible then
-         spoon.KSheet:hide()
-         ksheetVisible = false
-      else
-         spoon.KSheet:show()
-         ksheetVisible = true
-      end
-end)
+-- ksheetVisible = false
+-- hs.hotkey.bind({"alt"}, "H", function()
+--       if ksheetVisible then
+--          spoon.KSheet:hide()
+--          ksheetVisible = false
+--       else
+--          spoon.KSheet:show()
+--          ksheetVisible = true
+--       end
+-- end)
 
 -- Spectacle Window Manager Keybindings For Hammerspoon
 -- https://github.com/scottwhudson/Lunette
@@ -217,26 +217,26 @@ hs.hotkey.bind({"alt"}, "R", launchEmacsKeybindingR)
 hs.hotkey.bind({"alt"}, "V", launchEmacsKeybindingV)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
 
-hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({
-            {
-               bundleID="com.kapeli.dashdoc",
-               name="Dash"
-            }
-}) end)
+-- hs.hotkey.bind({"alt"}, "D", function() activateFirstOf({
+--             {
+--                bundleID="com.kapeli.dashdoc",
+--                name="Dash"
+--             }
+-- }) end)
 
-hs.hotkey.bind({"alt"}, "E", function() activateFirstOf({
-            {
-               bundleID="org.gnu.Emacs",
-               name="Emacs"
-            }
-}) end)
+-- hs.hotkey.bind({"alt"}, "E", function() activateFirstOf({
+--             {
+--                bundleID="org.gnu.Emacs",
+--                name="Emacs"
+--             }
+-- }) end)
 
-hs.hotkey.bind({"alt"}, "X", function() activateFirstOf({
-            {
-               bundleID="com.apple.dt.Xcode",
-               name="Xcode"
-            }
-}) end)
+-- hs.hotkey.bind({"alt"}, "X", function() activateFirstOf({
+--             {
+--                bundleID="com.apple.dt.Xcode",
+--                name="Xcode"
+--             }
+-- }) end)
 
 hs.hotkey.bind({"cmd", "ctrl"}, "L", function()
       hs.caffeinate.startScreensaver()
@@ -252,31 +252,31 @@ end)
 --       })
 -- end)
 
-hs.hotkey.bind({"alt"}, "B", function() activateFirstOf({
-            {
-               bundleID="com.google.Chrome",
-               name="Google Chrome"
-            },
-            {
-               bundleID="org.mozilla.firefox",
-               name="Firefox"
-            },
-            {
-               bundleID="com.apple.Safari",
-               name="Safari"
-            },
-}) end)
+-- hs.hotkey.bind({"alt"}, "B", function() activateFirstOf({
+--             {
+--                bundleID="com.google.Chrome",
+--                name="Google Chrome"
+--             },
+--             {
+--                bundleID="org.mozilla.firefox",
+--                name="Firefox"
+--             },
+--             {
+--                bundleID="com.apple.Safari",
+--                name="Safari"
+--             },
+-- }) end)
 
-hs.hotkey.bind({"alt"}, "M", function() activateFirstOf({
-            {
-               bundleID="com.apple.mail",
-               name="Mail"
-            },
-            {
-               bundleID="org.epichrome.app.GoogleMail",
-               name="Google Mail"
-            },
-}) end)
+-- hs.hotkey.bind({"alt"}, "M", function() activateFirstOf({
+--             {
+--                bundleID="com.apple.mail",
+--                name="Mail"
+--             },
+--             {
+--                bundleID="org.epichrome.app.GoogleMail",
+--                name="Google Mail"
+--             },
+-- }) end)
 
 hs.hotkey.bind({"alt"}, "C", function() activateFirstOf({
             {
