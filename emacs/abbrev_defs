@@ -16,5 +16,6 @@
     ("begining" "beginning" nil :count 0)
     ("faviorite" "favourite" nil :count 0)
     ("typycally" "typically" nil :count 0)
+    ("immediatly" "immediately" nil :count 0)
    ))
 
