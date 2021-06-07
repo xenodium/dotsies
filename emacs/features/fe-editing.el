@@ -255,6 +255,9 @@ With PREFIX, add an outer pair around existing pair."
   ;; Don't eagerly escape Swift style string interpolation.
   (sp-local-pair 'swift-mode "\\(" ")" :when '(sp-in-string-p))
 
+  ;; I prefer < yasnippet completion in nhtml-mode.
+  (sp-local-pair 'mhtml-mode "<" "")
+
   (defun ar/create-newline-and-enter-sexp (&rest _ignored)
     "Open a new brace or bracket expression, with relevant newlines and indent. "
     (newline)
