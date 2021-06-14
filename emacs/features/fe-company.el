@@ -12,8 +12,6 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1)
   (company-tooltip-align-annotations t)
-  :custom
-  (company-show-numbers "on")
   :bind (:map global-map
               ("<backtab>" . company-complete)
               :map company-search-map
@@ -44,7 +42,6 @@
       :ensure t
       :hook (company-mode . company-box-mode)
       :validate-custom
-      (company-box-enable-icon nil)
       ;; Make all backends same color.
       ;; Didn't like yasnippets colored differently.
       (company-box-backends-colors nil)
