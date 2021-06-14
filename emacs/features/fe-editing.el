@@ -31,7 +31,9 @@
     ;; `er/mark-word' and other mark functions.
     (setq-local er/try-expand-list
                 '(er/mark-symbol
+                  er/mark-inside-quotes
                   er/mark-outside-quotes
+                  er/mark-inside-pairs
                   er/mark-outside-pairs
                   er/mark-comment
                   er/mark-url
