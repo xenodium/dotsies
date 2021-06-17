@@ -14,7 +14,7 @@
   (backup-inhibited t)
   ;; Disable backup.
   ;; Ensure files end with newline.
-  ;; (require-final-newline t)
+  (require-final-newline t)
   ;; Disable auto save.
   ;; From: http://anirudhsasikumar.net/blog/2005.01.21.html
   (auto-save-default nil)
