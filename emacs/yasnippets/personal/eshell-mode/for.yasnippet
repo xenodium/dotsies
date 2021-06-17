@@ -1,4 +1,4 @@
 #name : Eshell for loop
 #key : for
 # --
-for f in ${1:*} { ${2:echo} "$f"; $3} $0
+for f in \${${1:find . -iname \*}} { ${2:echo} "$f"; $3} $0
