@@ -298,14 +298,6 @@ For example:
 
   (ivy-mode +1)
 
-  ;; See recent directories when copying/moving dired files.
-  (use-package ivy-dired-history
-    :ensure t
-    :after savehist
-    :config
-    (add-to-list 'savehist-additional-variables
-                 'ivy-dired-history-variable))
-
   ;; Trying without. May be slowing things down.
   ;; (use-package ivy-rich
   ;;   :ensure t
