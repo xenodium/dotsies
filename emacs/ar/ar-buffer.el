@@ -228,6 +228,11 @@ Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
        (file-name-directory fPath)))
     (message "File path copied: %s" fPath)))
 
+(defun ar/buffer-copy-file-name ()
+  "Copy the current buffer's file name."
+  (interactive)
+  (kill-new (file-name-nondirectory (buffer-file-name))))
+
 (defun ar/buffer-groups-of (re)
   "Return a list of any RE consecutive match separated by two or more newlines.
 
