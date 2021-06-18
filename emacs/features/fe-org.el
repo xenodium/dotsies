@@ -149,9 +149,10 @@
        ("OBSOLETE" . (:foreground "blue" :weight bold))
        ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
-  (defun ar/org-insert-link-dwim ()
-    "Like `org-insert-link' but with personal dwim preferences."
-    (interactive)
+  (defun ar/org-insert-link-dwim (prefix)
+    "Like `org-insert-link' but with personal dwim preferences.
+With prefix, don't confirm text."
+    (interactive "P")
     (let* ((point-in-link (org-in-regexp org-link-any-re 1))
            (clipboard-url (when (string-match-p "^http" (current-kill 0))
                             (current-kill 0)))
@@ -164,13 +165,15 @@
             ((and clipboard-url (not point-in-link))
              (insert (org-make-link-string
                       clipboard-url
-                      (read-string "title: "
-                                   (with-current-buffer (url-retrieve-synchronously clipboard-url)
+                      (let ((title (with-current-buffer (url-retrieve-synchronously clipboard-url)
                                      (dom-text (car
                                                 (dom-by-tag (libxml-parse-html-region
                                                              (point-min)
                                                              (point-max))
-                                                            'title))))))))
+                                                            'title))))))
+                        (if prefix
+                            title
+                          (read-string "title: " title))))))
             (t
              (call-interactively 'org-insert-link)))))
 
