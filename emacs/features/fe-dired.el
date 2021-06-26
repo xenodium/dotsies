@@ -318,7 +318,19 @@ always executed sequentually."
     :ensure-system-package atool
     :bind (:map dired-mode-map
                 ("z" . dired-atool-do-unpack)
-                ("Z" . dired-atool-do-pack)))
+                ("Z" . dired-atool-do-pack))
+    :config
+    ;; Don't ask me where to extract. Use current directory.
+    ;; While https://github.com/HKey/dired-atool/pull/6 is approved.
+    (advice-add #'dired-atool-do-unpack
+                :around
+                (defun adviced:dired-atool-do-unpack (orig-fun &rest r)
+                  "Advice `adviced:dired-atool-do-unpack' to default to current dir."
+                  (apply orig-fun r)
+                  (cl-letf (((symbol-function #'read-directory-name)
+                             (lambda (prompt &optional dir default-dirname mustmatch initial)
+                               default-directory)))
+                    (apply orig-fun r)))))
 
   (use-package dired-git-info
     :ensure t
