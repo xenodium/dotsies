@@ -20,4 +20,7 @@
     ("ocassional" "occasional" nil :count 0)
     ("ommitted" "omitted" nil :count 0)
     ("Atractive" "Attractive" nil :count 0)
+    ("standalone" "stand-alone" nil :count 0)
+    ("temporaty" "temporary" nil :count 0)
    ))
+
