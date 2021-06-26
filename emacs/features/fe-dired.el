@@ -313,6 +313,13 @@ always executed sequentually."
     (use-package tmtxt-async-tasks)
     (dired-async-mode +1))
 
+  (use-package dired-atool
+    :ensure t
+    :ensure-system-package atool
+    :bind (:map dired-mode-map
+                ("z" . dired-atool-do-unpack)
+                ("Z" . dired-atool-do-pack)))
+
   (use-package dired-git-info
     :ensure t
     :bind (:map dired-mode-map
