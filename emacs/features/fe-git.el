@@ -10,6 +10,10 @@
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
+  (use-package magit-delta
+    :ensure t
+    :ensure-system-package git-delta)
+
   ;; Open git file at remote/repo location.
   (use-package browse-at-remote
     :ensure t
