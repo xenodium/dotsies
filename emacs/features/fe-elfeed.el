@@ -201,6 +201,7 @@ Based on `elfeed-search-print-entry--default'."
       (elfeed-search-update :force)))
 
   (setq elfeed-feeds '(
+                       ("https://flipboard.com/@ipp/emacs-tricks-stuff-g7r2eiq2z.rss" emacs ipp flipboard)
                        ("http://1w6.org/rss.xml" blog emacs draketo)
                        ("https://blog.siddharthkannan.in/atom.xml" blog emacs SiddharthKannan)
                        ("https://www.lujun9972.win/rss.xml" blog emacs lunjun)
