@@ -6,12 +6,12 @@
 
 (use-package pcre2el
   :ensure t
-  :commands pcre-mode)
+  :config
+  (pcre-mode +1))
 
 (use-package elisp-mode
   :bind ("C-x C-e" . ar/eval-last-sexp)
-  :hook ((emacs-lisp-mode . pcre-mode)
-         (emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
+  :hook ((emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
          (ielm-mode . ar/emacs-lisp-mode-hook-function))
   :config
   (require 'prog-mode)
