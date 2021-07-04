@@ -450,7 +450,7 @@ With PREFIX, add an outer pair around existing pair."
 (use-package simple
   :bind (("M-u" . upcase-dwim)
          ("M-l" . downcase-dwim)
-         ("M-C-y" . ar/yank-line-below))
+         ("M-C-y" . ar/yank-line-above))
   :validate-custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
@@ -477,6 +477,22 @@ With PREFIX, add an outer pair around existing pair."
         (newline)
         (insert lines))
       (forward-line)))
+
+  (defun ar/yank-line-above (arg)
+    "Yank to line below. With ARG, repeat."
+    (interactive "p")
+    (let ((lines))
+      (dotimes (_i arg)
+        (setq lines
+              (concat lines
+                      (current-kill 0)
+                      "\n")))
+      (setq lines (string-remove-suffix "\n" lines))
+      (save-excursion
+        (beginning-of-line)
+        (newline)
+        (previous-line)
+        (insert lines))))
 
   ;; From https://github.com/daschwa/emacs.d
   (defadvice kill-ring-save (before slick-copy activate compile)
