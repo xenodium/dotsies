@@ -162,7 +162,8 @@
          (prog-mode . smartparens-strict-mode)
          (protobuf-mode . smartparens-strict-mode)
          (ielm-mode . smartparens-strict-mode)
-         (eshell-mode . smartparens-strict-mode))
+         (eshell-mode . smartparens-strict-mode)
+         (text-mode . smartparens-mode))
   :config
   (defun ar/toggle-quote-wrap-all-in-region (beg end)
     "Toggle wrapping all items in region with double quotes."

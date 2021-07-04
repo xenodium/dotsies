@@ -68,7 +68,6 @@
   ;; Enable RET to follow Org links.
   (org-return-follows-link t)
   :hook ((org-mode . visual-line-mode)
-         (org-mode . smartparens-mode)
          (org-mode . org-display-inline-images))
   :config
   (defun adviced:org-yank (orig-fun &rest r)
