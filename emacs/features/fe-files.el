@@ -34,6 +34,11 @@
   (add-to-list 'find-file-not-found-functions
                #'ar/files-create-non-existent-directory))
 
+(use-package reveal-in-osx-finder
+  :ensure t
+  :commands
+  (reveal-in-osx-finder))
+
 (use-package autorevert
   :defer 10
   :validate-custom
