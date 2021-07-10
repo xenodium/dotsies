@@ -22,5 +22,7 @@
     ("Atractive" "Attractive" nil :count 0)
     ("standalone" "stand-alone" nil :count 0)
     ("temporaty" "temporary" nil :count 0)
+    ("hilight" "highlight" nil :count 0)
+    ("updaetd" "updated" nil :count 0)
    ))
 
