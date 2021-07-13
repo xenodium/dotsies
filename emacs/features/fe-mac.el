@@ -10,6 +10,9 @@
   ;; Make ⌘ meta modifier.
   (setq mac-command-modifier 'meta)
 
+  ;; Use existing frame when opening files.
+  (setq ns-pop-up-frames nil)
+
   ;; Transparent titlebar on macOS.
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
