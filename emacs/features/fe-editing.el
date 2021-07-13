@@ -425,7 +425,8 @@ With PREFIX, add an outer pair around existing pair."
 (use-package copy-as-format
   :ensure t
   :init
-  (defalias 'copy-as-symbol-reddit 'copy-as-format-markdown)
+  (defalias 'copy-as-format-reddit 'copy-as-format-markdown)
+  (defalias 'copy-as-format-google-chat 'copy-as-format-slack)
   :commands
   (copy-as-format-asciidoc
    copy-as-format-bitbucket
