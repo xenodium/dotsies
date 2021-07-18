@@ -50,9 +50,7 @@
 (use-package dired
   :defer
   :hook (dired-mode . dired-hide-details-mode)
-  :bind (:map global-map
-              ("C-l" . dired-jump)
-              :map dired-mode-map
+  :bind (:map dired-mode-map
               ([remap dired-do-async-shell-command] . ar/dired-do-async-shell-command)
               ([remap dired-do-shell-command] . ar/dired-do-async-shell-command)
               ("j" . dired-next-line)
@@ -62,7 +60,6 @@
               ("RET" . dired-find-file)
               ("P" . peep-dired)
               ("i" . dired-hide-details-mode)
-              ("C-l". dired-jump)
               ("s" . hydra-dired-sort/body)
               ("A" . ar/dired-mark-all)
               ("M" . ar/dired-mark-all))
