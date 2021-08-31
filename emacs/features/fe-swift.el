@@ -54,6 +54,8 @@
     :ensure t
     :hook (swift-mode . lsp-deferred)
     :commands (lsp lsp-deferred)
+    :validate-custom
+    (lsp-restart 'auto-restart)
     :bind
     (:map
      lsp-signature-mode-map
