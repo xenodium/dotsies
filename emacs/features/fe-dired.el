@@ -70,6 +70,7 @@
              ar/file-find-alternate-parent-dir)
   :validate-custom
   (dired-recursive-copies 'always)
+  (delete-by-moving-to-trash t)
   :config
   (use-package wdired
     :validate-custom
