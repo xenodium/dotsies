@@ -50,13 +50,14 @@
 #+end_src
 
 * Mpv
-
 ** mpv.conf
-
 #+begin_src conf :mkdirp yes :tangle ~/.config/mpv/mpv.conf
   ontop
 #+end_src
-
+* Zsh
+#+begin_src sh :tangle ~/.zshrc
+  export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
+#+end_src
 * Bash
 
 Tangle .bash_overrides blaock and then execute following block to patch .bash_profile and .bashrc.
@@ -413,7 +414,6 @@ Patch .bash_profile and .bashrc.
           }
       ]
   }
-
 #+end_src
 
 * Universal Ctags
