@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(use-package bazel-mode
+(use-package bazel
   :ensure t
   :commands ar/bazel-find-staged
   :mode (("\\.bzl\\'" . bazel-mode)
