@@ -1,7 +1,4 @@
-all: init emaxcode silver_searcher global yasnippet
-
-silver_searcher:
-	which ag || brew install ag || apt-get install silversearcher-a
+all: init ripgrep global yasnippet
 
 init:
 	mkdir -p ~/.emacs.d
@@ -31,11 +28,6 @@ yasnippet:
 yasxcode:
 	mkdir -p ~/.emacs.d/yasnippets
 	cd yasnippets/personal && python ../generate-xcode-yasnippets.py
-
-emaxcode:
-	curl https://raw.githubusercontent.com/xenodium/emaXcode/master/emaXcode.el -o /tmp/emaXcode.el
-	mkdir -p ~/.emacs.d/local/emaXcode
-	mv /tmp/emaXcode.el ~/.emacs.d/local/emaXcode
 
 local_path := ~/local
 ifeq ($(shell uname), Darwin)
