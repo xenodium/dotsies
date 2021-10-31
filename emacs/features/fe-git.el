@@ -110,13 +110,10 @@ on the current line, if any."
   :config
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh))
 
-(use-package gitconfig-mode
+(use-package git-modes
   :ensure t
-  :mode "\\.?gitconfig.?.*\\'")
-
-(use-package gitignore-mode
-  :ensure t
-  :mode "\\.?gitignore.?.*\\'")
+  :mode (("\\.?gitconfig.?.*\\'" . gitconfig-mode)
+         ("\\.?gitignore.?.*\\'" . gitignore-mode)))
 
 (use-package git-timemachine
   :commands git-timemachine
