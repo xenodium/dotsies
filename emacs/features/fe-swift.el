@@ -68,8 +68,8 @@
     :after lsp-mode
     :config
     ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
-    ;; (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")
-    (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp"))
+    ;; (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp")
+    (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
 
   (defun ar/xcode-signing-info ()
     "Copy an Xcode signing identity."
