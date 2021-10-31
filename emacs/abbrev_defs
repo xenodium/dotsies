@@ -24,5 +24,7 @@
     ("temporaty" "temporary" nil :count 0)
     ("hilight" "highlight" nil :count 0)
     ("updaetd" "updated" nil :count 0)
+    ("accomplised" "accomplished" nil :count 0)
+    ("ediging" "editing" nil :count 0)
    ))
 
