@@ -45,7 +45,7 @@
                           :background "#ffc911"
                           :foreground "red")
       ;; Workaround: Cannot get ivy-read to render properly in frame without delay.
-      (run-with-timer 0.001 nil f))))
+      (run-with-timer 0.05 nil f))))
 
 (defun ar/modal-ivy--load-bookmarks-source ()
   (ar/org-iter-with-org-file
