@@ -19,7 +19,9 @@
   (global-unset-key (kbd "C-z"))
   :config
   ;; Enable expanding frame to end of screen.
-  (setq frame-resize-pixelwise t))
+  (setq frame-resize-pixelwise t)
+  ;; Remove thin border. Visible since Monterey.
+  (set-frame-parameter nil 'internal-border-width 0))
 
 ;; Ensure window is maximized after window setup.
 (use-package maxframe
