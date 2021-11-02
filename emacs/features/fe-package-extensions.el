@@ -33,7 +33,7 @@
                                          ":")
 				       ;; This is where Homebrew puts libgccjit libraries.
                                        (car (file-expand-wildcards
-                                             (expand-file-name "~/homebrew/opt/libgccjit/lib/gcc/*")))))
+                                             (expand-file-name "/opt/homebrew/opt/libgccjit/lib/gcc/*")))))
 	;; Only set after LIBRARY_PATH can find gcc libraries.
 	(setq comp-deferred-compilation t)
         (setq comp-speed 3))
