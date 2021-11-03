@@ -1,6 +1,6 @@
 ;; Match theme color early on (smoother transition).
 ;; Theme loaded in features/ui.el.
-(set-background-color "#1b181b")
+(add-to-list 'default-frame-alist '(background-color . "#212121"))
 
 ;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L200
 (unless (daemonp)

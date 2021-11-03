@@ -21,12 +21,18 @@
   ;; Enable expanding frame to end of screen.
   (setq frame-resize-pixelwise t)
   ;; Remove thin border. Visible since Monterey.
-  (set-frame-parameter nil 'internal-border-width 0))
+  (set-frame-parameter nil 'internal-border-width 0)
+  (set-frame-position (selected-frame) 15 53)
+  (set-frame-size (selected-frame)
+                  (- (display-pixel-width) 30 16)
+                  (- (display-pixel-height) 30 53 15)
+                  t))
 
 ;; Ensure window is maximized after window setup.
-(use-package maxframe
-  :ensure t
-  :hook (window-setup . maximize-frame))
+;; Using dimenstions from frame.
+;; (use-package maxframe
+;;   :ensure t
+;;   :hook (window-setup . maximize-frame))
 
 ;; Used when exporting org source blocks.
 (use-package github-theme
