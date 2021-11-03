@@ -56,7 +56,8 @@
 #+end_src
 * Zsh
 #+begin_src sh :tangle ~/.zshrc
-  export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:~/homebrew/bin:$PATH
+  export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:$PATH
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 #+end_src
 * Bash
 
