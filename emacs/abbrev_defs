@@ -24,6 +24,7 @@
     ("hilight" "highlight" nil :count 0)
     ("immediatly" "immediately" nil :count 0)
     ("imxing" "mixing" nil :count 0)
+    ("instnace" "instance" nil :count 0)
     ("integrtation" "integration" nil :count 0)
     ("neighborhoods" "neighbourhoods" nil :count 0)
     ("ocassional" "occasional" nil :count 0)
