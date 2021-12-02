@@ -6,17 +6,18 @@
          flyspell-mode-map
          ("C-M-i" . flyspell-correct-wrapper))
   :config
-  (use-package flyspell-correct-ivy
+  (use-package flyspell-correct
     :ensure t
-    :init
-    ;; Based on http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
-    (defun ar/flyspell-correct-ivy-then-abbrev (candidates mispelled-word)
-      (let ((selection (flyspell-correct-ivy candidates mispelled-word)))
-        (unless (consp selection)
-          (define-abbrev global-abbrev-table mispelled-word selection))
-        selection))
-    :validate-custom
-    (flyspell-correct-interface #'ar/flyspell-correct-ivy-then-abbrev))
+    :config
+    (use-package flyspell-correct-popup
+      :init
+      (defun ar/flyspell-correct-popup-then-abbrev (candidates mispelled-word)
+        (let ((selection (flyspell-correct-popup candidates mispelled-word)))
+          (unless (consp selection)
+            (define-abbrev global-abbrev-table mispelled-word selection))
+          selection))
+      :validate-custom
+      (flyspell-correct-interface #'ar/flyspell-correct-popup-then-abbrev)))
 
   (use-package abbrev
     :validate-custom
