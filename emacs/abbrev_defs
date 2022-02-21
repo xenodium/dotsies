@@ -26,5 +26,6 @@
     ("updaetd" "updated" nil :count 0)
     ("accomplised" "accomplished" nil :count 0)
     ("ediging" "editing" nil :count 0)
+    ("reddacting" "redacting" nil :count 0)
    ))
 
