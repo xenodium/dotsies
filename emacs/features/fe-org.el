@@ -409,9 +409,20 @@ With prefix, don't confirm text."
       (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
 
       (cond ((string-equal system-type "darwin")
-             ;; TODO: Use something like (process-lines "brew" "--prefix" "plantuml").
-             (setq org-plantuml-jar-path "~/homebrew/Cellar/plantuml/1.2020.26/libexec/plantuml.jar")
-             (setenv "GRAPHVIZ_DOT" (expand-file-name "~/homebrew/bin/dot")))
+             (setq org-plantuml-jar-path
+                   (seq-first
+                    (process-lines "find"
+                                   (file-name-as-directory (seq-first
+                                                            (process-lines "brew"
+                                                                           "--prefix"
+                                                                           "plantuml")))
+                                   "-iname" "plantuml.jar")))
+             (setenv "GRAPHVIZ_DOT" (seq-first (process-lines "find"
+                                                              (file-name-as-directory (seq-first
+                                                                                       (process-lines "brew"
+                                                                                                      "--prefix"
+                                                                                                      "graphviz")))
+                                                              "-iname" "dot"))))
             (t
              (message "Warning: Could not find plantuml.8018.jar")
              (message "Warning: Could not find $GRAPHVIZ_DOT location"))))
