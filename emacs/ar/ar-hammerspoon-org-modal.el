@@ -20,7 +20,7 @@
   (ar/hammerspoon-org-modal-mode -1)
   ;; Contrary to other macOS apps, Emacs shifts focus to next frame, after deleting current frame.
   ;; Work around by moving focus to other macOS app first and then deleting frame.
-  (shell-command "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c 'backFromEmacs()'")
+  (shell-command "/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c 'backFromEmacs()'")
   (delete-frame)
   (message "Saved %s" (ar/org-get-daily-file-path)))
 
