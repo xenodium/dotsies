@@ -171,18 +171,18 @@ For example:
                  (ivy-more-chars)
                  (let ((request-curl-options (list "-H" (string-trim (url-http-user-agent-string)))))
                    (request
-                     "https://www.hackingwithswift.com/example-code/search"
-                     :type "GET"
-                     :params (list
-                              (cons "search" input))
-                     :parser 'json-read
-                     :success (cl-function
-                               (lambda (&key data &allow-other-keys)
-                                 (ivy-update-candidates
-                                  (mapcar (lambda (item)
-                                            (let-alist item
-                                              (propertize .title 'url .url)))
-                                          data)))))
+                    "https://www.hackingwithswift.com/example-code/search"
+                    :type "GET"
+                    :params (list
+                             (cons "search" input))
+                    :parser 'json-read
+                    :success (cl-function
+                              (lambda (&key data &allow-other-keys)
+                                (ivy-update-candidates
+                                 (mapcar (lambda (item)
+                                           (let-alist item
+                                             (propertize .title 'url .url)))
+                                         data)))))
                    0)))
               :action (lambda (selection)
                         (browse-url (concat "https://www.hackingwithswift.com"
@@ -206,22 +206,22 @@ For example:
                    (ivy-more-chars)
                    (let ((request-curl-options (list "-H" (string-trim (url-http-user-agent-string)))))
                      (request url
-                       :type "GET"
-                       :parser 'json-read
-                       :success (cl-function
-                                 (lambda (&key data &allow-other-keys)
-                                   (ivy-update-candidates
-                                    (mapcar (lambda (item)
-                                              (let-alist item
-                                                (propertize
-                                                 (format "%s   %s   %s"
-                                                         (truncate-string-to-width (propertize (or .title "")
-                                                                                               'face '(:foreground "yellow")) c1-width nil ?\s "…")
-                                                         (truncate-string-to-width (or .description "") c2-width nil ?\s "…")
-                                                         (truncate-string-to-width (propertize (string-join (or .api_ref_data.languages "") "/")
-                                                                                               'face '(:foreground "cyan1")) c3-width nil ?\s "…"))
-                                                 'url .url)))
-                                            (cdr (car data)))))))
+                              :type "GET"
+                              :parser 'json-read
+                              :success (cl-function
+                                        (lambda (&key data &allow-other-keys)
+                                          (ivy-update-candidates
+                                           (mapcar (lambda (item)
+                                                     (let-alist item
+                                                       (propertize
+                                                        (format "%s   %s   %s"
+                                                                (truncate-string-to-width (propertize (or .title "")
+                                                                                                      'face '(:foreground "yellow")) c1-width nil ?\s "…")
+                                                                (truncate-string-to-width (or .description "") c2-width nil ?\s "…")
+                                                                (truncate-string-to-width (propertize (string-join (or .api_ref_data.languages "") "/")
+                                                                                                      'face '(:foreground "cyan1")) c3-width nil ?\s "…"))
+                                                        'url .url)))
+                                                   (cdr (car data)))))))
                      0))))
               :action (lambda (selection)
                         (browse-url (concat "https://developer.apple.com"
