@@ -252,27 +252,35 @@ For example:
   :config
   (defun ar/swiper-isearch-backward-dwim ()
     (interactive)
-    (if (and (boundp 'multiple-cursors-mode)
-             multiple-cursors-mode)
-        (call-interactively 'isearch-backward)
-      (let ((ivy-wrap t))
-        (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-            (let ((region (buffer-substring-no-properties (mark) (point))))
-              (deactivate-mark)
-              (swiper-isearch-backward region))
-          (swiper-isearch-backward)))))
+    (cond ((and (boundp 'multiple-cursors-mode)
+                multiple-cursors-mode
+                (fboundp  'phi-search-backward))
+           (call-interactively 'phi-search-backward))
+          (defining-kbd-macro
+            (call-interactively 'isearch-backward))
+          (t
+           (let ((ivy-wrap t))
+             (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+                 (let ((region (buffer-substring-no-properties (mark) (point))))
+                   (deactivate-mark)
+                   (swiper-isearch-backward region))
+               (swiper-isearch-backward))))))
 
   (defun ar/swiper-isearch-dwim ()
     (interactive)
-    (if (and (boundp 'multiple-cursors-mode)
-             multiple-cursors-mode)
-        (call-interactively 'isearch-forward)
-      (let ((ivy-wrap t))
-        (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-            (let ((region (buffer-substring-no-properties (mark) (point))))
-              (deactivate-mark)
-              (swiper-isearch region))
-          (swiper-isearch))))))
+    (cond ((and (boundp 'multiple-cursors-mode)
+                multiple-cursors-mode
+                (fboundp  'phi-search))
+           (call-interactively 'phi-search))
+          (defining-kbd-macro
+            (call-interactively 'isearch-forward))
+          (t
+           (let ((ivy-wrap t))
+             (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+                 (let ((region (buffer-substring-no-properties (mark) (point))))
+                   (deactivate-mark)
+                   (swiper-isearch region))
+               (swiper-isearch)))))))
 
 (use-package counsel-projectile
   :ensure t
