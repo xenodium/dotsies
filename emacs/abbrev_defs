@@ -27,5 +27,9 @@
     ("accomplised" "accomplished" nil :count 0)
     ("ediging" "editing" nil :count 0)
     ("reddacting" "redacting" nil :count 0)
+    ("behavior" "behaviour" nil :count 0)
+    ("continuosly" "continuously" nil :count 1)
+    ("ocurrs" "occurs" nil :count 0)
+    ("reconized" "recognized" nil :count 0)
    ))
 
