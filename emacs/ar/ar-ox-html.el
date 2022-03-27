@@ -53,6 +53,19 @@ If a region is active, export that region."
       <a href='mailto:me@xenodium.com'>email</a>
     </td>
   </tr>
+  <tr>
+    <td style='text-align: left;'>
+      <a href='https://plainorg.com'>
+        <img style='padding-top: 5px; max-width: 4ch;' src='https://plainorg.com/favicon.ico'/>
+      </a>
+      <a href='https://flathabits.com'>
+        <img style='padding-top: 5px; max-width: 4ch;' src='https://flathabits.com/favicon.ico'/>
+      </a>
+    </td>
+    <td style='padding-top:10px;'>
+      <span class='author'>Álvaro Ramírez</span>
+    </td>
+  </tr>
 </table>")))
   (setq org-html-postamble nil)
   (setq org-html-format-drawer-function #'ar/ox-html-export-format-drawer))
@@ -189,7 +202,17 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            border-left: 1px solid #ccc;
          }
 
+         .author {
+           font-size: 1em;
+           text-align: right;
+           color: rgb(51, 51, 51);
+           font-weight: bold;
+           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+           line-height: 1.15em;
+         }
+
          .title {
+           display: none; /* Title already included in header. Hide. */
            color: rgb(51, 51, 51);
            font-size: 1em;
            text-align: right;
@@ -260,8 +283,6 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            letter-spacing: -0.02em;
            margin-bottom: 0px;
            text-indent: -3px;
-// Make header clickable.
-//           cursor: pointer;
          }
 
          h3 {
@@ -303,11 +324,6 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
          .outline-2 {
          }
 
-// Hides subtree for heading by default.
-//         .default-visibility, .outline-text-2, .outline-3, .outline-4, .outline-5, .outline-6, .org-ul {
-//           display: none;
-//         }
-
          .example {
            white-space: pre-wrap;
            background-color: #f8ffe1;
@@ -319,50 +335,6 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
                async src=\"//gc.zgo.at/count.js\">
        </script>
        <!-- End of Goat Code -->
-
-       <script>
-// Toggles heading subtree on click.
-//         function getClosest(elem, selector) {
-//             for ( ; elem && elem !== document; elem = elem.parentNode ) {
-//         	if ( elem.matches( selector ) ) return elem;
-//             }
-//             return null;
-//         };
-//
-//
-//         function setNodeVisible (node, visible) {
-//             for (var i = 0; i < node.childNodes.length; i++) {
-//                 var child = node.childNodes[i];
-//                 if (node.classList.contains('outline-text-2') ||
-//                     node.classList.contains('outline-3') ||
-//                     node.classList.contains('outline-4') ||
-//                     node.classList.contains('outline-5') ||
-//                     node.classList.contains('outline-6')) {
-//                     node.style.display = visible ? 'inline' : 'none';
-//                 } else if (node.classList.contains('org-ul')) {
-//                     node.style.display = visible ? 'block' : 'none';
-//                  }
-//                 setNodeVisible(child, visible);
-//             }
-//         }
-//
-//         window.onload = function() {
-//             var parts = document.URL.split('#');
-//             if (parts.length > 1) {
-//                 var entry = getClosest(document.getElementById(parts[1]), '.outline-2');
-//                 setNodeVisible(entry, true)
-//             }
-//
-//             document.body.onclick = function(e){
-//                 if (e.target.tagName.toLowerCase() === 'h2') {
-//                     var entry = getClosest(e.target, '.outline-2');
-//                     var elements = entry.getElementsByClassName('outline-text-2');
-//                     setNodeVisible(entry, elements[0].style.display !== 'inline');
-//                 }
-//             };
-//         };
-       </script>
-
 ")
 
 (provide 'ar-ox-html)
