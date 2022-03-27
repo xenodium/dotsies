@@ -31,5 +31,6 @@
     ("continuosly" "continuously" nil :count 1)
     ("ocurrs" "occurs" nil :count 0)
     ("reconized" "recognized" nil :count 0)
+    ("apreciated" "appreciated" nil :count 0)
    ))
 
