@@ -163,7 +163,10 @@
          (protobuf-mode . smartparens-strict-mode)
          (ielm-mode . smartparens-strict-mode)
          (eshell-mode . smartparens-strict-mode)
-         (text-mode . smartparens-mode))
+         (text-mode . smartparens-mode)
+         (mhtml-mode . (lambda ()
+                         ;; Doesn't play nice in mhtml-mode.
+                         (smartparens-strict-mode -1))))
   :config
   (defun ar/toggle-quote-wrap-all-in-region (beg end)
     "Toggle wrapping all items in region with double quotes."
