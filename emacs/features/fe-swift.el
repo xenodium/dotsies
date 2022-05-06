@@ -50,26 +50,32 @@
             (list "-m" "format" temp-file-path)))
   (add-hook 'swift-mode-hook 'swift-format-on-save-mode)
 
-  (use-package lsp-mode
+  (use-package eglot
     :ensure t
-    :hook (swift-mode . lsp-deferred)
-    :commands (lsp lsp-deferred)
-    :validate-custom
-    (lsp-restart 'auto-restart)
-    :bind
-    (:map
-     lsp-signature-mode-map
-     ;; Unset, as I prefer overlay-jump.
-     ([remap lsp-signature-next] . nil)
-     ([remap lsp-signature-previous] . nil)))
-
-  (use-package lsp-sourcekit
-    :ensure t
-    :after lsp-mode
+    :hook (swift-mode . eglot-ensure)
     :config
-    ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
-    ;; (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp")
-    (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
+    (add-to-list 'eglot-server-programs '(swift-mode . ("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))))
+
+  ;; (use-package lsp-mode
+  ;;   :ensure t
+  ;;   :hook (swift-mode . lsp-deferred)
+  ;;   :commands (lsp lsp-deferred)
+  ;;   :validate-custom
+  ;;   (lsp-restart 'auto-restart)
+  ;;   :bind
+  ;;   (:map
+  ;;    lsp-signature-mode-map
+  ;;    ;; Unset, as I prefer overlay-jump.
+  ;;    ([remap lsp-signature-next] . nil)
+  ;;    ([remap lsp-signature-previous] . nil)))
+
+  ;; (use-package lsp-sourcekit
+  ;;   :ensure t
+  ;;   :after lsp-mode
+  ;;   :config
+  ;;   ;; (setq lsp-sourcekit-extra-args (list "--log-level" "info"))
+  ;;   ;; (setq lsp-sourcekit-executable "/Users/alvaro/stuff/active/code/third_party/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp")
+  ;;   (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
 
   (defun ar/xcode-signing-info ()
     "Copy an Xcode signing identity."
