@@ -376,7 +376,7 @@ always executed sequentually."
       ((string-equal system-type "darwin")
        '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
           "open" (file))
-         ("\\.\\(aiff\\|wav\\|mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
+         ("\\.\\(aiff\\|wav\\|mp4\\|MP4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
           "open" ("-a" "mpv" "--args" "--geometry=<oww>+<owx>+<owy>" file))))
       ((string-equal system-type "gnu/linux")
        '(("\\.\\(mp4\\|mp3\\|mkv\\|webm\\|avi\\|flv\\|mov\\)$"
