@@ -202,7 +202,7 @@
               (base-name (file-name-nondirectory (file-name-sans-extension src-fpath)))
               (dst-fpath (format "%s.gif" (file-name-sans-extension src-fpath)))
               (every (string-to-number
-                      (completing-read "Speed up x times: " '("1" "2" "3" "4"))))
+                      (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4"))))
               (process (lambda (&rest args)
                          (with-temp-buffer
                            (let ((out (list :exit-status
