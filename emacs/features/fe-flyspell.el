@@ -10,6 +10,7 @@
     :ensure t
     :config
     (use-package flyspell-correct-popup
+      :ensure t
       :init
       (defun ar/flyspell-correct-popup-then-abbrev (candidates mispelled-word)
         (let ((selection (flyspell-correct-popup candidates mispelled-word)))
