@@ -55,9 +55,14 @@
   ontop
 #+end_src
 * Zsh
-#+begin_src sh :tangle ~/.zshrc
+#+begin_src sh :tangle ~/.zshenv
   export PATH=~/go/bin:~/stuff/active/code/gopath/bin:~/local/bin:~/miniconda2/bin:$PATH
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  if [ -f /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+  if [ -f ~/homebrew/bin/brew ]; then
+      eval "$(~/homebrew/bin/brew shellenv)"
+  fi
 #+end_src
 * Bash
 
