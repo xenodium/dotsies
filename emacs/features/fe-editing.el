@@ -131,14 +131,16 @@
   :bind
   (:map
    smartparens-strict-mode-map
-   ([remap kill-region] . nil) ;; Unsets C-w override.
+   ;; I prefer keeping C-w to DWIM kill, provided by
+   ;; `adviced:kill-region-advice'. Removing remap.
+   ([remap kill-region] . kill-region)
    :map prog-mode-map
    ("C-<right>" . sp-forward-slurp-sexp)
    ("C-<left>" . sp-forward-barf-sexp)
    ("M-<right>" . sp-backward-barf-sexp)
    ("M-<left>"  . sp-backward-slurp-sexp)
    :map smartparens-mode-map
-   ([remap kill-region] . nil) ;; Unsets C-w override.
+   ([remap kill-region] . kill-region)
    ("C-c e" . sp-change-enclosing)
    ("M-'" . ar/rewrap-sexp-dwim)
    ("M-k" . sp-backward-kill-sexp)
@@ -343,28 +345,6 @@ With PREFIX, add an outer pair around existing pair."
                  :when '(ar/sp-prog-filter-angle-brackets)
                  :skip-match 'ar/sp-prog-skip-match-angle-bracket))
 
-;; If no region active, operate on line.
-;; For example C-w would kill like if no region is active.
-(use-package whole-line-or-region
-  :ensure t
-  :config
-  (whole-line-or-region-global-mode)
-  (defun adviced:whole-line-or-region-wrap-region-kill (orig-fn &rest args)
-    "Like `whole-line-or-region-wrap-region-kill' but paste line below."
-    (let ((f (nth 0 args))
-          (num-lines (nth 1 args)))
-      (if (whole-line-or-region-use-region-p)
-          (funcall f (region-beginning) (region-end) 'region)
-        (whole-line-or-region-filter-with-yank-handler
-         (whole-line-or-region-preserve-column
-          (funcall f
-                   (line-beginning-position 1)
-                   (line-end-position num-lines)
-                   nil))))))
-  (advice-add #'whole-line-or-region-wrap-region-kill
-              :around
-              #'adviced:whole-line-or-region-wrap-region-kill))
-
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state
   :ensure t
@@ -513,6 +493,16 @@ With PREFIX, add an outer pair around existing pair."
         (previous-line)
         (insert lines))))
 
+  ;; From https://github.com/daschwa/emacs.d
+  (defadvice kill-ring-save (before slick-copy activate compile)
+    "When called interactively with no active region, copy a single
+line instead."
+    (interactive
+     (if mark-active
+         (list (region-beginning) (region-end))
+       (message "Copied line")
+       (list (line-beginning-position) (line-end-position)))))
+
   (use-package region-bindings-mode
     :ensure t
     :demand
@@ -529,7 +519,28 @@ With PREFIX, add an outer pair around existing pair."
                 ("^" . mc/edit-beginnings-of-lines)
                 ("$" . mc/edit-ends-of-lines))
     :config
-    (region-bindings-mode-enable)))
+    (region-bindings-mode-enable))
+
+  (defun adviced:kill-region-advice (orig-fun &rest r)
+    "Advice function around `kill-region' (ORIG-FUN and R)."
+    (if (or (null (nth 2 r)) ;; Consider kill-line (C-k).
+            mark-active)
+        (apply orig-fun r)
+      ;; Kill entire line.
+      (let ((last-command (lambda ())) ;; Override last command to avoid appending to kill ring.
+            (offset (- (point)
+                       (line-beginning-position))))
+        (apply orig-fun (list (line-beginning-position)
+                              (line-end-position)
+                              nil))
+        (delete-char 1)
+        (forward-char (min offset
+                           (- (line-end-position)
+                              (line-beginning-position)))))))
+
+  (advice-add #'kill-region
+              :around
+              #'adviced:kill-region-advice))
 
 ;; Open rc files with conf-mode.
 (use-package conf-mode
