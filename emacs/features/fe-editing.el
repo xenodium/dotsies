@@ -348,7 +348,22 @@ With PREFIX, add an outer pair around existing pair."
 (use-package whole-line-or-region
   :ensure t
   :config
-  (whole-line-or-region-global-mode))
+  (whole-line-or-region-global-mode)
+  (defun adviced:whole-line-or-region-wrap-region-kill (orig-fn &rest args)
+    "Like `whole-line-or-region-wrap-region-kill' but paste line below."
+    (let ((f (nth 0 args))
+          (num-lines (nth 1 args)))
+      (if (whole-line-or-region-use-region-p)
+          (funcall f (region-beginning) (region-end) 'region)
+        (whole-line-or-region-filter-with-yank-handler
+         (whole-line-or-region-preserve-column
+          (funcall f
+                   (line-beginning-position 1)
+                   (line-end-position num-lines)
+                   nil))))))
+  (advice-add #'whole-line-or-region-wrap-region-kill
+              :around
+              #'adviced:whole-line-or-region-wrap-region-kill))
 
 ;; Display chars/lines or row/columns in the region.
 (use-package region-state
@@ -454,7 +469,7 @@ With PREFIX, add an outer pair around existing pair."
 (use-package simple
   :bind (("M-u" . upcase-dwim)
          ("M-l" . downcase-dwim)
-         ("M-C-y" . ar/yank-line-above))
+         ("M-C-y" . ar/yank-line-below))
   :validate-custom
   (kill-ring-max 1000)
   (set-mark-command-repeat-pop t "C-u is only needed once in C-u C-SPC to pop multiple locations.")
@@ -497,16 +512,6 @@ With PREFIX, add an outer pair around existing pair."
         (newline)
         (previous-line)
         (insert lines))))
-
-  ;; From https://github.com/daschwa/emacs.d
-  (defadvice kill-ring-save (before slick-copy activate compile)
-    "When called interactively with no active region, copy a single
-line instead."
-    (interactive
-     (if mark-active
-         (list (region-beginning) (region-end))
-       (message "Copied line")
-       (list (line-beginning-position) (line-end-position)))))
 
   (use-package region-bindings-mode
     :ensure t
