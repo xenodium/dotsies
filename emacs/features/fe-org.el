@@ -368,6 +368,20 @@ With prefix, don't confirm text."
     (use-package ob-kotlin
       :ensure t)
 
+    (use-package ob-restclient
+      :ensure t
+      :config
+      (org-babel-do-load-languages 'org-babel-load-languages
+                                   (append org-babel-load-languages
+                                           '((restclient . t)))))
+
+    (use-package ob-http
+      :ensure t
+      :config
+      (org-babel-do-load-languages 'org-babel-load-languages
+                                   (append org-babel-load-languages
+                                           '((http . t)))))
+
     (use-package ob-applescript
       :ensure t
       :config
