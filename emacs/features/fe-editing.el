@@ -58,6 +58,10 @@
   ;; Case-sensitive fold search search (ie. M-/ to autocomplete).
   (dabbrev-case-fold-search nil))
 
+;; (use-package hippie-exp
+;;   :bind
+;;   ([remap dabbrev-expand] . hippie-expand))
+
 (use-package drag-stuff
   :ensure t
   :bind (("M-<up>" . drag-stuff-up)
