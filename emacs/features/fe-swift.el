@@ -39,15 +39,7 @@
   (require 'reformatter)
   (reformatter-define swift-format
     :program "swift-format"
-    :args (let ((buffer (current-buffer))
-                (config-file (locate-dominating-file default-directory
-                                                     ".swift-format.json"))
-                (temp-file-path (make-temp-file "swift-format-")))
-            (with-temp-file temp-file-path
-              (insert-buffer buffer))
-            (if config-file
-                (list "--configuration" config-file "-m" "format" temp-file-path))
-            (list "-m" "format" temp-file-path)))
+    :args '("format"))
   (add-hook 'swift-mode-hook 'swift-format-on-save-mode)
 
   (use-package eglot
