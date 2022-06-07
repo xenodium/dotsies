@@ -224,18 +224,41 @@
                          (seq-map (lambda (n)
                                     (format "#%d" n))
                                   (number-sequence 0 (string-to-number
-                                            ;; Get total grame count.
-                                            (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
-                                         every))
+                                                      ;; Get total grame count.
+                                                      (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
+                                                   every))
                          (list "-O2" "-o" dst-fpath)))
          (message "Created %s" (file-name-nondirectory dst-fpath))))
      (dired-map-over-marks (dired-get-filename) arg)))
 
+  (defun ar/pdf-password-protect ()
+    "Password protect current pdf in buffer or `dired' file."
+    (interactive)
+    (unless (executable-find "qpdf")
+      (user-error "qpdf not installed"))
+    (unless (equal "pdf"
+                   (or (when (buffer-file-name)
+                         (downcase (file-name-extension (buffer-file-name))))
+                       (when (dired-get-filename nil t)
+                         (downcase (file-name-extension (dired-get-filename nil t))))))
+      (user-error "no pdf to act on"))
+    (let* ((user-password (read-passwd "user-password: "))
+           (owner-password (read-passwd "owner-password: "))
+           (input (or (buffer-file-name)
+                      (dired-get-filename nil t)))
+           (output (concat (file-name-sans-extension input)
+                           "_enc.pdf")))
+      (message
+       (string-trim
+        (shell-command-to-string
+         (format "qpdf --verbose --encrypt '%s' '%s' 256 -- '%s' '%s'"
+                 user-password owner-password input output))))))
+
   (defun ar/dired-do-async-shell-command ()
-  "Like `dired-do-async-shell-command' but supports $f and $f.ext and always sequential."
-  (interactive)
-  (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
-    (call-interactively #'dired-do-async-shell-command)))
+    "Like `dired-do-async-shell-command' but supports $f and $f.ext and always sequential."
+    (interactive)
+    (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
+      (call-interactively #'dired-do-async-shell-command)))
 
   (defun ar/dired-shell-stuff-it (template file-list on-each &optional _raw-arg)
     "Similar to `dired-shell-stuff-it' in spirit, but replaces $f with file from FILE-LIST.
