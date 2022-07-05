@@ -72,12 +72,12 @@
                                 (seq-first (process-lines "identify" "-format" "%n\n" file)))
                              skipping-every)) " "))
 
-(defun dired-script-drop-audio ()
+(defun dired-script-drop-video-audio ()
   "Drop audio from all marked videos."
   (interactive)
   (dired-script--dired-execute-script-on-marked-files
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
-   "Remove audio" '("ffmpeg")))
+   "Drop audio" '("ffmpeg")))
 
 (defun dired-script--dired-execute-script-on-marked-files (script name utils &optional post-process-template)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
@@ -160,17 +160,6 @@
   (when post-process-template
     (setq template (funcall post-process-template template file)))
   template)
-
-;; (dired-script--expand "someutil <<f>> -flag" "/path/to/tmp.txt")
-;; (dired-script--expand "someutil <<fne>>_another.<<e>>" "/path/to/tmp.txt")
-;; (dired-script--expand "someutil <<fne>>.gif -flag" "/path/to/tmp.txt")
-;; (dired-script--expand "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
-;; gifsicle -U <<fne>>.gif" "/path/to/tmp.mov")
-;; (dired-script--expand "someutil <<fne>>.gif -flag" "/path/to/tmp.txt"
-;;                       (lambda (text file)
-;;                         ;; (concat text "YYYY")
-;;                         text
-;;                         ))
 
 (defun dired-script--filter (process string)
   (when-let* ((exec (map-elt dired-script--execs (process-name process)))
