@@ -152,21 +152,6 @@
       (dired-do-async-shell-command command
                                     nil (dired-get-marked-files t nil nil nil t))))
 
-  (defun ar/dired-convert-audio-to-mp3 ()
-    (interactive)
-    (cl-assert (executable-find "ffmpeg") nil "ffmpeg not installed")
-    (ar/dired--async-shell-command "ffmpeg -stats -n -i $f -acodec libmp3lame $f.mp3"))
-
-  (defun ar/dired-convert-image-to-jpg ()
-    (interactive)
-    (cl-assert (executable-find "convert") nil "Install imagemagick")
-    (ar/dired--async-shell-command "convert -verbose $f $f.jpg"))
-
-  (defun ar/dired-convert-image-to-png ()
-    (interactive)
-    (cl-assert (executable-find "convert") nil "Install imagemagick")
-    (ar/dired--async-shell-command "convert -verbose $f $f.png"))
-
   (defun ar/dired-optimize-gif (&optional arg)
     (interactive "P")
     (cl-assert (executable-find "gifsicle") nil "gifsicle not installed")

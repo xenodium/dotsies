@@ -17,6 +17,27 @@
   calling-buffer
   reporter)
 
+(defun dired-script-convert-audio-to-mp3 ()
+  "Convert all marked audio to mp3(s)."
+  (interactive)
+  (dired-script--dired-execute-script-on-marked-files
+   "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
+   "Convert to mp3" '("ffmpeg")))
+
+(defun dired-script-convert-image-to-jpg ()
+  "Convert all marked images to jpg(s)."
+  (interactive)
+  (dired-script--dired-execute-script-on-marked-files
+   "convert -verbose <<f>> <<fne>>.jpg"
+   "Convert to jpg" '("convert")))
+
+(defun dired-script-convert-image-to-png ()
+  "Convert all marked images to png(s)."
+  (interactive)
+  (dired-script--dired-execute-script-on-marked-files
+   "convert -verbose <<f>> <<fne>>.png"
+   "Convert to png" '("convert")))
+
 (defun dired-script-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
@@ -32,24 +53,24 @@
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
    "Convert to optimized gif" '("ffmpeg" "gifsicle")))
 
-;; (defun dired-script-speed-up-gif ()
-;;   "Convert all marked videos to optimized gif(s)."
-;;   (interactive)
-;;   (let* ((every (string-to-number
-;;                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4"))))
-;;          ;; Returns #0 #1 #2 ... #framecount.
-;;          (frames (seq-map (lambda (n)
-;;                             (format "#%d" n))
-;;                           (number-sequence 0 (string-to-number
-;;                                               ;; Get total frames count.
-;;                                               (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
-;;                                            every))))
-;;     )
-;;   ;; (dired-script--dired-execute-script-on-marked-files
-;;   ;;  "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
-;;   ;;   gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
-;;   ;;  "Convert to optimized gif" '("gifsicle", "identify"))
-;;   )
+(defun dired-script-speed-up-gif ()
+  "Speeds up gif(s)."
+  (interactive)
+  (let ((factor (string-to-number
+                 (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
+    (dired-script--dired-execute-script-on-marked-files
+     (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
+     "Speed up gif" '("gifsicle" "identify")
+     (lambda (script file)
+       (string-replace "<<frames>>" (dired-script--gifsicle-frames-every factor file) script)))))
+
+(defun dired-script--gifsicle-frames-every (skipping-every file)
+  (string-join
+   (seq-map (lambda (n) (format "'#%d'" n))
+            (number-sequence 0 (string-to-number
+                                ;; Get total frames count.
+                                (seq-first (process-lines "identify" "-format" "%n\n" file)))
+                             skipping-every)) " "))
 
 (defun dired-script-drop-audio ()
   "Drop audio from all marked videos."
@@ -58,12 +79,13 @@
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Remove audio" '("ffmpeg")))
 
-(defun dired-script--dired-execute-script-on-marked-files (script name utils)
+(defun dired-script--dired-execute-script-on-marked-files (script name utils &optional post-process-template)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
-  (dired-script-execute-script script name (dired-get-marked-files) utils))
+  (dired-script-execute-script script name (dired-get-marked-files) utils
+                               post-process-template))
 
-(defun dired-script-execute-script (script name files utils)
+(defun dired-script-execute-script (script name files utils &optional post-process-template)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
   (cl-assert name nil "Script must have a name")
@@ -74,7 +96,9 @@
     (if (seq-empty-p files)
         (setq script template)
       (seq-do (lambda (file)
-                (setq script (concat script "\n" (dired-script--expand template file))))
+                (setq script
+                      (concat script "\n"
+                              (dired-script--expand template file post-process-template))))
               files))
     (setq script (string-trim script))
     (seq-do (lambda (util)
@@ -116,7 +140,7 @@
       (set-process-sentinel proc #'dired-script--sentinel)
       (set-process-filter proc #'dired-script--filter))))
 
-(defun dired-script--expand (template file)
+(defun dired-script--expand (template file &optional post-process-template)
   "Expand TEMPLATE, using <<f>> for FILE, <<fne>> for FILE without
  extension, and <<e>> for FILE extension."
   (setq file (expand-file-name file))
@@ -133,6 +157,8 @@
   ;; "<<fne>>.gif" with "/path/tmp.txt" -> "'/path/tmp.gif'"
   (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\([[:blank:]]\\|$\\)\\)"
                                            (format "'%s\\3'\\4" (file-name-sans-extension file)) template nil nil 1))
+  (when post-process-template
+    (setq template (funcall post-process-template template file)))
   template)
 
 ;; (dired-script--expand "someutil <<f>> -flag" "/path/to/tmp.txt")
@@ -140,6 +166,11 @@
 ;; (dired-script--expand "someutil <<fne>>.gif -flag" "/path/to/tmp.txt")
 ;; (dired-script--expand "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
 ;; gifsicle -U <<fne>>.gif" "/path/to/tmp.mov")
+;; (dired-script--expand "someutil <<fne>>.gif -flag" "/path/to/tmp.txt"
+;;                       (lambda (text file)
+;;                         ;; (concat text "YYYY")
+;;                         text
+;;                         ))
 
 (defun dired-script--filter (process string)
   (when-let* ((exec (map-elt dired-script--execs (process-name process)))
