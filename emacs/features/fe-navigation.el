@@ -101,16 +101,10 @@ Repeated invocations toggle between the two most recently open buffers."
                       :background (face-attribute 'default :background)
                       :foreground "yellow"))
 
-(use-package ace-window
-  :ensure t
-  :bind (("C-x o" . ace-window))
+;; Enables C-x o (repeat o) for cycling through windows.
+(use-package repeat
   :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  ;; Use larger characters for ace window shortcuts.
-  ;; From http://oremacs.com/2015/02/27/ace-window-leading-char
-  (custom-set-faces
-   '(aw-leading-char-face
-     ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+  (repeat-mode +1))
 
 (use-package smart-jump
   :ensure t
