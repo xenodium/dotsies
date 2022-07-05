@@ -18,12 +18,41 @@
   reporter)
 
 (defun dired-script-convert-to-gif ()
+  "Convert all marked videos to optimized gif(s)."
   (interactive)
   (dired-script--dired-execute-script-on-marked-files
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
    "Convert to gif" '("ffmpeg")))
 
+(defun dired-script-convert-to-optimized-gif ()
+  "Convert all marked videos to optimized gif(s)."
+  (interactive)
+  (dired-script--dired-execute-script-on-marked-files
+   "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
+    gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
+   "Convert to optimized gif" '("ffmpeg" "gifsicle")))
+
+;; (defun dired-script-speed-up-gif ()
+;;   "Convert all marked videos to optimized gif(s)."
+;;   (interactive)
+;;   (let* ((every (string-to-number
+;;                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4"))))
+;;          ;; Returns #0 #1 #2 ... #framecount.
+;;          (frames (seq-map (lambda (n)
+;;                             (format "#%d" n))
+;;                           (number-sequence 0 (string-to-number
+;;                                               ;; Get total frames count.
+;;                                               (seq-first (process-lines "identify" "-format" "%n\n" dst-fpath)))
+;;                                            every))))
+;;     )
+;;   ;; (dired-script--dired-execute-script-on-marked-files
+;;   ;;  "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
+;;   ;;   gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
+;;   ;;  "Convert to optimized gif" '("gifsicle", "identify"))
+;;   )
+
 (defun dired-script-drop-audio ()
+  "Drop audio from all marked videos."
   (interactive)
   (dired-script--dired-execute-script-on-marked-files
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
@@ -79,34 +108,38 @@
       (setq dired-script--execs
             (push (cons (process-name proc)
                         (make-dired-script--exec :script script
-                                        :process proc
-                                        :name (process-name proc)
-                                        :calling-buffer (current-buffer)
-                                        :reporter (make-progress-reporter (process-name proc))))
+                                                 :process proc
+                                                 :name (process-name proc)
+                                                 :calling-buffer (current-buffer)
+                                                 :reporter (make-progress-reporter (process-name proc))))
                   dired-script--execs))
       (set-process-sentinel proc #'dired-script--sentinel)
       (set-process-filter proc #'dired-script--filter))))
 
 (defun dired-script--expand (template file)
-  "Expand TEMPLATE. FIXME."
+  "Expand TEMPLATE, using <<f>> for FILE, <<fne>> for FILE without
+ extension, and <<e>> for FILE extension."
   (setq file (expand-file-name file))
   ;; "<<f>>" with "/path/file.jpg" -> "'/path/file.jpg'"
-  (when (string-match "[[:blank:]]\\(\<\<f\>\>\\)\\([[:blank:]]\\|$\\)" template)
-    (setq template (replace-match (format "'%s'" file) nil nil template 1)))
-  ;; "${fne}_other_${e}" with "/path/file.jpg" -> "'/path/file_other.jpg'"
-  (when (string-match "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ ]+\\)\\(\<\<e\>\>\\)\\)" template)
-    (setq template (replace-match (format "'%s\\3%s'"
-                                          (file-name-sans-extension file)
-                                          (file-name-extension file)) nil nil template 1)))
-  ;; "${fne}.gif" with "/path/tmp.txt" -> "'/path/tmp.gif'"
-  (when (string-match "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ ]+\\)\\([[:blank:]]\\|$\\)\\)" template)
-    (setq template (replace-match (format "'%s\\3'\\4"
-                                          (file-name-sans-extension file)) nil nil template 1)))
+  (setq template (replace-regexp-in-string "[[:blank:]]\\(\<\<f\>\>\\)\\([[:blank:]]\\|$\\)"
+                                           (format "'%s'" file)
+                                           template nil nil 1))
+  ;; "<<fne>>_other_<<e>>" with "/path/file.jpg" -> "'/path/file_other.jpg'"
+  (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\(\<\<e\>\>\\)\\)"
+                                           (format "'%s\\3%s'"
+                                                   (file-name-sans-extension file)
+                                                   (file-name-extension file))
+                                           template nil nil 1))
+  ;; "<<fne>>.gif" with "/path/tmp.txt" -> "'/path/tmp.gif'"
+  (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\([[:blank:]]\\|$\\)\\)"
+                                           (format "'%s\\3'\\4" (file-name-sans-extension file)) template nil nil 1))
   template)
 
 ;; (dired-script--expand "someutil <<f>> -flag" "/path/to/tmp.txt")
-;; (dired-script--expand "someutil <<fne>>_another.<<e>> -flag" "/hom/tmp.txt")
-;; (dired-script--expand "someutil <<fne>>.gif -flag" "/hom/tmp.txt")
+;; (dired-script--expand "someutil <<fne>>_another.<<e>>" "/path/to/tmp.txt")
+;; (dired-script--expand "someutil <<fne>>.gif -flag" "/path/to/tmp.txt")
+;; (dired-script--expand "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
+;; gifsicle -U <<fne>>.gif" "/path/to/tmp.mov")
 
 (defun dired-script--filter (process string)
   (when-let* ((exec (map-elt dired-script--execs (process-name process)))
