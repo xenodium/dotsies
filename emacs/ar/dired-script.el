@@ -20,13 +20,13 @@
 (defun dired-script-convert-to-gif ()
   (interactive)
   (dired-script--dired-execute-script-on-marked-files
-   "ffmpeg -loglevel quiet -stats -y -i ${f} -pix_fmt rgb24 -r 15 ${fne}.gif"
+   "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
    "Convert to gif" '("ffmpeg")))
 
 (defun dired-script-drop-audio ()
   (interactive)
   (dired-script--dired-execute-script-on-marked-files
-   "ffmpeg -i ${f} -c copy -an ${fne}_no_audio.${e}"
+   "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Remove audio" '("ffmpeg")))
 
 (defun dired-script--dired-execute-script-on-marked-files (script name utils)
@@ -90,23 +90,23 @@
 (defun dired-script--expand (template file)
   "Expand TEMPLATE. FIXME."
   (setq file (expand-file-name file))
-  ;; "${f}" with "/path/file.jpg" -> "'/path/file.jpg'"
-  (when (string-match "[[:blank:]]\\($\{f\}\\)\\([[:blank:]]\\|$\\)" template)
+  ;; "<<f>>" with "/path/file.jpg" -> "'/path/file.jpg'"
+  (when (string-match "[[:blank:]]\\(\<\<f\>\>\\)\\([[:blank:]]\\|$\\)" template)
     (setq template (replace-match (format "'%s'" file) nil nil template 1)))
   ;; "${fne}_other_${e}" with "/path/file.jpg" -> "'/path/file_other.jpg'"
-  (when (string-match "[[:blank:]]\\(\\($\{fne\}\\)\\([^ ]+\\)\\($\{e\}\\)\\)" template)
+  (when (string-match "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ ]+\\)\\(\<\<e\>\>\\)\\)" template)
     (setq template (replace-match (format "'%s\\3%s'"
                                           (file-name-sans-extension file)
                                           (file-name-extension file)) nil nil template 1)))
   ;; "${fne}.gif" with "/path/tmp.txt" -> "'/path/tmp.gif'"
-  (when (string-match "[[:blank:]]\\(\\($\{fne\}\\)\\([^ ]+\\)\\([[:blank:]]\\|$\\)\\)" template)
+  (when (string-match "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ ]+\\)\\([[:blank:]]\\|$\\)\\)" template)
     (setq template (replace-match (format "'%s\\3'\\4"
                                           (file-name-sans-extension file)) nil nil template 1)))
   template)
 
-;; (dired-script--expand "someutil ${f} -flag" "/path/to/tmp.txt")
-;; (dired-script--expand "someutil ${fne}_another.${e} -flag" "/hom/tmp.txt")
-;; (dired-script--expand "someutil ${fne}.gif -flag" "/hom/tmp.txt")
+;; (dired-script--expand "someutil <<f>> -flag" "/path/to/tmp.txt")
+;; (dired-script--expand "someutil <<fne>>_another.<<e>> -flag" "/hom/tmp.txt")
+;; (dired-script--expand "someutil <<fne>>.gif -flag" "/hom/tmp.txt")
 
 (defun dired-script--filter (process string)
   (when-let* ((exec (map-elt dired-script--execs (process-name process)))
