@@ -51,8 +51,8 @@
   :defer
   :hook (dired-mode . dired-hide-details-mode)
   :bind (:map dired-mode-map
-              ([remap dired-do-async-shell-command] . ar/dired-do-async-shell-command)
-              ([remap dired-do-shell-command] . ar/dired-do-async-shell-command)
+              ([remap dired-do-async-shell-command] . dwim-shell-command)
+              ([remap dired-do-shell-command] . dwim-shell-command)
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
@@ -145,13 +145,6 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
-  (defun ar/dired--async-shell-command (command)
-    "Execute async shell COMMAND (replacing $f and $f.ext) with file
- path and path sans extension."
-    (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
-      (dired-do-async-shell-command command
-                                    nil (dired-get-marked-files t nil nil nil t))))
-
   (defun ar/pdf-password-protect ()
     "Password protect current pdf in buffer or `dired' file."
     (interactive)
@@ -174,38 +167,6 @@
         (shell-command-to-string
          (format "qpdf --verbose --encrypt '%s' '%s' 256 -- '%s' '%s'"
                  user-password owner-password input output))))))
-
-  (defun ar/dired-do-async-shell-command ()
-    "Like `dired-do-async-shell-command' but supports $f and $f.ext and always sequential."
-    (interactive)
-    (cl-letf (((symbol-function 'dired-shell-stuff-it) #'ar/dired-shell-stuff-it))
-      (call-interactively #'dired-do-async-shell-command)))
-
-  (defun ar/dired-shell-stuff-it (template file-list on-each &optional _raw-arg)
-    "Similar to `dired-shell-stuff-it' in spirit, but replaces $f with file from FILE-LIST.
-In addition, $f.ext replaces the extension with ext for file in FILE-LIST. Commands are
-always executed sequentually."
-    (let ((background (string-suffix-p "&" template))
-          (command))
-      (when background
-        (setq template (string-remove-suffix "&" template)))
-      (when (string-suffix-p ";" template)
-        (setq template (string-remove-suffix ";" template)))
-      (concat
-       (string-join
-        (mapcar (lambda (path)
-                  (setq command template)
-                  ;; $f (/path/file.jpg)-> /path/file.jpg
-                  (when (string-match "[[:blank:]]\\($f\\)\\([[:blank:]]\\|$\\)" command)
-                    (setq command (replace-match (format "\"%s\"" path) nil nil command 1)))
-                  ;; $f.png (/path/file.jpg) -> /path/file.png
-                  (when (string-match "[[:blank:]]\\(\\($f\\)\\.\\([[:alnum:]]+\\)\\)\\([[:blank:]]\\|$\\)" command)
-                    (setq command (replace-match (format "\"%s.\\3\"" (file-name-sans-extension path))
-                                                 nil nil command 1)))
-                  command)
-                file-list)
-        ";")
-       (if background "&" ""))))
 
   (defun ar/dired-xcode-build-dir ()
     "Open dired buffer in current Xcode's build directory."

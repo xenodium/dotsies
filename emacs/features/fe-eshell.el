@@ -295,6 +295,10 @@ So if we're connected with sudo to 'remotehost'
           (shell-pop-out)
         (shell-pop-up shell-pop-last-shell-buffer-index)))))
 
+(use-package dwim-shell-command
+  :bind
+  ("M-!" . dwim-shell-command))
+
 (use-package shell
   ;; Mostly for `async-shell-command'.
   :hook (shell-mode . goto-address-mode))
