@@ -6,11 +6,11 @@
 (require 'dired-aux)
 (require 'seq)
 
-(defvar dwim-shell--execs nil "All execs in progress")
+(defvar dwim-shell--commands nil "All commands in progress")
 
 (cl-defstruct
-    dwim-shell--exec
-  "Describes an exec in progress."
+    dwim-shell--command
+  "Describes a command in progress."
   script
   process
   name
@@ -139,15 +139,15 @@
                                 proc
                                 progress-reporter
                                 on-completion))
-      (setq dwim-shell--execs
+      (setq dwim-shell--commands
             (push (cons (process-name proc)
-                        (make-dwim-shell--exec :script script
+                        (make-dwim-shell--command :script script
                                                :process proc
                                                :name (process-name proc)
                                                :calling-buffer (current-buffer)
                                                :files-before files-before
                                                :reporter progress-reporter))
-                  dwim-shell--execs))
+                  dwim-shell--commands))
       (set-process-sentinel proc #'dwim-shell--sentinel)
       (set-process-filter proc #'dwim-shell--filter))))
 
@@ -219,20 +219,20 @@
     (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
         (switch-to-buffer (process-buffer process))
       (kill-buffer (process-buffer process))))
-  (setq dwim-shell--execs
-        (map-delete dwim-shell--execs (process-name process))))
+  (setq dwim-shell--commands
+        (map-delete dwim-shell--commands (process-name process))))
 
 (defun dwim-shell--sentinel (process state)
-  (let ((exec (map-elt dwim-shell--execs (process-name process))))
-    (dwim-shell--finalize (dwim-shell--exec-calling-buffer exec)
-                          (dwim-shell--exec-files-before exec)
+  (let ((exec (map-elt dwim-shell--commands (process-name process))))
+    (dwim-shell--finalize (dwim-shell--command-calling-buffer exec)
+                          (dwim-shell--command-files-before exec)
                           process
-                          (dwim-shell--exec-reporter exec)
-                          (dwim-shell--exec-on-completion exec))))
+                          (dwim-shell--command-reporter exec)
+                          (dwim-shell--command-on-completion exec))))
 
 (defun dwim-shell--filter (process string)
-  (when-let* ((exec (map-elt dwim-shell--execs (process-name process)))
-              (reporter (dwim-shell--exec-reporter exec)))
+  (when-let* ((exec (map-elt dwim-shell--commands (process-name process)))
+              (reporter (dwim-shell--command-reporter exec)))
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
