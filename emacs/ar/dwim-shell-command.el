@@ -87,17 +87,6 @@
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Drop audio" '("ffmpeg")))
 
-(defun dwim-shell-command--on-marked-files (script name utils &optional post-process-template on-completion)
-  "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
-  (dwim-shell-command-execute-script script name (dwim-shell-command--marked-files) utils
-                             post-process-template on-completion))
-
-(defun dwim-shell-command--marked-files ()
-  "Return buffer file (if available) or marked files for a `dired' buffer."
-  (if (buffer-file-name)
-      (list (buffer-file-name))
-    (dired-get-marked-files)))
-
 (defun dwim-shell-command-execute-script (script name files utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
@@ -235,5 +224,16 @@
               (reporter (dwim-shell-command--command-reporter exec)))
     (progress-reporter-update reporter))
   (comint-output-filter process string))
+
+(defun dwim-shell-command--on-marked-files (script name utils &optional post-process-template on-completion)
+  "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
+  (dwim-shell-command-execute-script script name (dwim-shell-command--marked-files) utils
+                             post-process-template on-completion))
+
+(defun dwim-shell-command--marked-files ()
+  "Return buffer file (if available) or marked files for a `dired' buffer."
+  (if (buffer-file-name)
+      (list (buffer-file-name))
+    (dired-get-marked-files)))
 
 (provide 'dwim-shell-command)
