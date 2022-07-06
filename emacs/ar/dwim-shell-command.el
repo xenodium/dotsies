@@ -87,6 +87,12 @@
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Drop audio" '("ffmpeg")))
 
+(defun dwim-shell-command ()
+  "Execute DWIM shell command."
+  (interactive)
+  (dwim-shell-command--on-marked-files
+   (read-shell-command "DWIM shell command: ") "DWIM shell command" '()))
+
 (defun dwim-shell-command-execute-script (script name files utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
@@ -188,28 +194,33 @@
       (nreverse r))))
 
 (defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion)
-  (when progress-reporter
-    (progress-reporter-done progress-reporter))
-  (if (= (process-exit-status process) 0)
-      (progn
-        (with-current-buffer calling-buffer
-          (when (and (equal major-mode 'dired-mode)
-                     revert-buffer-function)
-            (funcall revert-buffer-function nil t))
-          (when-let* ((oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                            (seq-difference (dwim-shell-command--default-directory-files)
-                                                                            files-before))))))
-            (dired-jump nil oldest-new-file)))
-        (when on-completion
-          (funcall on-completion))
-        (unless (equal (process-buffer process)
-                       (window-buffer (selected-window)))
-          (kill-buffer (process-buffer process))))
-    (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
-        (switch-to-buffer (process-buffer process))
-      (kill-buffer (process-buffer process))))
-  (setq dwim-shell-command--commands
-        (map-delete dwim-shell-command--commands (process-name process))))
+  (let ((oldest-new-file))
+    (when progress-reporter
+      (progress-reporter-done progress-reporter))
+    (if (= (process-exit-status process) 0)
+        (progn
+          (with-current-buffer calling-buffer
+            (when (and (equal major-mode 'dired-mode)
+                       revert-buffer-function)
+              (funcall revert-buffer-function nil t))
+            (setq oldest-new-file
+                  (car (last (seq-sort #'file-newer-than-file-p
+                                       (seq-difference (dwim-shell-command--default-directory-files)
+                                                       files-before)))))
+            (when oldest-new-file
+              (dired-jump nil oldest-new-file)))
+          (when on-completion
+            (funcall on-completion))
+          (unless (equal (process-buffer process)
+                         (window-buffer (selected-window)))
+            (if oldest-new-file
+                (kill-buffer (process-buffer process))
+              (switch-to-buffer (process-buffer process)))))
+      (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
+          (switch-to-buffer (process-buffer process))
+        (kill-buffer (process-buffer process))))
+    (setq dwim-shell-command--commands
+          (map-delete dwim-shell-command--commands (process-name process)))))
 
 (defun dwim-shell-command--sentinel (process state)
   (let ((exec (map-elt dwim-shell-command--commands (process-name process))))
