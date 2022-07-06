@@ -6,10 +6,10 @@
 (require 'dired-aux)
 (require 'seq)
 
-(defvar dwim-shell--commands nil "All commands in progress")
+(defvar dwim-shell-command--commands nil "All commands in progress")
 
 (cl-defstruct
-    dwim-shell--command
+    dwim-shell-command--command
   "Describes a command in progress."
   script
   process
@@ -19,60 +19,60 @@
   on-completion
   files-before)
 
-(defun dwim-shell-convert-audio-to-mp3 ()
+(defun dwim-shell-command-convert-audio-to-mp3 ()
   "Convert all marked audio to mp3(s)."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
    "Convert to mp3" '("ffmpeg")))
 
-(defun dwim-shell-convert-image-to-jpg ()
+(defun dwim-shell-command-convert-image-to-jpg ()
   "Convert all marked images to jpg(s)."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "convert -verbose <<f>> <<fne>>.jpg"
    "Convert to jpg" '("convert")))
 
-(defun dwim-shell-convert-image-to-png ()
+(defun dwim-shell-command-convert-image-to-png ()
   "Convert all marked images to png(s)."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "convert -verbose <<f>> <<fne>>.png"
    "Convert to png" '("convert")))
 
-(defun dwim-shell-convert-to-gif ()
+(defun dwim-shell-command-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
    "Convert to gif" '("ffmpeg")))
 
-(defun dwim-shell-convert-to-optimized-gif ()
+(defun dwim-shell-command-convert-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
    "Convert to optimized gif" '("ffmpeg" "gifsicle")))
 
-(defun dwim-shell-unzip ()
+(defun dwim-shell-command-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "atool --extract --explain <<f>>" "Unzip" '("atool")))
 
-(defun dwim-shell-speed-up-gif ()
+(defun dwim-shell-command-speed-up-gif ()
   "Speeds up gif(s)."
   (interactive)
   (let ((factor (string-to-number
                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
-    (dwim-shell--command-on-marked-files
+    (dwim-shell-command--on-marked-files
      (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
      "Speed up gif" '("gifsicle" "identify")
      (lambda (script file)
-       (string-replace "<<frames>>" (dwim-shell--gifsicle-frames-every factor file) script)))))
+       (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
 
-(defun dwim-shell--gifsicle-frames-every (skipping-every file)
+(defun dwim-shell-command--gifsicle-frames-every (skipping-every file)
   (string-join
    (seq-map (lambda (n) (format "'#%d'" n))
             (number-sequence 0 (string-to-number
@@ -80,25 +80,25 @@
                                 (seq-first (process-lines "identify" "-format" "%n\n" file)))
                              skipping-every)) " "))
 
-(defun dwim-shell-drop-video-audio ()
+(defun dwim-shell-command-drop-video-audio ()
   "Drop audio from all marked videos."
   (interactive)
-  (dwim-shell--command-on-marked-files
+  (dwim-shell-command--on-marked-files
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Drop audio" '("ffmpeg")))
 
-(defun dwim-shell--command-on-marked-files (script name utils &optional post-process-template on-completion)
+(defun dwim-shell-command--on-marked-files (script name utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
-  (dwim-shell-execute-script script name (dwim-shell--marked-files) utils
+  (dwim-shell-command-execute-script script name (dwim-shell-command--marked-files) utils
                              post-process-template on-completion))
 
-(defun dwim-shell--marked-files ()
+(defun dwim-shell-command--marked-files ()
   "Return buffer file (if available) or marked files for a `dired' buffer."
   (if (buffer-file-name)
       (list (buffer-file-name))
     (dired-get-marked-files)))
 
-(defun dwim-shell-execute-script (script name files utils &optional post-process-template on-completion)
+(defun dwim-shell-command-execute-script (script name files utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
   (cl-assert name nil "Script must have a name")
@@ -113,7 +113,7 @@
       (seq-do (lambda (file)
                 (setq script
                       (concat script "\n"
-                              (dwim-shell--expand template file post-process-template))))
+                              (dwim-shell-command--expand template file post-process-template))))
               files))
     (setq script (string-trim script))
     (seq-do (lambda (util)
@@ -128,30 +128,30 @@
       (shell-command-save-pos-or-erase)
       (view-mode +1)
       (setq view-exit-action 'kill-buffer))
-    (setq files-before (dwim-shell--default-directory-files))
+    (setq files-before (dwim-shell-command--default-directory-files))
     (setq proc (start-process (buffer-name proc-buffer) proc-buffer "zsh" "-x" "-c" script))
     (setq progress-reporter (make-progress-reporter (process-name proc)))
     (progress-reporter-update progress-reporter)
     (if (equal (process-status proc) 'exit)
         (progn
-          (dwim-shell--finalize (current-buffer)
+          (dwim-shell-command--finalize (current-buffer)
                                 files-before
                                 proc
                                 progress-reporter
                                 on-completion))
-      (setq dwim-shell--commands
+      (setq dwim-shell-command--commands
             (push (cons (process-name proc)
-                        (make-dwim-shell--command :script script
+                        (make-dwim-shell-command--command :script script
                                                :process proc
                                                :name (process-name proc)
                                                :calling-buffer (current-buffer)
                                                :files-before files-before
                                                :reporter progress-reporter))
-                  dwim-shell--commands))
-      (set-process-sentinel proc #'dwim-shell--sentinel)
-      (set-process-filter proc #'dwim-shell--filter))))
+                  dwim-shell-command--commands))
+      (set-process-sentinel proc #'dwim-shell-command--sentinel)
+      (set-process-filter proc #'dwim-shell-command--filter))))
 
-(defun dwim-shell--expand (template file &optional post-process-template)
+(defun dwim-shell-command--expand (template file &optional post-process-template)
   "Expand TEMPLATE, using <<f>> for FILE, <<fne>> for FILE without
  extension, and <<e>> for FILE extension."
   (setq file (expand-file-name file))
@@ -175,19 +175,19 @@
     (setq template (funcall post-process-template template file)))
   template)
 
-(defun dwim-shell--default-directory-files ()
+(defun dwim-shell-command--default-directory-files ()
   "List of files in current buffer's `default-directory'."
   (cond ((equal major-mode 'dired-mode)
-         (dwim-shell--dired-files))
+         (dwim-shell-command--dired-files))
         (default-directory
           (with-temp-buffer
             (let ((default-directory default-directory))
               (dired-mode default-directory)
               (when revert-buffer-function
                 (funcall revert-buffer-function nil t))
-              (dwim-shell--dired-files))))))
+              (dwim-shell-command--dired-files))))))
 
-(defun dwim-shell--dired-files ()
+(defun dwim-shell-command--dired-files ()
   "List of files in current dired buffer."
   (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
   (save-excursion
@@ -198,7 +198,7 @@
           (push filename r)))
       (nreverse r))))
 
-(defun dwim-shell--finalize (calling-buffer files-before process progress-reporter on-completion)
+(defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion)
   (when progress-reporter
     (progress-reporter-done progress-reporter))
   (if (= (process-exit-status process) 0)
@@ -208,7 +208,7 @@
                      revert-buffer-function)
             (funcall revert-buffer-function nil t))
           (when-let* ((oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                            (seq-difference (dwim-shell--default-directory-files)
+                                                            (seq-difference (dwim-shell-command--default-directory-files)
                                                                             files-before))))))
             (dired-jump nil oldest-new-file)))
         (when on-completion
@@ -219,21 +219,21 @@
     (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
         (switch-to-buffer (process-buffer process))
       (kill-buffer (process-buffer process))))
-  (setq dwim-shell--commands
-        (map-delete dwim-shell--commands (process-name process))))
+  (setq dwim-shell-command--commands
+        (map-delete dwim-shell-command--commands (process-name process))))
 
-(defun dwim-shell--sentinel (process state)
-  (let ((exec (map-elt dwim-shell--commands (process-name process))))
-    (dwim-shell--finalize (dwim-shell--command-calling-buffer exec)
-                          (dwim-shell--command-files-before exec)
+(defun dwim-shell-command--sentinel (process state)
+  (let ((exec (map-elt dwim-shell-command--commands (process-name process))))
+    (dwim-shell-command--finalize (dwim-shell-command--command-calling-buffer exec)
+                          (dwim-shell-command--command-files-before exec)
                           process
-                          (dwim-shell--command-reporter exec)
-                          (dwim-shell--command-on-completion exec))))
+                          (dwim-shell-command--command-reporter exec)
+                          (dwim-shell-command--command-on-completion exec))))
 
-(defun dwim-shell--filter (process string)
-  (when-let* ((exec (map-elt dwim-shell--commands (process-name process)))
-              (reporter (dwim-shell--command-reporter exec)))
+(defun dwim-shell-command--filter (process string)
+  (when-let* ((exec (map-elt dwim-shell-command--commands (process-name process)))
+              (reporter (dwim-shell-command--command-reporter exec)))
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(provide 'dwim-shell)
+(provide 'dwim-shell-command)
