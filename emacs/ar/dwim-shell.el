@@ -93,17 +93,6 @@
   (dwim-shell-execute-script script name (dired-get-marked-files) utils
                              post-process-template on-completion))
 
-(defun dwim-shell--dired-files ()
-  "List of files in current dired buffer."
-  (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
-  (save-excursion
-    (goto-char (point-min))
-    (let (r)
-      (while (= 0 (forward-line))
-        (when-let (filename (dired-get-filename nil t))
-          (push filename r)))
-      (nreverse r))))
-
 (defun dwim-shell-execute-script (script name files utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
@@ -181,13 +170,8 @@
     (setq template (funcall post-process-template template file)))
   template)
 
-(defun dwim-shell--filter (process string)
-  (when-let* ((exec (map-elt dwim-shell--execs (process-name process)))
-              (reporter (dwim-shell--exec-reporter exec)))
-    (progress-reporter-update reporter))
-  (comint-output-filter process string))
-
-(defun dwim-shell--buffer-files ()
+(defun dwim-shell--default-directory ()
+  "List of files in current buffer's `default-directory'."
   (cond ((equal major-mode 'dired-mode)
          (dwim-shell--dired-files))
         (default-directory
@@ -198,6 +182,17 @@
                 (funcall revert-buffer-function))
               (dwim-shell--dired-files))))))
 
+(defun dwim-shell--dired-files ()
+  "List of files in current dired buffer."
+  (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
+  (save-excursion
+    (goto-char (point-min))
+    (let (r)
+      (while (= 0 (forward-line))
+        (when-let (filename (dired-get-filename nil t))
+          (push filename r)))
+      (nreverse r))))
+
 (defun dwim-shell--finalize (calling-buffer files-before process progress-reporter on-completion)
   (when progress-reporter
     (progress-reporter-done progress-reporter))
@@ -207,7 +202,7 @@
           (when revert-buffer-function
             (funcall revert-buffer-function))
           (when-let* ((oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                            (seq-difference (dwim-shell--buffer-files)
+                                                            (seq-difference (dwim-shell--default-directory)
                                                                             files-before))))))
             (dired-jump nil oldest-new-file)))
         (when on-completion
@@ -228,5 +223,11 @@
                           process
                           (dwim-shell--exec-reporter exec)
                           (dwim-shell--exec-on-completion exec))))
+
+(defun dwim-shell--filter (process string)
+  (when-let* ((exec (map-elt dwim-shell--execs (process-name process)))
+              (reporter (dwim-shell--exec-reporter exec)))
+    (progress-reporter-update reporter))
+  (comint-output-filter process string))
 
 (provide 'dwim-shell)
