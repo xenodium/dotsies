@@ -91,7 +91,7 @@
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
   (dwim-shell-execute-script script name (dired-get-marked-files) utils
-                               post-process-template on-completion))
+                             post-process-template on-completion))
 
 (defun dwim-shell--dired-files ()
   "List of files in current dired buffer."
@@ -112,7 +112,8 @@
          (template script)
          (script "")
          (files-before)
-         (proc))
+         (proc)
+         (progress-reporter))
     (if (seq-empty-p files)
         (setq script template)
       (seq-do (lambda (file)
@@ -126,45 +127,32 @@
                          (format "%s not installed" util)))
             utils)
     (with-current-buffer proc-buffer
+        (require 'shell)
+        (shell-mode))
+    (with-current-buffer proc-buffer
       (setq default-directory default-directory)
       (shell-command-save-pos-or-erase)
       (view-mode +1)
       (setq view-exit-action 'kill-buffer))
     (setq files-before (dwim-shell--dired-files))
     (setq proc (start-process (buffer-name proc-buffer) proc-buffer "zsh" "-x" "-c" script))
+    (setq progress-reporter (make-progress-reporter (process-name proc)))
+    (progress-reporter-update progress-reporter)
     (if (equal (process-status proc) 'exit)
         (progn
-          (if (= (process-exit-status proc) 0)
-              (progn
-                (when on-completion
-                  (funcall on-completion))
-                (with-current-buffer (current-buffer)
-                  (when revert-buffer-function
-                    (funcall revert-buffer-function))
-                  (when-let* ((files-after (dwim-shell--dired-files))
-                              (oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                                    (seq-difference files-after
-                                                                                    files-before))))))
-                    (dired-goto-file oldest-new-file)))
-                (unless (equal (process-buffer proc)
-                               (window-buffer (selected-window)))
-                  (kill-buffer (process-buffer proc))))
-            (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer proc))))
-                (switch-to-buffer (process-buffer proc))
-              (unless (equal (process-buffer proc)
-                             (window-buffer (selected-window)))
-                (kill-buffer (process-buffer proc))))))
-      (with-current-buffer proc-buffer
-        (require 'shell)
-        (shell-mode))
+          (dwim-shell--finalize (current-buffer)
+                                files-before
+                                proc
+                                progress-reporter
+                                on-completion))
       (setq dwim-shell--execs
             (push (cons (process-name proc)
                         (make-dwim-shell--exec :script script
-                                                 :process proc
-                                                 :name (process-name proc)
-                                                 :calling-buffer (current-buffer)
-                                                 :files-before (dwim-shell--dired-files)
-                                                 :reporter (make-progress-reporter (process-name proc))))
+                                               :process proc
+                                               :name (process-name proc)
+                                               :calling-buffer (current-buffer)
+                                               :files-before (dwim-shell--dired-files)
+                                               :reporter progress-reporter))
                   dwim-shell--execs))
       (set-process-sentinel proc #'dwim-shell--sentinel)
       (set-process-filter proc #'dwim-shell--filter))))
@@ -199,29 +187,46 @@
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(defun dwim-shell--sentinel (process state)
-  (let ((exec (map-elt dwim-shell--execs (process-name process))))
-    (when exec
-      (progress-reporter-done (dwim-shell--exec-reporter exec)))
-    (if (= (process-exit-status process) 0)
-        (progn
-          (with-current-buffer (dwim-shell--exec-calling-buffer exec)
-            (when revert-buffer-function
-              (funcall revert-buffer-function))
-            (when-let* ((before (dwim-shell--exec-files-before exec))
-                        (after (dwim-shell--dired-files))
-                        (oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                              (seq-difference after before))))))
-              (dired-goto-file oldest-new-file)))
-          (when (dwim-shell--exec-on-completion exec)
-            (funcall (dwim-shell--exec-on-completion exec)))
-          (unless (equal (process-buffer process)
-                         (window-buffer (selected-window)))
-            (kill-buffer (process-buffer process))))
-      (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
-          (switch-to-buffer (process-buffer process))
-        (kill-buffer (process-buffer process)))))
+(defun dwim-shell--buffer-files ()
+  (cond ((equal major-mode 'dired-mode)
+         (dwim-shell--dired-files))
+        (default-directory
+          (with-temp-buffer
+            (let ((default-directory default-directory))
+              (dired-mode default-directory)
+              (when revert-buffer-function
+                (funcall revert-buffer-function))
+              (dwim-shell--dired-files))))))
+
+(defun dwim-shell--finalize (calling-buffer files-before process progress-reporter on-completion)
+  (when progress-reporter
+    (progress-reporter-done progress-reporter))
+  (if (= (process-exit-status process) 0)
+      (progn
+        (with-current-buffer calling-buffer
+          (when revert-buffer-function
+            (funcall revert-buffer-function))
+          (when-let* ((oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
+                                                            (seq-difference (dwim-shell--buffer-files)
+                                                                            files-before))))))
+            (dired-jump nil oldest-new-file)))
+        (when on-completion
+          (funcall on-completion))
+        (unless (equal (process-buffer process)
+                       (window-buffer (selected-window)))
+          (kill-buffer (process-buffer process))))
+    (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
+        (switch-to-buffer (process-buffer process))
+      (kill-buffer (process-buffer process))))
   (setq dwim-shell--execs
         (map-delete dwim-shell--execs (process-name process))))
+
+(defun dwim-shell--sentinel (process state)
+  (let ((exec (map-elt dwim-shell--execs (process-name process))))
+    (dwim-shell--finalize (dwim-shell--exec-calling-buffer exec)
+                          (dwim-shell--exec-files-before exec)
+                          process
+                          (dwim-shell--exec-reporter exec)
+                          (dwim-shell--exec-on-completion exec))))
 
 (provide 'dwim-shell)
