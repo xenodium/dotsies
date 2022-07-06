@@ -22,35 +22,35 @@
 (defun dwim-shell-convert-audio-to-mp3 ()
   "Convert all marked audio to mp3(s)."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
    "Convert to mp3" '("ffmpeg")))
 
 (defun dwim-shell-convert-image-to-jpg ()
   "Convert all marked images to jpg(s)."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "convert -verbose <<f>> <<fne>>.jpg"
    "Convert to jpg" '("convert")))
 
 (defun dwim-shell-convert-image-to-png ()
   "Convert all marked images to png(s)."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "convert -verbose <<f>> <<fne>>.png"
    "Convert to png" '("convert")))
 
 (defun dwim-shell-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
    "Convert to gif" '("ffmpeg")))
 
 (defun dwim-shell-convert-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
    "Convert to optimized gif" '("ffmpeg" "gifsicle")))
@@ -58,7 +58,7 @@
 (defun dwim-shell-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "atool --extract --explain <<f>>" "Unzip" '("atool")))
 
 (defun dwim-shell-speed-up-gif ()
@@ -66,7 +66,7 @@
   (interactive)
   (let ((factor (string-to-number
                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
-    (dwim-shell--dired-execute-script-on-marked-files
+    (dwim-shell--command-on-marked-files
      (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
      "Speed up gif" '("gifsicle" "identify")
      (lambda (script file)
@@ -83,15 +83,20 @@
 (defun dwim-shell-drop-video-audio ()
   "Drop audio from all marked videos."
   (interactive)
-  (dwim-shell--dired-execute-script-on-marked-files
+  (dwim-shell--command-on-marked-files
    "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    "Drop audio" '("ffmpeg")))
 
-(defun dwim-shell--dired-execute-script-on-marked-files (script name utils &optional post-process-template on-completion)
+(defun dwim-shell--command-on-marked-files (script name utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
-  (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
-  (dwim-shell-execute-script script name (dired-get-marked-files) utils
+  (dwim-shell-execute-script script name (dwim-shell--marked-files) utils
                              post-process-template on-completion))
+
+(defun dwim-shell--marked-files ()
+  "Return buffer file (if available) or marked files for a `dired' buffer."
+  (if (buffer-file-name)
+      (list (buffer-file-name))
+    (dired-get-marked-files)))
 
 (defun dwim-shell-execute-script (script name files utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
@@ -116,14 +121,14 @@
                          (format "%s not installed" util)))
             utils)
     (with-current-buffer proc-buffer
-        (require 'shell)
-        (shell-mode))
+      (require 'shell)
+      (shell-mode))
     (with-current-buffer proc-buffer
       (setq default-directory default-directory)
       (shell-command-save-pos-or-erase)
       (view-mode +1)
       (setq view-exit-action 'kill-buffer))
-    (setq files-before (dwim-shell--dired-files))
+    (setq files-before (dwim-shell--default-directory-files))
     (setq proc (start-process (buffer-name proc-buffer) proc-buffer "zsh" "-x" "-c" script))
     (setq progress-reporter (make-progress-reporter (process-name proc)))
     (progress-reporter-update progress-reporter)
@@ -140,7 +145,7 @@
                                                :process proc
                                                :name (process-name proc)
                                                :calling-buffer (current-buffer)
-                                               :files-before (dwim-shell--dired-files)
+                                               :files-before files-before
                                                :reporter progress-reporter))
                   dwim-shell--execs))
       (set-process-sentinel proc #'dwim-shell--sentinel)
@@ -170,7 +175,7 @@
     (setq template (funcall post-process-template template file)))
   template)
 
-(defun dwim-shell--default-directory ()
+(defun dwim-shell--default-directory-files ()
   "List of files in current buffer's `default-directory'."
   (cond ((equal major-mode 'dired-mode)
          (dwim-shell--dired-files))
@@ -179,7 +184,7 @@
             (let ((default-directory default-directory))
               (dired-mode default-directory)
               (when revert-buffer-function
-                (funcall revert-buffer-function))
+                (funcall revert-buffer-function nil t))
               (dwim-shell--dired-files))))))
 
 (defun dwim-shell--dired-files ()
@@ -199,10 +204,11 @@
   (if (= (process-exit-status process) 0)
       (progn
         (with-current-buffer calling-buffer
-          (when revert-buffer-function
-            (funcall revert-buffer-function))
+          (when (and (equal major-mode 'dired-mode)
+                     revert-buffer-function)
+            (funcall revert-buffer-function nil t))
           (when-let* ((oldest-new-file (car (last (seq-sort #'file-newer-than-file-p
-                                                            (seq-difference (dwim-shell--default-directory)
+                                                            (seq-difference (dwim-shell--default-directory-files)
                                                                             files-before))))))
             (dired-jump nil oldest-new-file)))
         (when on-completion
