@@ -130,18 +130,18 @@
     (if (equal (process-status proc) 'exit)
         (progn
           (dwim-shell-command--finalize (current-buffer)
-                                files-before
-                                proc
-                                progress-reporter
-                                on-completion))
+                                        files-before
+                                        proc
+                                        progress-reporter
+                                        on-completion))
       (setq dwim-shell-command--commands
             (push (cons (process-name proc)
                         (make-dwim-shell-command--command :script script
-                                               :process proc
-                                               :name (process-name proc)
-                                               :calling-buffer (current-buffer)
-                                               :files-before files-before
-                                               :reporter progress-reporter))
+                                                          :process proc
+                                                          :name (process-name proc)
+                                                          :calling-buffer (current-buffer)
+                                                          :files-before files-before
+                                                          :reporter progress-reporter))
                   dwim-shell-command--commands))
       (set-process-sentinel proc #'dwim-shell-command--sentinel)
       (set-process-filter proc #'dwim-shell-command--filter))))
@@ -172,26 +172,14 @@
 
 (defun dwim-shell-command--default-directory-files ()
   "List of files in current buffer's `default-directory'."
-  (cond ((equal major-mode 'dired-mode)
-         (dwim-shell-command--dired-files))
-        (default-directory
-          (with-temp-buffer
-            (let ((default-directory default-directory))
-              (dired-mode default-directory)
-              (when revert-buffer-function
-                (funcall revert-buffer-function nil t))
-              (dwim-shell-command--dired-files))))))
+  (when default-directory
+    (seq-map (lambda (filename)
+               (concat default-directory filename))
+             (process-lines "ls" "-1"))))
 
-(defun dwim-shell-command--dired-files ()
-  "List of files in current dired buffer."
-  (cl-assert (equal major-mode 'dired-mode) nil "Not in dired-mode")
-  (save-excursion
-    (goto-char (point-min))
-    (let (r)
-      (while (= 0 (forward-line))
-        (when-let (filename (dired-get-filename nil t))
-          (push filename r)))
-      (nreverse r))))
+(defun dwim-shell-command--last-modified-between (before after)
+  (car (last (seq-sort #'file-newer-than-file-p
+                       (seq-difference after before)))))
 
 (defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion)
   (let ((oldest-new-file))
@@ -204,9 +192,9 @@
                        revert-buffer-function)
               (funcall revert-buffer-function nil t))
             (setq oldest-new-file
-                  (car (last (seq-sort #'file-newer-than-file-p
-                                       (seq-difference (dwim-shell-command--default-directory-files)
-                                                       files-before)))))
+                  (dwim-shell-command--last-modified-between
+                   files-before
+                   (dwim-shell-command--default-directory-files)))
             (when oldest-new-file
               (dired-jump nil oldest-new-file)))
           (when on-completion
@@ -225,10 +213,10 @@
 (defun dwim-shell-command--sentinel (process state)
   (let ((exec (map-elt dwim-shell-command--commands (process-name process))))
     (dwim-shell-command--finalize (dwim-shell-command--command-calling-buffer exec)
-                          (dwim-shell-command--command-files-before exec)
-                          process
-                          (dwim-shell-command--command-reporter exec)
-                          (dwim-shell-command--command-on-completion exec))))
+                                  (dwim-shell-command--command-files-before exec)
+                                  process
+                                  (dwim-shell-command--command-reporter exec)
+                                  (dwim-shell-command--command-on-completion exec))))
 
 (defun dwim-shell-command--filter (process string)
   (when-let* ((exec (map-elt dwim-shell-command--commands (process-name process)))
@@ -239,7 +227,7 @@
 (defun dwim-shell-command--on-marked-files (script name utils &optional post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (dwim-shell-command-execute-script script name (dwim-shell-command--marked-files) utils
-                             post-process-template on-completion))
+                                     post-process-template on-completion))
 
 (defun dwim-shell-command--marked-files ()
   "Return buffer file (if available) or marked files for a `dired' buffer."
