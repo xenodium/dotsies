@@ -53,6 +53,7 @@
   :bind (:map dired-mode-map
               ([remap dired-do-async-shell-command] . dwim-shell-command)
               ([remap dired-do-shell-command] . dwim-shell-command)
+              ([remap dired-smart-shell-command] . dwim-shell-command)
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
