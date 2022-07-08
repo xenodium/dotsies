@@ -146,29 +146,6 @@
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1))))))
 
-  (defun ar/pdf-password-protect ()
-    "Password protect current pdf in buffer or `dired' file."
-    (interactive)
-    (unless (executable-find "qpdf")
-      (user-error "qpdf not installed"))
-    (unless (equal "pdf"
-                   (or (when (buffer-file-name)
-                         (downcase (file-name-extension (buffer-file-name))))
-                       (when (dired-get-filename nil t)
-                         (downcase (file-name-extension (dired-get-filename nil t))))))
-      (user-error "no pdf to act on"))
-    (let* ((user-password (read-passwd "user-password: "))
-           (owner-password (read-passwd "owner-password: "))
-           (input (or (buffer-file-name)
-                      (dired-get-filename nil t)))
-           (output (concat (file-name-sans-extension input)
-                           "_enc.pdf")))
-      (message
-       (string-trim
-        (shell-command-to-string
-         (format "qpdf --verbose --encrypt '%s' '%s' 256 -- '%s' '%s'"
-                 user-password owner-password input output))))))
-
   (defun ar/dired-xcode-build-dir ()
     "Open dired buffer in current Xcode's build directory."
     (interactive)

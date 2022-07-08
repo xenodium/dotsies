@@ -72,6 +72,15 @@
      (lambda (script file)
        (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
 
+(defun dwim-shell-command-pdf-password-protect ()
+  "Speeds up gif(s)."
+  (interactive)
+  (dwim-shell-command--on-marked-files
+   (format "qpdf --verbose --encrypt '%s' '%s' 256 -- <<f>> <<fne>>_enc.<<e>>"
+           (read-passwd "user-password: ")
+           (read-passwd "owner-password: "))
+   "Password protect pdf" '("qpdf")))
+
 (defun dwim-shell-command--gifsicle-frames-every (skipping-every file)
   (string-join
    (seq-map (lambda (n) (format "'#%d'" n))
