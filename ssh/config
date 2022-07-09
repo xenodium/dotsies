@@ -1,6 +1,0 @@
-Host *
-    ControlPath ~/.ssh/master-%h:%p
-    ControlMaster auto
-    ControlPersist 10m
-
-AddKeysToAgent yes
