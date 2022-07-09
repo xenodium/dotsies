@@ -127,6 +127,25 @@ iconutil -c icns <<fne>>.iconset
    :utils '("sips" "iconutil")
    :extensions "png"))
 
+(defun dwim-git-clone-clipboard-url ()
+  "Clone git URL in clipboard asynchronously and open in dired when finished."
+  (interactive)
+  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
+  (let* ((url (current-kill 0))
+         (download-dir (expand-file-name "~/Downloads/"))
+         (project-dir (concat download-dir (file-name-base url)))
+         (default-directory download-dir))
+    (when (or (not (file-exists-p project-dir))
+              (when (y-or-n-p (format "%s exists. delete?" (file-name-base url)))
+                (delete-directory project-dir t)
+                t))
+      (dwim-shell-command--on-marked-files
+       (format "Clone %s" (file-name-base url))
+       (format "git clone %s" url)
+       :utils "git"
+       :on-completion (lambda()
+                        (dired project-dir))))))
+
 (defun dwim-shell-command ()
   "Execute DWIM shell command."
   (interactive)
@@ -188,7 +207,8 @@ iconutil -c icns <<fne>>.iconset
                                                           :name (process-name proc)
                                                           :calling-buffer (current-buffer)
                                                           :files-before files-before
-                                                          :reporter progress-reporter))
+                                                          :reporter progress-reporter
+                                                          :on-completion on-completion))
                   dwim-shell-command--commands))
       (set-process-sentinel proc #'dwim-shell-command--sentinel)
       (set-process-filter proc #'dwim-shell-command--filter))))
@@ -233,24 +253,25 @@ iconutil -c icns <<fne>>.iconset
     (when progress-reporter
       (progress-reporter-done progress-reporter))
     (if (= (process-exit-status process) 0)
-        (progn
-          (with-current-buffer calling-buffer
-            (when (and (equal major-mode 'dired-mode)
-                       revert-buffer-function)
-              (funcall revert-buffer-function nil t))
-            (setq oldest-new-file
-                  (dwim-shell-command--last-modified-between
-                   files-before
-                   (dwim-shell-command--default-directory-files)))
-            (when oldest-new-file
-              (dired-jump nil oldest-new-file)))
-          (when on-completion
-            (funcall on-completion))
-          (unless (equal (process-buffer process)
-                         (window-buffer (selected-window)))
-            (if oldest-new-file
-                (kill-buffer (process-buffer process))
-              (switch-to-buffer (process-buffer process)))))
+        (if on-completion
+            (progn (funcall on-completion)
+                   (kill-buffer (process-buffer process)))
+          (progn
+            (with-current-buffer calling-buffer
+              (when (and (equal major-mode 'dired-mode)
+                         revert-buffer-function)
+                (funcall revert-buffer-function nil t))
+              (setq oldest-new-file
+                    (dwim-shell-command--last-modified-between
+                     files-before
+                     (dwim-shell-command--default-directory-files)))
+              (when oldest-new-file
+                (dired-jump nil oldest-new-file)))
+            (unless (equal (process-buffer process)
+                           (window-buffer (selected-window)))
+              (if oldest-new-file
+                  (kill-buffer (process-buffer process))
+                (switch-to-buffer (process-buffer process))))))
       (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
           (switch-to-buffer (process-buffer process))
         (kill-buffer (process-buffer process))))
