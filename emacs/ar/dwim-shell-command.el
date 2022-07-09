@@ -25,7 +25,7 @@
   (dwim-shell-command--on-marked-files
    "Convert to mp3"
    "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
-   :check-utils "ffmpeg"))
+   :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-jpg ()
   "Convert all marked images to jpg(s)."
@@ -33,7 +33,7 @@
   (dwim-shell-command--on-marked-files
    "Convert to jpg"
    "convert -verbose <<f>> <<fne>>.jpg"
-   :check-utils "convert"))
+   :utils "convert"))
 
 (defun dwim-shell-command-convert-image-to-png ()
   "Convert all marked images to png(s)."
@@ -41,7 +41,7 @@
   (dwim-shell-command--on-marked-files
    "Convert to png"
    "convert -verbose <<f>> <<fne>>.png"
-   :check-utils "convert"))
+   :utils "convert"))
 
 (defun dwim-shell-command-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
@@ -49,7 +49,7 @@
   (dwim-shell-command--on-marked-files
    "Convert to gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
-   :check-utils "ffmpeg"))
+   :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
@@ -58,14 +58,14 @@
    "Convert to optimized gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
-   :check-utils '("ffmpeg" "gifsicle")))
+   :utils '("ffmpeg" "gifsicle")))
 
 (defun dwim-shell-command-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
   (dwim-shell-command--on-marked-files
    "Unzip" "atool --extract --explain <<f>>"
-   :check-utils "atool"))
+   :utils "atool"))
 
 (defun dwim-shell-command-speed-up-gif ()
   "Speeds up gif(s)."
@@ -75,8 +75,7 @@
     (dwim-shell-command--on-marked-files
      "Speed up gif"
      (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
-     :check-extensions "gif"
-     :check-utils '("gifsicle" "identify")
+     :extensions "gif" :utils '("gifsicle" "identify")
      :post-process-template (lambda (script file)
        (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
 
@@ -88,7 +87,7 @@
    (format "qpdf --verbose --encrypt '%s' '%s' 256 -- <<f>> <<fne>>_enc.<<e>>"
            (read-passwd "user-password: ")
            (read-passwd "owner-password: "))
-   :check-utils "qpdf"))
+   :utils "qpdf"))
 
 (defun dwim-shell-command--gifsicle-frames-every (skipping-every file)
   (string-join
@@ -103,7 +102,7 @@
   (interactive)
   (dwim-shell-command--on-marked-files
    "Drop audio" "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
-   :check-utils "ffmpeg"))
+   :utils "ffmpeg"))
 
 (defun dwim-shell-command ()
   "Execute DWIM shell command."
@@ -111,14 +110,14 @@
   (dwim-shell-command--on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(cl-defun dwim-shell-command-execute-script (buffer-name script &key files check-extensions check-utils post-process-template on-completion)
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions utils post-process-template on-completion)
   "Execute SCRIPT, with BUFFER-NAME."
   (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
-  (when (stringp check-extensions)
-    (setq check-extensions (list check-extensions)))
-  (when (stringp check-utils)
-    (setq check-utils (list check-utils)))
+  (when (stringp extensions)
+    (setq extensions (list extensions)))
+  (when (stringp utils)
+    (setq utils (list utils)))
   (let* ((proc-buffer (generate-new-buffer buffer-name))
          (template script)
          (script "")
@@ -128,9 +127,9 @@
     (if (seq-empty-p files)
         (setq script template)
       (seq-do (lambda (file)
-                (when check-extensions
-                  (cl-assert (seq-contains-p check-extensions (file-name-extension file))
-                             nil "Not a .%s file" (string-join check-extensions " .")))
+                (when extensions
+                  (cl-assert (seq-contains-p extensions (file-name-extension file))
+                             nil "Not a .%s file" (string-join extensions " .")))
                 (setq script
                       (concat script "\n"
                               (dwim-shell-command--expand template file post-process-template))))
@@ -139,7 +138,7 @@
     (seq-do (lambda (util)
               (cl-assert (executable-find util) nil
                          (format "%s not installed" util)))
-            check-utils)
+            utils)
     (with-current-buffer proc-buffer
       (require 'shell)
       (shell-mode))
@@ -249,12 +248,12 @@
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key check-utils check-extensions post-process-template on-completion)
+(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key utils extensions post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (dwim-shell-command-execute-script buffer-name script
                                      :files (dwim-shell-command--marked-files)
-                                     :check-utils check-utils
-                                     :check-extensions check-extensions
+                                     :utils utils
+                                     :extensions extensions
                                      :post-process-template post-process-template
                                      :on-completion on-completion))
 
