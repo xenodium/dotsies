@@ -104,6 +104,27 @@
    "Drop audio" "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    :utils "ffmpeg"))
 
+(defun dwim-shell-command-convert-image-to-icns ()
+  "Drop audio from all marked videos."
+  (interactive)
+  (dwim-shell-command--on-marked-files
+   "Convert png to icns icon"
+   "mkdir <<fne>>.iconset
+sips -z 16 16 <<f>> --out <<fne>>.iconset/icon16x16.png
+sips -z 32 32 <<f>> --out <<fne>>.iconset/icon16x16@2x.png
+sips -z 32 32 <<f>> --out <<fne>>.iconset/icon32x32.png
+sips -z 64 64 <<f>> --out <<fne>>.iconset/icon32x32@2x.png
+sips -z 128 128 <<f>> --out <<fne>>.iconset/icon128x128.png
+sips -z 256 256 <<f>> --out <<fne>>.iconset/icon128x128@2x.png
+sips -z 256 256 <<f>> --out <<fne>>.iconset/icon256x256@2x.png
+sips -z 512 512 <<f>> --out <<fne>>.iconset/icon512x512.png
+sips -z 512 512 <<f>> --out <<fne>>.iconset/icon256x256@2x.png
+sips -z 1024 1024 <<f>> --out <<fne>>.iconset/icon_512x512@2x.png
+iconutil -c icns <<fne>>.iconset
+"
+   :utils '("sips" "iconutil")
+   :extensions "png"))
+
 (defun dwim-shell-command ()
   "Execute DWIM shell command."
   (interactive)
@@ -128,7 +149,7 @@
         (setq script template)
       (seq-do (lambda (file)
                 (when extensions
-                  (cl-assert (seq-contains-p extensions (file-name-extension file))
+                  (cl-assert (seq-contains-p extensions (downcase (file-name-extension file)))
                              nil "Not a .%s file" (string-join extensions " .")))
                 (setq script
                       (concat script "\n"
