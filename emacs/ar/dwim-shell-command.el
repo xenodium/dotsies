@@ -23,43 +23,49 @@
   "Convert all marked audio to mp3(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Convert to mp3"
    "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
-   "Convert to mp3" '("ffmpeg")))
+   :check-utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-jpg ()
   "Convert all marked images to jpg(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Convert to jpg"
    "convert -verbose <<f>> <<fne>>.jpg"
-   "Convert to jpg" '("convert")))
+   :check-utils "convert"))
 
 (defun dwim-shell-command-convert-image-to-png ()
   "Convert all marked images to png(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Convert to png"
    "convert -verbose <<f>> <<fne>>.png"
-   "Convert to png" '("convert")))
+   :check-utils "convert"))
 
 (defun dwim-shell-command-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Convert to gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
-   "Convert to gif" '("ffmpeg")))
+   :check-utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Convert to optimized gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
-   "Convert to optimized gif" '("ffmpeg" "gifsicle")))
+   :check-utils '("ffmpeg" "gifsicle")))
 
 (defun dwim-shell-command-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
   (dwim-shell-command--on-marked-files
-   "atool --extract --explain <<f>>" "Unzip" '("atool")))
+   "Unzip" "atool --extract --explain <<f>>"
+   :check-utils "atool"))
 
 (defun dwim-shell-command-speed-up-gif ()
   "Speeds up gif(s)."
@@ -67,19 +73,22 @@
   (let ((factor (string-to-number
                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
     (dwim-shell-command--on-marked-files
+     "Speed up gif"
      (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
-     "Speed up gif" '("gifsicle" "identify")
-     (lambda (script file)
+     :check-extensions "gif"
+     :check-utils '("gifsicle" "identify")
+     :post-process-template (lambda (script file)
        (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
 
 (defun dwim-shell-command-pdf-password-protect ()
   "Speeds up gif(s)."
   (interactive)
   (dwim-shell-command--on-marked-files
+   "Password protect pdf"
    (format "qpdf --verbose --encrypt '%s' '%s' 256 -- <<f>> <<fne>>_enc.<<e>>"
            (read-passwd "user-password: ")
            (read-passwd "owner-password: "))
-   "Password protect pdf" '("qpdf")))
+   :check-utils "qpdf"))
 
 (defun dwim-shell-command--gifsicle-frames-every (skipping-every file)
   (string-join
@@ -93,20 +102,24 @@
   "Drop audio from all marked videos."
   (interactive)
   (dwim-shell-command--on-marked-files
-   "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
-   "Drop audio" '("ffmpeg")))
+   "Drop audio" "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
+   :check-utils "ffmpeg"))
 
 (defun dwim-shell-command ()
   "Execute DWIM shell command."
   (interactive)
   (dwim-shell-command--on-marked-files
-   (read-shell-command "DWIM shell command: ") "DWIM shell command" '()))
+   "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(defun dwim-shell-command-execute-script (script name files utils &optional post-process-template on-completion)
-  "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files check-extensions check-utils post-process-template on-completion)
+  "Execute SCRIPT, with BUFFER-NAME."
+  (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
-  (cl-assert name nil "Script must have a name")
-  (let* ((proc-buffer (generate-new-buffer name))
+  (when (stringp check-extensions)
+    (setq check-extensions (list check-extensions)))
+  (when (stringp check-utils)
+    (setq check-utils (list check-utils)))
+  (let* ((proc-buffer (generate-new-buffer buffer-name))
          (template script)
          (script "")
          (files-before)
@@ -115,6 +128,9 @@
     (if (seq-empty-p files)
         (setq script template)
       (seq-do (lambda (file)
+                (when check-extensions
+                  (cl-assert (seq-contains-p check-extensions (file-name-extension file))
+                             nil "Not a .%s file" (string-join check-extensions " .")))
                 (setq script
                       (concat script "\n"
                               (dwim-shell-command--expand template file post-process-template))))
@@ -123,7 +139,7 @@
     (seq-do (lambda (util)
               (cl-assert (executable-find util) nil
                          (format "%s not installed" util)))
-            utils)
+            check-utils)
     (with-current-buffer proc-buffer
       (require 'shell)
       (shell-mode))
@@ -233,10 +249,14 @@
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(defun dwim-shell-command--on-marked-files (script name utils &optional post-process-template on-completion)
+(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key check-utils check-extensions post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
-  (dwim-shell-command-execute-script script name (dwim-shell-command--marked-files) utils
-                                     post-process-template on-completion))
+  (dwim-shell-command-execute-script buffer-name script
+                                     :files (dwim-shell-command--marked-files)
+                                     :check-utils check-utils
+                                     :check-extensions check-extensions
+                                     :post-process-template post-process-template
+                                     :on-completion on-completion))
 
 (defun dwim-shell-command--marked-files ()
   "Return buffer file (if available) or marked files for a `dired' buffer."
