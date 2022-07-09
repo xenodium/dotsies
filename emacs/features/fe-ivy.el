@@ -298,7 +298,6 @@ For example:
                               (Man-completion-table . "^")
                               (woman . "^")))
   (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
-  (ivy-height (round (* 0.01666 (display-pixel-height))))
   (ivy-count-format "")
   (ivy-use-virtual-buffers t)
   (ivy-display-style 'fancy)
@@ -315,6 +314,10 @@ For example:
   (add-hook 'minibuffer-setup-hook
             (lambda ()
               (setq truncate-lines nil)))
+  (add-hook 'window-state-change-functions
+            (defun ar/update-ivy-height (&optional _)
+              ;; Make ivy-height proportional to frame size.
+              (setq ivy-height (round (* 0.01666 (frame-pixel-height))))))
 
   (defun ar/ivy-reset-height ()
     "Reset ivy height considering frame height."
