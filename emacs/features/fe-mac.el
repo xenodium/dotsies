@@ -17,6 +17,8 @@
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
+  (setq trash-directory "~/.Trash")
+
   (use-package ns-win
     ;; Easily insert # on macOS/UK keyboard.
     ;; https://coffeeandcode.neocities.org/emacs-keyboard-config-on-mac.html
