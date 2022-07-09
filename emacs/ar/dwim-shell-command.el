@@ -119,7 +119,7 @@ sips -z 256 256 <<f>> --out <<fne>>.iconset/icon128x128@2x.png
 sips -z 256 256 <<f>> --out <<fne>>.iconset/icon256x256@2x.png
 sips -z 512 512 <<f>> --out <<fne>>.iconset/icon512x512.png
 sips -z 512 512 <<f>> --out <<fne>>.iconset/icon256x256@2x.png
-sips -z 1024 1024 <<f>> --out <<fne>>.iconset/icon_512x512@2x.png
+sips -z 1024 1024 <<f>> --out <<fne>>.iconset/icon512x512@2x.png
 iconutil -c icns <<fne>>.iconset
 "
    :utils '("sips" "iconutil")
