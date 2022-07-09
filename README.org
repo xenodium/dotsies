@@ -1,5 +1,5 @@
 * Another dot files repo
 
-But really, it's mostly my [[https://www.gnu.org/software/emacs/][Emacs]] config. I sometimes write about config tweaks over at [[https://xenodium.com][xenodium.com]].
+But really, it's mostly my [[https://www.gnu.org/software/emacs/][Emacs]] config and some [[https://www.hammerspoon.org/][Hammerspoon]] goodies. I sometimes write about Emacs tweaks over at [[https://xenodium.com][xenodium.com]].
 
 [[file:README.org.res/emacs.png]]
