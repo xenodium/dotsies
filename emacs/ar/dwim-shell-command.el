@@ -109,7 +109,9 @@
   (interactive)
   (dwim-shell-command--on-marked-files
    "Convert png to icns icon"
-   "mkdir <<fne>>.iconset
+   "# Based on http://stackoverflow.com/questions/12306223/how-to-manually-create-icns-files-using-iconutil
+# Note: png must be 1024x1024
+mkdir <<fne>>.iconset
 sips -z 16 16 <<f>> --out <<fne>>.iconset/icon_16x16.png
 sips -z 32 32 <<f>> --out <<fne>>.iconset/icon_16x16@2x.png
 sips -z 32 32 <<f>> --out <<fne>>.iconset/icon_32x32.png
