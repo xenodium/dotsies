@@ -38,7 +38,7 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to mp3"
-   "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
+   "ffmpeg -stats -n -i '<<f>>' -acodec libmp3lame '<<fne>>.mp3'"
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-jpg ()
@@ -46,7 +46,7 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to jpg"
-   "convert -verbose <<f>> <<fne>>.jpg"
+   "convert -verbose '<<f>>' '<<fne>>.jpg'"
    :utils "convert"))
 
 (defun dwim-shell-command-convert-image-to-png ()
@@ -54,7 +54,7 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to png"
-   "convert -verbose <<f>> <<fne>>.png"
+   "convert -verbose '<<f>>' '<<fne>>.png'"
    :utils "convert"))
 
 (defun dwim-shell-command-convert-to-gif ()
@@ -62,7 +62,7 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to gif"
-   "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
+   "ffmpeg -loglevel quiet -stats -y -i '<<f>>' -pix_fmt rgb24 -r 15 '<<fne>>.gif'"
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-to-optimized-gif ()
@@ -70,15 +70,15 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to optimized gif"
-   "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
-    gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
+   "ffmpeg -loglevel quiet -stats -y -i '<<f>>' -pix_fmt rgb24 -r 15 '<<fne>>.gif'
+    gifsicle -O3 '<<fne>>.gif' --lossy=80 -o '<<fne>>.gif'"
    :utils '("ffmpeg" "gifsicle")))
 
 (defun dwim-shell-command-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
   (dwim-shell-command-on-marked-files
-   "Unzip" "atool --extract --explain <<f>>"
+   "Unzip" "atool --extract --explain '<<f>>'"
    :utils "atool"))
 
 (defun dwim-shell-command-speed-up-gif ()
@@ -88,7 +88,7 @@
                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
     (dwim-shell-command-on-marked-files
      "Speed up gif"
-     (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
+     (format "gifsicle -U '<<f>>' <<frames>> -O2 -o '<<fne>>_x%s.<<e>>'" factor)
      :extensions "gif" :utils '("gifsicle" "identify")
      :post-process-template (lambda (script file)
        (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
@@ -98,7 +98,7 @@
   (interactive)
   (dwim-shell-command-on-marked-files
    "Password protect pdf"
-   (format "qpdf --verbose --encrypt '%s' '%s' 256 -- <<f>> <<fne>>_enc.<<e>>"
+   (format "qpdf --verbose --encrypt '%s' '%s' 256 -- '<<f>>' '<<fne>>_enc.<<e>>'"
            (read-passwd "user-password: ")
            (read-passwd "owner-password: "))
    :utils "qpdf"))
@@ -116,7 +116,7 @@
   "Drop audio from all marked videos."
   (interactive)
   (dwim-shell-command-on-marked-files
-   "Drop audio" "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
+   "Drop audio" "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-icns ()
@@ -127,17 +127,17 @@
    "# Based on http://stackoverflow.com/questions/12306223/how-to-manually-create-icns-files-using-iconutil
 # Note: png must be 1024x1024
 mkdir <<fne>>.iconset
-sips -z 16 16 <<f>> --out <<fne>>.iconset/icon_16x16.png
-sips -z 32 32 <<f>> --out <<fne>>.iconset/icon_16x16@2x.png
-sips -z 32 32 <<f>> --out <<fne>>.iconset/icon_32x32.png
-sips -z 64 64 <<f>> --out <<fne>>.iconset/icon_32x32@2x.png
-sips -z 128 128 <<f>> --out <<fne>>.iconset/icon_128x128.png
-sips -z 256 256 <<f>> --out <<fne>>.iconset/icon_128x128@2x.png
-sips -z 256 256 <<f>> --out <<fne>>.iconset/icon_256x256@2x.png
-sips -z 512 512 <<f>> --out <<fne>>.iconset/icon_512x512.png
-sips -z 512 512 <<f>> --out <<fne>>.iconset/icon_256x256@2x.png
-sips -z 1024 1024 <<f>> --out <<fne>>.iconset/icon_512x512@2x.png
-iconutil -c icns <<fne>>.iconset
+sips -z 16 16 '<<f>>' --out '<<fne>>.iconset/icon_16x16.png'
+sips -z 32 32 '<<f>>' --out '<<fne>>.iconset/icon_16x16@2x.png'
+sips -z 32 32 '<<f>>' --out '<<fne>>.iconset/icon_32x32.png'
+sips -z 64 64 '<<f>>' --out '<<fne>>.iconset/icon_32x32@2x.png'
+sips -z 128 128 '<<f>>' --out '<<fne>>.iconset/icon_128x128.png'
+sips -z 256 256 '<<f>>' --out '<<fne>>.iconset/icon_128x128@2x.png'
+sips -z 256 256 '<<f>>' --out '<<fne>>.iconset/icon_256x256@2x.png'
+sips -z 512 512 '<<f>>' --out '<<fne>>.iconset/icon_512x512.png'
+sips -z 512 512 '<<f>>' --out '<<fne>>.iconset/icon_256x256@2x.png'
+sips -z 1024 1024 '<<f>>' --out '<<fne>>.iconset/icon_512x512@2x.png'
+iconutil -c icns `<<fne>>.iconset'
 "
    :utils '("sips" "iconutil")
    :extensions "png"))
@@ -298,7 +298,7 @@ Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
 
     Given FILE \"path/to/image.png\"
 
-    \"convert <<f>> <<fne>>.jpg\"
+    \"convert '<<f>>' '<<fne>>.jpg'\"
 
     yields
 
@@ -306,26 +306,14 @@ Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
 
 Use POST-PROCESS-TEMPLATE to further expand template given own logic."
   (setq file (expand-file-name file))
-  ;; "<<fne>>_other_<<e>>" with "/path/file.jpg" -> "'/path/file_other.jpg'"
-  (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\(\<\<e\>\>\\)\\)"
-                                           (format "'%s\\3%s'"
-                                                   (file-name-sans-extension file)
-                                                   (file-name-extension file))
-                                           template nil nil 1))
-  ;; "<<fne>>.gif" with "/path/tmp.txt" -> "'/path/tmp.gif'"
-  (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\([[:blank:]]\\|$\\)\\)"
-                                           (format "'%s\\3'\\4" (file-name-sans-extension file)) template nil nil 1))
-  ;; "<<fne>>" with "/path/tmp.txt" -> "'/path/tmp'"
-  (setq template (replace-regexp-in-string "\\(\<\<fne\>\>\\)"
-                                           (format "'%s'" (file-name-sans-extension file)) template nil nil 1))
-  ;; "<<f>>" with "/path/file.jpg" -> "'/path/file.jpg'"
-  (setq template (replace-regexp-in-string "[[:blank:]]\\(\<\<f\>\>\\)\\([[:blank:]]\\|$\\)"
-                                           (format "'%s'" file)
-                                           template nil nil 1))
-  ;; "<<f>>" with "/path/file.jpg" -> "'/path/file.jpg'"
-  (setq template (replace-regexp-in-string "\\(\<\<f\>\>\\)"
-                                           (format "'%s'" file)
-                                           template nil nil 1))
+  ;; "<<fne>>" with "/path/tmp.txt" -> "/path/tmp"
+  (setq template (replace-regexp-in-string "\\(\<\<fne\>\>\\)" (file-name-sans-extension file) template nil nil 1))
+
+  ;; "<<e>>" with "/path/tmp.txt" -> "txt"
+  (setq template (replace-regexp-in-string "\\(\<\<e\>\>\\)" (file-name-extension file) template nil nil 1))
+
+  ;; "<<f>>" with "/path/file.jpg" -> "/path/file.jpg"
+  (setq template (replace-regexp-in-string "\\(\<\<f\>\>\\)" file template nil nil 1))
   (when post-process-template
     (setq template (funcall post-process-template template file)))
   template)
