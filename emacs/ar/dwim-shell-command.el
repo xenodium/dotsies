@@ -152,12 +152,16 @@ iconutil -c icns <<fne>>.iconset
   (dwim-shell-command--on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions utils post-process-template on-completion)
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args utils post-process-template on-completion)
   "Execute SCRIPT, with BUFFER-NAME."
   (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
   (when (stringp extensions)
     (setq extensions (list extensions)))
+  (when (and shell-util (stringp shell-util))
+    (setq shell-util (list shell-util)))
+  (when (and shell-args (stringp shell-args))
+    (setq shell-args (list shell-args)))
   (when (stringp utils)
     (setq utils (list utils)))
   (let* ((proc-buffer (generate-new-buffer buffer-name))
@@ -190,7 +194,11 @@ iconutil -c icns <<fne>>.iconset
       (view-mode +1)
       (setq view-exit-action 'kill-buffer))
     (setq files-before (dwim-shell-command--default-directory-files))
-    (setq proc (start-process (buffer-name proc-buffer) proc-buffer "zsh" "-x" "-c" script))
+    (setq proc (apply 'start-process (seq-concatenate 'list
+                                                      (list (buffer-name proc-buffer) proc-buffer)
+                                                      (or shell-util '("zsh"))
+                                                      (or shell-args '("-x" "-c"))
+                                                      (list script))))
     (setq progress-reporter (make-progress-reporter (process-name proc)))
     (progress-reporter-update progress-reporter)
     (if (equal (process-status proc) 'exit)
@@ -292,12 +300,14 @@ iconutil -c icns <<fne>>.iconset
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key utils extensions post-process-template on-completion)
+(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key utils extensions shell-util shell-args post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (dwim-shell-command-execute-script buffer-name script
                                      :files (dwim-shell-command--marked-files)
                                      :utils utils
                                      :extensions extensions
+                                     :shell-util shell-util
+                                     :shell-args shell-args
                                      :post-process-template post-process-template
                                      :on-completion on-completion))
 
