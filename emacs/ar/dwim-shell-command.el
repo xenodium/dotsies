@@ -22,7 +22,7 @@
 (defun dwim-shell-command-convert-audio-to-mp3 ()
   "Convert all marked audio to mp3(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert to mp3"
    "ffmpeg -stats -n -i <<f>> -acodec libmp3lame <<fne>>.mp3"
    :utils "ffmpeg"))
@@ -30,7 +30,7 @@
 (defun dwim-shell-command-convert-image-to-jpg ()
   "Convert all marked images to jpg(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert to jpg"
    "convert -verbose <<f>> <<fne>>.jpg"
    :utils "convert"))
@@ -38,7 +38,7 @@
 (defun dwim-shell-command-convert-image-to-png ()
   "Convert all marked images to png(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert to png"
    "convert -verbose <<f>> <<fne>>.png"
    :utils "convert"))
@@ -46,7 +46,7 @@
 (defun dwim-shell-command-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert to gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif"
    :utils "ffmpeg"))
@@ -54,7 +54,7 @@
 (defun dwim-shell-command-convert-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert to optimized gif"
    "ffmpeg -loglevel quiet -stats -y -i <<f>> -pix_fmt rgb24 -r 15 <<fne>>.gif
     gifsicle -O3 <<fne>>.gif --lossy=80 -o <<fne>>.gif"
@@ -63,7 +63,7 @@
 (defun dwim-shell-command-unzip ()
   "Unzip all marked archives (of any kind) using `atool'."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Unzip" "atool --extract --explain <<f>>"
    :utils "atool"))
 
@@ -72,7 +72,7 @@
   (interactive)
   (let ((factor (string-to-number
                  (completing-read "Speed up x times: " '("1" "1.5" "2" "2.5" "3" "4")))))
-    (dwim-shell-command--on-marked-files
+    (dwim-shell-command-on-marked-files
      "Speed up gif"
      (format "gifsicle -U <<f>> <<frames>> -O2 -o <<fne>>_x%s.<<e>>" factor)
      :extensions "gif" :utils '("gifsicle" "identify")
@@ -82,7 +82,7 @@
 (defun dwim-shell-command-pdf-password-protect ()
   "Speeds up gif(s)."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Password protect pdf"
    (format "qpdf --verbose --encrypt '%s' '%s' 256 -- <<f>> <<fne>>_enc.<<e>>"
            (read-passwd "user-password: ")
@@ -100,14 +100,14 @@
 (defun dwim-shell-command-drop-video-audio ()
   "Drop audio from all marked videos."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Drop audio" "ffmpeg -i <<f>> -c copy -an <<fne>>_no_audio.<<e>>"
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-icns ()
   "Drop audio from all marked videos."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "Convert png to icns icon"
    "# Based on http://stackoverflow.com/questions/12306223/how-to-manually-create-icns-files-using-iconutil
 # Note: png must be 1024x1024
@@ -139,7 +139,7 @@ iconutil -c icns <<fne>>.iconset
               (when (y-or-n-p (format "%s exists. delete?" (file-name-base url)))
                 (delete-directory project-dir t)
                 t))
-      (dwim-shell-command--on-marked-files
+      (dwim-shell-command-on-marked-files
        (format "Clone %s" (file-name-base url))
        (format "git clone %s" url)
        :utils "git"
@@ -149,10 +149,10 @@ iconutil -c icns <<fne>>.iconset
 (defun dwim-shell-command ()
   "Execute DWIM shell command."
   (interactive)
-  (dwim-shell-command--on-marked-files
+  (dwim-shell-command-on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args utils post-process-template on-completion)
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion)
   "Execute SCRIPT, with BUFFER-NAME."
   (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
@@ -198,7 +198,9 @@ iconutil -c icns <<fne>>.iconset
                                                       (list (buffer-name proc-buffer) proc-buffer)
                                                       (or shell-util '("zsh"))
                                                       (or shell-args '("-x" "-c"))
-                                                      (list script))))
+                                                      (if shell-pipe
+                                                          (list (format "echo '%s' | %s" script shell-pipe))
+                                                        (list script)))))
     (setq progress-reporter (make-progress-reporter (process-name proc)))
     (progress-reporter-update progress-reporter)
     (if (equal (process-status proc) 'exit)
@@ -300,7 +302,7 @@ iconutil -c icns <<fne>>.iconset
     (progress-reporter-update reporter))
   (comint-output-filter process string))
 
-(cl-defun dwim-shell-command--on-marked-files (buffer-name script &key utils extensions shell-util shell-args post-process-template on-completion)
+(cl-defun dwim-shell-command-on-marked-files (buffer-name script &key utils extensions shell-util shell-args shell-pipe post-process-template on-completion)
   "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
   (dwim-shell-command-execute-script buffer-name script
                                      :files (dwim-shell-command--marked-files)
@@ -308,6 +310,7 @@ iconutil -c icns <<fne>>.iconset
                                      :extensions extensions
                                      :shell-util shell-util
                                      :shell-args shell-args
+                                     :shell-pipe shell-pipe
                                      :post-process-template post-process-template
                                      :on-completion on-completion))
 
