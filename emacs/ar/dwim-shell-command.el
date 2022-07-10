@@ -120,7 +120,7 @@
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-convert-image-to-icns ()
-  "Drop audio from all marked videos."
+  "Convert png to icns icon"
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert png to icns icon"
