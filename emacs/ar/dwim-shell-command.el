@@ -1,3 +1,4 @@
+;;; dwim-shell-command.el --- Execute shell commands with DWIM behaviour
 ;;; -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
@@ -6,7 +7,20 @@
 (require 'dired-aux)
 (require 'seq)
 
-(defvar dwim-shell-command--commands nil "All commands in progress")
+;;; Commentary:
+
+;; Provides `dwim-shell-command' as a DWIM alternative to
+;; `shell-command'.
+;;
+;; Use `dwim-shell-command-on-marked-files' to create your own command
+;; line utilities, invoked via M-x.
+;;
+;; See `dwim-shell-command-convert-audio-to-mp3' or
+;; `dwim-shell-command-pdf-password-protect' as examples.
+
+;;; Code:
+
+(defvar dwim-shell-command--commands nil "All commands in progress.")
 
 (cl-defstruct
     dwim-shell-command--command
@@ -90,6 +104,7 @@
    :utils "qpdf"))
 
 (defun dwim-shell-command--gifsicle-frames-every (skipping-every file)
+  "Generate frames SKIPPING-EVERY count for video FILE."
   (string-join
    (seq-map (lambda (n) (format "'#%d'" n))
             (number-sequence 0 (string-to-number
@@ -128,7 +143,7 @@ iconutil -c icns <<fne>>.iconset
    :extensions "png"))
 
 (defun dwim-git-clone-clipboard-url ()
-  "Clone git URL in clipboard asynchronously and open in dired when finished."
+  "Clone git URL in clipboard asynchronously and open in Dired when finished."
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
@@ -136,7 +151,7 @@ iconutil -c icns <<fne>>.iconset
          (project-dir (concat download-dir (file-name-base url)))
          (default-directory download-dir))
     (when (or (not (file-exists-p project-dir))
-              (when (y-or-n-p (format "%s exists. delete?" (file-name-base url)))
+              (when (y-or-n-p (format "%s exists.  delete?" (file-name-base url)))
                 (delete-directory project-dir t)
                 t))
       (dwim-shell-command-on-marked-files
@@ -153,7 +168,57 @@ iconutil -c icns <<fne>>.iconset
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
 (cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion)
-  "Execute SCRIPT, with BUFFER-NAME."
+  "Execute a script asynchronously, DWIM style with SCRIPT and BUFFER-NAME.
+
+:FILES are used to instantiate SCRIPT as a  noweb template.
+
+  The following are supported:
+
+    <<f>> (file path)
+    <<fne>> (file path without extension)
+    <<e>> (extension)
+
+  For example:
+
+    Given :FILES '(\"path/to/image.png\")
+
+    \"convert <<f>> <<fne>>.jpg\"
+
+    yields
+
+    \"convert 'path/to/image.png' `path/to/image.jpg'\"
+
+:EXTENSIONS ensures that all files in :FILES have the given
+extensions.  Can be either single string \"png\" or a list '(\"png\" \"jpg\").
+
+:SHELL-UTIL and :SHELL-ARGS can be used to specify SCRIPT interpreter.
+
+  For python, use:
+
+    (dwim-shell-command-execute-script
+       \"Print Pi\"
+       \"import math
+         print math.pi\"
+       :shell-util \"python\"
+       :shell-args \"-c\")
+
+:SHELL-PIPE can be used to pipe SCRIPT to it
+
+  For swift, use:
+
+    (dwim-shell-command-on-marked-files
+       \"Print Pi\"
+       \"print(Double.pi)\"
+       :shell-pipe \"swift -\")
+
+:UTILS ensures that all needed command line utilities are installed.
+Can be either a single string \"ffmpeg\" or a list '(\"ffmpet\" \"convert\").
+
+:POST-PROCESS-TEMPLATE enables processing template further after noweb
+instantiation.
+
+:ON-COMPLETION is invoked after SCRIPT executes (disabling DWIM
+internal behavior)."
   (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
   (when (stringp extensions)
@@ -224,8 +289,22 @@ iconutil -c icns <<fne>>.iconset
       (set-process-filter proc #'dwim-shell-command--filter))))
 
 (defun dwim-shell-command--expand (template file &optional post-process-template)
-  "Expand TEMPLATE, using <<f>> for FILE, <<fne>> for FILE without
- extension, and <<e>> for FILE extension."
+  "Expand TEMPLATE using FILE.
+
+Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
+ <<e>> for FILE extension.
+
+  For example:
+
+    Given FILE \"path/to/image.png\"
+
+    \"convert <<f>> <<fne>>.jpg\"
+
+    yields
+
+    \"convert 'path/to/image.png' `path/to/image.jpg'\"
+
+Use POST-PROCESS-TEMPLATE to further expand template given own logic."
   (setq file (expand-file-name file))
   ;; "<<fne>>_other_<<e>>" with "/path/file.jpg" -> "'/path/file_other.jpg'"
   (setq template (replace-regexp-in-string "[[:blank:]]\\(\\(\<\<fne\>\>\\)\\([^ \n]+\\)\\(\<\<e\>\>\\)\\)"
@@ -243,6 +322,10 @@ iconutil -c icns <<fne>>.iconset
   (setq template (replace-regexp-in-string "[[:blank:]]\\(\<\<f\>\>\\)\\([[:blank:]]\\|$\\)"
                                            (format "'%s'" file)
                                            template nil nil 1))
+  ;; "<<f>>" with "/path/file.jpg" -> "'/path/file.jpg'"
+  (setq template (replace-regexp-in-string "\\(\<\<f\>\>\\)"
+                                           (format "'%s'" file)
+                                           template nil nil 1))
   (when post-process-template
     (setq template (funcall post-process-template template file)))
   template)
@@ -255,10 +338,15 @@ iconutil -c icns <<fne>>.iconset
              (process-lines "ls" "-1"))))
 
 (defun dwim-shell-command--last-modified-between (before after)
+  "Compare files in BEFORE and AFTER and return oldest file in diff."
   (car (last (seq-sort #'file-newer-than-file-p
                        (seq-difference after before)))))
 
 (defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion)
+  "Finalize script execution.
+
+ CALLING-BUFFER, FILES-BEFORE, PROCESS, PROGRESS-REPORTER, and
+ON-COMPLETION are all needed to finalize processing."
   (let ((oldest-new-file))
     (when progress-reporter
       (progress-reporter-done progress-reporter))
@@ -289,6 +377,7 @@ iconutil -c icns <<fne>>.iconset
           (map-delete dwim-shell-command--commands (process-name process)))))
 
 (defun dwim-shell-command--sentinel (process state)
+  "Handles PROCESS sentinel and STATE."
   (let ((exec (map-elt dwim-shell-command--commands (process-name process))))
     (dwim-shell-command--finalize (dwim-shell-command--command-calling-buffer exec)
                                   (dwim-shell-command--command-files-before exec)
@@ -296,14 +385,16 @@ iconutil -c icns <<fne>>.iconset
                                   (dwim-shell-command--command-reporter exec)
                                   (dwim-shell-command--command-on-completion exec))))
 
-(defun dwim-shell-command--filter (process string)
+(defun dwim-shell-command--filter (process output)
+  "Handles PROCESS filtering and STATE and OUTPUT."
   (when-let* ((exec (map-elt dwim-shell-command--commands (process-name process)))
               (reporter (dwim-shell-command--command-reporter exec)))
     (progress-reporter-update reporter))
-  (comint-output-filter process string))
+  (comint-output-filter process output))
 
 (cl-defun dwim-shell-command-on-marked-files (buffer-name script &key utils extensions shell-util shell-args shell-pipe post-process-template on-completion)
-  "Execute SCRIPT, using buffer NAME, FILES, and bin UTILS."
+  "Execute SCRIPT, using BUFFER-NAME.
+See `dwim-shell-command-execute-script' for all other params."
   (dwim-shell-command-execute-script buffer-name script
                                      :files (dwim-shell-command--marked-files)
                                      :utils utils
@@ -321,3 +412,7 @@ iconutil -c icns <<fne>>.iconset
     (dired-get-marked-files)))
 
 (provide 'dwim-shell-command)
+
+(provide 'dwim-shell-command)
+
+;;; dwim-shell-command.el ends here
