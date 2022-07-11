@@ -63,26 +63,6 @@
                 results)
       results)))
 
-(defun ar/file-grep (regexp filename-pattern &rest search-paths)
-  "Grep for REGEXP and narrow to FILENAME-PATTERN and SEARCH-PATHS."
-  (let* ((grep-command (format
-                        (ar/string-spc-join "grep"
-                                            "--binary-file=without-match"
-                                            "--recursive"
-                                            "--no-filename"
-                                            "--regexp=%s"
-                                            "--include %s"
-                                            "%s")
-                        regexp
-                        filename-pattern
-                        (apply #'ar/string-spc-join search-paths))))
-    (split-string (shell-command-to-string grep-command) "\n")))
-
-(defun ar/file-parent-directory (path)
-  "Get parent directory for PATH."
-  (unless (equal "/" path)
-    (file-name-directory (directory-file-name path))))
-
 (defun ar/file-either-closest (start-fname &rest fnames)
   "Return the closest file, start at START-FNAME and go to parent dir until finding filename in FNAMES."
   (let ((dpath-found)

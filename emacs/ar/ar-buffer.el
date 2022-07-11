@@ -48,8 +48,7 @@
     (erase-buffer)
     (let ((url-arguments (ar/buffer-fetch-urls-in-url url)))
       (push "\n" url-arguments)
-      (insert (apply 'ar/string-join
-                     url-arguments))
+      (insert (string-join url-arguments " "))
       (goto-char (point-min)))
     (switch-to-buffer (current-buffer))))
 
