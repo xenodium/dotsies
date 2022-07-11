@@ -144,6 +144,17 @@
    "plutil -convert xml1 -o '<<fne>>.xml' '<<f>>'"
    :utils "plutil"))
 
+(defun dwim-shell-command-clipboard-to-qr ()
+  "Generate a QR code from clipboard."
+  (interactive)
+  (let ((temp-file (concat (temporary-file-directory) "qr-code")))
+    (dwim-shell-command-on-marked-files
+     "Generate a QR code from clipboard"
+     (format "qrencode -s10 -o %s %s" temp-file (shell-quote-argument (current-kill 0)))
+     :utils "qrencode"
+     :on-completion (lambda ()
+                      (switch-to-buffer (find-file-noselect temp-file t))))))
+
 (defun dwim-shell-command-convert-image-to-icns ()
   "Convert png to icns icon."
   (interactive)
