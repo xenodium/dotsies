@@ -50,10 +50,6 @@
   (use-package color-picker
     :commands color-picker)
 
-  ;; Convert binary plists to xml using host utilities.
-  (use-package ar-osx
-    :commands ar/osx-convert-plist-to-xml)
-
   (use-package musica
     :bind (("C-c m r" . musica-search)
            ("C-c m i" . musica-info)

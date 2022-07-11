@@ -119,6 +119,14 @@
    "Drop audio" "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
    :utils "ffmpeg"))
 
+(defun dwim-shell-command-bin-plist-to-xml ()
+  "Convert binary plist to xml."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Convert binary plist to xml."
+   "plutil -convert xml1 -o '<<fne>>.xml' '<<f>>'"
+   :utils "plutil"))
+
 (defun dwim-shell-command-convert-image-to-icns ()
   "Convert png to icns icon"
   (interactive)
