@@ -116,7 +116,8 @@
   "Drop audio from all marked videos."
   (interactive)
   (dwim-shell-command-on-marked-files
-   "Drop audio" "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
+   "Drop audio"
+   "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-bin-plist-to-xml ()
@@ -128,7 +129,7 @@
    :utils "plutil"))
 
 (defun dwim-shell-command-convert-image-to-icns ()
-  "Convert png to icns icon"
+  "Convert png to icns icon."
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert png to icns icon."
