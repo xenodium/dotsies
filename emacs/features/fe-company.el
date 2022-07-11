@@ -33,7 +33,6 @@
     :validate-custom
     (company-dabbrev-code-ignore-case nil))
 
-  (use-package company-grep)
   (use-package company-rfiles)
   (use-package company-projectile-cd)
 

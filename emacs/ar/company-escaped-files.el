@@ -1,4 +1,4 @@
-;;; company-grep.el --- Company grep support.
+;;; company-escaped-files.el --- Company grep support.
 
 ;;; Commentary:
 ;; Company grep helpers.
