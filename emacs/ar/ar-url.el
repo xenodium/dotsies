@@ -52,7 +52,13 @@
                 (insert (org-make-link-string .url
                                               .title) "\n"))))
           (ar/url-fetch-anchor-elements
-           (ar/input-clipboard-url-or-prompt)))
+           (let* ((clipboard (current-kill 0))
+                  (url (if (string-match "^https?://" clipboard)
+                           clipboard
+                         (read-string "URL: "))))
+             (unless (string-match "^https?://" url)
+               (error "Not a URL"))
+             url)))
     (delete-duplicate-lines (point-min) (point-max))
     (goto-char (point-min))
     (toggle-truncate-lines +1)
