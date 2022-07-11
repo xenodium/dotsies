@@ -327,7 +327,7 @@ Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
 
     yields
 
-    \"convert 'path/to/image.png' `path/to/image.jpg'\"
+    \"convert 'path/to/image.png' 'path/to/image.jpg'\"
 
 Use POST-PROCESS-TEMPLATE to further expand template given own logic."
   (setq file (expand-file-name file))
