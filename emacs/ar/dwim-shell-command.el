@@ -57,6 +57,22 @@
    "convert -verbose '<<f>>' '<<fne>>.png'"
    :utils "convert"))
 
+(defun dwim-shell-command-convert-image-grayscale ()
+  "Convert all marked images to grayscale."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Convert image to grayscale"
+   "convert -verbose -type Grayscale '<<f>>' '<<fne>>_grayscale.<<e>>'"
+   :utils "convert"))
+
+(defun dwim-shell-command-reorient-image ()
+  "Reorient images."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Reorient image"
+   "convert -verbose -auto-orient '<<f>>' '<<fne>>_reoriented.<<e>>'"
+   :utils "convert"))
+
 (defun dwim-shell-command-convert-to-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
