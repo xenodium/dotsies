@@ -31,7 +31,8 @@
   calling-buffer
   reporter
   on-completion
-  files-before)
+  files-before
+  silent-success)
 
 (defun dwim-shell-command-convert-audio-to-mp3 ()
   "Convert all marked audio to mp3(s)."
@@ -203,7 +204,7 @@
   (dwim-shell-command-on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion)
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion silent-success)
   "Execute a script asynchronously, DWIM style with SCRIPT and BUFFER-NAME.
 
 :FILES are used to instantiate SCRIPT as a  noweb template.
@@ -254,7 +255,10 @@ Can be either a single string \"ffmpeg\" or a list '(\"ffmpet\" \"convert\").
 instantiation.
 
 :ON-COMPLETION is invoked after SCRIPT executes (disabling DWIM
-internal behavior)."
+internal behavior).
+
+:SILENT-SUCCESS to avoid jumping to process buffer if neither error
+ nor file generated."
   (cl-assert buffer-name nil "Script must have a buffer name")
   (cl-assert (not (string-empty-p script)) nil "Script must not be empty")
   (when (stringp extensions)
@@ -315,7 +319,8 @@ internal behavior)."
                                         files-before
                                         proc
                                         progress-reporter
-                                        on-completion))
+                                        on-completion
+                                        silent-success))
       (setq dwim-shell-command--commands
             (push (cons (process-name proc)
                         (make-dwim-shell-command--command :script script
@@ -324,7 +329,8 @@ internal behavior)."
                                                           :calling-buffer (current-buffer)
                                                           :files-before files-before
                                                           :reporter progress-reporter
-                                                          :on-completion on-completion))
+                                                          :on-completion on-completion
+                                                          :silent-success silent-success))
                   dwim-shell-command--commands))
       (set-process-sentinel proc #'dwim-shell-command--sentinel)
       (set-process-filter proc #'dwim-shell-command--filter))))
@@ -371,11 +377,11 @@ Use POST-PROCESS-TEMPLATE to further expand template given own logic."
   (car (last (seq-sort #'file-newer-than-file-p
                        (seq-difference after before)))))
 
-(defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion)
+(defun dwim-shell-command--finalize (calling-buffer files-before process progress-reporter on-completion silent-success)
   "Finalize script execution.
 
  CALLING-BUFFER, FILES-BEFORE, PROCESS, PROGRESS-REPORTER, and
-ON-COMPLETION are all needed to finalize processing."
+ON-COMPLETION SILENT-SUCCESS are all needed to finalize processing."
   (let ((oldest-new-file))
     (when progress-reporter
       (progress-reporter-done progress-reporter))
@@ -398,7 +404,8 @@ ON-COMPLETION are all needed to finalize processing."
                            (window-buffer (selected-window)))
               (if oldest-new-file
                   (kill-buffer (process-buffer process))
-                (switch-to-buffer (process-buffer process))))))
+                (unless silent-success
+                  (switch-to-buffer (process-buffer process)))))))
       (if (and (buffer-name (process-buffer process))
                (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process)))))
           (switch-to-buffer (process-buffer process))
@@ -413,7 +420,8 @@ ON-COMPLETION are all needed to finalize processing."
                                   (dwim-shell-command--command-files-before exec)
                                   process
                                   (dwim-shell-command--command-reporter exec)
-                                  (dwim-shell-command--command-on-completion exec))))
+                                  (dwim-shell-command--command-on-completion exec)
+                                  (dwim-shell-command--command-silent-success exec))))
 
 (defun dwim-shell-command--filter (process output)
   "Handles PROCESS filtering and STATE and OUTPUT."
@@ -424,6 +432,9 @@ ON-COMPLETION are all needed to finalize processing."
 
 (cl-defun dwim-shell-command-on-marked-files (buffer-name script &key utils extensions shell-util shell-args shell-pipe post-process-template on-completion)
   "Execute SCRIPT, using BUFFER-NAME.
+
+If script starts with whitespace, imply `:SILENT-SUCCESS' in `dwim-shell-command-execute-script'.
+
 See `dwim-shell-command-execute-script' for all other params."
   (dwim-shell-command-execute-script buffer-name script
                                      :files (dwim-shell-command--marked-files)
@@ -433,7 +444,8 @@ See `dwim-shell-command-execute-script' for all other params."
                                      :shell-args shell-args
                                      :shell-pipe shell-pipe
                                      :post-process-template post-process-template
-                                     :on-completion on-completion))
+                                     :on-completion on-completion
+                                     :silent-success (string-prefix-p " " script)))
 
 (defun dwim-shell-command--marked-files ()
   "Return buffer file (if available) or marked files for a `dired' buffer."
