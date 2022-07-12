@@ -362,6 +362,7 @@ With PREFIX, add an outer pair around existing pair."
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-dwim)
          ("C-c n" . mc/mark-more-like-this-extended)
+         ("C-c r" . set-rectangular-region-anchor)
          ("M-<mouse-1>" . mc/add-cursor-on-click))
   :config
   (defalias 'mc/mark-all-lines-in-region 'mc/edit-lines)
@@ -408,11 +409,6 @@ With PREFIX, add an outer pair around existing pair."
   ;; Without this matching parens aren't highlighted in region.
   (show-paren-priority -50)
   (show-paren-delay 0.3))
-
-(use-package ar-text
-  :bind (("C-c c" . ar/text-capitalize-word-toggle)
-         ("C-c r" . set-rectangular-region-anchor)
-         ("M-DEL" . ar/text-backward-delete-subword)))
 
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon

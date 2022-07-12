@@ -185,7 +185,35 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (("M-e" . avy-goto-char-timer)))
 
 (use-package subword
-  :hook ((prog-mode . subword-mode)))
+  :bind (("C-c c" . ar/text-capitalize-word-toggle)
+         ("M-DEL" . ar/text-backward-delete-subword))
+  :hook ((prog-mode . subword-mode))
+  ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
+  (defun ar/text-backward-delete-subword (arg)
+    "Delete characters backward until encountering the beginning of a word.
+With argument ARG, do this that many times."
+    (interactive "p")
+    (delete-region (point)
+                   (progn
+                     (subword-backward arg)
+                     (point))))
+
+  ;;  http://oremacs.com/2014/12/25/ode-to-toggle
+  (defun ar/text-capitalize-word-toggle ()
+    "Capitalize word toggle."
+    (interactive)
+    (let ((start
+           (car
+            (bounds-of-thing-at-point 'symbol))))
+      (if start
+          (save-excursion
+            (goto-char start)
+            (funcall
+             (if (eq letter (upcase char-after))
+                 'downcase-region
+               'upcase-region)
+             start (1+ start)))
+        (capitalize-word -1)))))
 
 (use-package goto-line-preview
   :ensure t
