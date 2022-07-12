@@ -394,7 +394,8 @@ ON-COMPLETION are all needed to finalize processing."
               (if oldest-new-file
                   (kill-buffer (process-buffer process))
                 (switch-to-buffer (process-buffer process))))))
-      (if (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process))))
+      (if (and (buffer-name (process-buffer process))
+               (y-or-n-p (format "Couldn't run %s, see output? " (buffer-name (process-buffer process)))))
           (switch-to-buffer (process-buffer process))
         (kill-buffer (process-buffer process))))
     (setq dwim-shell-command--commands
