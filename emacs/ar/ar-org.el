@@ -15,17 +15,6 @@
 
 (defvar ar/org-short-link-regex "^http://goo.gl")
 
-(defun ar/org-add-short-link-in-file ()
-  "Go to \"Short links\" in org file and add new link."
-  (find-file (ar/org-get-daily-file-path))
-  (ar/org-goto-file (ar/org-get-daily-file-path) "short-links")
-  (org-show-subtree)
-  (org-end-of-meta-data t)
-  (call-interactively 'open-line)
-  (org-indent-line)
-  (when (string-match-p ar/org-short-link-regex (current-kill 0))
-    (insert (format "%s - " (current-kill 0)))))
-
 (cl-defstruct
     ar/org-link
   description
@@ -87,75 +76,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
            (org-flag-heading nil)))
         (t
          (find-file file-path))))
-
-(defun ar/org-move-to-current-week-as-done ()
-  "Move current tree to current week as DONE."
-  (interactive)
-  (org-shiftright) ; mark done
-  (org-cut-subtree 1)
-  (ar/org-paste-subtree-to-current-week))
-
-(defun ar/org-add-current-week-headline ()
-  "Add current week to daily.org."
-  (interactive)
-  (ar/org-with-file-location
-      (ar/org-get-daily-file-path) "snippets"
-      (unless (ar/org-now-in-week-headline-p)
-        (org-meta-return)
-        (insert (format "Week of %s"
-                        (ar/time-current-work-week-string)))
-        (save-buffer))))
-
-(defun ar/org-add-child-to-heading (file-path heading-id child)
-  "Go to heading in FILE-PATH with HEADING-ID and add CHILD."
-  (save-excursion
-    (save-restriction
-      (ar/org-goto-file file-path heading-id)
-      (org-narrow-to-subtree)
-      (org-show-subtree)
-      (org-end-of-meta-data t)
-      (org-insert-heading)
-      (insert child)
-      (ar/org-timestamp-at-point)
-      (save-buffer))))
-
-(defun ar/org-goto-current-week ()
-  "Go to current week."
-  (ar/org-add-current-week-headline)
-  (ar/buffer-goto-first-match-beginning (format "Week of %s"
-                                                (ar/time-current-work-week-string))))
-
-(defun ar/org-paste-subtree-to-current-week (&optional subtree)
-  "Paste SUBTREE to current week."
-  (ar/file-with-current-file (ar/org-get-daily-file-path)
-    (save-excursion
-      (ar/org-goto-current-week)
-      (org-end-of-line)
-      ;; See org-refile for details.
-      (goto-char (or (save-excursion (org-get-next-sibling))
-                     (org-end-of-subtree t t)
-                     (point-max)))
-      (org-paste-subtree (+ (org-current-level) 2) subtree))
-    (save-buffer)))
-
-(defun ar/org-now-in-week-headline-p ()
-  "Check if current date corresponds to existing week headline."
-  (save-excursion
-    (let ((weeks (mapcar #'ar/time-week-string-to-range
-                         (ar/buffer-re-string-match-list "^*** Week of .*"))))
-      ;; Check current time against all ranges and create a list. is t present?
-      (member t (mapcar (lambda (dates)
-                          (ar/time-between-p (current-time)
-                                             (nth 0 dates)
-                                             (nth 1 dates)))
-                        weeks)))))
-
-(defun ar/org-move-current-tree-to-top ()
-  "Move entire current tree to top."
-  (interactive)
-  (ar/org-point-to-heading-1)
-  (while (not (org-first-sibling-p))
-    (outline-move-subtree-up 1)))
 
 (defun ar/org-update-drawer (drawer content)
   "Update DRAWER with CONTENT."
