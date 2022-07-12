@@ -18,40 +18,6 @@
       default-directory
     (file-name-directory (buffer-file-name))))
 
-(defun ar/buffer-ignore-process-query (buffer)
-  "Do not query to kill BUFFER with process."
-  (let ((proc (get-buffer-process buffer)))
-    (when (processp proc)
-      (set-process-query-on-exit-flag proc nil))))
-
-(defun ar/buffer-current-path ()
-  "Return current buffer path."
-  (if (equal major-mode 'dired-mode)
-      default-directory
-    (buffer-file-name)))
-
-(defun ar/buffer-fetch-urls-in-url (url)
-  "Return URLs in fetched URL content as a list."
-  (with-current-buffer (ar/buffer-fetch-url url)
-    (goto-char (point-min))
-    (let (urls url)
-      (while (re-search-forward goto-address-url-regexp
-                                nil t)
-        (add-to-list 'urls
-                     (buffer-substring-no-properties (match-beginning 0)
-                                                     (match-end 0))))
-      urls)))
-
-(defun ar/buffer-view-urls-in-url (url)
-  "View URLs in URL content."
-  (with-current-buffer (get-buffer-create "*URLs*")
-    (erase-buffer)
-    (let ((url-arguments (ar/buffer-fetch-urls-in-url url)))
-      (push "\n" url-arguments)
-      (insert (string-join url-arguments " "))
-      (goto-char (point-min)))
-    (switch-to-buffer (current-buffer))))
-
 (defun ar/buffer-fetch-url (url)
   "Fetch URL and return as buffer."
   (let* ((url-show-status nil) ;Silence fetch in minibuffer.
@@ -61,25 +27,6 @@
       (unless (> (buffer-size) 0)
         (error "Could not fetch %s" url))
       response-buffer)))
-
-(defun ar/buffer-fetch-url-string (url)
-  "Fetch URL and return as string."
-  (with-current-buffer (ar/buffer-fetch-url url)
-    (buffer-substring (marker-position url-http-end-of-headers)
-                      (point-max))))
-
-(defun ar/buffer-flush-kill-lines (regex)
-  "Flush lines matching REGEX and append to kill ring.  Restrict to \
-region if active."
-  (interactive "sFlush kill regex: ")
-  (save-excursion
-    (save-restriction
-      (when (use-region-p)
-        (narrow-to-region (point) (mark))
-        (goto-char 0))
-      (while (search-forward-regexp regex nil t)
-        (move-beginning-of-line nil)
-        (kill-whole-line)))))
 
 (defun ar/buffer-file-name-equal-p (file-name)
   "Return t if buffer file name equals FILE-NAME."

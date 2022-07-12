@@ -11,17 +11,6 @@
 (require 'enlive)
 (require 'goto-addr)
 
-(defun ar/url-fetch-urls (url)
-  "Return URLs in URL content."
-  (with-current-buffer (ar/buffer-fetch-url url)
-    (let (urls url)
-      (while (re-search-forward goto-address-url-regexp
-                                nil t)
-        (add-to-list 'urls
-                     (buffer-substring-no-properties (match-beginning 0)
-                                                     (match-end 0))))
-      urls)))
-
 (defun ar/url-fetch-anchor-elements (url)
   "Fetch anchor elements in URL as list of alist:
 \((title . \"my title\")
