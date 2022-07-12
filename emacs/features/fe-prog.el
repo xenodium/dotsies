@@ -7,6 +7,12 @@
          ("C-c C-c" . ar/compile)
          ("C-c C-r" . ivy-resume)))
 
+(use-package lisp
+  :bind (:map
+         prog-mode-map
+         ("C-<" . beginning-of-defun)
+         ("C->" . end-of-defun)))
+
 (use-package newcomment
   :bind (:map
          prog-mode-map
