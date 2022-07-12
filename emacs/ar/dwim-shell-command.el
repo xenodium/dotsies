@@ -204,7 +204,7 @@
   (dwim-shell-command-on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
 
-(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion silent-success)
+(cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion silent-success gen-temp-dir)
   "Execute a script asynchronously, DWIM style with SCRIPT and BUFFER-NAME.
 
 :FILES are used to instantiate SCRIPT as a  noweb template.
@@ -214,6 +214,7 @@
     <<f>> (file path)
     <<fne>> (file path without extension)
     <<e>> (extension)
+    <<td>> (generate a temporary directory)
 
   For example:
 
@@ -269,6 +270,8 @@ internal behavior).
     (setq shell-args (list shell-args)))
   (when (stringp utils)
     (setq utils (list utils)))
+  (when (or gen-temp-dir (string-match-p "\<\<td\>\>" script 0))
+    (setq gen-temp-dir (make-temp-file "dwim-shell-command-" t)))
   (let* ((proc-buffer (generate-new-buffer buffer-name))
          (template script)
          (script "")
@@ -283,7 +286,7 @@ internal behavior).
                              nil "Not a .%s file" (string-join extensions " .")))
                 (setq script
                       (concat script "\n"
-                              (dwim-shell-command--expand template file post-process-template))))
+                              (dwim-shell-command--expand template file post-process-template gen-temp-dir))))
               files))
     (setq script (string-trim script))
     (seq-do (lambda (util)
@@ -335,7 +338,7 @@ internal behavior).
       (set-process-sentinel proc #'dwim-shell-command--sentinel)
       (set-process-filter proc #'dwim-shell-command--filter))))
 
-(defun dwim-shell-command--expand (template file &optional post-process-template)
+(defun dwim-shell-command--expand (template file &optional post-process-template temp-dir)
   "Expand TEMPLATE using FILE.
 
 Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
@@ -351,7 +354,9 @@ Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
 
     \"convert 'path/to/image.png' 'path/to/image.jpg'\"
 
-Use POST-PROCESS-TEMPLATE to further expand template given own logic."
+Use POST-PROCESS-TEMPLATE to further expand template given own logic.
+
+Set TEMP-DIR to a unique temp directory to this template."
   (setq file (expand-file-name file))
   ;; "<<fne>>" with "/path/tmp.txt" -> "/path/tmp"
   (setq template (replace-regexp-in-string "\\(\<\<fne\>\>\\)" (file-name-sans-extension file) template nil nil 1))
@@ -361,6 +366,10 @@ Use POST-PROCESS-TEMPLATE to further expand template given own logic."
 
   ;; "<<f>>" with "/path/file.jpg" -> "/path/file.jpg"
   (setq template (replace-regexp-in-string "\\(\<\<f\>\>\\)" file template nil nil 1))
+
+  ;; "<<td>>" with TEMP-DIR -> "/var/folders/m7/ky091cp56d5g68nyhl4y7frc0000gn/T/dwim-shell-command-JNK4V5"
+  (setq template (replace-regexp-in-string "\\(\<\<td\>\>\\)" temp-dir template nil nil 1))
+
   (when post-process-template
     (setq template (funcall post-process-template template file)))
   template)
