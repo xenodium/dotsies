@@ -9,10 +9,6 @@
   :hook ((prog-mode . yas-minor-mode)
          (org-mode . yas-minor-mode))
   :config
-  (use-package ar-yas
-    :commands (ar/yas-install--github-yasnippets
-               ar/yas-install-external-yasnippets))
-
   (use-package yasnippet-snippets
     :ensure t)
 
