@@ -259,12 +259,11 @@ For example:
           (defining-kbd-macro
             (call-interactively 'isearch-backward))
           (t
-           (let ((ivy-wrap t))
-             (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-                 (let ((region (buffer-substring-no-properties (mark) (point))))
-                   (deactivate-mark)
-                   (swiper-isearch-backward region))
-               (swiper-isearch-backward))))))
+           (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+               (let ((region (buffer-substring-no-properties (mark) (point))))
+                 (deactivate-mark)
+                 (swiper-isearch-backward region))
+             (swiper-isearch-backward)))))
 
   (defun ar/swiper-isearch-dwim ()
     (interactive)
@@ -275,12 +274,11 @@ For example:
           (defining-kbd-macro
             (call-interactively 'isearch-forward))
           (t
-           (let ((ivy-wrap t))
-             (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-                 (let ((region (buffer-substring-no-properties (mark) (point))))
-                   (deactivate-mark)
-                   (swiper-isearch region))
-               (swiper-isearch)))))))
+           (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+               (let ((region (buffer-substring-no-properties (mark) (point))))
+                 (deactivate-mark)
+                 (swiper-isearch region))
+             (swiper-isearch))))))
 
 (use-package counsel-projectile
   :ensure t
