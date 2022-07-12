@@ -304,6 +304,11 @@ internal behavior)."
                                                         (list script)))))
     (setq progress-reporter (make-progress-reporter (process-name proc)))
     (progress-reporter-update progress-reporter)
+    ;; Momentarily set buffer to same window, so it's next in recent stack.
+    ;; Makes finding the shell command buffer a lot easier.
+    (let ((current) (current-buffer))
+      (pop-to-buffer-same-window proc-buffer)
+      (pop-to-buffer-same-window current))
     (if (equal (process-status proc) 'exit)
         (progn
           (dwim-shell-command--finalize (current-buffer)
