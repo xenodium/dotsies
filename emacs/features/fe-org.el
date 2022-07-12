@@ -273,8 +273,7 @@ With prefix, don't confirm text."
                                                   "emacs/rss.xml")))))
 
   (use-package ar-org-blog
-    :commands (ar/org-blog-insert-image
-               ar/org-blog-insert-resized-image))
+    :commands (ar/org-blog-insert-image))
 
   (use-package ar-ox-html
     :commands (ar/org-split-export-headline

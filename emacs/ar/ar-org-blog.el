@@ -37,24 +37,6 @@
     (insert (format "[[file:%s]]" destination-file-path))
     destination-file-path))
 
-(defun ar/org-blog-insert-resized-image ()
-  "Insert an image (resized) into the current headline, creating a subdirectory with CUSTOM_ID."
-  (interactive)
-  (let* ((image-file-path (ar/org-blog-insert-image))
-         (image-dir-path (file-name-directory image-file-path))
-         (image-file-name (file-name-nondirectory image-file-path))
-         (default-percentage "10"))
-    (mkdir (concat image-dir-path "/original") t)
-    (copy-file image-file-path (concat image-dir-path "/original/" image-file-name))
-    (unless (eq 0 (ar/process-call "mogrify"
-                                   "-resize"
-                                   (format "%s%%"
-                                           (read-string (format "Default %% (%s): "
-                                                                default-percentage)
-                                                        nil nil default-percentage))
-                                   image-file-path))
-      (error "Unable to resize image"))))
-
 (defun ar/org-blog-links-map (buffer category-fun link-fun)
   (with-current-buffer buffer
     (save-excursion
