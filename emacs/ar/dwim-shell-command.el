@@ -153,7 +153,8 @@
      "Generate a QR code from clipboard"
      (format "qrencode -s10 -o %s %s" temp-file (shell-quote-argument (current-kill 0)))
      :utils "qrencode"
-     :on-completion (lambda ()
+     :on-completion (lambda (buffer)
+                      (kill-buffer buffer)
                       (switch-to-buffer (find-file-noselect temp-file t))))))
 
 (defun dwim-shell-command-convert-image-to-icns ()
@@ -195,7 +196,8 @@
        (format "Clone %s" (file-name-base url))
        (format "git clone %s" url)
        :utils "git"
-       :on-completion (lambda()
+       :on-completion (lambda (buffer)
+                        (kill-buffer buffer)
                         (dired project-dir))))))
 
 (defun dwim-shell-command ()
@@ -396,8 +398,8 @@ ON-COMPLETION SILENT-SUCCESS are all needed to finalize processing."
       (progress-reporter-done progress-reporter))
     (if (= (process-exit-status process) 0)
         (if on-completion
-            (progn (funcall on-completion)
-                   (kill-buffer (process-buffer process)))
+            (progn
+              (funcall on-completion (process-buffer process)))
           (progn
             (with-current-buffer calling-buffer
               (when (and (equal major-mode 'dired-mode)
