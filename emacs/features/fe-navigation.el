@@ -188,6 +188,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (("C-c c" . ar/text-capitalize-word-toggle)
          ("M-DEL" . ar/text-backward-delete-subword))
   :hook ((prog-mode . subword-mode))
+  :config
   ;; From http://stackoverflow.com/questions/6133799/delete-a-word-without-adding-it-to-the-kill-ring-in-emacs
   (defun ar/text-backward-delete-subword (arg)
     "Delete characters backward until encountering the beginning of a word.
