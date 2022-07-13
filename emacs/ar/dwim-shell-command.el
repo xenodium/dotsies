@@ -216,7 +216,9 @@
                         (dired project-dir))))))
 
 (defun dwim-shell-command ()
-  "Execute DWIM shell command."
+  "Execute DWIM shell command with template support.
+
+See `dwim-shell-command-execute-script' for noweb template support."
   (interactive)
   (dwim-shell-command-on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
@@ -224,7 +226,7 @@
 (cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion silent-success gen-temp-dir)
   "Execute a script asynchronously, DWIM style with SCRIPT and BUFFER-NAME.
 
-:FILES are used to instantiate SCRIPT as a  noweb template.
+:FILES are used to instantiate SCRIPT as a noweb template.
 
   The following are supported:
 
@@ -232,16 +234,24 @@
     <<fne>> (file path without extension)
     <<e>> (extension)
     <<td>> (generate a temporary directory)
+    <<*>> (all files joined)
 
   For example:
 
-    Given :FILES '(\"path/to/image.png\")
+    Given :FILES '(\"path/to/image1.png\" \"path/to/image2.png\")
 
-    \"convert <<f>> <<fne>>.jpg\"
+    \"convert '<<f>>' '<<fne>>.jpg'\"
 
     yields
 
-    \"convert 'path/to/image.png' `path/to/image.jpg'\"
+    \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
+    \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
+
+    \"ls -lh <<*>>\"
+
+    yields
+
+    \"ls -lh path/to/image1.png path/to/image2.png\"
 
 :EXTENSIONS ensures that all files in :FILES have the given
 extensions.  Can be either single string \"png\" or a list '(\"png\" \"jpg\").
