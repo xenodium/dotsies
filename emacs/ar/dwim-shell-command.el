@@ -157,6 +157,21 @@
                       (kill-buffer buffer)
                       (switch-to-buffer (find-file-noselect temp-file t))))))
 
+(defun dwim-shell-command-files-combined-size ()
+  "Get files combined file size."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Get files combined file size"
+   "du -csh <<*>>"
+   :utils "du"
+   :on-completion (lambda (buffer)
+                    (with-current-buffer buffer
+                      (message "Total size: %s"
+                               (progn
+                                 (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
+                                 (match-string 1))))
+                    (kill-buffer buffer))))
+
 (defun dwim-shell-command-convert-image-to-icns ()
   "Convert png to icns icon."
   (interactive)
@@ -282,14 +297,18 @@ internal behavior).
          (progress-reporter))
     (if (seq-empty-p files)
         (setq script template)
-      (seq-do (lambda (file)
-                (when extensions
+      (when extensions
+        (seq-do (lambda (file)
                   (cl-assert (seq-contains-p extensions (downcase (file-name-extension file)))
                              nil "Not a .%s file" (string-join extensions " .")))
-                (setq script
-                      (concat script "\n"
-                              (dwim-shell-command--expand template file post-process-template gen-temp-dir))))
-              files))
+                files))
+      (if (dwim-shell-command--contains-multi-file-refs template)
+          (setq script (dwim-shell-command--expand-files-template template files post-process-template gen-temp-dir))
+        (seq-do (lambda (file)
+                  (setq script
+                        (concat script "\n"
+                                (dwim-shell-command--expand-file-template template file post-process-template gen-temp-dir))))
+                files)))
     (setq script (string-trim script))
     (seq-do (lambda (util)
               (cl-assert (executable-find util) nil
@@ -340,11 +359,51 @@ internal behavior).
       (set-process-sentinel proc #'dwim-shell-command--sentinel)
       (set-process-filter proc #'dwim-shell-command--filter))))
 
-(defun dwim-shell-command--expand (template file &optional post-process-template temp-dir)
+(defun dwim-shell-command--expand-files-template (template files &optional post-process-template temp-dir)
+  "Expand TEMPLATE using FILES.
+
+Expand using <<*>> for FILES.
+
+Note: This expander cannot be used to expand <<f>>, <<fne>>, or <<e>>.
+
+  For example:
+
+    Given FILES '(\"path/to/image1.png\" \"path/to/image2.png\")
+
+    \"du -csh <<*>>\"
+
+    yields
+
+    \"du -csh 'path/to/image1.png' 'path/to/image2.png'\"
+
+Use POST-PROCESS-TEMPLATE to further expand template given own logic.
+
+Set TEMP-DIR to a unique temp directory to this template."
+  (cl-assert (not (and (dwim-shell-command--contains-multi-file-refs template)
+                       (dwim-shell-command--contains-single-file-ref template)))
+             nil "Must not have %s and %s in the same template"
+             (dwim-shell-command--contains-multi-file-refs template)
+             (dwim-shell-command--contains-single-file-ref template))
+  (setq files (seq-map (lambda (file)
+                         (expand-file-name file))
+                       files))
+  ;; "<<*>>" with '("path/to/image1.png" "path/to/image2.png") -> "path/to/image1.png path/to/image2.png"
+  (setq template (replace-regexp-in-string "\\(\<\<\\*\>\>\\)" (string-join files " ") template nil nil 1))
+
+  ;; "<<td>>" with TEMP-DIR -> "/var/folders/m7/ky091cp56d5g68nyhl4y7frc0000gn/T/dwim-shell-command-JNK4V5"
+  (setq template (replace-regexp-in-string "\\(\<\<td\>\>\\)" temp-dir template nil nil 1))
+
+  (when post-process-template
+    (setq template (funcall post-process-template template file)))
+  template)
+
+(defun dwim-shell-command--expand-file-template (template file &optional post-process-template temp-dir)
   "Expand TEMPLATE using FILE.
 
 Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
  <<e>> for FILE extension.
+
+Note: This expander cannot be used to expand <<*>>, <<fne>>, or <<e>>.
 
   For example:
 
@@ -359,6 +418,11 @@ Expand using <<f>> for FILE, <<fne>> for FILE without extension, and
 Use POST-PROCESS-TEMPLATE to further expand template given own logic.
 
 Set TEMP-DIR to a unique temp directory to this template."
+  (cl-assert (not (and (dwim-shell-command--contains-multi-file-refs template)
+                       (dwim-shell-command--contains-single-file-ref template)))
+             nil "Must not have %s and %s in the same template"
+             (dwim-shell-command--contains-multi-file-refs template)
+             (dwim-shell-command--contains-single-file-ref template))
   (setq file (expand-file-name file))
   ;; "<<fne>>" with "/path/tmp.txt" -> "/path/tmp"
   (setq template (replace-regexp-in-string "\\(\<\<fne\>\>\\)" (file-name-sans-extension file) template nil nil 1))
@@ -375,6 +439,18 @@ Set TEMP-DIR to a unique temp directory to this template."
   (when post-process-template
     (setq template (funcall post-process-template template file)))
   template)
+
+(defun dwim-shell-command--contains-single-file-ref (template)
+  (cond ((string-match "\<\<f\>\>" template)
+         "<<f>>")
+        ((string-match "\<\<fne\>\>" template)
+         "<<fne>>")
+        ((string-match "\<\<e\>\>" template)
+         "<<e>>")))
+
+(defun dwim-shell-command--contains-multi-file-refs (template)
+  (when (string-match "\<\<\\*\>\>" template)
+    "<<*>>"))
 
 (defun dwim-shell-command--default-directory-files ()
   "List of files in current buffer's `default-directory'."
