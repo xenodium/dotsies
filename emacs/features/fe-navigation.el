@@ -205,12 +205,14 @@ With argument ARG, do this that many times."
     (interactive)
     (let ((start
            (car
-            (bounds-of-thing-at-point 'symbol))))
+            (save-excursion
+              (backward-word)
+              (bounds-of-thing-at-point 'symbol)))))
       (if start
           (save-excursion
             (goto-char start)
             (funcall
-             (if (eq letter (upcase char-after))
+             (if (eq (char-after) (upcase (char-after)))
                  'downcase-region
                'upcase-region)
              start (1+ start)))
