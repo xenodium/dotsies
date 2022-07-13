@@ -1,4 +1,4 @@
-;;; dwim-shell-command.el --- Execute shell commands with DWIM behaviour
+;;; Dwim-shell-command.el --- shell commands with DWIM behaviour -*- lexical-binding: t; -*-
 ;;; -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
