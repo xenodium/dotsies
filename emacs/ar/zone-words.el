@@ -34,6 +34,7 @@
   "Display words to describe your emotions while you zone out."
   (delete-other-windows)
   (setq mode-line-format nil)
+  (setq-local cursor-type nil)
   (zone-fill-out-screen (window-width) (window-height))
   (while (not (input-pending-p))
     (delete-region (point-min) (point-max))
