@@ -180,6 +180,20 @@ internal behavior).
     (setq utils (list utils)))
   (when (or gen-temp-dir (string-match-p "\<\<td\>\>" script 0))
     (setq gen-temp-dir (make-temp-file "dwim-shell-command-" t)))
+  (when (seq-empty-p files)
+    (cl-assert (not (or (dwim-shell-command--contains-multi-file-refs script)
+                        (dwim-shell-command--contains-single-file-ref script)))
+               nil "No files found to expand %s"
+               (or (dwim-shell-command--contains-multi-file-refs script)
+                   (dwim-shell-command--contains-single-file-ref script))))
+  (when extensions
+    (seq-do (lambda (file)
+              (cl-assert (seq-contains-p extensions (downcase (file-name-extension file)))
+                         nil "Not a .%s file" (string-join extensions " .")))
+            files))
+  (seq-do (lambda (util)
+            (cl-assert (executable-find util) nil (format "%s not installed" util)))
+          utils)
   (let* ((proc-buffer (generate-new-buffer buffer-name))
          (template script)
          (script "")
@@ -188,11 +202,6 @@ internal behavior).
          (progress-reporter))
     (if (seq-empty-p files)
         (setq script template)
-      (when extensions
-        (seq-do (lambda (file)
-                  (cl-assert (seq-contains-p extensions (downcase (file-name-extension file)))
-                             nil "Not a .%s file" (string-join extensions " .")))
-                files))
       (if (dwim-shell-command--contains-multi-file-refs template)
           (setq script (dwim-shell-command--expand-files-template template files post-process-template gen-temp-dir))
         (seq-do (lambda (file)
@@ -201,10 +210,6 @@ internal behavior).
                                 (dwim-shell-command--expand-file-template template file post-process-template gen-temp-dir))))
                 files)))
     (setq script (string-trim script))
-    (seq-do (lambda (util)
-              (cl-assert (executable-find util) nil
-                         (format "%s not installed" util)))
-            utils)
     (with-current-buffer proc-buffer
       (require 'shell)
       (shell-mode))
