@@ -308,3 +308,10 @@
 	(format "%s\\|%s"
 		vc-ignore-dir-regexp
 		tramp-file-name-regexp)))
+
+(use-package dwim-shell-command
+  ;; Not sure why it tries to find `dwim-shell-command'
+  ;; in `dired' and fail. For now, :defer 0 works around.
+  :defer 0
+  :bind
+  ("M-!" . dwim-shell-command))
