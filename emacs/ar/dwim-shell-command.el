@@ -35,7 +35,7 @@
   silent-success)
 
 (defun dwim-shell-command ()
-  "Execute DWIM shell command with noweb template support.
+  "Execute DWIM shell command asynchronously using noweb templates.
 
 Which files
 
@@ -74,14 +74,24 @@ Focus
   output, but doesn't display or focus on it by default. Instead,
   it tries to guess what's more convenient to focus on.
 
+  While the process is busy, show a spinner in the minibuffer. No
+  focus changes.
+
+  After process is finished:
+
   1. If there were any files created in the `default-directory',
-  jump to a `dired' buffer and show the new file (via `dired-jump').
+  jump to a `dired' buffer and move point to the new file (via
+  `dired-jump').
 
   2. If no new files were created, automatically switch focus to the
   process buffer and display its output.
 
     Note: You can prevent this automatic focus by prepending your
     command with whitespace.
+
+      |
+      V
+    \" convert '<<f>>' '<<fne>>.jpg'\"
 
   3. If the shell command caused any errors, offer to focus the
   process buffer and display its output.
