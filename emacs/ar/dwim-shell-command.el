@@ -9,14 +9,11 @@
 
 ;;; Commentary:
 
-;; Provides `dwim-shell-command' as a DWIM alternative to
+;; Provides `dwim-shell-command' as an opinionated DWIM alternative to
 ;; `shell-command'.
 ;;
 ;; Use `dwim-shell-command-on-marked-files' to create your own command
 ;; line utilities, invoked via M-x.
-;;
-;; See `dwim-shell-command-convert-audio-to-mp3' or
-;; `dwim-shell-command-pdf-password-protect' as examples.
 
 ;;; Code:
 
@@ -71,10 +68,10 @@ Templates
 Focus
 
   `dwim-shell-command' creates a process buffer to capture command
-  output, but doesn't display or focus on it by default. Instead,
+  output, but doesn't display or focus on it by default.  Instead,
   it tries to guess what's more convenient to focus on.
 
-  While the process is busy, show a spinner in the minibuffer. No
+  While the process is busy, show a spinner in the minibuffer.  No
   focus changes.
 
   After process is finished:
@@ -103,6 +100,103 @@ Quick exit
   (interactive)
   (dwim-shell-command-on-marked-files
    "DWIM shell command" (read-shell-command "DWIM shell command: ")))
+
+(cl-defun dwim-shell-command-on-marked-files (buffer-name script &key utils extensions shell-util shell-args shell-pipe post-process-template on-completion)
+  "Create DWIM utilities executing templated SCRIPT on given files.
+
+Here's a simple utility invoking SCRIPT to convert image files to jpg.
+
+  (defun dwim-shell-command-convert-image-to-jpg ()
+    \"Convert all marked images to jpg(s).\"
+    (interactive)
+    (dwim-shell-command-on-marked-files
+     \"Convert to jpg\"
+     \"convert -verbose '<<f>>' '<<fne>>.jpg'\"
+     :utils \"convert\"))
+
+Check `dwim-shell-command-commands.el' for more examples.
+
+All command process output is written to a buffer with BUFFER-NAME.
+
+If SCRIPT starts with whitespace, imply `:SILENT-SUCCESS' in
+ `dwim-shell-command-execute-script'.
+
+All params explained in `dwim-shell-command-execute-script'.
+
+Which files
+
+  `dwim-shell-command-on-marked-files' attempts to guess which file(s)
+  you may want the command to operate on.
+
+  1. If visiting a `dired' buffer, draw the marked file(s).
+  2. If visiting any other buffer with an associated file, use that.
+
+Templates
+
+  Operate on drawn files using either the following:
+
+    <<f>> (file path)
+    <<fne>> (file path without extension)
+    <<e>> (extension)
+    <<td>> (generate a temporary directory)
+    <<*>> (all files joined)
+
+  For example:
+
+    With drawn files '(\"path/to/image1.png\" \"path/to/image2.png\")
+
+   \"convert '<<f>>' '<<fne>>.jpg'\" yields
+
+     \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
+     \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
+
+   while \"ls -lh <<*>>\" yields
+
+     \"ls -lh path/to/image1.png path/to/image2.png\"
+
+Focus
+
+  `dwim-shell-command-on-marked-files' creates a process buffer to
+  capture command output, but doesn't display or focus on it by
+  default.  Instead, it tries to guess what's more convenient to focus
+  on.
+
+  While the process is busy, show a spinner in the minibuffer.  No
+  focus changes.
+
+  After process is finished:
+
+  1. If there were any files created in the `default-directory',
+  jump to a `dired' buffer and move point to the new file (via
+  `dired-jump').
+
+  2. If no new files were created, automatically switch focus to the
+  process buffer and display its output.
+
+    Note: You can prevent this automatic focus by prepending your
+    command with whitespace.
+
+      |
+      V
+    \" convert '<<f>>' '<<fne>>.jpg'\"
+
+  3. If the shell command caused any errors, offer to focus the
+  process buffer and display its output.
+
+Quick exit
+
+  Process buffers are read-only and can be quickly closed by
+  pressing `q'."
+  (dwim-shell-command-execute-script buffer-name script
+                                     :files (dwim-shell-command--marked-files)
+                                     :utils utils
+                                     :extensions extensions
+                                     :shell-util shell-util
+                                     :shell-args shell-args
+                                     :shell-pipe shell-pipe
+                                     :post-process-template post-process-template
+                                     :on-completion on-completion
+                                     :silent-success (string-prefix-p " " script)))
 
 (cl-defun dwim-shell-command-execute-script (buffer-name script &key files extensions shell-util shell-args shell-pipe utils post-process-template on-completion silent-success gen-temp-dir)
   "Execute a script asynchronously, DWIM style with SCRIPT and BUFFER-NAME.
@@ -414,24 +508,6 @@ ON-COMPLETION SILENT-SUCCESS are all needed to finalize processing."
               (reporter (dwim-shell-command--command-reporter exec)))
     (progress-reporter-update reporter))
   (comint-output-filter process output))
-
-(cl-defun dwim-shell-command-on-marked-files (buffer-name script &key utils extensions shell-util shell-args shell-pipe post-process-template on-completion)
-  "Execute SCRIPT, using BUFFER-NAME.
-
-If script starts with whitespace, imply `:SILENT-SUCCESS' in
- `dwim-shell-command-execute-script'.
-
-See `dwim-shell-command-execute-script' for all other params."
-  (dwim-shell-command-execute-script buffer-name script
-                                     :files (dwim-shell-command--marked-files)
-                                     :utils utils
-                                     :extensions extensions
-                                     :shell-util shell-util
-                                     :shell-args shell-args
-                                     :shell-pipe shell-pipe
-                                     :post-process-template post-process-template
-                                     :on-completion on-completion
-                                     :silent-success (string-prefix-p " " script)))
 
 (defun dwim-shell-command--marked-files ()
   "Return buffer file (if available) or marked files for a `dired' buffer."
