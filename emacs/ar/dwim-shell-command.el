@@ -56,12 +56,12 @@ Templates
 
     With drawn files '(\"path/to/image1.png\" \"path/to/image2.png\")
 
-   \"convert '<<f>>' '<<fne>>.jpg'\" yields
+   \"convert '<<f>>' '<<fne>>.jpg'\" expands to
 
      \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
      \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
 
-   while \"ls -lh <<*>>\" yields
+   while \"ls -lh <<*>>\" expands to
 
      \"ls -lh path/to/image1.png path/to/image2.png\"
 
@@ -145,12 +145,12 @@ Templates
 
     With drawn files '(\"path/to/image1.png\" \"path/to/image2.png\")
 
-   \"convert '<<f>>' '<<fne>>.jpg'\" yields
+   \"convert '<<f>>' '<<fne>>.jpg'\" expands to
 
      \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
      \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
 
-   while \"ls -lh <<*>>\" yields
+   while \"ls -lh <<*>>\" expands to
 
      \"ls -lh path/to/image1.png path/to/image2.png\"
 
@@ -215,18 +215,14 @@ Quick exit
 
     Given :FILES '(\"path/to/image1.png\" \"path/to/image2.png\")
 
-    \"convert '<<f>>' '<<fne>>.jpg'\"
+    \"convert '<<f>>' '<<fne>>.jpg'\" expands to
 
-    yields
+      \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
+      \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
 
-    \"convert 'path/to/image1.png' 'path/to/image1.jpg'\"
-    \"convert 'path/to/image2.png' 'path/to/image2.jpg'\"
+    and \"ls -lh <<*>>\" expands to
 
-    \"ls -lh <<*>>\"
-
-    yields
-
-    \"ls -lh path/to/image1.png path/to/image2.png\"
+      \"ls -lh path/to/image1.png path/to/image2.png\"
 
 :EXTENSIONS ensures that all files in :FILES have the given
 extensions.  Can be either single string \"png\" or a list '(\"png\" \"jpg\").
@@ -360,11 +356,9 @@ Note: This expander cannot be used to expand <<f>>, <<fne>>, or <<e>>.
 
     Given FILES '(\"path/to/image1.png\" \"path/to/image2.png\")
 
-    \"du -csh <<*>>\"
+    \"du -csh <<*>>\" expands to
 
-    yields
-
-    \"du -csh 'path/to/image1.png' 'path/to/image2.png'\"
+      \"du -csh 'path/to/image1.png' 'path/to/image2.png'\"
 
 Use POST-PROCESS-TEMPLATE to further expand template given own logic.
 
@@ -399,11 +393,9 @@ Note: This expander cannot be used to expand <<*>>, <<fne>>, or <<e>>.
 
     Given FILE \"path/to/image.png\"
 
-    \"convert '<<f>>' '<<fne>>.jpg'\"
+    \"convert '<<f>>' '<<fne>>.jpg'\" expands to
 
-    yields
-
-    \"convert 'path/to/image.png' 'path/to/image.jpg'\"
+      \"convert 'path/to/image.png' 'path/to/image.jpg'\"
 
 Use POST-PROCESS-TEMPLATE to further expand template given own logic.
 
