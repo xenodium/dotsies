@@ -275,10 +275,10 @@ internal behavior).
   (when (or gen-temp-dir (string-match-p "\<\<td\>\>" script 0))
     (setq gen-temp-dir (make-temp-file "dwim-shell-command-" t)))
   (when (seq-empty-p files)
-    (cl-assert (not (or (dwim-shell-command--contains-multi-file-refs script)
+    (cl-assert (not (or (dwim-shell-command--contains-multi-file-ref script)
                         (dwim-shell-command--contains-single-file-ref script)))
                nil "No files found to expand %s"
-               (or (dwim-shell-command--contains-multi-file-refs script)
+               (or (dwim-shell-command--contains-multi-file-ref script)
                    (dwim-shell-command--contains-single-file-ref script))))
   (when extensions
     (seq-do (lambda (file)
@@ -296,7 +296,7 @@ internal behavior).
          (progress-reporter))
     (if (seq-empty-p files)
         (setq script template)
-      (if (dwim-shell-command--contains-multi-file-refs template)
+      (if (dwim-shell-command--contains-multi-file-ref template)
           (setq script (dwim-shell-command--expand-files-template template files post-process-template gen-temp-dir))
         (seq-do (lambda (file)
                   (setq script
@@ -369,10 +369,10 @@ Note: This expander cannot be used to expand <<f>>, <<fne>>, or <<e>>.
 Use POST-PROCESS-TEMPLATE to further expand template given own logic.
 
 Set TEMP-DIR to a unique temp directory to this template."
-  (cl-assert (not (and (dwim-shell-command--contains-multi-file-refs template)
+  (cl-assert (not (and (dwim-shell-command--contains-multi-file-ref template)
                        (dwim-shell-command--contains-single-file-ref template)))
              nil "Must not have %s and %s in the same template"
-             (dwim-shell-command--contains-multi-file-refs template)
+             (dwim-shell-command--contains-multi-file-ref template)
              (dwim-shell-command--contains-single-file-ref template))
   (setq files (seq-map (lambda (file)
                          (expand-file-name file))
@@ -408,10 +408,10 @@ Note: This expander cannot be used to expand <<*>>, <<fne>>, or <<e>>.
 Use POST-PROCESS-TEMPLATE to further expand template given own logic.
 
 Set TEMP-DIR to a unique temp directory to this template."
-  (cl-assert (not (and (dwim-shell-command--contains-multi-file-refs template)
+  (cl-assert (not (and (dwim-shell-command--contains-multi-file-ref template)
                        (dwim-shell-command--contains-single-file-ref template)))
              nil "Must not have %s and %s in the same template"
-             (dwim-shell-command--contains-multi-file-refs template)
+             (dwim-shell-command--contains-multi-file-ref template)
              (dwim-shell-command--contains-single-file-ref template))
   (setq file (expand-file-name file))
   ;; "<<fne>>" with "/path/tmp.txt" -> "/path/tmp"
@@ -439,7 +439,7 @@ Set TEMP-DIR to a unique temp directory to this template."
         ((string-match "\<\<e\>\>" template)
          "<<e>>")))
 
-(defun dwim-shell-command--contains-multi-file-refs (template)
+(defun dwim-shell-command--contains-multi-file-ref (template)
   "Check for <<*>> in TEMPLATE."
   (when (string-match "\<\<\\*\>\>" template)
     "<<*>>"))
