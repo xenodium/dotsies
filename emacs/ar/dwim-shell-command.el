@@ -284,7 +284,7 @@ internal behavior).
   (seq-do (lambda (util)
             (cl-assert (executable-find util) nil (format "%s not installed" util)))
           utils)
-  (let* ((proc-buffer (generate-new-buffer buffer-name))
+  (let* ((proc-buffer (generate-new-buffer (format "*%s*" buffer-name)))
          (template script)
          (script "")
          (files-before)
