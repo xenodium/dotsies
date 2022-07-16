@@ -171,15 +171,6 @@
     ;; Hide `tda/unzip' since I rely on `dwim-shell-command-unzip'.
     (unintern 'tda/unzip))
 
-  (use-package dired-atool
-    :ensure t
-    :ensure-system-package atool
-    :validate-custom
-    (dired-atool-unpack-no-confirm t)
-    :bind (:map dired-mode-map
-                ("z" . dired-atool-do-unpack-to-current-dir)
-                ("Z" . dired-atool-do-pack)))
-
   (use-package dired-git-info
     :ensure t
     :bind (:map dired-mode-map
