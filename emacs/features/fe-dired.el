@@ -165,9 +165,11 @@
 
   ;; Predownloaded to ~/.emacs.d/downloads
   (use-package tmtxt-dired-async
+    :hook (dired-mode . dired-async-mode)
     :config
     (use-package tmtxt-async-tasks)
-    (dired-async-mode +1))
+    ;; Hide `tda/unzip' since I rely on `dwim-shell-command-unzip'.
+    (unintern 'tda/unzip))
 
   (use-package dired-atool
     :ensure t
