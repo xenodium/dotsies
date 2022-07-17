@@ -1,11 +1,22 @@
 ;;; Dwim-shell-command.el --- shell commands with DWIM behaviour -*- lexical-binding: t; -*-
-;;; -*- lexical-binding: t; -*-
 
-(require 'cl-lib)
-(require 'comint)
-(require 'dired)
-(require 'dired-aux)
-(require 'seq)
+;; Author: Alvaro Ramirez
+;; Package-Requires: ((emacs "27.0"))
+;; URL: https://github.com/xenodium/dwim-shell-command
+;; Version: 0.1
+
+;; This package is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This package is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -16,6 +27,12 @@
 ;; line utilities, invoked via M-x.
 
 ;;; Code:
+
+(require 'cl-lib)
+(require 'comint)
+(require 'dired)
+(require 'dired-aux)
+(require 'seq)
 
 (defvar dwim-shell-command--commands nil "All commands in progress.")
 
