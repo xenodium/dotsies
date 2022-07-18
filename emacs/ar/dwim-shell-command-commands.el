@@ -85,6 +85,26 @@
      :post-process-template (lambda (script file)
                               (string-replace "<<frames>>" (dwim-shell-command--gifsicle-frames-every factor file) script)))))
 
+(defun dwim-shell-command-resize-gif ()
+  "Resize marked gif(s)."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Resize marked gif(s)"
+   (let ((factor (read-number "Resize scaling factor: " 0.5)))
+     (format "gifsicle --scale %.2f '<<f>>' -o '<<fne>>_x%.2f.gif'" factor))
+   :extensions "gif"
+   :utils "gifsicle"))
+
+(defun dwim-shell-command-resize-image ()
+  "Resize marked image(s)."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Convert to gif"
+   (let ((factor (read-number "Resize scaling factor: " 0.5)))
+     (format "convert -resize %%%d '<<f>>' '<<fne>>_x%.2f.<<e>>'"
+             (* 100 factor) factor))
+   :utils "convert"))
+
 (defun dwim-shell-command-pdf-password-protect ()
   "Speeds up gif(s)."
   (interactive)
@@ -110,6 +130,16 @@
   (dwim-shell-command-on-marked-files
    "Drop audio"
    "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
+   :utils "ffmpeg"))
+
+(defun dwim-shell-command-resize-video ()
+  "Resize marked images."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Convert to gif"
+   (let ((factor (read-number "Resize scaling factor: " 0.5)))
+     (format "ffmpeg -i '<<f>>' -vf \"scale=-2:ih*%s\" '<<fne>>_x%.2f.<<e>>'"
+             factor factor factor))
    :utils "ffmpeg"))
 
 (defun dwim-shell-command-bin-plist-to-xml ()
