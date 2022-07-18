@@ -50,7 +50,7 @@
    :utils "convert"))
 
 (defun dwim-shell-command-convert-to-gif ()
-  "Convert all marked videos to optimized gif(s)."
+  "Convert all marked videos to gif(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
    "Convert to gif"
