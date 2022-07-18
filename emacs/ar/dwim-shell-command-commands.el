@@ -132,6 +132,16 @@
    "ffmpeg -i '<<f>>' -c copy -an '<<fne>>_no_audio.<<e>>'"
    :utils "ffmpeg"))
 
+(defun dwim-shell-command-speed-up-video ()
+  "Speed up video(s)."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Speed up video"
+   (let ((factor (read-number "Resize scaling factor: " 2)))
+     (format "ffmpeg -i '<<f>>' -an -filter:v 'setpts=%s*PTS' '<<fne>>_x%s.<<e>>'"
+             (/ 1 (float factor)) factor))
+   :utils "ffmpeg"))
+
 (defun dwim-shell-command-resize-video ()
   "Resize marked images."
   (interactive)
