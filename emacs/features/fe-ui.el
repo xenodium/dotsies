@@ -137,6 +137,10 @@
                         :foreground (face-foreground 'default)
                         :background (face-background 'default)))
 
+  (with-eval-after-load 'dired-subtree
+    (set-face-attribute 'dired-subtree-depth-1-face nil
+                        :background nil))
+
   ;; Trying out line underline (instead of wave).
   (mapatoms (lambda (atom)
               (let ((underline nil))
