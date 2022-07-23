@@ -68,7 +68,7 @@
 (defun ar/org-open-file-special-path (file-path)
   "Open special FILE-PATH.
 Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
-  (cond ((ar/string-match-p "#/s/" file-path)
+  (cond ((string-match "#/s/" file-path)
          (let* ((split-path (split-string file-path "#/s/"))
                 (path (expand-file-name (nth 0 split-path)))
                 (regex (nth 1 split-path)))
@@ -132,30 +132,6 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
                             (replace-regexp-in-string "[^-a-zA-Z 0-9]"
                                                       ""
                                                       (downcase title))))
-
-(defun ar/org-insert-prefixed-link (prefix prompt)
-  "Insert a link with PREFIX and PROMPT if not found in clipboard."
-  (interactive)
-  (let* ((clipboard (current-kill 0))
-         (cl-number (if (ar/string-numeric-p clipboard)
-                        clipboard
-                      (read-string (format "%s: "
-                                           prompt))))
-         (rendered-cl (format "[[http://%s%s][%s%s]]"
-                              prefix
-                              cl-number
-                              prefix
-                              cl-number)))
-    (insert rendered-cl)))
-
-(defmacro ar/org-with-file-location (file-path item-id &rest body)
-  "Open org file at FILE-PATH, ITEM-ID location and execute BODY."
-  (declare (indent 1))
-  `(with-current-buffer (find-file-noselect (expand-file-name ,file-path))
-     (save-excursion
-       (org-open-link-from-string (format "[[#%s]]" ,item-id))
-       (org-end-of-meta-data t)
-       (progn ,@body))))
 
 (defun ar/org-point-to-heading-1 ()
   "Move point to heading level 1."
