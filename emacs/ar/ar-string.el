@@ -6,13 +6,9 @@
 
 ;;; Code:
 
-(defun ar/string-match-p (regex string)
-  "Return t if REGEX is a match in STRING.  nil otherwise."
-  (if (string-match regex string) t nil))
-
 (defun ar/string-numeric-p (string)
   "Return t if STRING is an unsigned integer.  nil otherwise."
-  (ar/string-match-p "\\`[[:digit:]]+\\'" string))
+  (string-match "\\`[[:digit:]]+\\'" string))
 
 (defun ar/string-replace-regex-pairs (haystack &rest pairs)
   "Replace in HAYSTACK all PAIRS. For example: (ar/string-replace \"one two\" '(\"one\" . \"three\") '(\"two\" . \"four\"))"
