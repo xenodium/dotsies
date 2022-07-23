@@ -166,7 +166,9 @@ Optional argument ΦDIR-PATH-ONLY-P if copying buffer directory."
   (interactive "P")
   (let ((fPath
          (if (equal major-mode 'dired-mode)
-             default-directory
+             (if (eq 1 (line-number-at-pos))
+                 default-directory
+               (seq-first (dired-get-marked-files)))
            (buffer-file-name))))
     (kill-new
      (if (equal φdir-path-only-p nil)
