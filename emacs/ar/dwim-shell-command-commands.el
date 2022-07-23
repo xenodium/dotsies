@@ -219,8 +219,8 @@ ffmpeg -n -i '<<f>>' -vf \"scale=$width:-2\" '<<fne>>_x%.2f.<<e>>'
    :utils '("sips" "iconutil")
    :extensions "png"))
 
-(defun dwim-git-clone-clipboard-url ()
-  "Clone git URL in clipboard asynchronously and open in Dired when finished."
+(defun dwim-git-clone-clipboard-url-to-downloads ()
+  "Clone git URL in clipboard to \"~/Downloads/\"."
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
@@ -238,6 +238,14 @@ ffmpeg -n -i '<<f>>' -vf \"scale=$width:-2\" '<<fne>>_x%.2f.<<e>>'
        :on-completion (lambda (buffer)
                         (kill-buffer buffer)
                         (dired project-dir))))))
+
+(defun dwim-git-clone-clipboard-url ()
+  "Clone git URL in clipboard to `default-directory'."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   (format "Clone %s" (file-name-base (current-kill 0)))
+   "git clone <<cb>>"
+   :utils "git"))
 
 (provide 'dwim-shell-command-commands)
 
