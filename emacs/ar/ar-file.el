@@ -12,25 +12,6 @@
 (require 'cl-lib)
 
 
-;; Move buffer file.
-;; From: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun ar/file-move (dir)
-  "Move both current buffer and file it's visiting to DIR."
-  (interactive "DNew directory: ")
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (dir (if (string-match dir "\\(?:/\\|\\\\)$")
-                  (substring dir 0 -1)
-                dir))
-         (newname (concat dir "/" name)))
-
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (progn (copy-file filename newname 1)
-             (delete-file filename)
-             (set-visited-file-name newname)
-             (set-buffer-modified-p nil) t))))
-
 (defmacro ar/file-with-current-file (file-path &rest body)
   "Open file at FILE-PATH and execute BODY."
   (declare (indent 1))
