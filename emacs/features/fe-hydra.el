@@ -56,7 +56,7 @@ Open: _p_oint _e_xternally
     ("p" ar/misc-open-file-at-point nil)
     ("q" nil "cancel"))
 
-  (defun ar/file-open-closest-build-file-dwim ()
+  (defun ar/open-closest-build-file-dwim ()
     (interactive)
     (if (locate-dominating-file default-directory "WORKSPACE")
         (call-interactively 'ar/bazel-jump-to-build-rule)
@@ -67,7 +67,7 @@ Open: _p_oint _e_xternally
     ("o" ff-find-other-file "other")
     ("e" crux-open-with "externally")
     ("u" ar/misc-open-file-at-point "url at point")
-    ("b" ar/file-open-closest-build-file-dwim "build file")
+    ("b" ar/open-closest-build-file-dwim "build file")
     ("q" nil "cancel"))
 
   (defhydra diff-hl (:body-pre (diff-hl-mode +1)
