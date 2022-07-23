@@ -66,6 +66,7 @@
               ("M" . ar/dired-mark-all))
   :commands (dired-mode
              dired
+             ar/dwim-copy-file-path
              ar/find-all-dired-current-dir
              ar/dired-mark-all
              ar/file-find-alternate-parent-dir)
@@ -113,6 +114,48 @@
   ;; Hide some files
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
   (setq dired-omit-mode t)
+
+  (defun ar/dwim-copy-file-path (&optional dir-only)
+    "Copy the current buffer's file path or dired paths to `kill-ring'.
+If `universal-argument' is called, copy only the dir path."
+    (interactive "P")
+    (let ((paths
+           (cond ((and (equal major-mode 'dired-mode)
+                       (eq 1 (line-number-at-pos)))
+                  (list default-directory))
+                 ((and (equal major-mode 'dired-mode)
+                       mark-active)
+                  (ar/dired--paths-in-region))
+                 ((equal major-mode 'dired-mode)
+                  (dired-get-marked-files))
+                 ((buffer-file-name)
+                  (list (buffer-file-name)))
+                 (t
+                  (error "No paths to copy")))))
+      (mapc (lambda (path)
+              (kill-new
+               (if dir-only
+                   (file-name-directory path)
+                 path)))
+            (seq-reverse paths))
+      (message "Copied (%d): %s" (seq-length paths) (current-kill 0))))
+
+  (defun ar/dired--paths-in-region ()
+    (when mark-active
+      (let ((start (region-beginning))
+            (end (region-end))
+            (paths))
+        (save-excursion
+          (save-restriction
+            (goto-char start)
+            (while (< (point) end)
+              ;; Skip subdir line and following garbage like the `total' line:
+              (while (and (< (point) end) (dired-between-files))
+                (forward-line 1))
+              (when (dired-get-filename nil t)
+                (setq paths (append paths (list (dired-get-filename nil t)))))
+              (forward-line 1))))
+        paths)))
 
   (defun ar/dired-sort-by-size()
     "Sort dired buffer by size."
