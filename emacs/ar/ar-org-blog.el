@@ -8,7 +8,6 @@
 
 (require 'ar-file)
 (require 'ar-org)
-(require 'ar-process)
 (require 'org-element)
 (require 'outline)
 
