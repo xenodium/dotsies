@@ -9,7 +9,7 @@
 
 (require 'dwim-shell-command)
 
-(defun dwim-shell-command-convert-audio-to-mp3 ()
+(defun dwim-shell-command-audio-to-mp3 ()
   "Convert all marked audio to mp3(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -17,7 +17,7 @@
    "ffmpeg -stats -n -i '<<f>>' -acodec libmp3lame '<<fne>>.mp3'"
    :utils "ffmpeg"))
 
-(defun dwim-shell-command-convert-image-to-jpg ()
+(defun dwim-shell-command-image-to-jpg ()
   "Convert all marked images to jpg(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -25,7 +25,7 @@
    "convert -verbose '<<f>>' '<<fne>>.jpg'"
    :utils "convert"))
 
-(defun dwim-shell-command-convert-image-to-png ()
+(defun dwim-shell-command-image-to-png ()
   "Convert all marked images to png(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -33,7 +33,7 @@
    "convert -verbose '<<f>>' '<<fne>>.png'"
    :utils "convert"))
 
-(defun dwim-shell-command-convert-image-grayscale ()
+(defun dwim-shell-command-image-to-grayscale ()
   "Convert all marked images to grayscale."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -49,7 +49,7 @@
    "convert -verbose -auto-orient '<<f>>' '<<fne>>_reoriented.<<e>>'"
    :utils "convert"))
 
-(defun dwim-shell-command-convert-to-gif ()
+(defun dwim-shell-command-video-to-gif ()
   "Convert all marked videos to gif(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -57,7 +57,15 @@
    "ffmpeg -loglevel quiet -stats -y -i '<<f>>' -pix_fmt rgb24 -r 15 '<<fne>>.gif'"
    :utils "ffmpeg"))
 
-(defun dwim-shell-command-convert-to-optimized-gif ()
+(defun dwim-shell-command-video-to-webp ()
+  "Convert all marked videos to webp(s)."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Convert to webp"
+   "ffmpeg -i '<<f>>' -vcodec libwebp -filter:v fps=fps=10 -compression_level 3 -lossless 1 -loop 0 -preset default -an -vsync 0 '<<fne>>'.webp"
+   :utils "ffmpeg"))
+
+(defun dwim-shell-command-video-to-optimized-gif ()
   "Convert all marked videos to optimized gif(s)."
   (interactive)
   (dwim-shell-command-on-marked-files
@@ -196,7 +204,7 @@ ffmpeg -n -i '<<f>>' -vf \"scale=$width:-2\" '<<fne>>_x%.2f.<<e>>'
                                  (match-string 1))))
                     (kill-buffer buffer))))
 
-(defun dwim-shell-command-convert-image-to-icns ()
+(defun dwim-shell-command-image-to-icns ()
   "Convert png to icns icon."
   (interactive)
   (dwim-shell-command-on-marked-files
