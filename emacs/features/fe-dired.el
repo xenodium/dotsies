@@ -51,9 +51,6 @@
   :defer
   :hook (dired-mode . dired-hide-details-mode)
   :bind (:map dired-mode-map
-              ([remap dired-do-async-shell-command] . dwim-shell-command)
-              ([remap dired-do-shell-command] . dwim-shell-command)
-              ([remap dired-smart-shell-command] . dwim-shell-command)
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
               ;; Go to parent directory.
@@ -346,8 +343,8 @@ If `universal-argument' is called, copy only the dir path."
 		tramp-file-name-regexp)))
 
 (use-package dwim-shell-command
-  ;; Not sure why it tries to find `dwim-shell-command'
-  ;; in `dired' and fail. For now, :defer 0 works around.
-  :defer 0
-  :bind
-  ("M-!" . dwim-shell-command))
+  :bind (("M-!" . dwim-shell-command)
+         :map dired-mode-map
+         ([remap dired-do-async-shell-command] . dwim-shell-command)
+         ([remap dired-do-shell-command] . dwim-shell-command)
+         ([remap dired-smart-shell-command] . dwim-shell-command)))
