@@ -558,4 +558,73 @@ line instead."
                                                   (diverted--pop-to-mark-command 2))))
   (diverted-mode +1))
 
+(use-package accent
+  :ensure t
+  :hook ((text-mode . accent-menu-mode)
+         (fundamental-mode . accent-menu-mode)
+         (org-mode . accent-menu-mode)
+         (message-mode . accent-menu-mode))
+  :config
+  (setq accent-diacritics
+        '((! (¡))
+          (\? (¿))
+          (a (á à â ä æ ã å ā))
+          (c (ć ç č))
+          (e (é è ê ë ē ė ę))
+          (i (í î ï ī į ì))
+          (l (ł))
+          (n (ñ ń))
+          (o (ó ô ö ò œ ø ō õ))
+          (s (ß ś š))
+          (u (ú û ü ù ū))
+          (y (ÿ))
+          (z (ž ź ż))
+          (A (Á À Â Ä Æ Ã Å Ā))
+          (C (Ç Ć Č))
+          (E (É È Ê Ë Ē Ė Ę))
+          (I (Í Î Ï Ī Į Ì))
+          (L (Ł))
+          (N (Ñ Ń))
+          (O (Ó Ô Ö Ò Œ Ø Ō Õ))
+          (S (Ś Š))
+          (U (Ú Û Ü Ù Ū))
+          (Y (Ÿ))
+          (Z (Ž Ź Ż))))
+
+  (defvar accent-menu-monitor--last-edit-time nil)
+
+  (define-minor-mode accent-menu-mode
+    "Toggle `accent-menu' if repeated keys are detected."
+    :lighter " accent-menu monitor"
+    (if accent-menu-mode
+        (progn
+          (remove-hook 'after-change-functions #'accent-menu-monitor--text-change)
+          (add-hook 'after-change-functions #'accent-menu-monitor--text-change 0 t))
+      (remove-hook 'after-change-functions #'accent-menu-monitor--text-change)))
+
+  (defun accent-menu-monitor--text-change (beginning end length)
+    "Monitors text change BEGINNING, END, and LENGTH."
+    (let ((last-edit-time accent-menu-monitor--last-edit-time)
+          (edit-time (float-time)))
+      (when (and (> end beginning)
+                 (eq length 0)
+                 (and last-edit-time
+                      (< (- edit-time last-edit-time) 0.27))
+                 (float-time (time-subtract (current-time) edit-time))
+                 (accent-menu-monitor--buffer-char-string (1- beginning))
+                 (seq-contains-p (mapcar (lambda (item)
+                                           (format "%s" (car item)))
+                                         accent-diacritics)
+                                 (accent-menu-monitor--buffer-char-string beginning))
+                 (string-equal (accent-menu-monitor--buffer-char-string (1- beginning))
+                               (accent-menu-monitor--buffer-char-string beginning)))
+        (delete-backward-char 1)
+        (ignore-error quit
+          (accent-menu)))
+      (setq accent-menu-monitor--last-edit-time edit-time)))
+
+  (defun accent-menu-monitor--buffer-char-string (at)
+    (when (> at 0)
+      (buffer-substring-no-properties at (+ at 1)))))
+
 ;; No double escaping needed.
