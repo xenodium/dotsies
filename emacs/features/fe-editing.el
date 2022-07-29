@@ -345,6 +345,8 @@ With PREFIX, add an outer pair around existing pair."
 
   (sp-local-pair 'prog-mode "/*" "*/")
 
+  (sp-local-pair 'minibuffer-mode "<" ">")
+
   (sp-local-pair 'prog-mode "<" ">"
                  :when '(ar/sp-prog-filter-angle-brackets)
                  :skip-match 'ar/sp-prog-skip-match-angle-bracket))
