@@ -94,6 +94,14 @@
     (set-face-attribute 'company-box-annotation nil :inherit 'company-tooltip-annotation :background "#212121" :foreground "dim gray")
     (set-face-attribute 'company-box-selection nil :inherit 'company-tooltip-selection :foreground "sandy brown"))
 
+  (with-eval-after-load 'popup
+    (set-face-attribute 'popup-menu-face nil
+                        :foreground (face-foreground 'default)
+                        :background (face-background 'default))
+    (set-face-attribute 'popup-menu-selection-face nil
+                        :foreground "sandy brown"
+                        :background "dim gray"))
+
   (with-eval-after-load 'paren
     (set-face-attribute 'show-paren-match nil
                         :background nil
