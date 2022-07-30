@@ -561,46 +561,33 @@ line instead."
 (use-package accent
   :ensure t
   :hook ((text-mode . accent-menu-mode)
-         (fundamental-mode . accent-menu-mode)
          (org-mode . accent-menu-mode)
          (message-mode . accent-menu-mode))
   :config
-  (setq accent-diacritics
-        '((! (¡))
-          (\? (¿))
-          (a (á à â ä æ ã å ā))
-          (c (ć ç č))
-          (e (é è ê ë ē ė ę))
-          (i (í î ï ī į ì))
-          (l (ł))
-          (n (ñ ń))
-          (o (ó ô ö ò œ ø ō õ))
-          (s (ß ś š))
-          (u (ú û ü ù ū))
-          (y (ÿ))
-          (z (ž ź ż))
-          (A (Á À Â Ä Æ Ã Å Ā))
-          (C (Ç Ć Č))
-          (E (É È Ê Ë Ē Ė Ę))
-          (I (Í Î Ï Ī Į Ì))
-          (L (Ł))
-          (N (Ñ Ń))
-          (O (Ó Ô Ö Ò Œ Ø Ō Õ))
-          (S (Ś Š))
-          (U (Ú Û Ü Ù Ū))
-          (Y (Ÿ))
-          (Z (Ž Ź Ż))))
-
+  (setq accent-diacritics '((a (á))
+                            (e (é))
+                            (i (í))
+                            (o (ó))
+                            (u (ú ü))
+                            (A (Á))
+                            (E (É))
+                            (I (Í))
+                            (O (Ó))
+                            (U (Ú Ü))
+                            (n (ñ))
+                            (N (Ñ))
+                            (\? (¿))
+                            (! (¡))))
   (defvar accent-menu-monitor--last-edit-time nil)
 
   (define-minor-mode accent-menu-mode
     "Toggle `accent-menu' if repeated keys are detected."
-    :lighter " accent-menu monitor"
+    :lighter " accent-menu mode"
     (if accent-menu-mode
         (progn
-          (remove-hook 'after-change-functions #'accent-menu-monitor--text-change)
+          (remove-hook 'after-change-functions #'accent-menu-monitor--text-change t)
           (add-hook 'after-change-functions #'accent-menu-monitor--text-change 0 t))
-      (remove-hook 'after-change-functions #'accent-menu-monitor--text-change)))
+      (remove-hook 'after-change-functions #'accent-menu-monitor--text-change t)))
 
   (defun accent-menu-monitor--text-change (beginning end length)
     "Monitors text change BEGINNING, END, and LENGTH."
@@ -608,12 +595,15 @@ line instead."
           (edit-time (float-time)))
       (when (and (> end beginning)
                  (eq length 0)
-                 (and last-edit-time
-                      (< (- edit-time last-edit-time) 0.27))
+                 last-edit-time
+                 (not undo-in-progress)
+                 ;; 0.27 seems to work for my macOS keyboard settings.
+                 ;; Key Repeat: Fast | Delay Until Repeat: Short.
+                 (< (- edit-time last-edit-time) 0.27)
                  (float-time (time-subtract (current-time) edit-time))
                  (accent-menu-monitor--buffer-char-string (1- beginning))
                  (seq-contains-p (mapcar (lambda (item)
-                                           (format "%s" (car item)))
+                                           (symbol-name (car item)))
                                          accent-diacritics)
                                  (accent-menu-monitor--buffer-char-string beginning))
                  (string-equal (accent-menu-monitor--buffer-char-string (1- beginning))
