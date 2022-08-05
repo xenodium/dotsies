@@ -592,7 +592,9 @@ line instead."
   (defun accent-menu-monitor--text-change (beginning end length)
     "Monitors text change BEGINNING, END, and LENGTH."
     (let ((last-edit-time accent-menu-monitor--last-edit-time)
-          (edit-time (float-time)))
+          (edit-time (float-time))
+          (insertion (accent-menu-monitor--buffer-char-string beginning))
+          (previous-insertion (accent-menu-monitor--buffer-char-string (1- beginning))))
       (when (and (> end beginning)
                  (eq length 0)
                  last-edit-time
@@ -601,16 +603,18 @@ line instead."
                  ;; Key Repeat: Fast | Delay Until Repeat: Short.
                  (< (- edit-time last-edit-time) 0.27)
                  (float-time (time-subtract (current-time) edit-time))
-                 (accent-menu-monitor--buffer-char-string (1- beginning))
+                 previous-insertion
                  (seq-contains-p (mapcar (lambda (item)
                                            (symbol-name (car item)))
                                          accent-diacritics)
-                                 (accent-menu-monitor--buffer-char-string beginning))
-                 (string-equal (accent-menu-monitor--buffer-char-string (1- beginning))
-                               (accent-menu-monitor--buffer-char-string beginning)))
+                                 insertion)
+                 (string-equal previous-insertion insertion))
         (delete-backward-char 1)
-        (ignore-error quit
-          (accent-menu)))
+        (condition-case err
+            (accent-menu)
+          (quit
+           (insert insertion)
+           nil)))
       (setq accent-menu-monitor--last-edit-time edit-time)))
 
   (defun accent-menu-monitor--buffer-char-string (at)
