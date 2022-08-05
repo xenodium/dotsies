@@ -343,8 +343,11 @@ If `universal-argument' is called, copy only the dir path."
 		tramp-file-name-regexp)))
 
 (use-package dwim-shell-command
-  :bind (("M-!" . dwim-shell-command)
+  :ensure t
+  :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
          ([remap dired-do-async-shell-command] . dwim-shell-command)
          ([remap dired-do-shell-command] . dwim-shell-command)
-         ([remap dired-smart-shell-command] . dwim-shell-command)))
+         ([remap dired-smart-shell-command] . dwim-shell-command))
+  :config
+  (use-package dwim-shell-commands))
