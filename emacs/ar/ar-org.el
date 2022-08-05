@@ -6,7 +6,6 @@
 ;;; Code:
 
 (require 'ar-file)
-(require 'ar-time)
 (require 'ar-buffer)
 (require 'org)
 (require 'dash)

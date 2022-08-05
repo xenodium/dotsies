@@ -6,7 +6,6 @@
 
 ;;; Code:
 
-(require 'ar-process)
 (require 'ar-string)
 (require 'goto-addr)
 (require 'url)
