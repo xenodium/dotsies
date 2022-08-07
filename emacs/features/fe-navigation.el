@@ -199,15 +199,13 @@ With argument ARG, do this that many times."
                      (subword-backward arg)
                      (point))))
 
-  ;;  http://oremacs.com/2014/12/25/ode-to-toggle
+  ;; Based on http://oremacs.com/2014/12/25/ode-to-toggle
   (defun ar/text-capitalize-word-toggle ()
     "Capitalize word toggle."
     (interactive)
     (let ((start
            (car
-            (save-excursion
-              (backward-word)
-              (bounds-of-thing-at-point 'symbol)))))
+            (bounds-of-thing-at-point 'symbol))))
       (if start
           (save-excursion
             (goto-char start)
