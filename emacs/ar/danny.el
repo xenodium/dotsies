@@ -96,7 +96,8 @@ For example \"crdownload$\" and \"part$\".")
   "Handle EVENT for file-notify events."
   (when-let ((new-fpath (or (danny--new-file-for-event event)
                             (danny--new-downloaded-file-for-event event))))
-    (when (> (f-size new-fpath) 0)
+    (when (and (not (eq (frame-focus-state) t))
+               (> (f-size new-fpath) 0))
       (danny--choose-action new-fpath))))
 
 (defun danny--log (&rest args)
@@ -248,8 +249,8 @@ For example \"crdownload$\" and \"part$\".")
 
 (defun danny--handle-file-created (file-path)
   "Handle new file created at FILE-PATH."
-  (let* ((unwind (lambda ()
-                   (danny--kill-active-frame))))
+  (let ((unwind (lambda ()
+                  (danny--kill-active-frame))))
     (danny--framed-ivy-read
      (-concat (list
                (make-danny--framed-ivy-source
