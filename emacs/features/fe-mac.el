@@ -89,18 +89,4 @@
               :action (lambda (device)
                         (start-process "BluetoothConnector"
                                        (get-buffer-create "*BluetoothConnector*")
-                                       "BluetoothConnector" (get-text-property 0 'mac device) "--notify"))))
-
-  (defun ar/display-toggle-rotation ()
-    (interactive)
-    (require 'cl-lib)
-    (cl-assert (executable-find "fb-rotate") nil
-               "Install fb-rotate from https://github.com/CdLbB/fb-rotate")
-    ;; #  Display_ID    Resolution  ____Display_Bounds____  Rotation
-    ;; 2  0x2b347692    1440x2560      0     0  1440  2560    270    [main]
-    ;; From fb-rotate output, get the `current-rotation' from Column 7, row 1 zero-based.
-    (let ((current-rotation (nth 7 (split-string (nth 1 (process-lines "fb-rotate" "-i"))))))
-      (call-process-shell-command (format "fb-rotate -d 1 -r %s"
-                                          (if (equal current-rotation "270")
-                                              "0"
-                                            "270"))))))
+                                       "BluetoothConnector" (get-text-property 0 'mac device) "--notify")))))
