@@ -33,12 +33,7 @@
     :config
     (defun ar/macos-insert-hash ()
       (interactive)
-      (insert "#"))
-
-    (defun ar/macos-hardware-overview ()
-      "View macOS hardware overview."
-      (interactive)
-      (shell-command "system_profiler SPHardwareDataType")))
+      (insert "#")))
 
   ;; Want menu bar on macOS.
   (use-package menu-bar
