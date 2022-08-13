@@ -8,6 +8,3 @@
 (use-package ibuffer
   :bind (:map ibuffer-mode-map)
   ("C-k" . ibuffer-do-delete))
-
-(use-package ar-buffer
-  :commands ar/buffer-copy-file-path)
