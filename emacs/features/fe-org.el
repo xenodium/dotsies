@@ -275,6 +275,8 @@ With prefix, don't confirm text."
   (use-package ar-org-blog
     :commands (ar/org-blog-insert-image))
 
+  (use-package ar-org)
+
   (use-package ar-ox-html
     :commands (ar/org-split-export-headline
                ar/org-split-export-async
@@ -283,8 +285,6 @@ With prefix, don't confirm text."
                ar/ox-html-export-all
                ar/org-export-current-headline-async)
     :config
-    (use-package ar-org)
-
     (use-package ox-html)
 
     ;; For code block syntax highlighting.
