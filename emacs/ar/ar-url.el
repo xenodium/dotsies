@@ -7,7 +7,6 @@
 ;;; Code:
 
 (require 'ar-buffer)
-(require 'ar-input)
 (require 'enlive)
 (require 'goto-addr)
 
