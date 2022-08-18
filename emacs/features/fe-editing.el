@@ -618,7 +618,8 @@ line instead."
       (setq accent-menu-monitor--last-edit-time edit-time)))
 
   (defun accent-menu-monitor--buffer-char-string (at)
-    (when (> at 0)
+    (when (and (>= at (point-min))
+               (< at (point-max)))
       (buffer-substring-no-properties at (+ at 1)))))
 
 ;; No double escaping needed.
