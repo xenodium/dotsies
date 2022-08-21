@@ -201,6 +201,7 @@ For example \"crdownload$\" and \"part$\".")
 
 (defun danny--create-open-action-fun (file-path)
   (lambda (ignored)
+    (x-focus-frame nil)
     (find-file file-path)))
 
 (defun danny--choose-action (fpath)
@@ -218,10 +219,12 @@ For example \"crdownload$\" and \"part$\".")
                                         (error "File not found: %s" fpath))
                                       (if ivy-current-prefix-arg
                                           (shell-command (format "open \"%s\"" fpath))
+                                        (x-focus-frame nil)
                                         (find-file fpath))))
                        (cons "Move" (lambda ()
                                       (danny--handle-file-created fpath)))
                        (cons "Reveal" (lambda ()
+                                        (x-focus-frame nil)
                                         (if (fboundp  'dired-jump)
                                             (dired-jump nil fpath)
                                           (find-file (f-dirname fpath)))))
@@ -235,6 +238,7 @@ For example \"crdownload$\" and \"part$\".")
                                                              dst-fpath t)
                                                 (if ivy-current-prefix-arg
                                                     (shell-command (format "open \"%s\"" dst-fpath))
+                                                  (x-focus-frame nil)
                                                   (find-file dst-fpath))))))
                       (-map
                        (lambda (destination)
