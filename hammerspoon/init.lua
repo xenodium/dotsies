@@ -316,13 +316,13 @@ function reframeFocusedWindow()
    local leftFrame = win:screen():frame()
    leftFrame.x = leftFrame.x + 15
    leftFrame.y = leftFrame.y + 15
-   leftFrame.w = leftFrame.w - 250
+   leftFrame.w = leftFrame.w / 2 - 15
    leftFrame.h = leftFrame.h - 30
 
    local rightFrame = win:screen():frame()
-   rightFrame.x = rightFrame.w - 250 + 15
+   rightFrame.x = rightFrame.w / 2 - 15
    rightFrame.y = rightFrame.y + 15
-   rightFrame.w = 250 - 15 - 15
+   rightFrame.w = rightFrame.w / 2
    rightFrame.h = rightFrame.h - 30
 
    -- Make space on right
