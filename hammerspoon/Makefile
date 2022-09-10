@@ -9,4 +9,4 @@ install:
 	cp -r Spoons/*  ~/.hammerspoon/Spoons/
 	mkdir -p ~/.hammerspoon/ar
 	cp -r ar/*  ~/.hammerspoon/ar/
-	/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/ipc/bin/hs -c "hs.reload()"
+	/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.reload()"
