@@ -16,6 +16,26 @@
   :commands (goto-address-prog-mode
              goto-address-mode))
 
+(use-package browse-url
+  :after dwim-shell-command
+  :config
+  (defun ar/browse-url-browser (url &rest args)
+    (if (or (string-match-p "^http[s]?://\\(www\\.\\)?youtube.com" url)
+            (string-match-p "^http[s]?://\\(www\\.\\)?m.youtube.com" url)
+            (string-match-p "^http[s]?://\\(www\\.\\)?youtu.be" url)
+            (string-match-p "^http[s]?://\\(www\\.\\)?soundcloud.com" url)
+            (string-match-p "^http[s]?://\\(www\\.\\)?redditmedia.com" url)
+            (string-match-p "^http[s]?://.*bandcamp.com" url))
+        (dwim-shell-command-on-marked-files
+         "Streaming"
+         (format "mpv --geometry=30%%x30%%+100%%+0%% '%s'" url)
+         :utils "mpv"
+         :no-progress t
+         :error-autofocus t
+         :silent-success t)
+      (funcall #'browse-url-default-browser url args)))
+  (setq browse-url-browser-function #'ar/browse-url-browser))
+
 (use-package css-mode
   :mode (("\\.css\\'" . css-mode)
          ("\\.rasi\\'" . css-mode)))
