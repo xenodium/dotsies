@@ -320,18 +320,16 @@ function reframeFocusedWindow()
    leftFrame.h = leftFrame.h - 30
 
    local rightFrame = win:screen():frame()
-   rightFrame.x = rightFrame.w / 2 - 15
+   rightFrame.x = rightFrame.w / 2
    rightFrame.y = rightFrame.y + 15
-   rightFrame.w = rightFrame.w / 2
+   rightFrame.w = rightFrame.w / 2 - 15
    rightFrame.h = rightFrame.h - 30
 
-   -- Make space on right
    if win:frame() == maximizedFrame then
      win:setFrame(leftFrame)
      return
    end
 
-   -- Make space on left
    if win:frame() == leftFrame then
      win:setFrame(rightFrame)
      return
