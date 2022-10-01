@@ -64,16 +64,6 @@
     ;; Use native 'sudo', system sudo asks for password every time.
     (require 'em-tramp)
 
-    ;; https://github.com/atomontage/xterm-color
-    (use-package xterm-color
-      :ensure t
-      :hook (eshell-before-prompt . (lambda ()
-                                      (setq xterm-color-preserve-properties t)))
-      :config
-      (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
-      (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-      (setenv "TERM" "xterm-256color"))
-
     (use-package esh-autosuggest
       :hook (eshell-mode . esh-autosuggest-mode)
       :ensure t)
@@ -177,6 +167,16 @@
       :config
       ;; Why is vsetq not finding it?
       (setq eshell-scroll-to-bottom-on-input 'all)
+
+      ;; https://github.com/atomontage/xterm-color
+      (use-package xterm-color
+        :ensure t
+        :hook (eshell-before-prompt . (lambda ()
+                                        (setq xterm-color-preserve-properties t)))
+        :config
+        (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+        (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+        (setenv "TERM" "xterm-256color"))
 
       ;; Override existing clear function. I like this one better.
       ;; Also there's a bug in Emacs 26:
