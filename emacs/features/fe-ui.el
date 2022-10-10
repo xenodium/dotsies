@@ -145,6 +145,13 @@
                         :foreground (face-foreground 'default)
                         :background (face-background 'default)))
 
+  ;; Remove background so it doesn't look selected with region.
+  ;; Make the foreground the same as `diredfl-flag-mark' (ie. orange).
+  (with-eval-after-load 'diredfl
+    (set-face-attribute 'diredfl-flag-mark-line nil
+                        :foreground "orange"
+                        :background nil))
+
   (with-eval-after-load 'dired-subtree
     (set-face-attribute 'dired-subtree-depth-1-face nil
                         :background nil)
