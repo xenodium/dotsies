@@ -16,12 +16,6 @@ init:
 	make -C features
 	make -C vendored
 
-pylint:
-	cp -i python/pylintrc ~/.pylintrc
-
-global:
-	cp -i global/.globalrc ~/
-
 yasnippet:
 	mkdir -p ~/.emacs.d/yasnippets
 	cp -rf yasnippets/* ~/.emacs.d/yasnippets
