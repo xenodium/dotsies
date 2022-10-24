@@ -109,8 +109,9 @@
 ;;;; Now kick off non-essential loading ;;;;
 
 (defun ar/load (library)
-  (let ((now (current-time)))
-    (load library)
+  (let ((now (current-time))
+        (force-load-messages))
+    (load library nil 'nomessage)
     (message nil)
     ))
 
@@ -147,7 +148,7 @@
   (ar/load "~/.emacs.d/features/fe-scratch.el")
 
   ;; Load non-core features.
-  (load "~/.emacs.d/features/fe-features.el"))
+  (load "~/.emacs.d/features/fe-features.el" nil t))
 
 (if ar/init-debug-init
     (ar/load-non-core-init)
