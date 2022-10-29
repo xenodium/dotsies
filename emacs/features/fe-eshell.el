@@ -164,17 +164,15 @@
       (setup-esh-help-eldoc))
 
     (use-package esh-mode
+      :validate-custom
+      (eshell-scroll-to-bottom-on-input 'all)
       :config
-      ;; Why is vsetq not finding it?
-      (setq eshell-scroll-to-bottom-on-input 'all)
-
       ;; https://github.com/atomontage/xterm-color
       (use-package xterm-color
         :ensure t
         :hook (eshell-before-prompt . (lambda ()
                                         (setq xterm-color-preserve-properties t)))
         :config
-        (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
         (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
         (setenv "TERM" "xterm-256color"))
 
