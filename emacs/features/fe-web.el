@@ -20,12 +20,13 @@
   :after dwim-shell-command
   :config
   (defun ar/browse-url-browser (url &rest args)
-    (if (or (string-match-p "^http[s]?://\\(www\\.\\)?youtube.com" url)
-            (string-match-p "^http[s]?://\\(www\\.\\)?m.youtube.com" url)
-            (string-match-p "^http[s]?://\\(www\\.\\)?youtu.be" url)
-            (string-match-p "^http[s]?://\\(www\\.\\)?soundcloud.com" url)
-            (string-match-p "^http[s]?://\\(www\\.\\)?redditmedia.com" url)
-            (string-match-p "^http[s]?://.*bandcamp.com" url))
+    (if (and (or (string-match-p "^http[s]?://.*youtube.com" url)
+                 (string-match-p "^http[s]?://.*m.youtube.com" url)
+                 (string-match-p "^http[s]?://.*youtu.be" url)
+                 (string-match-p "^http[s]?://.*soundcloud.com" url)
+                 (string-match-p "^http[s]?://.*redditmedia.com" url)
+                 (string-match-p "^http[s]?://.*bandcamp.com" url))
+             (y-or-n-p "Stream from mpv? "))
         (dwim-shell-command-on-marked-files
          "Streaming"
          (format "mpv --geometry=30%%x30%%+100%%+0%% '%s'" url)
