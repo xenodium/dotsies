@@ -356,14 +356,15 @@ With PREFIX, add an outer pair around existing pair."
   :ensure t
   :hook ((prog-mode . region-state-mode)))
 
-(use-package multiple-cursors :ensure t
+(use-package multiple-cursors
+  :ensure t
   :after region-bindings-mode
   :commands (ar/set-mc/insert-numbers-starting-value
              multiple-cursors-mode)
   :init
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-dwim)
-         ("C-c n" . mc/mark-more-like-this-extended)
+         ("C-c n" . mc/mark-next-like-this-symbol)
          ("C-c r" . set-rectangular-region-anchor)
          ("M-<mouse-1>" . mc/add-cursor-on-click))
   :config
