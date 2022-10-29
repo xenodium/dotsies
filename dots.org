@@ -442,6 +442,9 @@ Patch .bash_profile and .bashrc.
   # Disable shadow in screenshots
   defaults write com.apple.screencapture disable-shadow -bool true
 
+  # Hide desktop files and icons
+  defaults write com.apple.finder CreateDesktop false
+
   # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
   #defaults write com.apple.finder QuitMenuItem -bool true
 
