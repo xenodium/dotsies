@@ -2,8 +2,9 @@ all: init ripgrep global yasnippet
 
 init:
 	mkdir -p ~/.emacs.d
-	python copy_into.py init.el ~/.emacs.d/init.el "my-emacs" ";;"
-	python copy_into.py early-init.el ~/.emacs.d/early-init.el "my-emacs" ";;"
+	cp init.el ~/.emacs.d/init.el
+	cp early-init.el ~/.emacs.d/early-init.el
+	cp emacs.png ~/.emacs.d/emacs.png
 	mkdir -p ~/.emacs.d/local/
 	curl https://raw.githubusercontent.com/xenodium/company-async-files/master/company-async-files.el -o ~/.emacs.d/local/company-async-files.el || echo "No internet connection... skipping company-async-files.el install."
 	curl https://raw.githubusercontent.com/xenodium/tmtxt-async-tasks/master/tmtxt-async-tasks.el -o ~/.emacs.d/local/tmtxt-async-tasks.el || echo "No internet connection... skipping tmtxt-async-task install."
