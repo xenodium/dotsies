@@ -662,3 +662,11 @@ preferring the preferred type."
      	   (id    (ytel-video-id video)))
       (ar/open-youtube-url (concat "https://www.youtube.com/watch?v=" id)))
     (message "Downloading...")))
+
+(use-package mastodon
+  :ensure t
+  :validate-custom
+  (mastodon-instance-url "https://indieweb.social")
+  (mastodon-active-user "xenodium")
+  :bind
+  (:map mastodon-mode-map ("g" . mastodon-tl--update)))
