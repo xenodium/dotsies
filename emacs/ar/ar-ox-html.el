@@ -47,6 +47,7 @@ If a region is active, export that region."
       <a style='color:rgb(51, 51, 51);' href='/rss.xml'>rss</a>
     </td>
     <td id='contact-right'>
+      <a rel='me' href='https://indieweb.social/@xenodium'>mastodon</a>
       <a href='https://twitter.com/xenodium'>twitter</a>
       <a href='http://github.com/xenodium'>github</a>
       <a href='http://uk.linkedin.com/in/xenodium'>linkedin</a>
