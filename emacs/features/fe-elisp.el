@@ -96,3 +96,19 @@
   :ensure t
   :commands eros-eval-defun
   :hook (emacs-lisp-mode . eros-mode))
+
+(use-package clojure-mode
+  :ensure t
+  :mode ("\\`clj[scxd]?\\." . clojure-mode)
+  :config
+  (use-package cider
+    :ensure t
+    :config
+    (defun ar/cider-mode-hook ()
+      "`cider-mode' hook."
+      (setq-local company-backends '((company-capf
+                                      company-files
+                                      company-keywords))))
+    (add-hook 'clojure-mode-hook #'ar/cider-mode-hook)))
+
+;;; fe-elisp.el ends here
