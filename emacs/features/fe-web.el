@@ -37,6 +37,19 @@
       (funcall #'browse-url-default-browser url args)))
   (setq browse-url-browser-function #'ar/browse-url-browser))
 
+(use-package xwidget
+  :bind(:map
+        xwidget-webkit-mode-map
+        ("q" . kill-this-buffer))
+  :config
+  ;; C-x k don't ask if xwidget should be killed.
+  (defun adviced:xwidget-kill-buffer-query-function (f &rest r)
+    "Ignore F and R. Always return t."
+    t)
+  (advice-add #'xwidget-kill-buffer-query-function
+              :around
+              #'adviced:xwidget-kill-buffer-query-function))
+
 (use-package css-mode
   :mode (("\\.css\\'" . css-mode)
          ("\\.rasi\\'" . css-mode)))
