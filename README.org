@@ -1,3 +1,5 @@
+👉 [[https://github.com/sponsors/xenodium][Support my work via GitHub Sponsors]]
+
 * Another dot files repo
 
 But really, it's mostly my [[https://www.gnu.org/software/emacs/][Emacs]] config and some [[https://www.hammerspoon.org/][Hammerspoon]] goodies. I sometimes write about Emacs tweaks over at [[https://xenodium.com][xenodium.com]].
