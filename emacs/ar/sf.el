@@ -35,6 +35,11 @@
                                      (propertize (nth 0 (split-string symbol))
                                                  'face '(:family "SF Pro"))
                                      (nth 1 (split-string symbol))))
+                           ;; Generated against SF Symbols 4.0 (80).
+                           ;; https://developer.apple.com/sf-symbols
+                           ;; ⌘-A - select all symbols
+                           ;; ⌘-C - copy symbols
+                           ;; ⇧-⌘-C - copy symbol names
                            '("􀈂 square.and.arrow.up"
                              "􀈃 square.and.arrow.up.fill"
                              "􁅅 square.and.arrow.up.circle"
