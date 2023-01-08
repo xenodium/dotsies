@@ -54,6 +54,9 @@
                         ;; :family "mononoki" ;; https://madmalik.github.io/mononoki/ or sudo apt-get install fonts-mononoki
                         :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
                         :width 'normal :foundry "nil")
+    ;; Enable rendering SF symbols on macOS.
+    (when (memq system-type '(darwin))
+      (set-fontset-font t nil "SF Pro Display" nil 'append))
 
     ;; Emoji's: welcome back to Emacs
     ;; https://github.crookster.org/emacs27-from-homebrew-on-macos-with-emoji/

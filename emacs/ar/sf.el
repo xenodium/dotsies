@@ -20,6 +20,11 @@
 
 ;;; Commentary:
 ;; Insert SF Symbols via `completing-read'.
+;;
+;; Be sure to set a fallback font that renderers them. If you can
+;; see the following string ->"􀃊 􀃌 􀃎"<-, you are good. Otherwise,
+;; You can patch your config with something like:
+;; (set-fontset-font t nil "SF Pro Display" nil 'append)
 
 
 ;;; Code:
@@ -32,8 +37,7 @@
                           (mapcar
                            (lambda (symbol)
                              (format "%s %s"
-                                     (propertize (nth 0 (split-string symbol))
-                                                 'face '(:family "SF Pro"))
+                                     (nth 0 (split-string symbol))
                                      (nth 1 (split-string symbol))))
                            ;; Generated against SF Symbols 4.0 (80).
                            ;; https://developer.apple.com/sf-symbols
