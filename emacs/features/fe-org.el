@@ -68,8 +68,7 @@
 
   ;; Enable RET to follow Org links.
   (org-return-follows-link t)
-  :hook ((org-mode . visual-line-mode)
-         (org-mode . org-display-inline-images))
+  :hook ((org-mode . visual-line-mode))
   :config
   (defun adviced:org-yank (orig-fun &rest r)
     "Advice `adviced:org-yank' to align tables (ORIG-FUN and R)."
