@@ -453,6 +453,47 @@ With prefix, don't confirm text."
     :config
     (org-crypt-use-before-save-magic)))
 
+;; org-present config based on
+;; https://systemcrafters.net/emacs-tips/presentations-with-org-present
+(use-package org-present
+  :ensure t
+  :custom
+  (org-present-text-scale 2)
+  :hook ((org-present-mode . ar/org-present-mode-hook)
+         (org-present-mode-quit . ar/org-present-mode-quit))
+  :init
+  (defun ar/org-present-mode-quit ()
+    (org-starless-mode +1)
+    (hide-mode-line-mode -1)
+    (visual-fill-column-mode -1)
+    (visual-line-mode -1))
+
+  (defun ar/org-present-mode-hook ()
+    ;; Starless breaks padding between folded headings.
+    (org-starless-mode -1)
+    (org-show-children)
+    (run-hook-with-args 'org-cycle-hook 'children)
+    (hide-mode-line-mode +1)
+    ;; Add padding at top of each slide.
+    (setq-local header-line-format (propertize " " 'face '(:height 300)))
+    (visual-fill-column-mode +1)
+    (visual-line-mode +1))
+  :config
+  (use-package visual-fill-column
+    :custom
+    (visual-fill-column-width 110)
+    (visual-fill-column-center-text t)
+    :ensure t)
+  (add-hook 'org-present-after-navigate-functions
+            (defun ar/org-present-after-navigate (buffer-name heading)
+              ;; Show only top-level headlines
+              (org-overview)
+              ;; Unfold the current entry
+              (org-show-entry)
+              ;; Show only direct subheadings only
+              (org-show-children)
+              (run-hook-with-args 'org-cycle-hook 'children))))
+
 ;; Like org-bullets but for priorities.
 (use-package org-fancy-priorities
   :ensure t
