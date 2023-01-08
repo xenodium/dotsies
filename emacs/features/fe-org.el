@@ -550,8 +550,8 @@ With prefix, don't confirm text."
                                                              (ar/org-forward-to-entry-content t)
                                                              (point))
                                                            (org-entry-end-position)))
-                                 s-trim
-                                 (concat "\n" it "\n"))))
+                                    s-trim
+                                    (concat "\n" it "\n"))))
           (add-face-text-property 0 (length entry-contents)
                                   'ar/org-agenda-preview nil entry-contents)
           (ov (line-end-position) (line-end-position)
