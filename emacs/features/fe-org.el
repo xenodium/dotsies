@@ -107,6 +107,8 @@
                          (setq-local company-backends '(company-org-block))
                          (company-mode +1)))))
   (use-package ol
+    :custom
+    (org-link-frame-setup '((file . find-file))) ;; open links in same window
     :config
     ;; https://kitchingroup.cheme.cmu.edu/blog/2016/11/04/New-link-features-in-org-9
     (org-link-set-parameters
