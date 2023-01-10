@@ -457,18 +457,193 @@ With prefix, don't confirm text."
 ;; https://systemcrafters.net/emacs-tips/presentations-with-org-present
 (use-package org-present
   :ensure t
+  :bind (:map org-present-mode-keymap
+              ("C-c C-n" . ar/org-present-next-item)
+              ("C-c C-p" . ar/org-present-previous-item))
   :custom
   (org-present-text-scale 2)
   :hook ((org-present-mode . ar/org-present-mode-hook)
          (org-present-mode-quit . ar/org-present-mode-quit))
   :init
+  (defun ar/org-present-next-item (&optional backward)
+    "Present and reveal next item."
+    (interactive "P")
+    (let* ((heading-pos (ar/org-next-visible-heading-pos (if backward -1 1)))
+           (link-pos (ar/org-next-link-pos backward))
+           (block-pos (ar/org-next-block-pos backward))
+           (closest-pos (when (or heading-pos link-pos block-pos)
+                          (apply (if backward #'max #'min)
+                                 (seq-filter #'identity
+                                             (list heading-pos
+                                                   link-pos
+                                                   block-pos))))))
+      (cond ((and closest-pos (eq heading-pos closest-pos))
+             (goto-char heading-pos))
+            ((and closest-pos (eq link-pos closest-pos))
+             (goto-char link-pos))
+            ((and closest-pos (eq block-pos closest-pos))
+             (goto-char block-pos)))
+      (if closest-pos
+          (cond ((> (org-current-level) 1)
+                 (ar/org-present-reveal-level2))
+                ((eq (org-current-level) 1)
+                 ;; At level 1. Collapse children.
+                 (org-overview)
+                 (org-show-entry)
+                 (org-show-children)
+                 (run-hook-with-args 'org-cycle-hook 'children)))
+        ;; Collapse everything if end is reached.
+        (goto-char (point-min))
+        (org-overview)
+        (org-show-entry)
+        (org-show-children)
+        (run-hook-with-args 'org-cycle-hook 'children)
+        (goto-char (point-max))
+        (org-beginning-of-line))))
+
+  (defun ar/org-present-previous-item ()
+    (interactive)
+    (ar/org-present-next-item t))
+
+  (defun ar/org-next-link-pos (&optional backward)
+    "Similar to `org-next-link' but for returning position.
+
+Set BACKWARDS to search backwards."
+    (when (eq (org-element-type (org-element-context)) 'link)
+      (if backward
+          (progn
+            (goto-char (org-element-property :begin (org-element-context)))
+            (backward-char))
+        (goto-char (org-element-property :end (org-element-context)))))
+    (let ((pos (point))
+	  (search-fun (if backward
+                          #'re-search-backward
+		        #'re-search-forward))
+          (link-pos))
+      (save-excursion
+        (save-restriction
+          (catch :found
+            (while (funcall search-fun org-link-any-re nil t)
+	      (let ((context (save-excursion
+			       (unless backward (forward-char -1))
+			       (org-element-context))))
+	        (pcase (org-element-lineage context '(link) t)
+	          (`nil nil)
+	          (link
+                   (setq link-pos (org-element-property :begin link))
+	           (throw :found t)))))
+            (goto-char pos))
+          ))
+      link-pos))
+
+  (defun ar/org-present-reveal-level2 ()
+    (interactive)
+    (let ((loc (point))
+          (level (org-current-level))
+          (heading))
+      (ignore-errors (org-back-to-heading t))
+      (while (or (not level) (> level 2))
+        (setq level (org-up-heading-safe)))
+      (setq heading (point))
+      (goto-char (point-min))
+      (org-overview)
+      (org-show-entry)
+      (org-show-children)
+      (run-hook-with-args 'org-cycle-hook 'children)
+      (goto-char heading)
+      (org-show-subtree)
+      (goto-char loc)))
+
+  (defun ar/org-next-visible-heading-pos (count)
+    "Similar to `org-next-visible-heading' but for returning position.
+
+Set COUNT to repeat. Negative goes backwards."
+    (save-excursion
+      (let ((regexp (concat "^" (org-get-limited-outline-regexp)))
+            (heading-found))
+        (if (< count 0)
+	    (beginning-of-line)
+          (end-of-line))
+        (while (and (< count 0) (re-search-backward regexp nil :move))
+          (setq heading-found t)
+          (unless (bobp)
+	    (while (pcase (get-char-property-and-overlay (point) 'invisible)
+		     (`(outline . ,o)
+		      (goto-char (overlay-start o))
+		      (re-search-backward regexp nil :move))
+ 		     (_
+                      nil))))
+          (cl-incf count))
+        (while (and (> count 0) (re-search-forward regexp nil t))
+          (setq heading-found t)
+          (while (pcase (get-char-property-and-overlay (point) 'invisible)
+	           (`(outline . ,o)
+		    (goto-char (overlay-end o))
+		    (re-search-forward regexp nil :move))
+	           (_
+		    (end-of-line)
+		    nil)))			;leave the loop
+          (cl-decf count))
+        (when heading-found
+          (if (> count 0)
+              (goto-char (point-max))
+            (beginning-of-line))
+          (point)))))
+
+  (defun ar/org-next-block-pos (&optional backward)
+    "Similar to `org-next-block' but for returning position.
+
+Set BACKWARDS to search backwards."
+    (save-excursion
+      (when (and backward
+                 (eq 'src-block (org-element-type
+                                 (org-element-lineage (org-element-context)
+                                                      '(src-block)
+	                                              t))))
+        (org-babel-goto-src-block-head))
+      (let ((re "^[ \t]*#\\+BEGIN")
+	    (case-fold-search t)
+	    (search-fn (if backward #'re-search-backward #'re-search-forward))
+	    (count 1)
+	    (origin (point))
+            (block-found)
+	    last-element)
+        (if backward (beginning-of-line) (end-of-line))
+        (while (and (> count 0) (funcall search-fn re nil t))
+          (setq block-found t)
+          (let ((element (save-excursion
+		           (goto-char (match-beginning 0))
+		           (save-match-data (org-element-at-point)))))
+	    (when (and (memq (org-element-type element)
+			     '(center-block comment-block dynamic-block
+					    example-block export-block quote-block
+					    special-block src-block verse-block))
+		       (<= (match-beginning 0)
+		           (org-element-property :post-affiliated element)))
+	      (setq last-element element)
+	      (cl-decf count))))
+        (if (= count 0)
+            (progn
+              (goto-char (org-element-property :post-affiliated last-element))
+              (when (and (org-element-property :value last-element)
+                         (not (string-empty-p (string-trim (org-element-property :value last-element)))))
+                (goto-char (line-beginning-position 2))))
+          (goto-char origin)
+          nil))))
+
   (defun ar/org-present-mode-quit ()
+    (setq-local face-remapping-alist nil)
     (org-starless-mode +1)
     (hide-mode-line-mode -1)
     (visual-fill-column-mode -1)
     (visual-line-mode -1))
 
   (defun ar/org-present-mode-hook ()
+    (setq-local face-remapping-alist '((header-line (:height 5.0) header-line)
+                                       (default (:height 1.2) default)
+                                       (org-level-1 (:height 1.50) org-level-1)
+                                       (org-block-begin-line (:height 0) org-block-begin-line)
+                                       (org-block-end-line (:height 0) org-block-end-line)))
     ;; Starless breaks padding between folded headings.
     (org-starless-mode -1)
     (org-show-children)
@@ -481,7 +656,7 @@ With prefix, don't confirm text."
   :config
   (use-package visual-fill-column
     :custom
-    (visual-fill-column-width 110)
+    (visual-fill-column-width 70)
     (visual-fill-column-center-text t)
     :ensure t)
   (add-hook 'org-present-after-navigate-functions
