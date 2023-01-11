@@ -503,7 +503,7 @@ With prefix, don't confirm text."
   (defun ar/org-next-visible-heading-pos (&optional backward)
     "Similar to `org-next-visible-heading' but for returning position.
 
-Set COUNT to repeat. Negative goes backwards."
+Set BACKWARD to search backwards."
     (save-excursion
       (let ((pos-before (point))
             (pos-after (progn
@@ -515,7 +515,7 @@ Set COUNT to repeat. Negative goes backwards."
   (defun ar/org-next-link-pos (&optional backward)
     "Similar to `org-next-visible-heading' but for returning position.
 
-Set COUNT to repeat. Negative goes backwards."
+Set BACKWARD to search backwards."
     (save-excursion
       (let* ((inhibit-message t)
              (pos-before (point))
