@@ -468,7 +468,7 @@ With prefix, don't confirm text."
   (defun ar/org-present-next-item (&optional backward)
     "Present and reveal next item."
     (interactive "P")
-    (let* ((heading-pos (ar/org-next-visible-heading-pos (if backward -1 1)))
+    (let* ((heading-pos (ar/org-next-visible-heading-pos backward))
            (link-pos (ar/org-next-link-pos backward))
            (block-pos (ar/org-next-block-pos backward))
            (closest-pos (when (or heading-pos link-pos block-pos)
@@ -497,44 +497,57 @@ With prefix, don't confirm text."
         (org-overview)
         (org-show-entry)
         (org-show-children)
-        (run-hook-with-args 'org-cycle-hook 'children)
-        (goto-char (point-max))
-        (org-beginning-of-line))))
+        (run-hook-with-args 'org-cycle-hook 'children))))
 
   (defun ar/org-present-previous-item ()
     (interactive)
     (ar/org-present-next-item t))
 
-  (defun ar/org-next-link-pos (&optional backward)
-    "Similar to `org-next-link' but for returning position.
+  (defun ar/org-next-visible-heading-pos (&optional backward)
+    "Similar to `org-next-visible-heading' but for returning position.
 
-Set BACKWARDS to search backwards."
-    (when (eq (org-element-type (org-element-context)) 'link)
-      (if backward
-          (progn
-            (goto-char (org-element-property :begin (org-element-context)))
-            (backward-char))
-        (goto-char (org-element-property :end (org-element-context)))))
-    (let ((pos (point))
-	  (search-fun (if backward
-                          #'re-search-backward
-		        #'re-search-forward))
-          (link-pos))
-      (save-excursion
-        (save-restriction
-          (catch :found
-            (while (funcall search-fun org-link-any-re nil t)
-	      (let ((context (save-excursion
-			       (unless backward (forward-char -1))
-			       (org-element-context))))
-	        (pcase (org-element-lineage context '(link) t)
-	          (`nil nil)
-	          (link
-                   (setq link-pos (org-element-property :begin link))
-	           (throw :found t)))))
-            (goto-char pos))
-          ))
-      link-pos))
+Set COUNT to repeat. Negative goes backwards."
+    (save-excursion
+      (let ((pos-before (point))
+            (pos-after (progn
+                         (org-next-visible-heading (if backward -1 1))
+                         (point))))
+        (when (and pos-after (not (equal pos-before pos-after)))
+          pos-after))))
+
+  (defun ar/org-next-link-pos (&optional backward)
+    "Similar to `org-next-visible-heading' but for returning position.
+
+Set COUNT to repeat. Negative goes backwards."
+    (save-excursion
+      (let* ((inhibit-message t)
+             (pos-before (point))
+             (pos-after (progn
+                          (org-next-link backward)
+                          (point))))
+        (when (and pos-after (or (and backward (> pos-before pos-after))
+                                 (and (not backward) (> pos-after pos-before))))
+          pos-after))))
+
+  (defun ar/org-next-block-pos (&optional backward)
+    "Similar to `org-next-block' but for returning position.
+
+Set BACKWARD to search backwards."
+    (save-excursion
+      (when (and backward (eq 'src-block
+                              (org-element-type
+                               (org-element-lineage (org-element-context)
+                                                    '(src-block)
+	                                            t))))
+        (org-babel-goto-src-block-head))
+      (let ((pos-before (point))
+            (pos-after (ignore-errors
+                         (org-next-block 1 backward)
+                         (point))))
+        (when (and pos-after (not (equal pos-before pos-after)))
+          ;; Place point inside block body.
+          (goto-char (line-beginning-position 2))
+          (point)))))
 
   (defun ar/org-present-reveal-level2 ()
     (interactive)
@@ -553,83 +566,6 @@ Set BACKWARDS to search backwards."
       (goto-char heading)
       (org-show-subtree)
       (goto-char loc)))
-
-  (defun ar/org-next-visible-heading-pos (count)
-    "Similar to `org-next-visible-heading' but for returning position.
-
-Set COUNT to repeat. Negative goes backwards."
-    (save-excursion
-      (let ((regexp (concat "^" (org-get-limited-outline-regexp)))
-            (heading-found))
-        (if (< count 0)
-	    (beginning-of-line)
-          (end-of-line))
-        (while (and (< count 0) (re-search-backward regexp nil :move))
-          (setq heading-found t)
-          (unless (bobp)
-	    (while (pcase (get-char-property-and-overlay (point) 'invisible)
-		     (`(outline . ,o)
-		      (goto-char (overlay-start o))
-		      (re-search-backward regexp nil :move))
- 		     (_
-                      nil))))
-          (cl-incf count))
-        (while (and (> count 0) (re-search-forward regexp nil t))
-          (setq heading-found t)
-          (while (pcase (get-char-property-and-overlay (point) 'invisible)
-	           (`(outline . ,o)
-		    (goto-char (overlay-end o))
-		    (re-search-forward regexp nil :move))
-	           (_
-		    (end-of-line)
-		    nil)))			;leave the loop
-          (cl-decf count))
-        (when heading-found
-          (if (> count 0)
-              (goto-char (point-max))
-            (beginning-of-line))
-          (point)))))
-
-  (defun ar/org-next-block-pos (&optional backward)
-    "Similar to `org-next-block' but for returning position.
-
-Set BACKWARDS to search backwards."
-    (save-excursion
-      (when (and backward
-                 (eq 'src-block (org-element-type
-                                 (org-element-lineage (org-element-context)
-                                                      '(src-block)
-	                                              t))))
-        (org-babel-goto-src-block-head))
-      (let ((re "^[ \t]*#\\+BEGIN")
-	    (case-fold-search t)
-	    (search-fn (if backward #'re-search-backward #'re-search-forward))
-	    (count 1)
-	    (origin (point))
-            (block-found)
-	    last-element)
-        (if backward (beginning-of-line) (end-of-line))
-        (while (and (> count 0) (funcall search-fn re nil t))
-          (setq block-found t)
-          (let ((element (save-excursion
-		           (goto-char (match-beginning 0))
-		           (save-match-data (org-element-at-point)))))
-	    (when (and (memq (org-element-type element)
-			     '(center-block comment-block dynamic-block
-					    example-block export-block quote-block
-					    special-block src-block verse-block))
-		       (<= (match-beginning 0)
-		           (org-element-property :post-affiliated element)))
-	      (setq last-element element)
-	      (cl-decf count))))
-        (if (= count 0)
-            (progn
-              (goto-char (org-element-property :post-affiliated last-element))
-              (when (and (org-element-property :value last-element)
-                         (not (string-empty-p (string-trim (org-element-property :value last-element)))))
-                (goto-char (line-beginning-position 2))))
-          (goto-char origin)
-          nil))))
 
   (defun ar/org-present-mode-quit ()
     (setq-local face-remapping-alist nil)
