@@ -468,6 +468,7 @@ With prefix, don't confirm text."
   (defun ar/org-present-next-item (&optional backward)
     "Present and reveal next item."
     (interactive "P")
+    ;; Beginning of slide, go to previous slide.
     (if (and backward (eq (point) (point-min)))
         (org-present-prev)
       (let* ((heading-pos (ar/org-next-visible-heading-pos backward))
@@ -479,21 +480,24 @@ With prefix, don't confirm text."
                                                (list heading-pos
                                                      link-pos
                                                      block-pos))))))
-        (cond ((and closest-pos (eq heading-pos closest-pos))
-               (goto-char heading-pos))
-              ((and closest-pos (eq link-pos closest-pos))
-               (goto-char link-pos))
-              ((and closest-pos (eq block-pos closest-pos))
-               (goto-char block-pos)))
         (if closest-pos
-            (cond ((> (org-current-level) 1)
-                   (ar/org-present-reveal-level2))
-                  ((eq (org-current-level) 1)
-                   ;; At level 1. Collapse children.
-                   (org-overview)
-                   (org-show-entry)
-                   (org-show-children)
-                   (run-hook-with-args 'org-cycle-hook 'children)))
+            (progn
+              (cond ((eq heading-pos closest-pos)
+                     (goto-char heading-pos))
+                    ((eq link-pos closest-pos)
+                     (goto-char link-pos))
+                    ((eq block-pos closest-pos)
+                     (goto-char block-pos)))
+              ;; Reveal relevant content.
+              (cond ((> (org-current-level) 1)
+                     (ar/org-present-reveal-level2))
+                    ((eq (org-current-level) 1)
+                     ;; At level 1. Collapse children.
+                     (org-overview)
+                     (org-show-entry)
+                     (org-show-children)
+                     (run-hook-with-args 'org-cycle-hook 'children))))
+          ;; End of slide, go to next slide.
           (org-present-next)))))
 
   (defun ar/org-present-previous-item ()
@@ -531,11 +535,7 @@ Set BACKWARD to search backwards."
 
 Set BACKWARD to search backwards."
     (save-excursion
-      (when (and backward (eq 'src-block
-                              (org-element-type
-                               (org-element-lineage (org-element-context)
-                                                    '(src-block)
-	                                            t))))
+      (when (and backward (org-babel-where-is-src-block-head))
         (org-babel-goto-src-block-head))
       (let ((pos-before (point))
             (pos-after (ignore-errors
