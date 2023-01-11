@@ -468,36 +468,33 @@ With prefix, don't confirm text."
   (defun ar/org-present-next-item (&optional backward)
     "Present and reveal next item."
     (interactive "P")
-    (let* ((heading-pos (ar/org-next-visible-heading-pos backward))
-           (link-pos (ar/org-next-link-pos backward))
-           (block-pos (ar/org-next-block-pos backward))
-           (closest-pos (when (or heading-pos link-pos block-pos)
-                          (apply (if backward #'max #'min)
-                                 (seq-filter #'identity
-                                             (list heading-pos
-                                                   link-pos
-                                                   block-pos))))))
-      (cond ((and closest-pos (eq heading-pos closest-pos))
-             (goto-char heading-pos))
-            ((and closest-pos (eq link-pos closest-pos))
-             (goto-char link-pos))
-            ((and closest-pos (eq block-pos closest-pos))
-             (goto-char block-pos)))
-      (if closest-pos
-          (cond ((> (org-current-level) 1)
-                 (ar/org-present-reveal-level2))
-                ((eq (org-current-level) 1)
-                 ;; At level 1. Collapse children.
-                 (org-overview)
-                 (org-show-entry)
-                 (org-show-children)
-                 (run-hook-with-args 'org-cycle-hook 'children)))
-        ;; Collapse everything if end is reached.
-        (goto-char (point-min))
-        (org-overview)
-        (org-show-entry)
-        (org-show-children)
-        (run-hook-with-args 'org-cycle-hook 'children))))
+    (if (and backward (eq (point) (point-min)))
+        (org-present-prev)
+      (let* ((heading-pos (ar/org-next-visible-heading-pos backward))
+             (link-pos (ar/org-next-link-pos backward))
+             (block-pos (ar/org-next-block-pos backward))
+             (closest-pos (when (or heading-pos link-pos block-pos)
+                            (apply (if backward #'max #'min)
+                                   (seq-filter #'identity
+                                               (list heading-pos
+                                                     link-pos
+                                                     block-pos))))))
+        (cond ((and closest-pos (eq heading-pos closest-pos))
+               (goto-char heading-pos))
+              ((and closest-pos (eq link-pos closest-pos))
+               (goto-char link-pos))
+              ((and closest-pos (eq block-pos closest-pos))
+               (goto-char block-pos)))
+        (if closest-pos
+            (cond ((> (org-current-level) 1)
+                   (ar/org-present-reveal-level2))
+                  ((eq (org-current-level) 1)
+                   ;; At level 1. Collapse children.
+                   (org-overview)
+                   (org-show-entry)
+                   (org-show-children)
+                   (run-hook-with-args 'org-cycle-hook 'children)))
+          (org-present-next)))))
 
   (defun ar/org-present-previous-item ()
     (interactive)
