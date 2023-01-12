@@ -565,6 +565,7 @@ Set BACKWARD to search backwards."
       (goto-char loc)))
 
   (defun ar/org-present-mode-quit ()
+    (ar/drop-material-org-present-tweaks)
     (setq-local face-remapping-alist nil)
     (org-starless-mode +1)
     (hide-mode-line-mode -1)
@@ -572,6 +573,7 @@ Set BACKWARD to search backwards."
     (visual-line-mode -1))
 
   (defun ar/org-present-mode-hook ()
+    (ar/load-material-org-present-tweaks)
     (setq-local face-remapping-alist '((header-line (:height 5.0) header-line)
                                        (default (:height 1.2) default)
                                        (org-level-1 (:height 1.50) org-level-1)
