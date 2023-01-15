@@ -44,12 +44,11 @@
         ("q" . kill-this-buffer))
   :config
   ;; C-x k don't ask if xwidget should be killed.
-  (defun adviced:xwidget-kill-buffer-query-function ()
-    "Always return t to kill buffer."
+  (defun adviced:xwidget-kill-buffer-query-function (_)
     t)
   (advice-add #'xwidget-kill-buffer-query-function
               :around
-              #'adviced:xwidget-kill-buffer-query-function) )
+              #'adviced:xwidget-kill-buffer-query-function))
 
 (use-package css-mode
   :mode (("\\.css\\'" . css-mode)
