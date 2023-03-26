@@ -365,6 +365,7 @@ With PREFIX, add an outer pair around existing pair."
   (global-unset-key (kbd "M-<down-mouse-1>"))
   :bind (("C-c a" . mc/mark-all-dwim)
          ("C-c n" . mc/mark-next-like-this-symbol)
+         ("C-c p" . mc/mark-previous-like-this-symbol)
          ("C-c r" . set-rectangular-region-anchor)
          ("M-<mouse-1>" . mc/add-cursor-on-click))
   :config
