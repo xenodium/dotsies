@@ -26,17 +26,17 @@
                                      (ar/bazel-genfiles-dir)
                                      (ar/bazel-out-dir))))
 
-  (map-put compilation-error-regexp-alist-alist
-           ;; Knowing which rule is associated with a compilation error isn't very useful.
-           'bazel-originating-rule-error (list "^ERROR: \\(/.*/BUILD\\):\\([0-9]+\\):\\([0-9]+\\)\\(compilation\\)?" 1 2 3 0))
+  (map-put! compilation-error-regexp-alist-alist
+            ;; Knowing which rule is associated with a compilation error isn't very useful.
+            'bazel-originating-rule-error (list "^ERROR: \\(/.*/BUILD\\):\\([0-9]+\\):\\([0-9]+\\)\\(compilation\\)?" 1 2 3 0))
   (add-to-list 'compilation-error-regexp-alist 'bazel-originating-rule-error)
 
-  (map-put compilation-error-regexp-alist-alist
-           'bazel-warning (list "^WARNING: \\(.*/BUILD\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 1))
+  (map-put! compilation-error-regexp-alist-alist
+            'bazel-warning (list "^WARNING: \\(.*/BUILD\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 1))
   (add-to-list 'compilation-error-regexp-alist 'bazel-warning)
 
-  (map-put compilation-error-regexp-alist-alist
-           ;; Starlark debug lines are noisy. Make less prevalent.
-           'starlark-debug (list "^DEBUG: \\(/.*/.*\\.bzl\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 0))
+  (map-put! compilation-error-regexp-alist-alist
+            ;; Starlark debug lines are noisy. Make less prevalent.
+            'starlark-debug (list "^DEBUG: \\(/.*/.*\\.bzl\\):\\([0-9]+\\):\\([0-9]+\\):" 1 2 3 0))
 
   (add-to-list 'compilation-error-regexp-alist 'starlark-debug))
