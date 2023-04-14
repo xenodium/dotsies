@@ -350,4 +350,7 @@ If `universal-argument' is called, copy only the dir path."
          ([remap dired-do-shell-command] . dwim-shell-command)
          ([remap dired-smart-shell-command] . dwim-shell-command))
   :config
-  (use-package dwim-shell-commands))
+  (use-package dwim-shell-commands
+    :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
+           ("C-c (" . dwim-shell-commands-macos-start-recording-window)
+           ("C-c )" . dwim-shell-commands-macos-end-recording-window))))
