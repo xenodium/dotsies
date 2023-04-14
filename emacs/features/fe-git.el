@@ -105,7 +105,11 @@ on the current line, if any."
   :ensure t
   :hook ((prog-mode . diff-hl-mode)
          (protobuf-mode . diff-hl-mode))
-  :bind (("C-c <up>" . diff-hl-previous-hunk)
+  :bind (:map prog-mode-map
+         ("C-c <up>" . diff-hl-previous-hunk)
+         ("C-c <down>" . diff-hl-next-hunk)
+         :map protobuf-mode-map
+         ("C-c <up>" . diff-hl-previous-hunk)
          ("C-c <down>" . diff-hl-next-hunk))
   :config
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh))
