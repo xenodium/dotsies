@@ -4,7 +4,6 @@
   :commands ielm
   :hook ((ielm-mode . company-mode))
   :validate-custom
-  (ielm-prompt "(elisp) ")
   (ielm-header ""))
 
 (use-package pcre2el
