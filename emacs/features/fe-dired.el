@@ -353,4 +353,5 @@ If `universal-argument' is called, copy only the dir path."
   (use-package dwim-shell-commands
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
            ("C-c (" . dwim-shell-commands-macos-start-recording-window)
-           ("C-c )" . dwim-shell-commands-macos-end-recording-window))))
+           ("C-c )" . dwim-shell-commands-macos-end-recording-window)
+           ("C-c 8" . dwim-shell-commands-macos-abort-recording-window))))
