@@ -112,9 +112,10 @@ on the current line, if any."
   :bind (:map prog-mode-map
          ("C-c <up>" . diff-hl-previous-hunk)
          ("C-c <down>" . diff-hl-next-hunk)
-         :map protobuf-mode-map
-         ("C-c <up>" . diff-hl-previous-hunk)
-         ("C-c <down>" . diff-hl-next-hunk))
+         ;; :map protobuf-mode-map
+         ;; ("C-c <up>" . diff-hl-previous-hunk)
+         ;; ("C-c <down>" . diff-hl-next-hunk)
+         )
   :config
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh))
 
