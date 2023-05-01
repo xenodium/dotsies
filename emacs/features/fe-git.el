@@ -10,6 +10,10 @@
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
+  ;; Stop asking for GitHub ssh passwords
+  (use-package ssh-agency
+    :ensure t)
+
   ;; Open git file at remote/repo location.
   (use-package browse-at-remote
     :ensure t
