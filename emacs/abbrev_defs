@@ -43,5 +43,6 @@
     ("Hella" "Hello" nil :count 0)
     ("inavertently" "inadvertently" nil :count 0)
     ("ocasionally" "occasionally" nil :count 0)
+    ("mostl" "mostly" nil :count 0)
    ))
 
