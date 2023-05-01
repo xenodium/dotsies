@@ -250,9 +250,9 @@ With argument ARG, do this that many times."
          ("<tab>" . ar/indent-for-tab-command-dwim))
   :config
   (use-package tab-jump-out
-    :ensure t
-    :config
-    (defun ar/indent-for-tab-command-dwim (&optional prefix)
+    :ensure t)
+
+  (defun ar/indent-for-tab-command-dwim (&optional prefix)
       "Like `indent-for-tab-command' but jumps out or folds/unfolds if no change"
       (interactive "P")
       (let ((hash-before (buffer-hash))
@@ -274,4 +274,29 @@ With argument ARG, do this that many times."
                       (not region-active)
                       ;; buffer is unchanged.
                       (string-equal hash-before (buffer-hash)))
-                 (call-interactively #'yafolding-toggle-element))))))))
+                 (call-interactively #'yafolding-toggle-element)))))))
+
+
+(defun ar/indent-for-tab-command-dwim (&optional prefix)
+      "Like `indent-for-tab-command' but jumps out or folds/unfolds if no change"
+      (interactive "P")
+      (let ((hash-before (buffer-hash))
+            (region-active (region-active-p))
+            (point-before (point)))
+        (if (and yafolding-mode
+                 prefix)
+            (yafolding-toggle-all)
+          (indent-for-tab-command prefix)
+          (cond ((and (eq point-before (point))
+                      (not region-active)
+                      ;; buffer is unchanged.
+                      (string-equal hash-before (buffer-hash))
+                      (char-after)
+                      (seq-contains-p tab-jump-out-delimiters (char-to-string (char-after))))
+                 (forward-char prefix))
+                ((and yafolding-mode
+                      (eq point-before (point))
+                      (not region-active)
+                      ;; buffer is unchanged.
+                      (string-equal hash-before (buffer-hash)))
+                 (call-interactively #'yafolding-toggle-element))))))
