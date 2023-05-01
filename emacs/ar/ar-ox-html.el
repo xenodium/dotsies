@@ -260,7 +260,7 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            display: none;
          }
 
-         p, .org-ol, .org-ul {
+         p, .org-ol, .org-ul, .org-left {
            color: #3A4145;
            font-family: 'Lucida Grande', 'Lucida Sans Unicode',
                'Lucida Sans', Geneva, Verdana, sans-serif;
