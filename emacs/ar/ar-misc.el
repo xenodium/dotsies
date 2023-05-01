@@ -148,7 +148,7 @@ already narrowed."
   "Download clipboard URL to ~/Downloads."
   (interactive)
   (let ((url (current-kill 0)))
-    (assert (string-match-p "^http[s]?://\\(www\\.\\)?" url)
+    (cl-assert (string-match-p "^http[s]?://\\(www\\.\\)?" url)
             nil "Not a downloadable URL: %s" url)
     (url-copy-file url (concat (expand-file-name "~/Downloads/")
                                (file-name-nondirectory url)))))
