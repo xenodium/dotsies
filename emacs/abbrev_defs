@@ -44,5 +44,6 @@
     ("inavertently" "inadvertently" nil :count 0)
     ("ocasionally" "occasionally" nil :count 0)
     ("mostl" "mostly" nil :count 0)
+    ("utilites" "utilities" nil :count 0)
    ))
 
