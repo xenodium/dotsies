@@ -100,6 +100,7 @@
         (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
 
     (with-eval-after-load 'font-lock
+      (set-face-attribute 'font-lock-comment-face nil :font "Iosevka Aile")
       (set-face-attribute 'font-lock-constant-face nil :foreground "#C792EA")
       (set-face-attribute 'font-lock-keyword-face nil :foreground "#2BA3FF" :slant 'italic)
       (set-face-attribute 'font-lock-preprocessor-face nil :inherit 'bold :foreground "#2BA3FF" :slant 'italic :weight 'normal)
