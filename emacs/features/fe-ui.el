@@ -56,7 +56,7 @@
 
   (defun ar/drop-material-org-present-tweaks ()
     (with-eval-after-load 'frame
-      (set-cursor-color "orange"))
+      (set-cursor-color "royal blue"))
 
     (with-eval-after-load 'faces
       (set-face-attribute 'org-level-1 nil :foreground nil :background nil :box nil)
