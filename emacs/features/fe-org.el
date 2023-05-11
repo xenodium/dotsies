@@ -106,6 +106,17 @@
     :hook ((org-mode . (lambda ()
                          (setq-local company-backends '(company-org-block))
                          (company-mode +1)))))
+
+  ;; A substitute for `company-org-block'.
+  ;; (use-package org-block-capf
+  ;;   :validate-custom
+  ;;   (org-block-capf-edit-style 'auto)
+  ;;   :hook ((org-mode . (defun ar/org-mode-hook ()
+  ;;                        (make-local-variable completion-at-point-functions)
+  ;;                        (org-block-capf-add-to-completion-at-point-functions)
+  ;;                        (setq-local company-backends '(company-capf))
+  ;;                        (company-mode +1)))))
+
   (use-package ol
     :custom
     (org-link-frame-setup '((file . find-file))) ;; open links in same window
