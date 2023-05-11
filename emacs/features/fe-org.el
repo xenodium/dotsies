@@ -582,12 +582,12 @@ Set BACKWARD to search backwards."
     ;; Starless breaks padding between folded headings.
     (org-starless-mode -1)
     (org-show-children)
-    (run-hook-with-args 'org-cycle-hook 'children)
     (hide-mode-line-mode +1)
     ;; Add padding at top of each slide.
     (setq-local header-line-format (propertize " " 'face '(:height 300)))
     (visual-fill-column-mode +1)
-    (visual-line-mode +1))
+    (visual-line-mode +1)
+    (run-hook-with-args 'org-cycle-hook 'children))
   :config
   (use-package visual-fill-column
     :custom
