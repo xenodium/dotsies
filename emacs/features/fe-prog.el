@@ -48,7 +48,46 @@
             (add-to-list 'rainbow-x-colors-major-mode-list mode)
             (add-to-list 'rainbow-html-colors-major-mode-list mode))
           '(objc-mode
-            swift-mode))))
+            swift-mode)))
+
+  (defvar ar/unique-log-word "Yay")
+
+  (defun ar/insert-unique-log-word (prefix)
+    "Inserts `ar/unique-log-word' incrementing counter.
+
+With PREFIX, change `ar/unique-log-word'."
+    (interactive "P")
+    (let* ((word (if prefix
+                     (setq ar/unique-log-word (read-string "Log word: "))
+                   ar/unique-log-word))
+           (match-regexp
+            (cond
+             ((equal major-mode 'swift-mode)
+              (format "print(\"%s: \\([0-9]+\\)\")" word))
+             ((equal major-mode 'emacs-lisp-mode)
+              (format "(message \"%s: \\([0-9]+\\)\")" word))
+             (t
+              (error "%s not supported" major-mode))))
+           (format-string
+            (cond
+             ((equal major-mode 'swift-mode)
+              (format "print(\"%s: %%d\")" word))
+             ((equal major-mode 'emacs-lisp-mode)
+              (format "(message \"%s: %%d\")" word))
+             (t
+              (error "%s not supported" major-mode))))
+           (max-num 0)
+           (case-fold-search nil))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward match-regexp nil t)
+          (when (> (string-to-number (match-string 1)) max-num)
+            (setq max-num (string-to-number (match-string 1))))))
+      (unless (looking-at-p "^ *$")
+        (end-of-line))
+      (insert (if (looking-at-p "^ *$")
+                  (format format-string (1+ max-num))
+                (concat "\n" (format format-string (1+ max-num))))))))
 
 (use-package reformatter
   :defer
