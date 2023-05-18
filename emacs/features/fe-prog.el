@@ -57,25 +57,27 @@
 
 With PREFIX, change `ar/unique-log-word'."
     (interactive "P")
-    (let* ((word (if prefix
-                     (setq ar/unique-log-word (read-string "Log word: "))
-                   ar/unique-log-word))
-           (match-regexp
+    (let* ((word (cond (prefix
+                        (setq ar/unique-log-word
+                              (read-string "Log word: ")))
+                       ((region-active-p)
+                        (setq ar/unique-log-word
+                              (buffer-substring (region-beginning)
+                                                (region-end))))
+                       (t
+                        ar/unique-log-word)))
+           (config
             (cond
-             ((equal major-mode 'swift-mode)
-              (format "print(\"%s: \\([0-9]+\\)\")" word))
              ((equal major-mode 'emacs-lisp-mode)
-              (format "(message \"%s: \\([0-9]+\\)\")" word))
+              (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
+                    (format "(message \"%s: %%d\")" word)))
+             ((equal major-mode 'swift-mode)
+              (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
+                    (format "print(\"%s: %%d\")" word)))
              (t
               (error "%s not supported" major-mode))))
-           (format-string
-            (cond
-             ((equal major-mode 'swift-mode)
-              (format "print(\"%s: %%d\")" word))
-             ((equal major-mode 'emacs-lisp-mode)
-              (format "(message \"%s: %%d\")" word))
-             (t
-              (error "%s not supported" major-mode))))
+           (match-regexp (car config))
+           (format-string (cdr config))
            (max-num 0)
            (case-fold-search nil))
       (save-excursion
@@ -87,7 +89,8 @@ With PREFIX, change `ar/unique-log-word'."
         (end-of-line))
       (insert (if (looking-at-p "^ *$")
                   (format format-string (1+ max-num))
-                (concat "\n" (format format-string (1+ max-num))))))))
+                (concat "\n" (format format-string (1+ max-num)))))
+      (call-interactively 'indent-for-tab-command))))
 
 (use-package reformatter
   :defer
