@@ -64,8 +64,12 @@ With PREFIX, change `ar/unique-log-word'."
                         (setq ar/unique-log-word
                               (buffer-substring (region-beginning)
                                                 (region-end))))
+                       (ar/unique-log-word
+                        ar/unique-log-word)
                        (t
-                        ar/unique-log-word)))
+                        (string-trim
+                         (shell-command-to-string
+                          "grep -E '^[a-z]{5}$' /usr/share/dict/words | shuf -n 1")))))
            (config
             (cond
              ((equal major-mode 'emacs-lisp-mode)
