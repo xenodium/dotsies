@@ -42,6 +42,7 @@
       (add-to-list 'eshell-visual-subcommands '("hg" "log" "diff"))
 
       (eshell/alias "unzip" "atool --extract --explain $1")
+      (eshell/alias "clear" "clear t") ;; Clear content too.
 
       (yas-minor-mode +1)
 
@@ -175,15 +176,6 @@
         :config
         (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
         (setenv "TERM" "xterm-256color"))
-
-      ;; Override existing clear function. I like this one better.
-      ;; Also there's a bug in Emacs 26:
-      ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2018-05/msg00141.html
-      (defun eshell/clear (&optional scrollback)
-        "Alias to clear (destructive) eshell content."
-        (interactive)
-        (let ((inhibit-read-only t))
-          (erase-buffer)))
 
       (defun eshell/sudo-ec (path)
         (let ((qualified-path (if (string-match "^/" path)
