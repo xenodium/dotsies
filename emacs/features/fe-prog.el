@@ -76,6 +76,12 @@ With PREFIX, change `ar/unique-log-word'."
              ((equal major-mode 'swift-mode)
               (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
                     (format "print(\"%s: %%s\")" word)))
+             ((equal major-mode 'ada-mode)
+              (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
+                    (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
+             ((equal major-mode 'c++-mode)
+              (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
+                    (format "std::cout << \"%s: %%s\" << std::endl;" word)))
              (t
               (error "%s not supported" major-mode))))
            (match-regexp (car config))
