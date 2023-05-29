@@ -45,5 +45,12 @@
     ("ocasionally" "occasionally" nil :count 0)
     ("mostl" "mostly" nil :count 0)
     ("utilites" "utilities" nil :count 0)
+    ("ergonimics" "ergonomics" nil :count 0)
+    ("excecise" "exercise" nil :count 0)
+    ("excercise" "exercise" nil :count 0)
+    ("layoffs" "lay-offs" nil :count 0)
+    ("slideing" "sliding" nil :count 0)
+    ("throaway" "throwaway" nil :count 0)
+    ("youre" "your" nil :count 0)
    ))
 
