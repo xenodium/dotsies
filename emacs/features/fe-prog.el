@@ -67,33 +67,38 @@ With PREFIX, change `ar/unique-log-word'."
                        (ar/unique-log-word
                         ar/unique-log-word)
                        (t
-                        (string-trim
-                         (shell-command-to-string
-                          "grep -E '^[a-z]{5}$' /usr/share/dict/words | shuf -n 1")))))
+                        "Reached")))
            (config
             (cond
              ((equal major-mode 'emacs-lisp-mode)
               (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
-                    (format "(message \"%s: %%d\")" word)))
+                    (format "(message \"%s: %%s\")" word)))
              ((equal major-mode 'swift-mode)
               (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
-                    (format "print(\"%s: %%d\")" word)))
+                    (format "print(\"%s: %%s\")" word)))
              (t
               (error "%s not supported" major-mode))))
            (match-regexp (car config))
            (format-string (cdr config))
            (max-num 0)
            (case-fold-search nil))
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward match-regexp nil t)
-          (when (> (string-to-number (match-string 1)) max-num)
-            (setq max-num (string-to-number (match-string 1))))))
+      (when ar/unique-log-word
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward match-regexp nil t)
+            (when (> (string-to-number (match-string 1)) max-num)
+              (setq max-num (string-to-number (match-string 1))))))
+        (setq max-num (1+ max-num)))
       (unless (looking-at-p "^ *$")
         (end-of-line))
-      (insert (if (looking-at-p "^ *$")
-                  (format format-string (1+ max-num))
-                (concat "\n" (format format-string (1+ max-num)))))
+      (insert (concat
+               (if (looking-at-p "^ *$") "" "\n")
+               (format format-string
+                       (if ar/unique-log-word
+                           (number-to-string (1+ max-num))
+                         (string-trim
+                          (shell-command-to-string
+                           "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
       (call-interactively 'indent-for-tab-command))))
 
 (use-package reformatter
