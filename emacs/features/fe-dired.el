@@ -348,9 +348,11 @@ If `universal-argument' is called, copy only the dir path."
          :map dired-mode-map
          ([remap dired-do-async-shell-command] . dwim-shell-command)
          ([remap dired-do-shell-command] . dwim-shell-command)
-         ([remap dired-smart-shell-command] . dwim-shell-command))
+         ([remap dired-smart-shell-command] . dwim-shell-command)
+         ("C-x C-d" . dwim-shell-commands-duplicate))
   :config
   (use-package dwim-shell-commands
+    :commands (dwim-shell-commands-duplicate)
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
            ("C-c (" . dwim-shell-commands-macos-start-recording-window)
            ("C-c )" . dwim-shell-commands-macos-end-recording-window)
