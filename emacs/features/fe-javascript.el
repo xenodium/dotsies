@@ -5,4 +5,6 @@
   :mode ("\\.json\\'" . json-mode))
 
 (use-package typescript-mode
-  :ensure t)
+  :ensure t
+  :validate-custom
+  (typescript-indent-level 2))
