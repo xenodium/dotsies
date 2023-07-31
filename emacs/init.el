@@ -95,9 +95,10 @@
   (unless package--initialized
     (package-initialize)))
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(when (< emacs-major-version 29)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)))
 
 ;; use-package-enable-imenu-support must be
 ;; set before requiring use-package.

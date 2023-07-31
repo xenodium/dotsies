@@ -1,18 +1,20 @@
 ;; Match theme color early on (smoother transition).
 ;; Theme loaded in features/ui.el.
 (add-to-list 'default-frame-alist '(background-color . "#212121"))
-;; Same for mode-line (hide it).
-(with-eval-after-load 'faces
-  (let ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line nil
-                        :background "#212121"
-                        :foreground "#212121"
-                        :overline line
-                        :box nil)
-    (set-face-attribute 'mode-line-inactive nil
-                        :overline line
-                        :underline line
-                        :box nil)))
+
+(when (< emacs-major-version 29)
+  ;; Same for mode-line (hide it).
+  (with-eval-after-load 'faces
+    (let ((line (face-attribute 'mode-line :underline)))
+      (set-face-attribute 'mode-line nil
+                          :background "#212121"
+                          :foreground "#212121"
+                          :overline line
+                          :box nil)
+      (set-face-attribute 'mode-line-inactive nil
+                          :overline line
+                          :underline line
+                          :box nil))))
 
 ;; https://github.com/hlissner/doom-emacs/blob/58af4aef56469f3f495129b4e7d947553f420fca/core/core.el#L200
 (unless (daemonp)

@@ -6,9 +6,10 @@
   :commands bug-hunter-init-file)
 
 ;; Restart Emacs from Emacs.
-(use-package restart-emacs
-  :ensure t
-  :commands restart-emacs)
+(when (< emacs-major-version 29)
+  (use-package restart-emacs
+    :ensure t
+    :commands restart-emacs))
 
 ;; Safely delete packages without breaking depending packages.
 (use-package package-safe-delete
