@@ -8,6 +8,19 @@
 ;;; Commentary:
 ;; Helper additions `sqlite-mode'.
 
+
+;; Suggested setup:
+;;
+;; (use-package sqlite-mode-extras
+;;   :bind (:map
+;;          sqlite-mode-map
+;;          ("n" . next-line)
+;;          ("p" . previous-line)
+;;          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
+;;          ("<tab>" . sqlite-mode-extras-tab-dwim)
+;;          ("RET" . sqlite-mode-extras-ret-dwim)))
+
+
 ;;; Code:
 
 (require 'sqlite-mode)
