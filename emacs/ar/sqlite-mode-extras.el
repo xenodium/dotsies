@@ -37,7 +37,8 @@
                                       value-at-point)
                        (read-string (format "Update '%s': " column)
                                     value-at-point)))
-              (pos (point)))
+              (current-line (line-number-at-pos))
+              (current-column (current-column)))
     (sqlite-execute
      sqlite--db
      (format "UPDATE %s SET %s = ? where %s"
@@ -57,7 +58,8 @@
       (sqlite-mode-list-data)
       ;; Second time expands table (ie. refreshes it).
       (sqlite-mode-list-data))
-    (goto-char pos)))
+    (forward-line (- current-line (line-number-at-pos)))
+    (move-to-column current-column)))
 
 (defun sqlite-mode-extras-ret-dwim ()
   "DWIM binding for RET.
