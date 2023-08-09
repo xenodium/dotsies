@@ -16,6 +16,8 @@
 ;;          sqlite-mode-map
 ;;          ("n" . next-line)
 ;;          ("p" . previous-line)
+;;          ("b" . sqlite-mode-extras-backtab-dwim)
+;;          ("f" . sqlite-mode-extras-tab-dwim)
 ;;          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
 ;;          ("<tab>" . sqlite-mode-extras-tab-dwim)
 ;;          ("RET" . sqlite-mode-extras-ret-dwim)))
