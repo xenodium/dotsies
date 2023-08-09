@@ -27,32 +27,32 @@
 
 (require 'sqlite-mode)
 
+(defun sqlite-mode-extras-execute ()
+  (interactive)
+  (sqlite-execute
+   sqlite--db
+   (read-string "Execute query: "))
+  (sqlite-mode-extras--refresh))
+
 (defun sqlite-mode-extras-edit-row-field ()
   "Edit current row's field."
   (interactive)
   (when-let* ((table (get-text-property (point) 'sqlite--type))
               (row (get-text-property (point) 'sqlite--row))
               (column (sqlite-mode-extras--resolve-table-column))
-              (value-at-point (sqlite-mode-extras--row-field-value-at-point))
-              (value (if (numberp value-at-point)
+              (value (if (numberp (sqlite-mode-extras--row-field-value-at-point))
                          (read-number (format "Update '%s': " column)
-                                      value-at-point)
+                                      (sqlite-mode-extras--row-field-value-at-point))
                        (read-string (format "Update '%s': " column)
-                                    value-at-point)))
+                                    (sqlite-mode-extras--row-field-value-at-point))))
               (current-line (line-number-at-pos))
               (current-column (current-column)))
     (sqlite-execute
      sqlite--db
-     (format "UPDATE %s SET %s = ? where %s"
+     (format "UPDATE %s SET %s = ? WHERE rowid = ?"
              (cdr table)
-             column
-             (string-join
-              (mapcar (lambda (column)
-                        (format "%s = ?" (car (split-string column " "))))
-                      (cons "rowid" (sqlite-mode--column-names (cdr table))))
-              " and "))
-     (append (list value)
-             row))
+             column)
+     (list value (car row)))
     (save-restriction
       (goto-char (sqlite-mode-extras--table-header-pos))
       (forward-line -1)
@@ -62,6 +62,28 @@
       (sqlite-mode-list-data))
     (forward-line (- current-line (line-number-at-pos)))
     (move-to-column current-column)))
+
+(defun sqlite-mode-extras-add-row ()
+  "Add a row to current table."
+  (interactive)
+  (let* ((type (get-text-property (point) 'sqlite--type))
+         (row (get-text-property (point) 'sqlite--row))
+         (table-name (cond ((and (consp type)
+                                 (eq (car type) 'row))
+                            (cdr type))
+                           ((eq type 'table)
+                            (car row))))
+         (text-before (buffer-string)))
+    (unless table-name
+      (user-error "No table at point"))
+    (sqlite-execute
+     sqlite--db
+     (format "INSERT INTO %s DEFAULT VALUES;" table-name))
+    (sqlite-mode-extras--refresh)
+    (sqlite-mode-extras--end-of-table)
+    (beginning-of-line)
+    (sqlite-mode-extras-next-column)
+    (sqlite-mode-extras-next-column)))
 
 (defun sqlite-mode-extras-ret-dwim ()
   "DWIM binding for RET.
@@ -148,11 +170,8 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--assert-on-row ()
   "Ensure point is on a table row."
-  (let ((table (get-text-property (point) 'sqlite--type))
-        (row (get-text-property (point) 'sqlite--row)))
-    (when (or (not (consp table))
-              (not (eq (car table) 'row)))
-      (user-error "No row under point"))))
+  (unless (sqlite-mode-extras--on-row-p)
+    (user-error "No row under point")))
 
 (defun sqlite-mode-extras--table-header-column-details (header)
   "Return column details list for HEADER string."
@@ -179,11 +198,71 @@ When BACKWARD is set, navigate to previous column."
                   item))
               columns))))
 
+(defun sqlite-mode-extras--end-of-table ()
+  (while (and (sqlite-mode-extras--on-row-p)
+              (not (eobp)))
+    (forward-line))
+  (forward-line -1))
+
+(defun sqlite-mode-extras-refresh ()
+  (interactive)
+  (let ((expanded-tables (sqlite-mode-extras--expanded-tables))
+        (current-line (line-number-at-pos))
+        (current-column (current-column)))
+    (save-excursion
+      (sqlite-mode-list-tables)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when-let ((table (sqlite-mode-extras--table-name))
+                   (_ (seq-contains-p expanded-tables table)))
+          (sqlite-mode-list-data))
+        (forward-line)))
+    (forward-line (- current-line (line-number-at-pos)))
+    (move-to-column current-column)))
+
+(defun sqlite-mode-extras--expanded-tables ()
+  (save-excursion
+    (let ((tables))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when-let ((table (sqlite-mode-extras--table-name))
+                   (_ (sqlite-mode-extras--table-expanded-p)))
+          (add-to-list 'tables table))
+        (forward-line))
+      tables)))
+
+(defun sqlite-mode-extras--table-name ()
+  (when (eq (get-text-property (point) 'sqlite--type) 'table)
+    (car (get-text-property (point) 'sqlite--row))))
+
+(defun sqlite-mode-extras--table-expanded-p ()
+  (save-excursion
+    (forward-line)
+    (eq 'header-line
+        (get-text-property 0 'face
+                           (replace-regexp-in-string
+                            "\\s-" "" (thing-at-point 'line))))))
+
+(defun sqlite-mode-extras--on-table-p ()
+  (eq (get-text-property (point) 'sqlite--type) 'table))
+
+(defun sqlite-mode-extras--on-row-p ()
+  "Look for line above with \='header-line\= face."
+  (when (consp (get-text-property (point) 'sqlite--type))
+    (eq (car (get-text-property (point) 'sqlite--type)) 'row)))
+
 (defun sqlite-mode-extras--table-header-line ()
   "Look for line above with \='header-line\= face."
   (save-excursion
     (goto-char (sqlite-mode-extras--table-header-pos))
     (thing-at-point 'line t)))
+
+(defun sqlite-mode-extras--table-pos ()
+  ""
+  (save-excursion
+    (goto-char (sqlite-mode-extras--table-header-pos))
+    (forward-line -1)
+    (point)))
 
 (defun sqlite-mode-extras--table-header-pos ()
   "Look for line above with \='header-line\= face."
@@ -200,6 +279,61 @@ When BACKWARD is set, navigate to previous column."
     (unless pos
       (user-error "No table header found"))
     pos))
+
+(defun sqlite-mode-extras--diff-position (s1 s2)
+  (or
+   (let ((pos (cl-position-if-not
+               'identity
+               (cl-mapcar
+                'equal
+                (append s1 nil) (append s2 nil)))))
+     (and pos (1+ pos)))
+   (if (/= (length s1) (length s2))
+       (1+ (min (length s1) (length s2)))
+     nil)))
+
+(defun sqlite-mode-extras--table-name-in-query (query)
+  "Extract table name from sqlite SELECT query."
+  ;; check if the Query is a SELECT statement
+  (unless (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
+    (error "Provided Query is not a SELECT statement."))
+  (let* ((words (split-string query))
+         (from-index (cl-position "from" words :test #'string= :key #'downcase)))
+    (when from-index
+      (when-let ((table-name (nth (1+ from-index) words)))
+        (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name)))))
+
+(defun sqlite-mode-extras--execute-select-query ()
+  (interactive)
+  (let* ((query (read-string "Query: " "SELECT * from "))
+         (table (sqlite-mode-extras--table-name-in-query query))
+         (rowid 0)
+         (inhibit-read-only t)
+         stmt)
+    (unwind-protect
+        (progn
+          (setq stmt
+                (sqlite-select
+                 sqlite--db
+                 query
+                 nil
+                 'set))
+          (goto-char (point-max))
+          (insert (propertize (format "\n%s\n\n" query) 'face 'font-lock-doc-face))
+          (sqlite-mode--tablify (sqlite-columns stmt)
+                                (cl-loop for i from 0 upto 1000
+                                         for row = (sqlite-next stmt)
+                                         while row
+                                         do (setq rowid (car row))
+                                         collect row)
+                                (cons 'row table)
+                                "  ")
+          (when (sqlite-more-p stmt)
+            (insert (buttonize "  More data...\n" #'sqlite-mode--more-data
+                               (list table rowid)))))
+      (when stmt
+        (sqlite-finalize stmt)))
+    ))
 
 (provide 'sqlite-mode-extras)
 ;;; sqlite-mode-extras.el ends here
