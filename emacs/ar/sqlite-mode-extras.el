@@ -29,9 +29,12 @@
 
 (defun sqlite-mode-extras-execute ()
   (interactive)
-  (sqlite-execute
-   sqlite--db
-   (read-string "Execute query: "))
+  (let* ((query (read-string "Execute query: ")))
+    (if (sqlite-mode-extras--selected-table-name-in-query query)
+        (sqlite-mode-extras-execute-select-query query)
+      (sqlite-execute
+       sqlite--db
+       query)))
   (sqlite-mode-extras-refresh))
 
 (defun sqlite-mode-extras-edit-row-field ()
@@ -296,24 +299,24 @@ When BACKWARD is set, navigate to previous column."
        (1+ (min (length s1) (length s2)))
      nil)))
 
-(defun sqlite-mode-extras--table-name-in-query (query)
+(defun sqlite-mode-extras--selected-table-name-in-query (query)
   "Extract table name from sqlite SELECT query."
-  ;; Ensure it's a SELECT statement
-  (unless (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
-    (error "Provided Query is not a SELECT statement."))
-  (let* ((words (split-string query))
-         (from-index (cl-position "from" words :test #'string= :key #'downcase)))
-    (when from-index
-      (when-let ((table-name (nth (1+ from-index) words)))
-        (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name)))))
+  (when (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
+    (let* ((words (split-string query))
+           (from-index (cl-position "from" words :test #'string= :key #'downcase)))
+      (when from-index
+        (when-let ((table-name (nth (1+ from-index) words)))
+          (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name))))))
 
 (defun sqlite-mode-extras-execute-select-query (&optional query)
   (interactive)
   (let* ((query (or query (read-string "Query: " "SELECT * from ")))
-         (table (sqlite-mode-extras--table-name-in-query query))
+         (table (sqlite-mode-extras--selected-table-name-in-query query))
          (rowid 0)
          (inhibit-read-only t)
          stmt)
+    (unless table
+      (user-error "No table name found in SELECT query"))
     (unwind-protect
         (progn
           (setq stmt
@@ -323,18 +326,20 @@ When BACKWARD is set, navigate to previous column."
                  nil
                  'set))
           (goto-char (point-max))
-          (insert (propertize (format "\n%s\n\n" (string-trim  query)) 'face 'font-lock-doc-face))
-          (sqlite-mode--tablify (sqlite-columns stmt)
-                                (cl-loop for i from 0 upto 1000
-                                         for row = (sqlite-next stmt)
-                                         while row
-                                         do (setq rowid (car row))
-                                         collect row)
-                                (cons 'row table)
-                                "  ")
-          (when (sqlite-more-p stmt)
-            (insert (buttonize "  More data...\n" #'sqlite-mode--more-data
-                               (list table rowid)))))
+          (insert "\n")
+          (save-excursion
+            (insert (propertize (format "%s\n\n" (string-trim  query)) 'face 'font-lock-doc-face))
+            (sqlite-mode--tablify (sqlite-columns stmt)
+                                  (cl-loop for i from 0 upto 1000
+                                           for row = (sqlite-next stmt)
+                                           while row
+                                           do (setq rowid (car row))
+                                           collect row)
+                                  (cons 'row table)
+                                  "  ")
+            (when (sqlite-more-p stmt)
+              (insert (buttonize "  More data...\n" #'sqlite-mode--more-data
+                                 (list table rowid))))))
       (when stmt
         (sqlite-finalize stmt)))))
 
