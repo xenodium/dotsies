@@ -32,7 +32,7 @@
   (sqlite-execute
    sqlite--db
    (read-string "Execute query: "))
-  (sqlite-mode-extras--refresh))
+  (sqlite-mode-extras-refresh))
 
 (defun sqlite-mode-extras-edit-row-field ()
   "Edit current row's field."
@@ -79,7 +79,7 @@
     (sqlite-execute
      sqlite--db
      (format "INSERT INTO %s DEFAULT VALUES;" table-name))
-    (sqlite-mode-extras--refresh)
+    (sqlite-mode-extras-refresh)
     (sqlite-mode-extras--end-of-table)
     (beginning-of-line)
     (sqlite-mode-extras-next-column)
@@ -208,7 +208,8 @@ When BACKWARD is set, navigate to previous column."
   (interactive)
   (let ((expanded-tables (sqlite-mode-extras--expanded-tables))
         (current-line (line-number-at-pos))
-        (current-column (current-column)))
+        (current-column (current-column))
+        (select-queries (sqlite-mode-extras--get-select-lines)))
     (save-excursion
       (sqlite-mode-list-tables)
       (goto-char (point-min))
@@ -216,7 +217,10 @@ When BACKWARD is set, navigate to previous column."
         (when-let ((table (sqlite-mode-extras--table-name))
                    (_ (seq-contains-p expanded-tables table)))
           (sqlite-mode-list-data))
-        (forward-line)))
+        (forward-line))
+      (mapc (lambda (query)
+              (sqlite-mode-extras-execute-select-query query))
+            select-queries))
     (forward-line (- current-line (line-number-at-pos)))
     (move-to-column current-column)))
 
@@ -294,7 +298,7 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--table-name-in-query (query)
   "Extract table name from sqlite SELECT query."
-  ;; check if the Query is a SELECT statement
+  ;; Ensure it's a SELECT statement
   (unless (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
     (error "Provided Query is not a SELECT statement."))
   (let* ((words (split-string query))
@@ -303,9 +307,9 @@ When BACKWARD is set, navigate to previous column."
       (when-let ((table-name (nth (1+ from-index) words)))
         (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name)))))
 
-(defun sqlite-mode-extras--execute-select-query ()
+(defun sqlite-mode-extras-execute-select-query (&optional query)
   (interactive)
-  (let* ((query (read-string "Query: " "SELECT * from "))
+  (let* ((query (or query (read-string "Query: " "SELECT * from ")))
          (table (sqlite-mode-extras--table-name-in-query query))
          (rowid 0)
          (inhibit-read-only t)
@@ -319,7 +323,7 @@ When BACKWARD is set, navigate to previous column."
                  nil
                  'set))
           (goto-char (point-max))
-          (insert (propertize (format "\n%s\n\n" query) 'face 'font-lock-doc-face))
+          (insert (propertize (format "\n%s\n\n" (string-trim  query)) 'face 'font-lock-doc-face))
           (sqlite-mode--tablify (sqlite-columns stmt)
                                 (cl-loop for i from 0 upto 1000
                                          for row = (sqlite-next stmt)
@@ -332,8 +336,17 @@ When BACKWARD is set, navigate to previous column."
             (insert (buttonize "  More data...\n" #'sqlite-mode--more-data
                                (list table rowid)))))
       (when stmt
-        (sqlite-finalize stmt)))
-    ))
+        (sqlite-finalize stmt)))))
+
+(defun sqlite-mode-extras--get-select-lines ()
+  "Get all lines starting with SELECT or select from the current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((regexp (rx bol (0+ space) (or "SELECT" "select") (one-or-more any)))
+          (matches))
+      (while (re-search-forward regexp nil t)
+        (add-to-list 'matches (string-trim (match-string 0))))
+      (reverse matches))))
 
 (provide 'sqlite-mode-extras)
 ;;; sqlite-mode-extras.el ends here
