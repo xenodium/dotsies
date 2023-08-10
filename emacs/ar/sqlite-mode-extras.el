@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Alvaro Ramirez
 
 ;; Author: Alvaro Ramirez https://xenodium.com
-;; Version: 0.4
+;; Version: 0.5
 
 ;;; Commentary:
 ;; Helper additions `sqlite-mode'.
@@ -34,9 +34,11 @@
   (let* ((query (read-string "Execute query: ")))
     (if (sqlite-mode-extras--selected-table-name-in-query query)
         (sqlite-mode-extras-execute-select-query query)
-      (sqlite-execute
-       sqlite--db
-       query)
+      (mapc (lambda (query)
+              (setq query (string-trim query))
+              (unless (string-empty-p query)
+                (sqlite-execute sqlite--db query)))
+            (string-split query ";"))
       (sqlite-mode-extras-refresh))))
 
 (defun sqlite-mode-extras-edit-row-field ()
