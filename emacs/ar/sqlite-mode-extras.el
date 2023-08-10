@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Alvaro Ramirez
 
 ;; Author: Alvaro Ramirez https://xenodium.com
-;; Version: 0.2
+;; Version: 0.3
 
 ;;; Commentary:
 ;; Helper additions `sqlite-mode'.
@@ -43,6 +43,8 @@
   (interactive)
   (when-let* ((table (get-text-property (point) 'sqlite--type))
               (row (get-text-property (point) 'sqlite--row))
+              (columns (sqlite-mode-extras--table-header-column-details
+                        (sqlite-mode-extras--table-header-line)))
               (column (sqlite-mode-extras--resolve-table-column))
               (value (if (numberp (sqlite-mode-extras--row-field-value-at-point))
                          (read-number (format "Update '%s': " column)
@@ -51,21 +53,15 @@
                                     (sqlite-mode-extras--row-field-value-at-point))))
               (current-line (line-number-at-pos))
               (current-column (current-column)))
+    (unless (string-equal (car (seq-first columns)) "id")
+      (error "First row must be rowid"))
     (sqlite-execute
      sqlite--db
      (format "UPDATE %s SET %s = ? WHERE rowid = ?"
              (cdr table)
              column)
      (list value (car row)))
-    (save-restriction
-      (goto-char (sqlite-mode-extras--table-header-pos))
-      (forward-line -1)
-      ;; First time collapses table
-      (sqlite-mode-list-data)
-      ;; Second time expands table (ie. refreshes it).
-      (sqlite-mode-list-data))
-    (forward-line (- current-line (line-number-at-pos)))
-    (move-to-column current-column)))
+    (sqlite-mode-extras-refresh)))
 
 (defun sqlite-mode-extras-add-row ()
   "Add a row to current table."
