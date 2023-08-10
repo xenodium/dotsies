@@ -9,7 +9,7 @@
 ;; Helper additions `sqlite-mode'.
 
 
-;; Suggested setup:
+;; Suggested key bindings:
 ;;
 ;; (use-package sqlite-mode-extras
 ;;   :bind (:map
@@ -18,6 +18,7 @@
 ;;          ("p" . previous-line)
 ;;          ("b" . sqlite-mode-extras-backtab-dwim)
 ;;          ("f" . sqlite-mode-extras-tab-dwim)
+;;          ("g" . sqlite-mode-extras-refresh)
 ;;          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
 ;;          ("<tab>" . sqlite-mode-extras-tab-dwim)
 ;;          ("RET" . sqlite-mode-extras-ret-dwim)))
