@@ -29,6 +29,7 @@
 (require 'sqlite-mode)
 
 (defun sqlite-mode-extras-execute ()
+  "Execute a query."
   (interactive)
   (let* ((query (read-string "Execute query: ")))
     (if (sqlite-mode-extras--selected-table-name-in-query query)
@@ -199,12 +200,14 @@ When BACKWARD is set, navigate to previous column."
               columns))))
 
 (defun sqlite-mode-extras--end-of-table ()
+  "Go to end of current table."
   (while (and (sqlite-mode-extras--on-row-p)
               (not (eobp)))
     (forward-line))
   (forward-line -1))
 
 (defun sqlite-mode-extras-refresh ()
+  "Refresh all listings and table queries."
   (interactive)
   (let ((expanded-tables (sqlite-mode-extras--expanded-tables))
         (current-line (line-number-at-pos))
@@ -225,6 +228,7 @@ When BACKWARD is set, navigate to previous column."
     (move-to-column current-column)))
 
 (defun sqlite-mode-extras--expanded-tables ()
+  "Collect all the tables names that are expanded."
   (save-excursion
     (let ((tables))
       (goto-char (point-min))
@@ -236,10 +240,12 @@ When BACKWARD is set, navigate to previous column."
       tables)))
 
 (defun sqlite-mode-extras--table-name ()
+  "Return table name at point."
   (when (eq (get-text-property (point) 'sqlite--type) 'table)
     (car (get-text-property (point) 'sqlite--row))))
 
 (defun sqlite-mode-extras--table-expanded-p ()
+  "Return t if table at point is expanded."
   (save-excursion
     (forward-line)
     (eq 'header-line
@@ -248,6 +254,7 @@ When BACKWARD is set, navigate to previous column."
                             "\\s-" "" (thing-at-point 'line))))))
 
 (defun sqlite-mode-extras--on-table-p ()
+  "Return t if point is on table."
   (eq (get-text-property (point) 'sqlite--type) 'table))
 
 (defun sqlite-mode-extras--on-row-p ()
@@ -260,13 +267,6 @@ When BACKWARD is set, navigate to previous column."
   (save-excursion
     (goto-char (sqlite-mode-extras--table-header-pos))
     (thing-at-point 'line t)))
-
-(defun sqlite-mode-extras--table-pos ()
-  ""
-  (save-excursion
-    (goto-char (sqlite-mode-extras--table-header-pos))
-    (forward-line -1)
-    (point)))
 
 (defun sqlite-mode-extras--table-header-pos ()
   "Look for line above with \='header-line\= face."
@@ -284,20 +284,8 @@ When BACKWARD is set, navigate to previous column."
       (user-error "No table header found"))
     pos))
 
-(defun sqlite-mode-extras--diff-position (s1 s2)
-  (or
-   (let ((pos (cl-position-if-not
-               'identity
-               (cl-mapcar
-                'equal
-                (append s1 nil) (append s2 nil)))))
-     (and pos (1+ pos)))
-   (if (/= (length s1) (length s2))
-       (1+ (min (length s1) (length s2)))
-     nil)))
-
 (defun sqlite-mode-extras--selected-table-name-in-query (query)
-  "Extract table name from sqlite SELECT query."
+  "Extract table name from sqlite SELECT QUERY."
   (when (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
     (let* ((words (split-string query))
            (from-index (cl-position "from" words :test #'string= :key #'downcase)))
@@ -306,6 +294,7 @@ When BACKWARD is set, navigate to previous column."
           (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name))))))
 
 (defun sqlite-mode-extras-execute-select-query (&optional query)
+  "Execute a SELECT QUERY."
   (interactive)
   (let* ((query (or query (read-string "Query: " "SELECT * from ")))
          (table (sqlite-mode-extras--selected-table-name-in-query query))
