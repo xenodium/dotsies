@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Alvaro Ramirez
 
 ;; Author: Alvaro Ramirez https://xenodium.com
-;; Version: 0.3
+;; Version: 0.4
 
 ;;; Commentary:
 ;; Helper additions `sqlite-mode'.
@@ -36,8 +36,8 @@
         (sqlite-mode-extras-execute-select-query query)
       (sqlite-execute
        sqlite--db
-       query)))
-  (sqlite-mode-extras-refresh))
+       query)
+      (sqlite-mode-extras-refresh))))
 
 (defun sqlite-mode-extras-edit-row-field ()
   "Edit current row's field."
@@ -104,10 +104,13 @@ If on table toggle expansion.  If on row, navigate to next field.
 When BACKWARD is set, navigate to previous field."
   (interactive)
   (let ((max (point-max)))
-    (if (and (eq (get-text-property (point) 'sqlite--type) 'table)
-             (get-text-property (point) 'sqlite--row))
-        (sqlite-mode-list-data)
-      (sqlite-mode-extras-next-column backward))))
+    (cond ((and (eq (get-text-property (point) 'sqlite--type) 'table)
+                (get-text-property (point) 'sqlite--row))
+           (sqlite-mode-list-data))
+          ((sqlite-mode-extras--on-select-query-p)
+           (sqlite-mode-extras--toggle-query-results-display))
+          (t
+           (sqlite-mode-extras-next-column backward)))))
 
 (defun sqlite-mode-extras-backtab-dwim ()
   "Like `sqlite-mode-extras-tab-dwim' but backwards."
@@ -257,6 +260,35 @@ When BACKWARD is set, navigate to previous column."
   "Return t if point is on table."
   (eq (get-text-property (point) 'sqlite--type) 'table))
 
+(defun sqlite-mode-extras--toggle-query-results-display ()
+  "Toggle query results display."
+  (unless (sqlite-mode-extras--on-select-query-p)
+    (error "Not on a select query"))
+  (let ((query)
+        (inhibit-read-only t))
+    (save-excursion
+      (forward-line 2)
+      (if (looking-at " ")
+          ;; Delete results + newline.
+          (progn
+            (delete-region (point) (if (re-search-forward "^[^ ]" nil t)
+                                       (match-beginning 0)
+                                     (point-max)))
+            (forward-line -1)
+            (delete-line)
+            ;; (kill-whole-line)
+            )
+        (setq query (thing-at-point 'line t))
+        (forward-line -1)
+        (delete-line)
+        (sqlite-mode-extras-execute-select-query query t)))))
+
+(defun sqlite-mode-extras--on-select-query-p ()
+  "Return t if on SELECT statement."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at (rx bol (or "SELECT" "select") (1+ space)))))
+
 (defun sqlite-mode-extras--on-row-p ()
   "Look for line above with \='header-line\= face."
   (when (consp (get-text-property (point) 'sqlite--type))
@@ -286,15 +318,17 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--selected-table-name-in-query (query)
   "Extract table name from sqlite SELECT QUERY."
-  (when (string-match-p (rx bol (0+ space) "SELECT" (1+ space)) (downcase query))
+  (when (string-match-p (rx bol (or "SELECT" "select") (1+ space)) (downcase query))
     (let* ((words (split-string query))
            (from-index (cl-position "from" words :test #'string= :key #'downcase)))
       (when from-index
         (when-let ((table-name (nth (1+ from-index) words)))
           (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name))))))
 
-(defun sqlite-mode-extras-execute-select-query (&optional query)
-  "Execute a SELECT QUERY."
+(defun sqlite-mode-extras-execute-select-query (&optional query insert-at-point)
+  "Execute a SELECT QUERY.
+
+Set INSERT-AT-POINT to insert all results at point (instead of (point-max))"
   (interactive)
   (let* ((query (or query (read-string "Query: " "SELECT * from ")))
          (table (sqlite-mode-extras--selected-table-name-in-query query))
@@ -311,8 +345,9 @@ When BACKWARD is set, navigate to previous column."
                  query
                  nil
                  'set))
-          (goto-char (point-max))
-          (insert "\n")
+          (unless insert-at-point
+            (goto-char (point-max))
+            (insert "\n"))
           (save-excursion
             (insert (propertize (format "%s\n\n" (string-trim  query)) 'face 'font-lock-doc-face))
             (sqlite-mode--tablify (sqlite-columns stmt)
