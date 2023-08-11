@@ -18,6 +18,7 @@
 ;;          ("p" . previous-line)
 ;;          ("b" . sqlite-mode-extras-backtab-dwim)
 ;;          ("f" . sqlite-mode-extras-tab-dwim)
+;;          ("DEL" . sqlite-mode-extras-delete-row-dwim)
 ;;          ("g" . sqlite-mode-extras-refresh)
 ;;          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
 ;;          ("<tab>" . sqlite-mode-extras-tab-dwim)
@@ -57,13 +58,41 @@
               (current-line (line-number-at-pos))
               (current-column (current-column)))
     (unless (string-equal (car (seq-first columns)) "id")
-      (error "First row must be rowid"))
+      (error "First row must be 'id'"))
     (sqlite-execute
      sqlite--db
      (format "UPDATE %s SET %s = ? WHERE rowid = ?"
              (cdr table)
              column)
      (list value (car row)))
+    (sqlite-mode-extras-refresh)))
+
+(defun sqlite-mode-extras-delete-row-dwim ()
+  "Delete current row or rows in region."
+  (interactive)
+  (when-let* ((table (get-text-property (point) 'sqlite--type))
+              (rows (if (region-active-p)
+                        (let ((start (region-beginning))
+                              (end (region-end))
+                              (rows))
+                          (save-excursion
+                            (goto-char start)
+                            (while (and (< (point) end) (not (eobp)))
+                              (when-let ((row (get-text-property (point) 'sqlite--row)))
+                                (setq rows (cons row rows)))
+                              (forward-line 1)))
+                          rows)
+                      (list (get-text-property (point) 'sqlite--row))))
+              (rowids (mapconcat (lambda (item) (number-to-string (car item))) rows ", "))
+              (columns (sqlite-mode-extras--table-header-column-details
+                        (sqlite-mode-extras--table-header-line))))
+    (unless (string-equal (car (seq-first columns)) "id")
+      (error "First row must be 'id'"))
+    (unless (yes-or-no-p (format "Delete from '%s' rowid = %s?" (cdr table) rowids))
+      (user-error "Aborted"))
+    (sqlite-execute
+     sqlite--db
+     (format "DELETE FROM  %s WHERE rowid IN (%s);" (cdr table) rowids))
     (sqlite-mode-extras-refresh)))
 
 (defun sqlite-mode-extras-add-row ()
