@@ -23,6 +23,8 @@
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
+  (when (>= emacs-major-version 29)
+    (setq compilation-max-output-line-length nil))
   (defun ar/compile (prefix)
     (interactive "p")
     (if (and (eq prefix 1)
