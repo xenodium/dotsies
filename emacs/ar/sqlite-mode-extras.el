@@ -135,11 +135,15 @@
 
 (defun sqlite-mode-extras--type-property-at-point ()
   "Get `sqlite--type property' at point."
-  (get-text-property (point) 'sqlite--type))
+  (if (and (eolp) (not (bolp)))
+      (get-text-property (1- (point)) 'sqlite--type)
+    (get-text-property (point) 'sqlite--type)))
 
 (defun sqlite-mode-extras--row-property-at-point ()
   "Get `sqlite--row property' at point."
-  (get-text-property (point) 'sqlite--row))
+  (if (and (eolp) (not (bolp)))
+      (get-text-property (1- (point)) 'sqlite--row)
+    (get-text-property (point) 'sqlite--row)))
 
 (defun sqlite-mode-extras-ret-dwim ()
   "DWIM binding for RET.
@@ -217,15 +221,17 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--resolve-table-column ()
   "Resolve point to relevant table column."
-  (when-let* ((columns (sqlite-mode-extras--table-header-column-details
-                        (sqlite-mode-extras--table-header-line)))
-              (column (seq-find (lambda (column)
-                                  (let ((start (car (nth 1 column)))
-                                        (end (cdr (nth 1 column))))
-                                    (and (<= start (current-column))
-                                         (<= (current-column) end))))
-                                columns)))
-    (seq-first column)))
+  (let* ((columns (sqlite-mode-extras--table-header-column-details
+                   (sqlite-mode-extras--table-header-line)))
+         (column (seq-find (lambda (column)
+                             (let ((start (car (nth 1 column)))
+                                   (end (cdr (nth 1 column))))
+                               (and (<= start (current-column))
+                                    (<= (current-column) end))))
+                           columns)))
+    (or (seq-first column)
+        ;; If at end of line, assume last column.
+        (and (eolp) (not (bolp)) (car (car (last columns)))))))
 
 (defun sqlite-mode-extras--assert-on-row ()
   "Ensure point is on a table row."
@@ -358,7 +364,7 @@ When BACKWARD is set, navigate to previous column."
 (defun sqlite-mode-extras--on-row-p ()
   "Look for line above with \='header-line\= face."
   (when (consp (sqlite-mode-extras--type-property-at-point))
-    (eq (car (get-text-property (point) 'sqlite--type)) 'row)))
+    (eq (car (sqlite-mode-extras--type-property-at-point)) 'row)))
 
 (defun sqlite-mode-extras--table-header-line ()
   "Look for line above with \='header-line\= face."
