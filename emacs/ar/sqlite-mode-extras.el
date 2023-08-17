@@ -125,8 +125,13 @@
     (sqlite-mode-extras-refresh)
     (sqlite-mode-extras--end-of-table)
     (beginning-of-line)
-    (sqlite-mode-extras-next-column)
-    (sqlite-mode-extras-next-column)))
+    ;; Move to first non-id column.
+    (while (and (not (sqlite-mode-extras--point-at-last-column-p))
+                (not (equal (sqlite-mode-extras--resolve-table-column)
+                            last-column))
+                (equal (sqlite-mode-extras--resolve-table-column) "id"))
+      (sqlite-mode-extras-next-column))
+    (sqlite-mode-extras-edit-row-field)))
 
 (defun sqlite-mode-extras-ret-dwim ()
   "DWIM binding for RET.
