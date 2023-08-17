@@ -54,9 +54,7 @@
                          (read-number (format "Update '%s': " column)
                                       (sqlite-mode-extras--row-field-value-at-point))
                        (read-string (format "Update '%s': " column)
-                                    (sqlite-mode-extras--row-field-value-at-point))))
-              (current-line (line-number-at-pos))
-              (current-column (current-column)))
+                                    (sqlite-mode-extras--row-field-value-at-point)))))
     (unless (string-equal (car (seq-first columns)) "id")
       (error "First row must be 'id'"))
     (sqlite-execute
@@ -70,30 +68,40 @@
 (defun sqlite-mode-extras-delete-row-dwim ()
   "Delete current row or rows in region."
   (interactive)
-  (when-let* ((table (get-text-property (point) 'sqlite--type))
-              (rows (if (region-active-p)
-                        (let ((start (region-beginning))
-                              (end (region-end))
-                              (rows))
-                          (save-excursion
-                            (goto-char start)
-                            (while (and (< (point) end) (not (eobp)))
-                              (when-let ((row (get-text-property (point) 'sqlite--row)))
-                                (setq rows (cons row rows)))
-                              (forward-line 1)))
-                          rows)
-                      (list (get-text-property (point) 'sqlite--row))))
-              (rowids (mapconcat (lambda (item) (number-to-string (car item))) rows ", "))
-              (columns (sqlite-mode-extras--table-header-column-details
-                        (sqlite-mode-extras--table-header-line))))
-    (unless (string-equal (car (seq-first columns)) "id")
-      (error "First row must be 'id'"))
-    (unless (yes-or-no-p (format "Delete from '%s' rowid = %s?" (cdr table) rowids))
-      (user-error "Aborted"))
-    (sqlite-execute
-     sqlite--db
-     (format "DELETE FROM  %s WHERE rowid IN (%s);" (cdr table) rowids))
-    (sqlite-mode-extras-refresh)))
+  (cond ((sqlite-mode-extras--on-select-query-p)
+         (sqlite-mode-extras--toggle-query-results-display t))
+        (t
+         (when-let* ((table (get-text-property (point) 'sqlite--type))
+                     (pos (point))
+                     (rows (if (region-active-p)
+                               (let* ((start (region-beginning))
+                                      (end (region-end))
+                                      (rows))
+                                 (setq pos (min start end))
+                                 (save-excursion
+                                   (goto-char start)
+                                   (while (and (< (point) end) (not (eobp)))
+                                     (when-let ((row (get-text-property (point) 'sqlite--row)))
+                                       (setq rows (cons row rows)))
+                                     (forward-line 1)))
+                                 rows)
+                             (list (get-text-property (point) 'sqlite--row))))
+                     (rowids (mapconcat (lambda (item) (number-to-string (car item))) rows ", "))
+                     (columns (sqlite-mode-extras--table-header-column-details
+                               (sqlite-mode-extras--table-header-line))))
+           (unless (string-equal (car (seq-first columns)) "id")
+             (error "First row must be 'id'"))
+           (unless (yes-or-no-p (format "Delete from '%s' rowid = %s?" (cdr table) rowids))
+             (user-error "Aborted"))
+           (sqlite-execute
+            sqlite--db
+            (format "DELETE FROM  %s WHERE rowid IN (%s);" (cdr table) rowids))
+           (sqlite-mode-extras-refresh)))))
+
+(defun sqlite-mode-extras--point-at-last-column-p ()
+  (when-let ((last-column (car (car (last (sqlite-mode-extras--table-header-column-details
+                                           (sqlite-mode-extras--table-header-line)))))))
+    (equal (sqlite-mode-extras--resolve-table-column) last-column)))
 
 (defun sqlite-mode-extras-add-row ()
   "Add a row to current table."
@@ -105,7 +113,10 @@
                             (cdr type))
                            ((eq type 'table)
                             (car row))))
-         (text-before (buffer-string)))
+         (columns (sqlite-mode-extras--table-header-column-details
+                   (sqlite-mode-extras--table-header-line)))
+         (last-column (car (car (last (sqlite-mode-extras--table-header-column-details
+                                       (sqlite-mode-extras--table-header-line)))))))
     (unless table-name
       (user-error "No table at point"))
     (sqlite-execute
@@ -240,14 +251,25 @@ When BACKWARD is set, navigate to previous column."
     (forward-line))
   (forward-line -1))
 
+(defmacro sqlite-mode-extras--save-excursion (&rest body)
+  "Like `save-excursion', but line column based."
+  (declare (indent 0) (debug t))
+  `(let ((current-line (if (region-active-p)
+                           (min (line-number-at-pos (region-beginning))
+                                (line-number-at-pos (region-end)))
+                         (line-number-at-pos)))
+         (current-line-column (current-column)))
+     (unwind-protect
+         (save-excursion ,@body)
+       (forward-line (- current-line (line-number-at-pos)))
+       (move-to-column current-line-column))))
+
 (defun sqlite-mode-extras-refresh ()
   "Refresh all listings and table queries."
   (interactive)
   (let ((expanded-tables (sqlite-mode-extras--expanded-tables))
-        (current-line (line-number-at-pos))
-        (current-column (current-column))
         (select-queries (sqlite-mode-extras--get-select-lines)))
-    (save-excursion
+    (sqlite-mode-extras--save-excursion
       (sqlite-mode-list-tables)
       (goto-char (point-min))
       (while (not (eobp))
@@ -257,9 +279,7 @@ When BACKWARD is set, navigate to previous column."
         (forward-line))
       (mapc (lambda (query)
               (sqlite-mode-extras-execute-select-query query))
-            select-queries))
-    (forward-line (- current-line (line-number-at-pos)))
-    (move-to-column current-column)))
+            select-queries))))
 
 (defun sqlite-mode-extras--expanded-tables ()
   "Collect all the tables names that are expanded."
@@ -291,7 +311,7 @@ When BACKWARD is set, navigate to previous column."
   "Return t if point is on table."
   (eq (get-text-property (point) 'sqlite--type) 'table))
 
-(defun sqlite-mode-extras--toggle-query-results-display ()
+(defun sqlite-mode-extras--toggle-query-results-display (&optional remove)
   "Toggle query results display."
   (unless (sqlite-mode-extras--on-select-query-p)
     (error "Not on a select query"))
@@ -307,12 +327,14 @@ When BACKWARD is set, navigate to previous column."
                                      (point-max)))
             (forward-line -1)
             (delete-line)
-            ;; (kill-whole-line)
-            )
+            (when remove
+              (forward-line -1)
+              (delete-line)))
         (setq query (thing-at-point 'line t))
         (forward-line -1)
         (delete-line)
-        (sqlite-mode-extras-execute-select-query query t)))))
+        (unless remove
+          (sqlite-mode-extras-execute-select-query query t))))))
 
 (defun sqlite-mode-extras--on-select-query-p ()
   "Return t if on SELECT statement."
