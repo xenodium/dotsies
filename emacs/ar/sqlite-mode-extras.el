@@ -45,8 +45,8 @@
 (defun sqlite-mode-extras-edit-row-field ()
   "Edit current row's field."
   (interactive)
-  (when-let* ((table (get-text-property (point) 'sqlite--type))
-              (row (get-text-property (point) 'sqlite--row))
+  (when-let* ((table (sqlite-mode-extras--type-property-at-point))
+              (row (sqlite-mode-extras--row-property-at-point))
               (columns (sqlite-mode-extras--table-header-column-details
                         (sqlite-mode-extras--table-header-line)))
               (column (sqlite-mode-extras--resolve-table-column))
@@ -71,7 +71,7 @@
   (cond ((sqlite-mode-extras--on-select-query-p)
          (sqlite-mode-extras--toggle-query-results-display t))
         (t
-         (when-let* ((table (get-text-property (point) 'sqlite--type))
+         (when-let* ((table (sqlite-mode-extras--type-property-at-point))
                      (pos (point))
                      (rows (if (region-active-p)
                                (let* ((start (region-beginning))
@@ -81,11 +81,11 @@
                                  (save-excursion
                                    (goto-char start)
                                    (while (and (< (point) end) (not (eobp)))
-                                     (when-let ((row (get-text-property (point) 'sqlite--row)))
+                                     (when-let ((row (sqlite-mode-extras--row-property-at-point)))
                                        (setq rows (cons row rows)))
                                      (forward-line 1)))
                                  rows)
-                             (list (get-text-property (point) 'sqlite--row))))
+                             (list (sqlite-mode-extras--row-property-at-point))))
                      (rowids (mapconcat (lambda (item) (number-to-string (car item))) rows ", "))
                      (columns (sqlite-mode-extras--table-header-column-details
                                (sqlite-mode-extras--table-header-line))))
@@ -106,8 +106,8 @@
 (defun sqlite-mode-extras-add-row ()
   "Add a row to current table."
   (interactive)
-  (let* ((type (get-text-property (point) 'sqlite--type))
-         (row (get-text-property (point) 'sqlite--row))
+  (let* ((type (sqlite-mode-extras--type-property-at-point))
+         (row (sqlite-mode-extras--row-property-at-point))
          (table-name (cond ((and (consp type)
                                  (eq (car type) 'row))
                             (cdr type))
@@ -133,13 +133,21 @@
       (sqlite-mode-extras-next-column))
     (sqlite-mode-extras-edit-row-field)))
 
+(defun sqlite-mode-extras--type-property-at-point ()
+  "Get `sqlite--type property' at point."
+  (get-text-property (point) 'sqlite--type))
+
+(defun sqlite-mode-extras--row-property-at-point ()
+  "Get `sqlite--row property' at point."
+  (get-text-property (point) 'sqlite--row))
+
 (defun sqlite-mode-extras-ret-dwim ()
   "DWIM binding for RET.
 
 If on table toggle expansion.  If on row, edit it."
   (interactive)
-  (if (and (eq (get-text-property (point) 'sqlite--type) 'table)
-           (get-text-property (point) 'sqlite--row))
+  (if (and (eq (sqlite-mode-extras--type-property-at-point) 'table)
+           (sqlite-mode-extras--row-property-at-point))
       (sqlite-mode-list-data)
     (sqlite-mode-extras-edit-row-field)))
 
@@ -151,8 +159,8 @@ If on table toggle expansion.  If on row, navigate to next field.
 When BACKWARD is set, navigate to previous field."
   (interactive)
   (let ((max (point-max)))
-    (cond ((and (eq (get-text-property (point) 'sqlite--type) 'table)
-                (get-text-property (point) 'sqlite--row))
+    (cond ((and (eq (sqlite-mode-extras--type-property-at-point) 'table)
+                (sqlite-mode-extras--row-property-at-point))
            (sqlite-mode-list-data))
           ((sqlite-mode-extras--on-select-query-p)
            (sqlite-mode-extras--toggle-query-results-display))
@@ -204,7 +212,7 @@ When BACKWARD is set, navigate to previous column."
                                          (<= (current-column) end))))
                                 columns))
               (column-pos (seq-position columns column))
-              (row (get-text-property (point) 'sqlite--row)))
+              (row (sqlite-mode-extras--row-property-at-point)))
     (seq-elt row column-pos)))
 
 (defun sqlite-mode-extras--resolve-table-column ()
@@ -300,8 +308,8 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--table-name ()
   "Return table name at point."
-  (when (eq (get-text-property (point) 'sqlite--type) 'table)
-    (car (get-text-property (point) 'sqlite--row))))
+  (when (eq (sqlite-mode-extras--type-property-at-point) 'table)
+    (car (sqlite-mode-extras--row-property-at-point))))
 
 (defun sqlite-mode-extras--table-expanded-p ()
   "Return t if table at point is expanded."
@@ -314,7 +322,7 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--on-table-p ()
   "Return t if point is on table."
-  (eq (get-text-property (point) 'sqlite--type) 'table))
+  (eq (sqlite-mode-extras--type-property-at-point) 'table))
 
 (defun sqlite-mode-extras--toggle-query-results-display (&optional remove)
   "Toggle query results display."
@@ -349,7 +357,7 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--on-row-p ()
   "Look for line above with \='header-line\= face."
-  (when (consp (get-text-property (point) 'sqlite--type))
+  (when (consp (sqlite-mode-extras--type-property-at-point))
     (eq (car (get-text-property (point) 'sqlite--type)) 'row)))
 
 (defun sqlite-mode-extras--table-header-line ()
