@@ -72,7 +72,7 @@
   (interactive)
   (cond ((sqlite-mode-extras--on-select-query-p)
          (sqlite-mode-extras--toggle-query-results-display t))
-        (t
+        ((sqlite-mode-extras--on-row-p)
          (when-let* ((table (sqlite-mode-extras--type-property-at-point))
                      (pos (point))
                      (rows (if (region-active-p)
@@ -101,6 +101,7 @@
            (sqlite-mode-extras-refresh)))))
 
 (defun sqlite-mode-extras--point-at-last-column-p ()
+  "Return t if point is on a table's last column."
   (when-let ((last-column (car (car (last (sqlite-mode-extras--table-header-column-details
                                            (sqlite-mode-extras--table-header-line)))))))
     (equal (sqlite-mode-extras--resolve-table-column) last-column)))
@@ -115,8 +116,6 @@
                             (cdr type))
                            ((eq type 'table)
                             (car row))))
-         (columns (sqlite-mode-extras--table-header-column-details
-                   (sqlite-mode-extras--table-header-line)))
          (last-column (car (car (last (sqlite-mode-extras--table-header-column-details
                                        (sqlite-mode-extras--table-header-line)))))))
     (unless table-name
@@ -137,9 +136,12 @@
 
 (defun sqlite-mode-extras--type-property-at-point ()
   "Get `sqlite--type property' at point."
-  (if (and (eolp) (not (bolp)))
-      (get-text-property (1- (point)) 'sqlite--type)
-    (get-text-property (point) 'sqlite--type)))
+  (save-excursion
+    (if (and (eolp) (not (bolp)))
+        (get-text-property (1- (point)) 'sqlite--type)
+      (when (sqlite-mode-extras--on-table-header-p)
+        (forward-line -1))
+      (get-text-property (point) 'sqlite--type))))
 
 (defun sqlite-mode-extras--row-property-at-point ()
   "Get `sqlite--row property' at point."
@@ -242,7 +244,6 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--table-header-column-details (header)
   "Return column details list for HEADER string."
-  (sqlite-mode-extras--assert-on-row)
   (let ((leading-space (when (string-match "^ *" header)
                          (match-string 0 header)))
         (len 0)
@@ -267,13 +268,17 @@ When BACKWARD is set, navigate to previous column."
 
 (defun sqlite-mode-extras--end-of-table ()
   "Go to end of current table."
+  (when (eq (sqlite-mode-extras--type-property-at-point) 'table)
+    (unless (sqlite-mode-extras--table-expanded-p)
+      (user-error "Table must be expanded"))
+    (forward-line 2))
   (while (and (sqlite-mode-extras--on-row-p)
               (not (eobp)))
     (forward-line))
   (forward-line -1))
 
 (defmacro sqlite-mode-extras--save-excursion (&rest body)
-  "Like `save-excursion', but line column based."
+  "Like `save-excursion' executing BODY, but line column based."
   (declare (indent 0) (debug t))
   `(let ((current-line (if (region-active-p)
                            (min (line-number-at-pos (region-beginning))
@@ -323,17 +328,16 @@ When BACKWARD is set, navigate to previous column."
   "Return t if table at point is expanded."
   (save-excursion
     (forward-line)
-    (eq 'header-line
-        (get-text-property 0 'face
-                           (replace-regexp-in-string
-                            "\\s-" "" (thing-at-point 'line))))))
+    (sqlite-mode-extras--on-table-header-p)))
 
 (defun sqlite-mode-extras--on-table-p ()
   "Return t if point is on table."
   (eq (sqlite-mode-extras--type-property-at-point) 'table))
 
 (defun sqlite-mode-extras--toggle-query-results-display (&optional remove)
-  "Toggle query results display."
+  "Toggle query results display.
+
+Set REMOVE to remove query and results."
   (unless (sqlite-mode-extras--on-select-query-p)
     (error "Not on a select query"))
   (let ((query)
@@ -368,6 +372,14 @@ When BACKWARD is set, navigate to previous column."
   (when (consp (sqlite-mode-extras--type-property-at-point))
     (eq (car (sqlite-mode-extras--type-property-at-point)) 'row)))
 
+
+(defun sqlite-mode-extras--on-table-header-p ()
+  "Return t if on table header."
+  (eq 'header-line
+      (get-text-property 0 'face
+                         (replace-regexp-in-string
+                          "\\s-" "" (thing-at-point 'line)))))
+
 (defun sqlite-mode-extras--table-header-line ()
   "Look for line above with \='header-line\= face."
   (save-excursion
@@ -377,15 +389,20 @@ When BACKWARD is set, navigate to previous column."
 (defun sqlite-mode-extras--table-header-pos ()
   "Look for line above with \='header-line\= face."
   (let ((pos))
-    (save-excursion
-      (while (and (not pos) (not (bobp)))
-        (when (and (thing-at-point 'line)
-                   (eq 'header-line
-                       (get-text-property 0 'face
-                                          (replace-regexp-in-string
-                                           "\\s-" "" (thing-at-point 'line)))))
+    (if (and (eq (sqlite-mode-extras--type-property-at-point) 'table)
+             (sqlite-mode-extras--table-expanded-p))
+        (save-excursion
+          (forward-line)
           (setq pos (line-beginning-position)))
-        (forward-line -1)))
+        (save-excursion
+          (while (and (not pos) (not (bobp)))
+            (when (and (thing-at-point 'line)
+                       (eq 'header-line
+                           (get-text-property 0 'face
+                                              (replace-regexp-in-string
+                                               "\\s-" "" (thing-at-point 'line)))))
+              (setq pos (line-beginning-position)))
+            (forward-line -1))))
     (unless pos
       (user-error "No table header found"))
     pos))
