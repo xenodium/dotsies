@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Alvaro Ramirez
 
 ;; Author: Alvaro Ramirez https://xenodium.com
-;; Version: 0.5
+;; Version: 0.6
 
 ;;; Commentary:
 ;; Helper additions for `sqlite-mode'.
