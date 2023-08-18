@@ -6,7 +6,7 @@
 ;; Version: 0.5
 
 ;;; Commentary:
-;; Helper additions `sqlite-mode'.
+;; Helper additions for `sqlite-mode'.
 
 
 ;; Suggested key bindings:
