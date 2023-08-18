@@ -66,6 +66,16 @@
             (view-mode +1)
             (select-window (get-buffer-window buffer-name)))))))
 
+  (defun ar/eval-uncommented-region (start end)
+    (interactive "r")
+    (let ((text (buffer-substring-no-properties start end)))
+      (with-temp-buffer
+        (insert text)
+        (emacs-lisp-mode)
+        (uncomment-region (point-min) (point-max))
+        (eval-buffer)
+        (message "Evaluated"))))
+
   (use-package relint
     :commands relint-current-buffer
     :ensure t)
