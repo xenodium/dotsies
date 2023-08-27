@@ -1,9 +1,9 @@
-;;; sqlite-mode-extras.el --- Extensions for sqlite-mode
+;;; sqlite-mode-extras.el --- Extensions for sqlite-mode. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023 Alvaro Ramirez
 
 ;; Author: Alvaro Ramirez https://xenodium.com
-;; Version: 0.6
+;; Version: 0.7
 
 ;;; Commentary:
 ;; Helper additions for `sqlite-mode'.
@@ -20,6 +20,9 @@
 ;;          ("f" . sqlite-mode-extras-tab-dwim)
 ;;          ("+" . sqlite-mode-extras-add-row)
 ;;          ("D" . sqlite-mode-extras-delete-row-dwim)
+;;          ("C" . sqlite-mode-extras-compose-and-execute)
+;;          ("E" . sqlite-mode-extras-execute)
+;;          ("S" . sqlite-mode-extras-execute-and-display-select-query)
 ;;          ("DEL" . sqlite-mode-extras-delete-row-dwim)
 ;;          ("g" . sqlite-mode-extras-refresh)
 ;;          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
@@ -44,6 +47,64 @@
             (string-split query ";"))
       (sqlite-mode-extras-refresh))))
 
+(defun sqlite-mode-extras-compose-and-execute ()
+  "Compose and execute a query."
+  (interactive)
+  (let* ((db-buffer (current-buffer))
+         (buffer-name "*SQLite compose query*")
+         (buffer (get-buffer-create buffer-name))
+         (instructions (concat "Type "
+                               (propertize "C-c C-c" 'face 'help-key-binding)
+                               " to execute query. "
+                               (propertize "C-c C-k" 'face 'help-key-binding)
+                               " to cancel and exit. "))
+         (query))
+    (add-to-list 'display-buffer-alist
+                 (cons buffer
+                       '((display-buffer-below-selected)
+                         (split-window-sensibly))))
+    (with-current-buffer buffer
+      (visual-line-mode +1)
+      (when view-mode
+        (view-mode -1)
+        (erase-buffer))
+      (local-set-key (kbd "C-c C-k")
+                     (lambda () (interactive)
+                       (quit-window t (get-buffer-window buffer))
+                       (message "exit")))
+      (local-set-key (kbd "C-c C-c")
+                     (lambda ()
+                       (interactive)
+                       (when (string-empty-p
+                              (string-trim
+                               (buffer-substring-no-properties
+                                (point-min) (point-max))))
+                         (erase-buffer)
+                         (user-error "Nothing to execute"))
+                       (if view-mode
+                           (progn
+                             (view-mode -1)
+                             (erase-buffer)
+                             (message instructions))
+                         (setq query
+                               (string-trim
+                                (buffer-substring-no-properties
+                                 (point-min) (point-max))))
+                         (view-mode +1)
+                         (setq view-exit-action 'kill-buffer)
+                         (with-current-buffer db-buffer
+                           (if (sqlite-mode-extras--selected-table-name-in-query query)
+                               (sqlite-mode-extras-execute-and-display-select-query query)
+                             (mapc (lambda (query)
+                                     (setq query (string-trim query))
+                                     (unless (string-empty-p query)
+                                       (sqlite-execute sqlite--db query)))
+                                   (string-split query ";"))
+                             (sqlite-mode-extras-refresh)))
+                         (quit-window t (get-buffer-window buffer)))))
+      (message instructions))
+    (pop-to-buffer buffer-name)))
+
 (defun sqlite-mode-extras-edit-row-field ()
   "Edit current row's field."
   (interactive)
@@ -53,9 +114,9 @@
                         (sqlite-mode-extras--table-header-line)))
               (column (sqlite-mode-extras--resolve-table-column))
               (value (if (numberp (sqlite-mode-extras--row-field-value-at-point))
-                         (read-number (format "Update '%s': " column)
+                         (read-number (format "%s: " column)
                                       (sqlite-mode-extras--row-field-value-at-point))
-                       (read-string (format "Update '%s': " column)
+                       (read-string (format "%s: " column)
                                     (sqlite-mode-extras--row-field-value-at-point)))))
     (unless (string-equal (car (seq-first columns)) "id")
       (error "First row must be 'id'"))
@@ -166,14 +227,13 @@ If on table toggle expansion.  If on row, navigate to next field.
 
 When BACKWARD is set, navigate to previous field."
   (interactive)
-  (let ((max (point-max)))
-    (cond ((and (eq (sqlite-mode-extras--type-property-at-point) 'table)
-                (sqlite-mode-extras--row-property-at-point))
-           (sqlite-mode-list-data))
-          ((sqlite-mode-extras--on-select-query-p)
-           (sqlite-mode-extras--toggle-query-results-display))
-          (t
-           (sqlite-mode-extras-next-column backward)))))
+  (cond ((and (eq (sqlite-mode-extras--type-property-at-point) 'table)
+              (sqlite-mode-extras--row-property-at-point))
+         (sqlite-mode-list-data))
+        ((sqlite-mode-extras--on-select-query-p)
+         (sqlite-mode-extras--toggle-query-results-display))
+        (t
+         (sqlite-mode-extras-next-column backward))))
 
 (defun sqlite-mode-extras-backtab-dwim ()
   "Like `sqlite-mode-extras-tab-dwim' but backwards."
@@ -188,8 +248,7 @@ When BACKWARD is set, navigate to previous column."
   (let* ((columns (sqlite-mode-extras--table-header-column-details
                    (sqlite-mode-extras--table-header-line)))
          (next-column (seq-find (lambda (column)
-                                  (let ((start (car (nth 1 column)))
-                                        (end (cdr (nth 1 column))))
+                                  (let ((start (car (nth 1 column))))
                                     (> start (current-column))))
                                 columns))
          (prev-column-index (if next-column
@@ -246,7 +305,6 @@ When BACKWARD is set, navigate to previous column."
   "Return column details list for HEADER string."
   (let ((leading-space (when (string-match "^ *" header)
                          (match-string 0 header)))
-        (len 0)
         (start 0)
         columns)
     (with-temp-buffer
