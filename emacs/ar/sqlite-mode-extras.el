@@ -36,7 +36,7 @@
   (interactive)
   (let* ((query (read-string "Execute query: ")))
     (if (sqlite-mode-extras--selected-table-name-in-query query)
-        (sqlite-mode-extras-execute-select-query query)
+        (sqlite-mode-extras-execute-and-display-select-query query)
       (mapc (lambda (query)
               (setq query (string-trim query))
               (unless (string-empty-p query)
@@ -304,7 +304,7 @@ When BACKWARD is set, navigate to previous column."
           (sqlite-mode-list-data))
         (forward-line))
       (mapc (lambda (query)
-              (sqlite-mode-extras-execute-select-query query))
+              (sqlite-mode-extras-execute-and-display-select-query query))
             select-queries))))
 
 (defun sqlite-mode-extras--expanded-tables ()
@@ -359,7 +359,7 @@ Set REMOVE to remove query and results."
         (forward-line -1)
         (delete-line)
         (unless remove
-          (sqlite-mode-extras-execute-select-query query t))))))
+          (sqlite-mode-extras-execute-and-display-select-query query t))))))
 
 (defun sqlite-mode-extras--on-select-query-p ()
   "Return t if on SELECT statement."
@@ -416,7 +416,7 @@ Set REMOVE to remove query and results."
         (when-let ((table-name (nth (1+ from-index) words)))
           (replace-regexp-in-string "[^a-zA-Z0-9_]" "" table-name))))))
 
-(defun sqlite-mode-extras-execute-select-query (&optional query insert-at-point)
+(defun sqlite-mode-extras-execute-and-display-select-query (&optional query insert-at-point)
   "Execute a SELECT QUERY.
 
 Set INSERT-AT-POINT to insert all results at point (instead of (point-max))"
