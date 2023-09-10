@@ -558,7 +558,7 @@ parameter is the buffer, which is the `car' or ARGS."
             (response
              (car
               (read-multiple-choice
-               (format "Buffer %s modified."
+               (format "Save pending changes in %s?"
                        (buffer-name))
                '((?s "Save" "save the buffer and then kill it")
                  (?d "Discard" "kill buffer without saving"))
