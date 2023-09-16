@@ -105,6 +105,11 @@ on the current line, if any."
     ;; Remember more commit messages.
     (log-edit-comment-ring (make-ring 1000))))
 
+(use-package igist
+  :custom
+  (igist-current-user-name "xenodium")
+  :ensure t)
+
 (use-package diff-hl
   :ensure t
   :hook ((prog-mode . diff-hl-mode)
