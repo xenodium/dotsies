@@ -416,8 +416,9 @@ With PREFIX, add an outer pair around existing pair."
 
 ;; Monitor system clipboard and append kill ring.
 (use-package clipmon
+  :disabled t ;; It's interfering with copy/paste within macOS
   :ensure t
-  :defer 20
+  ;; :defer 20
   :config
   (clipmon-mode))
 
