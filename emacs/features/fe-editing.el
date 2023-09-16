@@ -174,8 +174,8 @@
                          ;; Doesn't play nice in mhtml-mode.
                          (smartparens-strict-mode -1))))
   :config
-  (defun ar/toggle-quote-wrap-all-in-region (beg end)
-    "Toggle wrapping all items in region with double quotes."
+  (defun ar/toggle-string-split-in-region (beg end)
+    "Split region string into multiple double quoted strings."
     (interactive (list (mark) (point)))
     (unless (region-active-p)
       (user-error "no region to wrap"))
