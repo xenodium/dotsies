@@ -146,7 +146,7 @@
    :map smartparens-mode-map
    ([remap kill-region] . kill-region)
    ("C-c e" . sp-change-enclosing)
-   ("M-'" . ar/rewrap-sexp-dwim)
+   ("M-'" . ar/sp-cycle-pair)
    ("M-k" . sp-backward-kill-sexp)
    ;; sp- equivalents choke on Swift' "\()", breaking navigation
    ;; in surrounding pairs. Use forward/backward-sexp instead.
@@ -189,6 +189,37 @@
                         " ")))
       (delete-region beg end)
       (insert replacement)))
+
+  (defun ar/sp-cycle-pair (prefix)
+    (interactive "P")
+    (let ((quotes (list (cons "'" "'")
+                        (cons "\"" "\"")))
+          (brackets (list (cons "(" ")")
+                          (cons "[" "]")
+                          (cons "{" "}")
+                          (cons "<" ">"))))
+      (if (and (sp-get-enclosing-sexp) prefix)
+          (sp-unwrap-sexp)
+        (when-let* ((sexp (sp-get-enclosing-sexp))
+                    (pairs (cond ((seq-find (lambda (pair)
+                                              (equal (car pair)
+                                                     (map-elt sexp :op)))
+                                            quotes)
+                                  quotes)
+                                 ((seq-find (lambda (pair)
+                                              (equal (car pair)
+                                                     (map-elt sexp :op)))
+                                            brackets)
+                                  brackets)))
+                    (next-pos (1+ (seq-position pairs
+                                                (map-elt sexp :op)
+                                                (lambda (e elt)
+                                                  (equal (car e) elt)))))
+                    (next (if (< next-pos (seq-length pairs))
+                              (seq-elt pairs next-pos)
+                            (seq-elt pairs 0))))
+          (when (>= next-pos ))
+          (sp-rewrap-sexp next)))))
 
   (defun ar/rewrap-sexp-dwim (prefix)
     "Like `sp-rewrap-sexp', but RET, DEL, SPC, and C-d remove pair.
