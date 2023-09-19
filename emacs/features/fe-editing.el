@@ -196,8 +196,7 @@
                         (cons "\"" "\"")))
           (brackets (list (cons "(" ")")
                           (cons "[" "]")
-                          (cons "{" "}")
-                          (cons "<" ">"))))
+                          (cons "{" "}"))))
       (if (and (sp-get-enclosing-sexp) prefix)
           (sp-unwrap-sexp)
         (when-let* ((sexp (sp-get-enclosing-sexp))
@@ -218,7 +217,6 @@
                     (next (if (< next-pos (seq-length pairs))
                               (seq-elt pairs next-pos)
                             (seq-elt pairs 0))))
-          (when (>= next-pos ))
           (sp-rewrap-sexp next)))))
 
   (defun ar/rewrap-sexp-dwim (prefix)
