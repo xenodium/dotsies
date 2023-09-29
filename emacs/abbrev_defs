@@ -52,5 +52,9 @@
     ("slideing" "sliding" nil :count 0)
     ("throaway" "throwaway" nil :count 0)
     ("youre" "your" nil :count 0)
+    ("Alternativelys" "Alternatively" nil :count 0)
+    ("advaced" "advanced" nil :count 0)
+    ("discussionr" "discussion" nil :count 0)
+    ("firctionless" "frictionless" nil :count 0)
    ))
 
