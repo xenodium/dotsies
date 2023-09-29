@@ -106,9 +106,19 @@ on the current line, if any."
     (log-edit-comment-ring (make-ring 1000))))
 
 (use-package igist
+  :ensure t
+  :commands
+  (igist-create-new-gist
+   igist-list-gists)
   :custom
   (igist-current-user-name "xenodium")
-  :ensure t)
+  (igist-list-format (igist-pick-from-alist
+                      '(description
+                        public
+                        updated_at
+                        comments
+                        files)
+                      (copy-tree igist-default-formats))))
 
 (use-package diff-hl
   :ensure t
