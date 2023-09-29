@@ -1,5 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package gcmh
+  :ensure t
+  :config
+  (gcmh-mode +1))
+
 (use-package use-package-ensure-system-package
   :ensure t)
 
