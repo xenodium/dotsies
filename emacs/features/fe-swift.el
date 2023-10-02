@@ -46,6 +46,8 @@
     :ensure t
     :hook (swift-mode . eglot-ensure)
     :config
+    (message "warning: `jsonrpc--log-event' is ignored.")
+    (fset #'jsonrpc--log-event #'ignore)
     (add-to-list 'eglot-server-programs '(swift-mode . ("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))))
 
   ;; (use-package lsp-mode
