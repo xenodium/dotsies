@@ -585,24 +585,12 @@ Replaces `kill-buffer--possibly-save' as advice, so
 ORIGINAL-FUNCTION is unused and never delegated to. Its first
 parameter is the buffer, which is the `car' or ARGS."
       (let ((buffer (car args))
-            (response
-             (car
-              (read-multiple-choice
-               (format "Save pending changes in %s?"
-                       (buffer-name))
-               '((?s "Save" "save the buffer and then kill it")
-                 (?d "Discard" "kill buffer without saving"))
-               nil nil (and (not use-short-answers)
-                            (not (use-dialog-box-p)))))))
-        (cond ((equal response ?s)
-               (progn
-                 (with-current-buffer buffer
-                   (save-buffer))
-                 t))
-              ((equal response ?d)
-               t)
-              (t
-               nil))))
+            (save (y-or-n-p (format "Save pending changes in %s?"
+                                    (buffer-name)))))
+        (when save
+          (with-current-buffer buffer
+            (save-buffer)))
+        t))
     (advice-add 'kill-buffer--possibly-save :around #'adviced:kill-buffer--possibly-save)))
 
 ;; Open rc files with conf-mode.
