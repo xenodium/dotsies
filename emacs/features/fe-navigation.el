@@ -123,13 +123,14 @@ Repeated invocations toggle between the two most recently open buffers."
 
   (smart-jump-setup-default-registers)
 
-  (smart-jump-register
-   :modes '(swift-mode objc-mode)
-   :jump-fn 'counsel-etags-find-tag-at-point
-   :pop-fn 'pop-tag-mark
-   :should-jump t
-   :heuristic 'point
-   :async t)
+  ;; Disabling as now handled by eglot.
+  ;; (smart-jump-register
+  ;;  :modes '(swift-mode objc-mode)
+  ;;  :jump-fn 'counsel-etags-find-tag-at-point
+  ;;  :pop-fn 'pop-tag-mark
+  ;;  :should-jump t
+  ;;  :heuristic 'point
+  ;;  :async t)
 
   (smart-jump-register
    :modes '(emacs-lisp-mode lisp-interaction-mode)
