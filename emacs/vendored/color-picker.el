@@ -19,7 +19,7 @@
 (defun nscolor2hex (color)
   "Converts colors from `NSColor' format to hex values"
   (concat "#"                           ; Add # at the front
-          (mapconcat 'identity          ; concate the list
+          (mapconcat 'identity          ; concatenate the list
                      (mapcar '(lambda (x) ;returns ("hex" "hex" "hex")
                                 (let ((col (lsh (string-to-number x) -8)))
                                   (if (< col 16)
@@ -31,8 +31,7 @@
   "Calls OS X color picker and insert the chosen color. It is really messy because of applyscript"
   (interactive)
   (let ((result
-         (do-applescript "tell application \"Finder\"
-	activate
+         (do-applescript "tell application \"Emacs\"
 set result to \"\"
 set x to (choose color)
 set result to item 1 of x as string
@@ -44,7 +43,8 @@ return result
 end tell")))
     (if callback ; For Easy Customization
         (funcall callback (nscolor2hex result))
-      (insert (nscolor2hex result)))
+      (message "Copied %s" (nscolor2hex result))
+      (kill-new (nscolor2hex result)))
     (do-applescript "tell application \"Emacs\" to activate")))
 
 (provide 'color-picker)
