@@ -217,7 +217,13 @@
                   mode-line-front-space
                   mode-line-client
                   mode-line-frame-identification
-                  mode-line-buffer-identification " " mode-line-position
+                  mode-line-buffer-identification
+                  (:eval
+                   (when (eq major-mode 'image-mode)
+                     ;; Needs imagemagick installed.
+                     (process-lines "identify" "-format" "[%m %wx%h %b]" (buffer-file-name))))
+                  " "
+                  mode-line-position
                   (vc-mode vc-mode)
                   (multiple-cursors-mode mc/mode-line)
                   " " mode-line-modes
