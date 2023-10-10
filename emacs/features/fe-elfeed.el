@@ -597,7 +597,7 @@ preferring the preferred type."
   (async-start
    `(lambda ()
       (shell-command-to-string
-       (format "youtube-dl --newline -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
+       (format "yt-dlp --newline -o \"~/Downloads/%%(title)s.%%(ext)s\" %s" ,url)))
    `(lambda (output)
       (if (string-match-p "ERROR:" output)
           (message "%s" output)
