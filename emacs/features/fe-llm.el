@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package chatgpt-shell
+  :commands
+  chatgpt-shell
   :validate-custom
   ((chatgpt-shell-openai-key
     (lambda ()
