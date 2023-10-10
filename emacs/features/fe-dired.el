@@ -351,6 +351,18 @@ If `universal-argument' is called, copy only the dir path."
          ([remap dired-smart-shell-command] . dwim-shell-command)
          ("C-x C-d" . dwim-shell-commands-duplicate))
   :config
+  (defun dwim-shell-commands-git-set-author-name-and-email-credentials ()
+    "Set my name and email at git repo in `default-directory'."
+    (interactive)
+    (dwim-shell-command-on-marked-files
+     "Set git name and email"
+     (format "set -o errexit
+              git config user.name xenodium
+              git config user.email %s"
+             (replace-regexp-in-string "/" "" "me/+/gh/@/xenodium/./com"))
+     :utils "git"
+     :error-autofocus t
+     :silent-success t))
   (use-package dwim-shell-commands
     :commands (dwim-shell-commands-duplicate)
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
