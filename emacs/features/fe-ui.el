@@ -220,8 +220,10 @@
                   mode-line-buffer-identification
                   (:eval
                    (when (eq major-mode 'image-mode)
-                     ;; Needs imagemagick installed.
-                     (process-lines "identify" "-format" "[%m %wx%h %b]" (buffer-file-name))))
+                     ;; imagemagick alternative (also shows type and file size).
+                     ;; (process-lines "identify" "-format" "[%m %wx%h %b]" (buffer-file-name))
+                     (let ((size (image-size (create-image (buffer-file-name) nil nil :scale 1.0) t)))
+                       (list (format "%dx%d" (car size) (cdr size))))))
                   " "
                   mode-line-position
                   (vc-mode vc-mode)
