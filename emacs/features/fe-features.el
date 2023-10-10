@@ -65,6 +65,7 @@
 (ar/init--idle-load "~/.emacs.d/features/fe-tags")
 (ar/init--idle-load "~/.emacs.d/features/fe-media")
 (ar/init--idle-load "~/.emacs.d/features/fe-calendar")
+(ar/init--idle-load "~/.emacs.d/features/fe-llm")
 
 ;; Keep last. It enables view-only mode in prog modes,
 ;; which interferes with installing some packages that write to .el files.
