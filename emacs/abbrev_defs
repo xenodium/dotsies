@@ -56,5 +56,12 @@
     ("advaced" "advanced" nil :count 0)
     ("discussionr" "discussion" nil :count 0)
     ("firctionless" "frictionless" nil :count 0)
+    ("concate" "concatenate" nil :count 0)
+    ("loook" "look" nil :count 0)
+    ("modeline" "mode line" nil :count 1)
+    ("remeber" "remember" nil :count 0)
+    ("somehwere" "somewhere" nil :count 0)
+    ("temporay" "temporary" nil :count 0)
+    ("transfering" "transferring" nil :count 0)
    ))
 
