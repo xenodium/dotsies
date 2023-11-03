@@ -17,11 +17,15 @@
   ;; Open git file at remote/repo location.
   (use-package browse-at-remote
     :ensure t
+    :commands
+    (ar/browse-at-remote-open-at-github
+     browse-at-remote)
     :config
     (transient-append-suffix 'magit-file-dispatch "m"
       '("o" "Browse file" browse-at-remote))
     (transient-replace-suffix 'magit-dispatch "o"
-      '("o" "Browse file" browse-at-remote)))
+      '("o" "Browse file" browse-at-remote))
+    (defalias 'ar/browse-at-remote-open-at-github #'browse-at-remote))
 
   (use-package git-rebase
     :commands git-rebase-mode
