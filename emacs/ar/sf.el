@@ -51,12 +51,22 @@
                           nil t)))
     (insert (nth 0 (split-string selection)))))
 
+;; (defun sf-symbol-symbols-join-icons-and-names ()
+;;   (interactive)
+;;   (while t
+;;     (execute-kbd-macro (read-kbd-macro "C-SPC C-f C-w C-e C-n C-a C-y SPC C-a \" C-e \" C-SPC C-a C-w <backspace> C-a C-y <return>"))))
+
 (defun sf-symbol--symbols ()
   ;; Generated against SF Symbols 5.0 (91).
   ;; https://developer.apple.com/sf-symbols
-  ;; ⌘-A - select all symbols
-  ;; ⌘-C - copy symbols
-  ;; ⇧-⌘-C - copy symbol names
+  ;;
+  ;; [SF Symbols] ⌘-A - select all symbols.
+  ;; [SF Symbols] ⌘-C - copy symbols (SF Symbols)
+  ;; [Emacs] Paste in Fundamental buffer as a single line (same as clipboard).
+  ;; [Emacs] Add new line to Emacs Fundamental buffer.
+  ;; [SF Symbols] ⇧-⌘-C - copy symbol names
+  ;; [Emacs] Paste in same Fundamental buffer as multiple lines (same as clipboard).
+  ;; [Emacs] M-x sf-symbol-symbols-join-icons-and-names (needs to be uncommented out in this file).
   '("􀈂 square.and.arrow.up"
     "􀈃 square.and.arrow.up.fill"
     "􁅅 square.and.arrow.up.circle"
