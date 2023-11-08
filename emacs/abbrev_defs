@@ -63,5 +63,7 @@
     ("somehwere" "somewhere" nil :count 0)
     ("temporay" "temporary" nil :count 0)
     ("transfering" "transferring" nil :count 0)
+    ("capitilization" "capitalization" nil :count 0)
+    ("checbox" "checkbox" nil :count 0)
    ))
 
