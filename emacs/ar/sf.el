@@ -53,8 +53,8 @@
 
 ;; (defun sf-symbol-symbols-join-icons-and-names ()
 ;;   (interactive)
-;;   (while t
-;;     (execute-kbd-macro (read-kbd-macro "C-SPC C-f C-w C-e C-n C-a C-y SPC C-a \" C-e \" C-SPC C-a C-w <backspace> C-a C-y <return>"))))
+;;   (execute-kbd-macro
+;;    (read-kbd-macro "C-SPC C-f C-w C-e C-n C-a C-y SPC C-a \" C-e \" C-SPC C-a C-w <backspace> C-a C-y <return>") 0))
 
 (defun sf-symbol--symbols ()
   ;; Generated against SF Symbols 5.0 (91).
