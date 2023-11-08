@@ -113,7 +113,9 @@
           (setq previous-value
                 (edebug-unwrap* previous-value)))
       (setq edebug-previous-result
-            (edebug-safe-prin1-to-string previous-value))))
+            (with-temp-message ""
+              (edebug-safe-prin1-to-string previous-value)
+              (message (prin1-to-string previous-value))))))
 
   (advice-add #'edebug-compute-previous-result
               :around
