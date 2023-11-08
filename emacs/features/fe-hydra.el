@@ -65,7 +65,7 @@ Open: _p_oint _e_xternally
   (defhydra hydra-open-prog-mode (:color blue)
     "open"
     ("o" ff-find-other-file "other")
-    ("e" crux-open-with "externally")
+    ("e" dwim-shell-commands-open-externally "externally")
     ("u" ar/misc-open-file-at-point "url at point")
     ("b" ar/open-closest-build-file-dwim "build file")
     ("q" nil "cancel"))
