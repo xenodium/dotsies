@@ -67,6 +67,11 @@
   :bind (("M-<up>" . drag-stuff-up)
          ("M-<down>" . drag-stuff-down)))
 
+(use-package saveplace
+  :defer 10
+  :config
+  (save-place-mode +1))
+
 ;; Remember history of things across launches (ie. kill ring).
 ;; From https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 (use-package savehist
