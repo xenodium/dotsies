@@ -130,7 +130,7 @@ end
 
 function searchEmacsBrowserBookmarks()
    appRequestingEmacs = hs.application.frontmostApplication()
-   emacsExecute(false, "(ar/modal-ivy-search-org-links)")
+   emacsExecute(false, "(os-present-bookmarks)")
    activateFirstOf({
          {
             bundleID="org.gnu.Emacs",
@@ -141,7 +141,7 @@ end
 
 function launchEmacsKeybindingI()
    appRequestingEmacs = hs.application.frontmostApplication()
-   emacsExecute(false, "(ar/modal-key-binding-i)")
+   emacsExecute(false, "(os-present-key-binding-i)")
    activateFirstOf({
          {
             bundleID="org.gnu.Emacs",

@@ -18,6 +18,7 @@
 
 (use-package dall-e-shell
   :validate-custom
-  ((dall-e-shell-openai-key
-    (lambda ()
-      (nth 0 (process-lines "pass" "show" "openai-key"))))))
+  (dall-e-shell-)
+  (dall-e-shell-model-version "dall-e-3"
+   (lambda ()
+     (nth 0 (process-lines "pass" "show" "openai-key")))))
