@@ -163,7 +163,7 @@ end
 
 function launchEmacsKeybindingV()
    appRequestingEmacs = hs.application.frontmostApplication()
-   emacsExecute(false, "(ar/modal-ivy-clipboard)")
+   emacsExecute(false, "(os-present-clipboard-manager)")
    activateFirstOf({
          {
             bundleID="org.gnu.Emacs",
