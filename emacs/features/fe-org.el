@@ -1009,7 +1009,9 @@ If VANILLA is non-nil, run the standard `org-capture'."
   :custom
   (org-capture-templates
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
-      "* TODO %?\nSCHEDULED: %t" :prepend t)))
+      "* TODO %?\nSCHEDULED: %t" :prepend t)
+     ("j" "Journelly" entry (file "~/Documents/My org files/Journelly.org")
+      "* %U [At home]\n%?" :prepend t)))
   :config
   (defun ar/org-capture-finalize-dwim (prefix)
     "With prefix, invoke `org-capture-finalize' else invoke `org-capture-finalize'."
