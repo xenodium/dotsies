@@ -65,5 +65,7 @@
     ("transfering" "transferring" nil :count 0)
     ("capitilization" "capitalization" nil :count 0)
     ("checbox" "checkbox" nil :count 0)
+    ("anywyre" "anywhere" nil :count 0)
+    ("summond" "summon" nil :count 0)
    ))
 
