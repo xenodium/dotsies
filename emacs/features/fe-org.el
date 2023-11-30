@@ -47,7 +47,7 @@
                         (?C . "#ff9200")
                         (?D . "#747474")))
   (org-log-done 'time)
-  (org-ellipsis "…")
+  (org-ellipsis " …")
   (org-fontify-emphasized-text t)
 
   ;; Fontify code in code blocks.
