@@ -11,6 +11,8 @@
   :bind (("C-c C-e" . chatgpt-shell-prompt-compose)
          :map org-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
+         :map eshell-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map mu4e-compose-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map emacs-lisp-mode-map
