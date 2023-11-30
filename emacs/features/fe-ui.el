@@ -50,8 +50,8 @@
       (set-cursor-color "#2BA3FF"))
 
     (with-eval-after-load 'faces
-      (set-face-attribute 'org-level-1 nil :foreground "#ff69b4" :background nil :box nil)
-      (set-face-attribute 'org-level-2 nil :inherit 'lisp-extra-font-lock-quoted :foreground nil :background nil :box nil)
+      (set-face-attribute 'org-level-1 nil :foreground "#ff69b4" :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-2 nil :inherit 'lisp-extra-font-lock-quoted :foreground 'unspecified :background 'unspecified :box nil)
       (set-face-attribute 'org-block nil :background "grey11" :box nil)))
 
   (defun ar/drop-material-org-present-tweaks ()
@@ -59,9 +59,9 @@
       (set-cursor-color "royal blue"))
 
     (with-eval-after-load 'faces
-      (set-face-attribute 'org-level-1 nil :foreground nil :background nil :box nil)
-      (set-face-attribute 'org-level-2 nil :inherit nil :foreground nil :background nil :box nil)
-      (set-face-attribute 'org-block nil :background nil :box nil)))
+      (set-face-attribute 'org-level-1 nil :foreground 'unspecified :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-2 nil :inherit nil :foreground 'unspecified :background 'unspecified :box nil)
+      (set-face-attribute 'org-block nil :background 'unspecified :box nil)))
 
   (defun ar/load-material-org-tweaks ()
     (with-eval-after-load 'frame
@@ -69,6 +69,7 @@
 
     (with-eval-after-load 'faces
       (set-face-attribute 'header-line nil :background "#212121" :foreground "dark grey")
+      (set-face-attribute 'internal-border nil :background "#212121")
       ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
       (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
                           ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
@@ -114,8 +115,8 @@
       (set-face-attribute 'eshell-prompt nil :foreground "#eeffff"))
 
     (with-eval-after-load 'company
-      (set-face-attribute 'company-preview-search nil :foreground "sandy brown" :background nil)
-      (set-face-attribute 'company-preview-common nil :inherit 'default :foreground nil :background "#212121"))
+      (set-face-attribute 'company-preview-search nil :foreground "sandy brown" :background 'unspecified)
+      (set-face-attribute 'company-preview-common nil :inherit 'default :foreground 'unspecified :background "#212121"))
 
     (with-eval-after-load 'company-box
       (set-face-attribute 'company-box-candidate  nil :inherit 'default :foreground "#eeffff" :background "#212121" :box nil)
@@ -133,7 +134,7 @@
 
     (with-eval-after-load 'paren
       (set-face-attribute 'show-paren-match nil
-                          :background nil
+                          :background 'unspecified
                           :foreground "#FA009A"))
 
     (with-eval-after-load 'org-indent
@@ -144,22 +145,22 @@
       (set-face-attribute 'org-done nil :foreground "#b9ccb2" :strike-through nil)
       (set-face-attribute 'org-agenda-date-today nil :foreground "#Fb1d84")
       (set-face-attribute 'org-agenda-done nil :foreground "#b9ccb2" :strike-through nil)
-      (set-face-attribute 'org-table nil :background nil)
-      (set-face-attribute 'org-code nil :background nil)
-      (set-face-attribute 'org-level-1 nil :background nil :box nil)
-      (set-face-attribute 'org-level-2 nil :background nil :box nil)
-      (set-face-attribute 'org-level-3 nil :background nil :box nil)
-      (set-face-attribute 'org-level-4 nil :background nil :box nil)
-      (set-face-attribute 'org-level-5 nil :background nil :box nil)
-      (set-face-attribute 'org-level-6 nil :background nil :box nil)
-      (set-face-attribute 'org-level-7 nil :background nil :box nil)
-      (set-face-attribute 'org-level-8 nil :background nil :box nil)
-      (set-face-attribute 'org-block-begin-line nil :background nil :box nil)
-      (set-face-attribute 'org-block-end-line nil :background nil :box nil)
-      (set-face-attribute 'org-block nil :background nil :box nil))
+      (set-face-attribute 'org-table nil :background 'unspecified)
+      (set-face-attribute 'org-code nil :background 'unspecified)
+      (set-face-attribute 'org-level-1 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-2 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-3 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-4 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-5 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-6 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-7 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-level-8 nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-block-begin-line nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-block-end-line nil :background 'unspecified :box nil)
+      (set-face-attribute 'org-block nil :background 'unspecified :box nil))
 
     (with-eval-after-load 'mu4e-vars
-      (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background nil)
+      (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background 'unspecified)
       (set-face-attribute 'mu4e-unread-face nil :inherit 'default :weight 'bold :foreground "#2BA3FF" :underline nil))
 
     ;; No color for fringe, blends with the rest of the window.
@@ -179,21 +180,21 @@
     (with-eval-after-load 'diredfl
       (set-face-attribute 'diredfl-flag-mark-line nil
                           :foreground "orange"
-                          :background nil))
+                          :background 'unspecified))
 
     (with-eval-after-load 'dired-subtree
       (set-face-attribute 'dired-subtree-depth-1-face nil
-                          :background nil)
+                          :background 'unspecified)
       (set-face-attribute 'dired-subtree-depth-2-face nil
-                          :background nil)
+                          :background 'unspecified)
       (set-face-attribute 'dired-subtree-depth-3-face nil
-                          :background nil)
+                          :background 'unspecified)
       (set-face-attribute 'dired-subtree-depth-4-face nil
-                          :background nil)
+                          :background 'unspecified)
       (set-face-attribute 'dired-subtree-depth-5-face nil
-                          :background nil)
+                          :background 'unspecified)
       (set-face-attribute 'dired-subtree-depth-6-face nil
-                          :background nil))
+                          :background 'unspecified))
 
     ;; Trying out line underline (instead of wave).
     (mapatoms (lambda (atom)
