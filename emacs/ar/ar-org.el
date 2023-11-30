@@ -12,39 +12,10 @@
 (require 's)
 (require 'cl-lib)
 
-(defvar ar/org-short-link-regex "^http://goo.gl")
-
 (cl-defstruct
     ar/org-link
   description
   url)
-
-(defun ar/org-short-links ()
-  "Extracts short links from `ar/org-get-daily-file-path'."
-  (with-current-buffer (find-file-noselect (expand-file-name (ar/org-get-daily-file-path)))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (cl-assert (ar/buffer-string-match-p (format ":CUSTOM_ID:[ ]*%s" "short-links"))
-                (format "Cannot find %s#%s" path "short-links"))
-        (goto-char (ar/buffer-first-match-beginning))
-        (org-end-of-meta-data t)
-        (let ((element (org-element-at-point)))
-          (-map
-           (lambda (line)
-             ;; Short links links are of the form:
-             ;; my/link - some description
-             (let* ((entry (s-split " - " line))
-                    (link (s-trim (nth 0 entry)))
-                    (description (s-trim (nth 1 entry))))
-               (make-ar/org-link :description description
-                                 :url link)))
-           (-filter (lambda (line)
-                      (not (s-blank-str? line)))
-                    (s-split "\n" (buffer-substring-no-properties
-                                   (org-element-property :contents-begin element)
-                                   (org-element-property :contents-end element))))))))))
 
 ;; TODO: Move to ar/org-daily.
 (defvar ar/org-daily-file-path "~/stuff/active/non-public/private.org"
