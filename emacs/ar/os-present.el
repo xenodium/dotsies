@@ -12,6 +12,7 @@
 (defmacro os-present (buffer-name &rest body)
   "Create a buffer with BUFFER-NAME and eval BODY in a basic frame."
   (declare (indent 1) (debug t))
+  ;; TODO: Consider using (get-buffer-create "*present*") as default.
   `(let* ((buffer (get-buffer-create ,buffer-name))
           (frame (make-frame '((auto-raise . t)
                                (font . "Menlo 15")
