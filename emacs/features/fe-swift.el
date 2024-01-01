@@ -18,7 +18,7 @@
                                lint-config-file)
                               ".swiftlint.yml")))
       (message "No buffer filename in swift mode."))
-    (setq-local company-backends '(company-bazel-swift-imports company-capf)))
+    (setq-local company-backends '(company-bazel-swift-imports company-capf company-yasnippet)))
 
   (require 'flycheck)
   (add-to-list 'flycheck-checkers 'swiftlint)
