@@ -149,7 +149,26 @@ on the current line, if any."
 
 (use-package vc-hooks
   :custom
-  (vc-handled-backends '(Git)))
+  (vc-handled-backends '(Git))
+  :config
+  (defun ar/apply-git-patch-from-clipboard-url ()
+    "Download and apply patch from clipboard URL to current git repo."
+    (interactive)
+    (let* ((git-root (vc-git-root default-directory))
+           (url (current-kill 0))
+           (patch-name (file-name-nondirectory
+                        (url-filename
+                         (url-generic-parse-url url))))
+           (default-directory git-root))
+      (unless git-root
+        (error "Not in a git repo"))
+      (unless (string-prefix-p "http" url)
+        (error "Clipboard is not an http URL"))
+      (with-temp-buffer
+        (url-insert-file-contents url)
+        (write-file patch-name))
+      (when (eq 0 (shell-command (format "git apply %s" (shell-quote-argument patch-name))))
+        (message "Applied %s" patch-name)))))
 
 (use-package diff-mode
   :defer
