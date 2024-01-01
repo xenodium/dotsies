@@ -41,6 +41,8 @@
     ("updaetd" "updated" nil :count 0)
     ("watnt" "want" nil :count 0)
     ("Hella" "Hello" nil :count 0)
+    ("efficent" "efficient" nil :count 0)
+    ("followup" "follow-up" nil :count 0)
     ("inavertently" "inadvertently" nil :count 0)
     ("ocasionally" "occasionally" nil :count 0)
     ("mostl" "mostly" nil :count 0)
@@ -67,5 +69,9 @@
     ("checbox" "checkbox" nil :count 0)
     ("anywyre" "anywhere" nil :count 0)
     ("summond" "summon" nil :count 0)
+    ("ocassionally" "occasionally" nil :count 0)
+    ("ocntinue" "continue" nil :count 0)
+    ("primarly" "primary" nil :count 0)
+    ("reponses" "responses" nil :count 0)
    ))
 
