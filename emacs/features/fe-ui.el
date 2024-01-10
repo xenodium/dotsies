@@ -289,3 +289,8 @@
 (use-package hide-mode-line
   :ensure t
   :commands hide-mode-line-mode)
+
+(use-package pixel-scroll
+  :defer 20
+  :config
+  (pixel-scroll-precision-mode +1))
