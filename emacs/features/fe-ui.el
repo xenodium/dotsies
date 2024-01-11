@@ -294,3 +294,11 @@
   :defer 20
   :config
   (pixel-scroll-precision-mode +1))
+
+(use-package winner
+  :bind(("M-<escape>" . winner-undo)
+        ;; These two are below esc on Macbook
+        ("M-§" . winner-undo)
+        ("M-±" . winner-redo))
+  :config
+  (winner-mode +1))
