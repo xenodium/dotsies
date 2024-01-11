@@ -297,6 +297,9 @@
 
 (use-package winner
   :bind(("M-<escape>" . winner-undo)
+        ;; These are below esc on external keyboard
+        ("M-`" . winner-undo)
+        ("M-~" . winner-redo)
         ;; These two are below esc on Macbook
         ("M-§" . winner-undo)
         ("M-±" . winner-redo))
