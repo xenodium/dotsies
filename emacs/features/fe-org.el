@@ -13,6 +13,7 @@
               ("C-c C-n" . ar/org-next-entry-or-next-visible-header)
               ("C-c C-p" . ar/org-previous-entry-or-previous-visible-header))
   :custom
+  (org-modules nil)
   (org-startup-folded t)
   (org-todo-keywords
    '((sequence
