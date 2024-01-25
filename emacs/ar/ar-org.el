@@ -150,37 +150,142 @@ Examples: path/to/file.txt#/s/regex Opens file.txt and moves cursor to regex."
      ((t (:foreground "#008ED1" :background nil))))
    '(which-func ((t (:foreground "green"))))))
 
-;; http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/?utm_source=feedburner&utm_medium=twitter&utm_campaign=Feed:+TheKitchinResearchGroup+(The+Kitchin+Research+Group)
-(defun ar/org-return ()
-  "Add new list or headline "
-  (interactive)
+;; https://github.com/jkitchin/scimax/blob/35fb264c9aa4e525d9e39b6fd54aeae9844d6ebd/scimax-org.el#L830
+(defun ar/org-return (&optional arg)
+  "Add new list item, heading or table row with RET.
+A double return on an empty element deletes it.
+Use a prefix arg to get regular RET.
+A prefix arg of 4 opens link in new window.
+A prefix arg of 5 opens link in new frame."
+  (interactive "P")
   (cond
-   ((org-in-item-p)
-    (if (org-element-property :contents-begin (org-element-context))
-        (org-insert-heading)
-      (beginning-of-line)
-      (setf (buffer-substring
-             (line-beginning-position) (line-end-position)) "")
-      (org-return)))
-   ((org-at-heading-p)
-    (if (not (string= "" (org-element-property :title (org-element-context))))
-        (progn (org-end-of-meta-data)
-               (org-insert-heading))
-      (beginning-of-line)
-      (setf (buffer-substring
-             (line-beginning-position) (line-end-position)) "")))
-   ((org-at-table-p)
-    (if (-any?
-         (lambda (x) (not (string= "" x)))
-         (nth
-          (- (org-table-current-dline) 1)
-          (org-table-to-lisp)))
-        (org-return)
-      ;; empty row
-      (beginning-of-line)
-      (setf (buffer-substring
-             (line-beginning-position) (line-end-position)) "")
-      (org-return)))
+   ;; single prefix arg, no fancy stuff, just org-return
+   ((and arg (listp arg) (equal arg '(4)))
+    (org-return))
+
+   ((null arg)
+    (cond
+
+     ((eq 'line-break (car (org-element-context)))
+      (org-return t))
+
+     ;; Open links like usual, unless point is at the end of a line.
+     ((and (eq 'link (car (org-element-context))) (not (eolp)))
+      (org-return))
+
+     ((looking-at org-heading-regexp)
+      (org-return))
+
+
+     ;; when you are here
+     ;; * headline...
+     ;;              ^
+     ;; this rule is activated
+     ((and (bolp)
+	   ;; This avoids the case where you are at the beginning of a line that is not folded
+	   (save-excursion
+	     (let ((p (point)))
+	       (org-beginning-of-line)
+	       (not (= p (point)))))
+	   ;; This is a heuristic device where I found C-a C-e does not return
+	   ;; to the same place. I feel like this is new behavior since org
+	   ;; 9.5ish, but am not sure
+	   (save-excursion
+	     (let ((p (point)))
+	       (org-beginning-of-line)
+	       (org-end-of-line)
+	       (not (= p (point))))))
+      (org-show-entry)
+      (org-insert-heading))
+
+     ;; It doesn't make sense to add headings in inline tasks. Thanks Anders
+     ;; Johansson!
+     ((org-inlinetask-in-task-p)
+      (org-return))
+
+     ;; checkboxes - add new or delete empty
+     ((org-at-item-checkbox-p)
+      (cond
+       ;; at the end of a line.
+       ((and (eolp)
+	     (not (eq 'item (car (org-element-context)))))
+	(org-insert-todo-heading nil))
+       ;; no content, delete
+       ((and (eolp) (eq 'item (car (org-element-context))))
+	(delete-region (line-beginning-position) (point)))
+       ((eq 'paragraph (car (org-element-context)))
+	(goto-char (org-element-property :end (org-element-context)))
+	(org-insert-todo-heading nil))
+       (t
+	(org-return))))
+
+     ;; lists end with two blank lines, so we need to make sure we are also not
+     ;; at the beginning of a line to avoid a loop where a new entry gets
+     ;; created with only one blank line.
+     ((org-in-item-p)
+      (cond
+       ;; empty definition list
+       ((and (looking-at " ::")
+	     (looking-back "- " 3))
+	(beginning-of-line)
+	(delete-region (line-beginning-position) (line-end-position)))
+       ;; empty item
+       ((and (looking-at "$")
+	     (looking-back "- " 3))
+	(beginning-of-line)
+	(delete-region (line-beginning-position) (line-end-position)))
+       ;; numbered list
+       ((and (looking-at "$")
+	     (looking-back "[0-9]+. " (line-beginning-position)))
+	(beginning-of-line)
+	(delete-region (line-beginning-position) (line-end-position)))
+       ((and (looking-at "$")
+	     (looking-at "^"))
+	(org-return))
+       ;; insert new item
+       (t
+	(end-of-line)
+	(org-insert-item))))
+
+     ;; org-heading
+     ((org-at-heading-p)
+      (if (not (string= "" (org-element-property :title (org-element-context))))
+	  (progn
+	    ;; Go to end of subtree suggested by Pablo GG on Disqus post.
+	    (org-end-of-subtree)
+	    (org-insert-heading-respect-content)
+	    (outline-show-entry))
+	;; The heading was empty, so we delete it
+	(beginning-of-line)
+	(delete-region (line-beginning-position) (line-end-position))))
+
+     ;; tables
+     ((org-at-table-p)
+      (if (-any?
+	   (lambda (x) (not (string= "" x)))
+	   (nth
+	    (- (org-table-current-dline) 1)
+	    (remove 'hline (org-table-to-lisp))))
+	  (org-return)
+	;; empty row
+	(beginning-of-line)
+	(delete-region (line-beginning-position) (line-end-position))
+	(org-return)))
+     ;; fall-through
+     (t
+      (org-return))))
+
+   ;; other window,
+   ((= arg 4)
+    (clone-indirect-buffer-other-window (buffer-name) t)
+    (org-return))
+
+   ;; other frame
+   ((= arg 5)
+    (clone-frame)
+    (org-return))
+
+   ;; fall-through case
    (t
     (org-return))))
 
