@@ -31,6 +31,7 @@
 	(message "Native comp is available")
         (when (eq system-type 'darwin)
           (customize-set-variable 'native-comp-driver-options '("-Wl,-w")))
+        (setq native-comp-async-report-warnings-errors 'silent)
         ;; Using Emacs.app/Contents/MacOS/bin since it was compiled with
         ;; ./configure --prefix="$PWD/nextstep/Emacs.app/Contents/MacOS"
         ;; Append to path to give priority to values from exec-path-from-shell-initialize.
