@@ -23,7 +23,7 @@
 
   ;; `ar/ivy-occur',`ar/counsel-ag', `ar/wgrep-abort-changes' and `ar/wgrep-finish-edit' replicate a more
   ;; streamlined result-editing workflow I was used to in helm-ag.
-  (defvar ar/ivy-occur--win-config)
+  (defvar ar/ivy-occur--win-config nil "Window configuration before ivy occur.")
   (defun ar/ivy-occur ()
     "Stop completion and put the current candidates into a new buffer.
 
@@ -130,14 +130,16 @@ For example:
     (let ((wgrep-auto-save-buffer t))
       (wgrep-finish-edit))
     (quit-window)
-    (set-window-configuration ar/ivy-occur--win-config)
+    (when ar/ivy-occur--win-config
+      (set-window-configuration ar/ivy-occur--win-config))
     (select-window (nth 0 (window-list))))
 
   (defun ar/wgrep-abort-changes ()
     (interactive)
     (wgrep-abort-changes)
     (quit-window)
-    (set-window-configuration ar/ivy-occur--win-config)
+    (when ar/ivy-occur--win-config
+      (set-window-configuration ar/ivy-occur--win-config))
     (select-window (nth 0 (window-list))))
 
   (defun adviced:counsel-M-x-action (orig-fun &rest r)
