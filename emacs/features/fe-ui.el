@@ -274,6 +274,9 @@
   :bind ("C-x k" . kill-this-buffer))
 
 (use-package face-remap
+  :init
+  ;; Prevent trackpad/macOS from messing with font size.
+  (global-unset-key (kbd "<pinch>"))
   :bind(("C-+" . text-scale-increase)
         ("C--" . text-scale-decrease)))
 
