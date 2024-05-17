@@ -71,6 +71,10 @@
   (dired-recursive-copies 'always)
   (delete-by-moving-to-trash t)
   :config
+  (use-package dired-aux
+    :validate-custom
+    (dired-vc-rename-file t))
+
   (use-package wdired
     :validate-custom
     (wdired-allow-to-change-permissions t)
