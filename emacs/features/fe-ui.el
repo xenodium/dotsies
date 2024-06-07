@@ -276,7 +276,9 @@
 (use-package face-remap
   :init
   ;; Prevent trackpad/macOS from messing with font size.
-  (global-unset-key (kbd "<pinch>"))
+  (global-set-key (kbd "<pinch>") 'ignore)
+  (global-set-key (kbd "<C-wheel-up>") 'ignore)
+  (global-set-key (kbd "<C-wheel-down>") 'ignore)
   :bind(("C-+" . text-scale-increase)
         ("C--" . text-scale-decrease)))
 
