@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (defcustom ar/misc-financial-symbols nil "Default financial symbols to look up (cons \"title\" \"symbol\")"
   :type 'list
   :group 'ar-misc)
@@ -15,7 +17,7 @@
   (interactive)
   (ivy-read "Symbol: " ar/misc-financial-symbols
             :action (lambda (item)
-                      (assert (consp item) nil "List items must be a cons.")
+                      (cl-assert (consp item) nil "List items must be a cons.")
                       (browse-url (format "https://markets.ft.com/data/funds/tearsheet/charts?s=%s"
                                           (cdr item))))))
 
