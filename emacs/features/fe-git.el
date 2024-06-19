@@ -3,6 +3,7 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status))
+  :hook (magit-mode . visual-line-mode)
   :validate-custom
   (magit-diff-refine-hunk 'all)
   (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
