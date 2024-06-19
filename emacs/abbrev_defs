@@ -73,5 +73,9 @@
     ("ocntinue" "continue" nil :count 0)
     ("primarly" "primary" nil :count 0)
     ("reponses" "responses" nil :count 0)
+    ("afected" "affected" nil :count 0)
+    ("annoyancesss" "annoyance" nil :count 0)
+    ("phyciscal" "physical" nil :count 0)
+    ("typcially" "typically" nil :count 0)
    ))
 
