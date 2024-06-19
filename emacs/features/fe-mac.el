@@ -9,6 +9,8 @@
 
   ;; Make ⌘ meta modifier.
   (setq mac-command-modifier 'meta)
+  ;; Don't use ⌥ for any binding.
+  (setq mac-option-modifier 'none)
 
   ;; Use existing frame when opening files.
   (setq ns-pop-up-frames nil)
