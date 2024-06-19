@@ -41,6 +41,10 @@
           (map-put adviced:projectile-project-root--cache dir cached-root)
           cached-root))))
 
+  (projectile-register-project-type 'npm '("package.json")
+                                    :project-file "package.json"
+				    :test-suffix ".test")
+
   (advice-add #'projectile-project-root
               :around
               #'adviced:projectile-project-root)
