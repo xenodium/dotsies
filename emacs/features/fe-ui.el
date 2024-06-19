@@ -12,6 +12,9 @@
 (set-face-attribute 'default nil
                     :height 160)
 
+;; Don't use continuation character.
+(setq-default fringe-indicator-alist (delq (assq 'continuation fringe-indicator-alist) fringe-indicator-alist))
+
 (use-package frame
   :defer
   :init
