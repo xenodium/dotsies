@@ -1,5 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package so-long
+  :bind (:map so-long-mode-map
+              ("C-s" . isearch-forward)
+              ("C-r" . isearch-backward)))
+
 ;; Smarter move to beginning/end of line.
 (use-package mwim
   :ensure t
