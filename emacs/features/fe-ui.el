@@ -166,6 +166,13 @@
       (set-face-attribute 'mu4e-header-highlight-face nil :inherit 'default :foreground "sandy brown" :weight 'bold :background 'unspecified)
       (set-face-attribute 'mu4e-unread-face nil :inherit 'default :weight 'bold :foreground "#2BA3FF" :underline nil))
 
+    (with-eval-after-load 'comint
+      (set-face-attribute 'comint-highlight-input nil
+                          :inherit 'default
+                          :foreground "sandy brown"
+                          :weight 'normal
+                          :background 'unspecified))
+
     ;; No color for fringe, blends with the rest of the window.
     (with-eval-after-load 'fringe
       (set-face-attribute 'fringe nil
