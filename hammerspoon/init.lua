@@ -103,7 +103,8 @@ function emacsExecute(activate, elisp)
       return "", false
    end
 
-   local output,success = hs.execute("/opt/homebrew/bin/emacsclient -ne \""..elisp.."\" -s "..socket)
+   local command = "/opt/homebrew/bin/emacsclient -ne \""..elisp:gsub('"', '\\"').."\" -s "..socket
+   local output,success = hs.execute(command)
    if not success then
       hs.alert.show("Emacs did not execute: "..elisp)
       return "", false
@@ -442,8 +443,50 @@ hs.hotkey.bind({"alt"}, "P", ar.window.focusPrevious)
 --
 -- ace-window style focused-window switcher.
 --
-hs.hints.hintChars = {'a','s','d','f','g','h','j','k','l'}
-hs.hotkey.bind({"alt"}, "J", hs.hints.windowHints)
+-- hs.hints.hintChars = {'a','s','d','f','g','h','j','k','l'}
+-- hs.hotkey.bind({"alt"}, "J", hs.hints.windowHints)
+
+hs.hotkey.bind({"alt"}, "J", function()
+  local frontApp = hs.application.frontmostApplication()
+  local appName = frontApp:name()
+
+  if appName == "Emacs" then
+    hs.eventtap.keyStroke({"ctrl"}, "C")
+    hs.eventtap.keyStroke({"ctrl"}, "E")
+    return
+  end
+
+  local originalClipboard = hs.pasteboard.getContents()
+  hs.pasteboard.clearContents()
+  hs.eventtap.keyStroke({"cmd"}, "C")
+
+  -- Waiting ensures copying to clipboard.
+  hs.timer.doAfter(0.2, function()
+    local selectedText = hs.pasteboard.getContents()
+    local contentPath = writeToTempFile(selectedText)
+
+    if selectedText and selectedText ~= "" then
+      local command = "(os-present-chatgpt-compose \"" .. contentPath .. "\")"
+      emacsExecute(false, command)
+    else
+       hs.alert.show("No text selected")
+    end
+
+    -- Restore previous clipboard content.
+    hs.pasteboard.setContents(originalClipboard)
+  end)
+end)
+
+function writeToTempFile(content)
+   local tempFilePath = os.tmpname()
+   local file = io.open(tempFilePath, "w")
+   if file then
+      file:write(content)
+      file:close()
+      return tempFilePath
+   end
+   return nil
+end
 
 -- This must be the last line.
 -- hs.notify.new({title="Hammerspoon", informativeText="Reloaded"}):send()

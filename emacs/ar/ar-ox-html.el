@@ -246,6 +246,10 @@ Remove angle brackets: <06 February 2016> => 06 February 2016"
            overflow: auto;
          }
 
+         b, strong {
+          font-weight: bold;
+         }
+
          pre {
            border: none;
            box-shadow: none;
