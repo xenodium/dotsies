@@ -68,8 +68,7 @@ Based on `elfeed-search-print-entry--default'."
         (run-hooks 'ar/elfeed-update-complete-hook)))
 
     (defun ar/elfeed-update-message-completed (&rest _ignore)
-      (message "Feeds updated")
-      (notifications-notify :title "Elfeed" :body "Feeds updated."))
+      (message "Elfeed feeds updated"))
 
     (add-hook 'elfeed-update-hooks #'ar/elfeed-update-complete-hook)
     (add-hook 'ar/elfeed-update-complete-hook #'ar/elfeed-update-message-completed))
