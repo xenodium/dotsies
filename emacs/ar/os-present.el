@@ -9,27 +9,29 @@
 
 ;;; Code:
 
-(defmacro os-present (buffer-name &rest body)
+(defmacro os-present (buffer-name minibuffer-only sync-body &rest body)
   "Create a buffer with BUFFER-NAME and eval BODY in a basic frame."
   (declare (indent 1) (debug t))
   ;; TODO: Consider using (get-buffer-create "*present*") as default.
   `(let* ((buffer (get-buffer-create ,buffer-name))
-          (frame (make-frame '((auto-raise . t)
-                               (font . "Menlo 15")
-                               (top . 200)
-                               (height . 20)
-                               (width . 110)
-                               (internal-border-width . 20)
-                               (left . 0.33)
-                               (left-fringe . 0)
-                               (line-spacing . 3)
-                               (menu-bar-lines . 0)
-                               (minibuffer . only)
-                               (right-fringe . 0)
-                               (tool-bar-lines . 0)
-                               (undecorated . t)
-                               (unsplittable . t)
-                               (vertical-scroll-bars . nil)))))
+          (options (append '((auto-raise . t)
+                             (font . "Menlo 15")
+                             (top . 200)
+                             (height . 20)
+                             (width . 110)
+                             (internal-border-width . 20)
+                             (left . 0.33)
+                             (left-fringe . 0)
+                             (line-spacing . 3)
+                             (menu-bar-lines . 0)
+                             (right-fringe . 0)
+                             (tool-bar-lines . 0)
+                             (undecorated . t)
+                             (unsplittable . t)
+                             (vertical-scroll-bars . nil))
+                           (when ,minibuffer-only
+                             '((minibuffer . only)))))
+          (frame (make-frame options)))
      (set-face-attribute 'ivy-current-match frame
                          :background "#2a2a2a"
                          :foreground 'unspecified)
@@ -38,18 +40,24 @@
      ;; (switch-to-buffer buffer)
      ;; (with-selected-frame frame
      ;;   (switch-to-buffer buffer))
-     (with-current-buffer buffer
-       (condition-case nil
-           (unwind-protect
-               ,@body
-             (delete-frame frame)
-             (kill-buffer buffer))
-         (quit (delete-frame frame)
-               (kill-buffer buffer))))))
+     (if ,sync-body
+         (progn
+           (when (null ',body)
+             (user-error "Must have a body to execute as sync."))
+           (with-current-buffer buffer
+             (condition-case nil
+                 (unwind-protect
+                     ,@body
+                   (delete-frame frame)
+                   (kill-buffer buffer))
+               (quit (delete-frame frame)
+                     (kill-buffer buffer)))
+             ))
+       ,@body)))
 
 (defun os-present-clipboard-manager ()
   "Search all my org links."
-  (os-present "*OS Copy*"
+  (os-present "*OS Copy*" t t
               (let ((selection (completing-read "Copy: " kill-ring nil t))
                     (select-enable-clipboard t))
                 (call-process "/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs"
@@ -60,7 +68,7 @@
 
 (defun os-present-my-org-links ()
   "Search all my org links."
-  (os-present "*OS bookmarks*"
+  (os-present "*OS bookmarks*" t t
               (let ((selection (completing-read "Open bookmark: "
                                                 (if ar/modal-ivy--bookmarks-source
                                                     ar/modal-ivy--bookmarks-source
@@ -93,6 +101,15 @@
       (prin1 (seq-sort 'string-greaterp links))
       (seq-sort 'string-greaterp links)
       )))
+
+(defun os-present-chatgpt-compose (&optional content-path)
+  "Search all my org links."
+  (os-present (chatgpt-shell-compose-show-buffer
+               (when content-path
+                 (with-temp-buffer
+                   (insert-file-contents content-path)
+                   (buffer-string)))
+               t t) nil nil))
 
 (provide 'os-present)
 
