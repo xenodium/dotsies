@@ -16,7 +16,16 @@
          :map mu4e-compose-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map emacs-lisp-mode-map
-         ("C-c C-e" . chatgpt-shell-prompt-compose)))
+         ("C-c C-e" . chatgpt-shell-prompt-compose))
+  :config
+  (add-to-list 'display-buffer-alist
+               (cons '(major-mode . chatgpt-shell-prompt-compose-mode)
+                     '((display-buffer-reuse-window
+                        display-buffer-in-direction
+                        display-buffer-select)
+                       (reusable-frames . visible)
+                       (direction . left)
+                       (window-width . 0.35)))))
 
 (use-package dall-e-shell
   :validate-custom
