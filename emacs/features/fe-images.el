@@ -1,7 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package image
-  :validate-custom
+  ;; AVIF not recognized by default.
+  :mode ("\\.avif\\'" . image-mode)
   ;; emacs-plus compiles with imagemagick, but is no longer needed to
   ;; open other formats like webp. Setting imagemagick-types-inhibit
   ;; disables imagemagick usage.
