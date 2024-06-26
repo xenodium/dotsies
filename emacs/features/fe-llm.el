@@ -21,8 +21,7 @@
   (add-to-list 'display-buffer-alist
                (cons '(major-mode . chatgpt-shell-prompt-compose-mode)
                      '((display-buffer-reuse-window
-                        display-buffer-in-direction
-                        display-buffer-select)
+                        display-buffer-in-direction)
                        (reusable-frames . visible)
                        (direction . left)
                        (window-width . 0.35)))))
