@@ -59,10 +59,13 @@ If a region is active, export that region."
         <img style='padding-top: 5px; max-width: 4ch;' src='https://plainorg.com/favicon.ico'/>
       </a>
       <a href='https://apps.apple.com/app/id1671420139'>
-        <img style='padding-top: 5px; max-width: 4ch;' src='https://raw.githubusercontent.com/xenodium/xenodium.github.io/master/images/scratch-a-minimal-scratch-area/scratch_icon.png'/>
+        <img style='padding-top: 5px; max-width: 4ch;' src='../images/scratch-a-minimal-scratch-area/scratch_icon.png'/>
       </a>
       <a href='https://flathabits.com'>
         <img style='padding-top: 5px; max-width: 4ch;' src='https://flathabits.com/favicon.ico'/>
+      </a>
+      <a href='https://apps.apple.com/app/id6480411697'>
+        <img style='padding-top: 5px; max-width: 4ch;' src='../images/fresh-eyes-now-on-the-app-store/fresh_eyes_icon.png'/>
       </a>
     </td>
     <td style='padding-top:10px;'>
