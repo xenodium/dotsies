@@ -37,7 +37,7 @@
                          :foreground 'unspecified)
      (select-frame frame)
      (select-frame-set-input-focus frame)
-     ;; (switch-to-buffer buffer)
+     (switch-to-buffer buffer)
      ;; (with-selected-frame frame
      ;;   (switch-to-buffer buffer))
      (if ,sync-body
@@ -104,12 +104,17 @@
 
 (defun os-present-chatgpt-compose (&optional content-path)
   "Search all my org links."
-  (os-present (chatgpt-shell-compose-show-buffer
-               (when content-path
-                 (with-temp-buffer
-                   (insert-file-contents content-path)
-                   (buffer-string)))
-               t t) nil nil))
+  (let* ((display-buffer-alist)
+         (buffer (chatgpt-shell-prompt-compose-show-buffer
+                  (when content-path
+                    (with-temp-buffer
+                      (insert-file-contents content-path)
+                      (delete-file content-path)
+                      (buffer-string)))
+                  t t)))
+    (with-current-buffer buffer
+      (setq mode-line-format '("%b")))
+    (os-present buffer nil nil (progn))))
 
 (provide 'os-present)
 
