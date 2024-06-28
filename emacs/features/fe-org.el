@@ -433,7 +433,8 @@ With prefix, don't confirm text."
         :config
         (defun adviced:org-edit-src-save (orig-fun &rest r)
           "Run `before-save-hook' on source block major mode (helps with formatters)."
-          (with-demoted-errors (run-hooks #'before-save-hook))
+          (with-demoted-errors "Error running `before-save-hook': %S"
+            (run-hooks 'before-save-hook))
           (apply orig-fun r))
 
         (advice-add #'org-edit-src-save
