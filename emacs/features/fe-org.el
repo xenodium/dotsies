@@ -263,7 +263,7 @@ With prefix, don't confirm text."
             (default-directory (expand-file-name "~/stuff/active/blog")))
         (webfeeder-build "rss.xml"
                          "."
-                         "http://xenodium.com"
+                         "https://lmno.lol/alvaro"
                          (ar/blog-entry-fpaths)
                          :title "Alvaro Ramirez's notes"
                          :description "Alvaro's notes from a hacked up org HTML export."
@@ -277,7 +277,7 @@ With prefix, don't confirm text."
             (default-directory (expand-file-name "~/stuff/active/blog")))
         (webfeeder-build "emacs/rss.xml"
                          "."
-                         "http://xenodium.com"
+                         "https://lmno.lol/alvaro"
                          (ar/blog-entry-fpaths "emacs")
                          :title "Alvaro Ramirez's Emacs notes"
                          :description "Alvaro's Emacs notes from a hacked up org HTML export."
