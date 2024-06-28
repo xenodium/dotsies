@@ -25,6 +25,8 @@
       "OBSOLETE(o)"
       "CANCELLED(c)")))
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
+  ;; org-insert-heading doesn't split heading if point not a eol.
+  (org-insert-heading-respect-content t)
   :validate-custom
   (org-modules '(ol-w3m
                  ol-bbdb
