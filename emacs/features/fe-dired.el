@@ -352,6 +352,7 @@ If `universal-argument' is called, copy only the dir path."
 
 (use-package dwim-shell-command
   :ensure t
+  :defer 30 ;; Ensures all commands in dwim-shell-commands are loaded.
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
          ([remap dired-do-async-shell-command] . dwim-shell-command)
@@ -359,21 +360,22 @@ If `universal-argument' is called, copy only the dir path."
          ([remap dired-smart-shell-command] . dwim-shell-command)
          ("C-x C-d" . dwim-shell-commands-duplicate))
   :config
-  (defun dwim-shell-commands-git-set-author-name-and-email-credentials ()
-    "Set my name and email at git repo in `default-directory'."
-    (interactive)
-    (dwim-shell-command-on-marked-files
-     "Set git name and email"
-     (format "set -o errexit
-              git config user.name xenodium
-              git config user.email %s"
-             (replace-regexp-in-string "/" "" "me/+/gh/@/xenodium/./com"))
-     :utils "git"
-     :error-autofocus t
-     :silent-success t))
   (use-package dwim-shell-commands
-    :commands (dwim-shell-commands-duplicate)
+    :demand t
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
            ("C-c (" . dwim-shell-commands-macos-start-recording-window)
            ("C-c )" . dwim-shell-commands-macos-end-recording-window)
-           ("C-c 8" . dwim-shell-commands-macos-abort-recording-window))))
+           ("C-c 8" . dwim-shell-commands-macos-abort-recording-window))
+    :config
+    (defun dwim-shell-commands-git-set-author-name-and-email-credentials ()
+      "Set my name and email at git repo in `default-directory'."
+      (interactive)
+      (dwim-shell-command-on-marked-files
+       "Set git name and email"
+       (format "set -o errexit
+              git config user.name xenodium
+              git config user.email %s"
+               (replace-regexp-in-string "/" "" "me/+/gh/@/xenodium/./com"))
+       :utils "git"
+       :error-autofocus t
+       :silent-success t))))
