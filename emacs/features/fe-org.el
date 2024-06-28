@@ -145,6 +145,14 @@
   (use-package org-starless
     :hook (org-mode . org-starless-mode))
 
+  ;; (use-package org-modern
+  ;;   :ensure t
+  ;;   :validate-custom
+  ;;   (org-modern-star nil)
+  ;;   (org-modern-block-name '(("src" "╭" "╰ end")))
+  ;;   (org-modern-keyword '(("results" . "")
+  ;;                         (t . t))))
+
   ;; Trying out starless.
   ;; (use-package org-bullets
   ;;   :ensure t
