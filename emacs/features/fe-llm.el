@@ -31,4 +31,5 @@
   (dall-e-shell-model-version "dall-e-3")
   (dall-e-shell-openai-key
    (lambda ()
-     (nth 0 (process-lines "pass" "show" "openai-key")))))
+     (nth 0 (process-lines "pass" "show" "openai-key"))))
+  (dall-e-shell-image-output-directory "~/Downloads/DALL-E"))
