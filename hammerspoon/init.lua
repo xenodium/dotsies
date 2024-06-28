@@ -465,11 +465,12 @@ hs.hotkey.bind({"alt"}, "J", function()
     local selectedText = hs.pasteboard.getContents()
     local contentPath = writeToTempFile(selectedText)
 
-    if selectedText and selectedText ~= "" then
+    if contentPath then
       local command = "(os-present-chatgpt-compose \"" .. contentPath .. "\")"
       emacsExecute(false, command)
     else
-       hs.alert.show("No text selected")
+      local command = "(os-present-chatgpt-compose)"
+      emacsExecute(false, command)
     end
 
     -- Restore previous clipboard content.
@@ -478,6 +479,9 @@ hs.hotkey.bind({"alt"}, "J", function()
 end)
 
 function writeToTempFile(content)
+   if content == nil then
+      return nil
+   end
    local tempFilePath = os.tmpname()
    local file = io.open(tempFilePath, "w")
    if file then
