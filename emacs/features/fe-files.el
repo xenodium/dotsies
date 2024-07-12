@@ -83,8 +83,12 @@
   (recentf-max-saved-items 1000
                            recentf-max-menu-items 50)
   :config
+  ;; Adds dired buffers to recentf.
   (use-package recentf-ext
-    :ensure t)
+    :ensure t
+    :config
+    ;; Don't mess with recentf during window changes.
+    (remove-hook 'window-configuration-change-hook 'recentf-push-buffers-in-frame))
 
   (defun ar/recentf-delete-entry ()
     "Delete a recentf entry."
