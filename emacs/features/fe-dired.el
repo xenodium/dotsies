@@ -132,12 +132,6 @@
                (inhibit-read-only t))
       (put-text-property start end 'invisible 'dired-hide-details-information)))
 
-  (defun ar/dired-find-file-other-window-no-switch ()
-    "In Dired, visit this file or directory in another window and keep focus."
-    (interactive)
-    (save-selected-window
-      (dired-find-file-other-window)))
-
   (defun ar/dwim-copy-file-path (&optional dir-only)
     "Copy the current buffer's file path or dired paths to `kill-ring'.
 If `universal-argument' is called, copy only the dir path."
