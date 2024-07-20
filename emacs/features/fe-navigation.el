@@ -97,10 +97,39 @@ Repeated invocations toggle between the two most recently open buffers."
   :hook ((prog-mode . symbol-overlay-mode)
          ;; (protobuf-mode . symbol-overlay-mode)
          )
-  :bind (:map symbol-overlay-mode-map
-              (("M-n" . symbol-overlay-jump-next)
-               ("M-p" . symbol-overlay-jump-prev)))
+  :bind (("M-a" . ar/meta-a-dwim)
+         :map symbol-overlay-mode-map
+         (("M-n" . symbol-overlay-jump-next)
+          ("M-p" . symbol-overlay-jump-prev)))
   :config
+  (defun ar/meta-a-dwim ()
+    "On an overlaid symbol? Select all. Otherwise toggle agenda."
+    (interactive)
+    (if (symbol-overlay-get-list 0)
+        (ar/mc-mark-all-symbol-overlays)
+      (call-interactively #'ar/org-agenda-toggle)))
+
+  (defun ar/mc-mark-all-symbol-overlays ()
+    "Mark all symbol overlays using multiple cursors."
+    (interactive)
+    (mc/remove-fake-cursors)
+    (when-let* ((overlays (symbol-overlay-get-list 0))
+                (point (point))
+                (point-overlay (seq-find
+                                (lambda (overlay)
+                                  (and (<= (overlay-start overlay) point)
+                                       (<= point (overlay-end overlay))))
+                                overlays))
+                (offset (- point (overlay-start point-overlay))))
+      (setq deactivate-mark t)
+      (mapc (lambda (overlay)
+              (unless (eq overlay point-overlay)
+                (mc/save-excursion
+                 (goto-char (+ (overlay-start overlay) offset))
+                 (mc/create-fake-cursor-at-point))))
+            overlays)
+      (mc/maybe-multiple-cursors-mode)))
+
   ;; Override overlay background color with default background
   ;; to get rid of overlay bounding box.
   (set-face-attribute 'symbol-overlay-default-face nil
