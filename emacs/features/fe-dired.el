@@ -53,7 +53,8 @@
 
 (use-package dired
   :defer
-  :hook (dired-mode . dired-hide-details-mode)
+  :hook ((dired-mode . dired-hide-details-mode)
+         (dired-after-readin . ar/hide-dired-absolute-path-detail))
   :bind (:map dired-mode-map
               ("j" . dired-next-line)
               ("k" . dired-previous-line)
@@ -119,6 +120,23 @@
   ;; Hide some files
   (setq dired-omit-files "^\\..*$\\|^\\.\\.$")
   (setq dired-omit-mode t)
+
+  (defun ar/hide-dired-absolute-path-detail ()
+    (when-let ((bounds (save-excursion
+                         (goto-char (point-min))
+                         (when (looking-at dired-subdir-regexp)
+                           (cons (match-beginning 1) (match-end 1)))))
+               (path (file-name-directory (buffer-substring (car bounds) (cdr bounds))))
+               (start (car bounds))
+               (end (+ (car bounds) (length path)))
+               (inhibit-read-only t))
+      (put-text-property start end 'invisible 'dired-hide-details-information)))
+
+  (defun ar/dired-find-file-other-window-no-switch ()
+    "In Dired, visit this file or directory in another window and keep focus."
+    (interactive)
+    (save-selected-window
+      (dired-find-file-other-window)))
 
   (defun ar/dwim-copy-file-path (&optional dir-only)
     "Copy the current buffer's file path or dired paths to `kill-ring'.
