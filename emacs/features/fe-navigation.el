@@ -112,7 +112,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (defun ar/mc-mark-all-symbol-overlays ()
     "Mark all symbol overlays using multiple cursors."
     (interactive)
-    (mc/remove-fake-cursors)
+    (require 'multiple-cursors-core)
     (when-let* ((overlays (symbol-overlay-get-list 0))
                 (point (point))
                 (point-overlay (seq-find
