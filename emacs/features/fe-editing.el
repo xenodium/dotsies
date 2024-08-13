@@ -195,33 +195,58 @@
       (delete-region beg end)
       (insert replacement)))
 
+  (defun ar/sp-cycle-pair-previous ()
+    (interactive)
+    (ar/sp-cycle-pair-next -1))
+
   (defun ar/sp-cycle-pair (prefix)
+    "With PREFIX, remove enclosing pair."
     (interactive "P")
-    (let ((quotes (list (cons "'" "'")
-                        (cons "\"" "\"")))
-          (brackets (list (cons "(" ")")
-                          (cons "[" "]")
-                          (cons "{" "}"))))
-      (if (and (sp-get-enclosing-sexp) prefix)
-          (sp-unwrap-sexp)
-        (when-let* ((sexp (sp-get-enclosing-sexp))
-                    (pairs (cond ((seq-find (lambda (pair)
-                                              (equal (car pair)
-                                                     (map-elt sexp :op)))
-                                            quotes)
-                                  quotes)
-                                 ((seq-find (lambda (pair)
-                                              (equal (car pair)
-                                                     (map-elt sexp :op)))
-                                            brackets)
-                                  brackets)))
-                    (next-pos (1+ (seq-position pairs
-                                                (map-elt sexp :op)
-                                                (lambda (e elt)
-                                                  (equal (car e) elt)))))
-                    (next (if (< next-pos (seq-length pairs))
+    (if (and (sp-get-enclosing-sexp) prefix)
+        (sp-unwrap-sexp))
+    (ar/sp-cycle-pair-next 1))
+
+  (defun ar/sp-cycle-pair-next (previous)
+    (interactive "P")
+    (let* ((quotes-regexp "['\"`]") ;; Quote chars I typically want (may be repeated).
+           (exclude-regexp "\\\\\\|/") ;; Things I want to exclude.
+           (sexp (or (sp-get-enclosing-sexp)
+                     ;; 'hello'
+                     ;; ^ also work if point is here.
+                     (when-let ((sexp (sp-get-sexp))
+                                (at-point (and (<= (map-elt sexp :beg) (point))
+                                               (<= (point) (map-elt sexp :end)))))
+                       sexp)
+                     (error "No pair found")))
+           (quoted (and (string-match-p quotes-regexp (map-elt sexp :op))
+                        (string-match-p quotes-regexp (map-elt sexp :cl))))
+           (pairs (seq-filter (lambda (pair)
+                                (let ((beg (car pair))
+                                      (end (cdr pair)))
+                                  (when (and (not (string-match-p exclude-regexp beg))
+                                             (not (string-match-p exclude-regexp end)))
+                                    (if quoted
+                                        (or (string-match-p quotes-regexp beg)
+                                            (string-match-p quotes-regexp end))
+                                      (and (not (string-match-p quotes-regexp beg))
+                                           (not (string-match-p quotes-regexp end)))))))
+                              (sp--get-pair-list-context 'wrap))))
+      (when-let* ((next-pos (+ (if previous -1 1)
+                               (or (seq-position pairs
+                                                 (map-elt sexp :op)
+                                                 (lambda (e elt)
+                                                   (equal (car e) elt)))
+                                   (error "No next pair found"))))
+                  (next (if previous
+                            (if (>= next-pos 0)
+                                (seq-elt pairs next-pos)
+                              (seq-elt pairs (1- (seq-length pairs))))
+                          (if (< next-pos (seq-length pairs))
                               (seq-elt pairs next-pos)
-                            (seq-elt pairs 0))))
+                            (seq-elt pairs 0)))))
+        (save-excursion
+          ;; Temprarily reposition inside regexp.
+          (goto-char (+ (map-elt sexp :beg) (length (map-elt sexp :op))))
           (sp-rewrap-sexp next)))))
 
   (defun ar/rewrap-sexp-dwim (prefix)
