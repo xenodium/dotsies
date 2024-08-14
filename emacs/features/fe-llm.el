@@ -13,8 +13,6 @@
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map eshell-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
-         :map mu4e-compose-mode-map
-         ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map emacs-lisp-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose))
   :config
@@ -25,6 +23,11 @@
                        (reusable-frames . visible)
                        (direction . left)
                        (window-width . 0.35)))))
+
+(use-package ob-chatgpt-shell
+  :commands (org-babel-execute:chatgpt-shell)
+  :config
+  (ob-chatgpt-shell-setup))
 
 (use-package dall-e-shell
   :validate-custom
