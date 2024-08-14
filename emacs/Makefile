@@ -1,4 +1,4 @@
-all: init ripgrep global yasnippet
+all: init global yasnippet
 
 init:
 	mkdir -p ~/.emacs.d
