@@ -329,6 +329,8 @@ With PREFIX, add an outer pair around existing pair."
   ;; I prefer < yasnippet completion in nhtml-mode.
   (sp-local-pair 'mhtml-mode "<" "")
 
+  (sp-local-pair 'typescript-mode "`" "`")
+
   (defun ar/create-newline-and-enter-sexp (&rest _ignored)
     "Open a new brace or bracket expression, with relevant newlines and indent. "
     (newline)
