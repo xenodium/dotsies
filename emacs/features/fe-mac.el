@@ -46,14 +46,18 @@
   (use-package color-picker
     :commands color-picker)
 
-  (use-package musica
-    :bind (("C-c m r" . musica-search)
-           ("C-c m i" . musica-info)
-           ("C-c m n" . musica-play-next)
-           ("C-c m p" . musica-play-previous)
-           ("C-c m SPC" . musica-play-pause)
-           ("C-c m r" . musica-play-next-random)))
+
+  (use-package ready-player
+    :bind (("C-c m n" . ready-player-next)
+           ("C-c m p" . ready-player-previous)
+           ("C-c m SPC" . ready-player-toggle-play-stop)
+           ("C-c m r" . ready-player-toggle-repeat))
+    :config
+    (ready-player-mode +1))
+
   (use-package macos
+    :commands (macos-reveal-in-finder
+               macos-share)
     :config
     (macos-load-module))
 
