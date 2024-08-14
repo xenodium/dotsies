@@ -638,8 +638,7 @@ Set BACKWARD to search backwards."
 (use-package org-agenda
   :hook ((org-agenda-mode . goto-address-mode) ;; <RET> follows links.
          (org-agenda-mode . hl-line-mode)) ;; Easier to see selected row.
-  :bind (("M-a" . ar/org-agenda-toggle)
-         :map org-agenda-mode-map
+  :bind (:map org-agenda-mode-map
          ;; I prefer my M-m global key bind for another purpose.
          ("M-m" . nil)
          ;; Use org-return instead since `org-return-follows-link' is set.
