@@ -75,6 +75,17 @@
   :validate-custom
   (dired-recursive-copies 'always)
   (delete-by-moving-to-trash t)
+  ;; Adding human readable units and sorted by date.
+  ;; -A List all entries except for "." and "..".
+  ;; -l List in long format.
+  ;; -h Use unites (ie. Byte, Kilobyte, Megabyte).
+  ;; -t Sort by time
+  ;; -c Use last file status changed time for sorting (show me last download).
+  (dired-listing-switches "-Alhtc")
+  ;; Try to guess the target directory for operations.
+  (dired-dwim-target t)
+  ;; Automatically refresh dired buffers when contents changes.
+  (dired-auto-revert-buffer t)
   :config
   (use-package dired-aux
     :validate-custom
