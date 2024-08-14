@@ -352,7 +352,7 @@ Patch .bash_profile and .bashrc.
               },
               "devices": [],
               "fn_function_keys": [],
-              "name": "Default profile",
+              "name": "Emacs life",
               "parameters": {
                   "delay_milliseconds_before_open_device": 1000
               },
