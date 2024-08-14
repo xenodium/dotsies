@@ -53,6 +53,9 @@
            ("C-c m p" . musica-play-previous)
            ("C-c m SPC" . musica-play-pause)
            ("C-c m r" . musica-play-next-random)))
+  (use-package macos
+    :config
+    (macos-load-module))
 
   (defun ar/ivy-bluetooth-connect ()
     "Connect to paired bluetooth device."
