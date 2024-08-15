@@ -18,11 +18,15 @@
   :config
   (add-to-list 'display-buffer-alist
                (cons '(major-mode . chatgpt-shell-prompt-compose-mode)
-                     '((display-buffer-reuse-window
-                        display-buffer-in-direction)
-                       (reusable-frames . visible)
-                       (direction . left)
-                       (window-width . 0.35)))))
+                     `((display-buffer-reuse-mode-window
+                        (lambda (buffer alist) ;; Use left side window if one available.
+                          (when (window-combination-p (frame-root-window (selected-frame)) t)
+                            (window--display-buffer buffer
+                                                    (car (window-at-side-list nil 'left))
+                                                    'reuse alist)))
+                        display-buffer-in-side-window)
+                       (window-width . 0.35)
+                       (side . left)))))
 
 (use-package ob-chatgpt-shell
   :commands (org-babel-execute:chatgpt-shell)
