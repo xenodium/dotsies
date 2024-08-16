@@ -96,6 +96,41 @@ With PREFIX, create a new org scratch buffer."
                   nil t))
       (switch-to-buffer buffer)))
 
+  (defun ar/ndjson-to-org-table (ndjson)
+    "Convert NDJSON to an org mode table string."
+    (let* ((lines (split-string ndjson "\n" t))
+           (json-objects (mapcar #'json-read-from-string lines))
+           (keys (mapcar #'symbol-name (mapcar #'car (cdr (car json-objects)))))
+           (table (cons keys (mapcar (lambda (obj)
+                                       (mapcar (lambda (key)
+                                                 (alist-get (intern key) obj))
+                                               keys))
+                                     json-objects))))
+      (with-output-to-string
+        (princ "|")
+        (dolist (header keys) (princ (format " %s |" header)))
+        (princ "\n|-\n")
+        (dolist (row (cdr table))
+          (princ "|")
+          (dolist (cell row) (princ (format " %s |" cell)))
+          (princ "\n")))))
+
+  (defun ar/insert-ndjson-org-table ()
+    "Convert ndjson kill ring or file to an org table and insert."
+    (interactive)
+    (save-excursion
+      (condition-case nil
+          (progn
+            (insert (ar/ndjson-to-org-table (car kill-ring)))
+            (org-table-align))
+        (error
+         (let ((file (ar/read-file-name "NDJSON file: ")))
+           (insert (ndjson-to-org-table
+                    (with-temp-buffer
+                      (insert-file-contents file)
+                      (buffer-string))))
+           (org-table-align))))))
+
   (defun adviced:org-yank (orig-fun &rest r)
     "Advice `adviced:org-yank' to align tables (ORIG-FUN and R)."
     (apply orig-fun r)
