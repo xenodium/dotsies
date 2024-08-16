@@ -73,6 +73,29 @@
   (org-return-follows-link t)
   :hook ((org-mode . visual-line-mode))
   :config
+  (defun ar/org-scratch-buffer (prefix)
+    "Open the org scratch buffer.
+
+With PREFIX, create a new org scratch buffer."
+    (interactive "P")
+    (let ((buffer (get-buffer-create
+                   (if prefix
+                       (generate-new-buffer-name "*org scratch*")
+                     "*org scratch*"))))
+      (with-current-buffer buffer
+        (org-mode)
+        (add-hook 'kill-buffer-query-functions
+                  (lambda ()
+                    (if (buffer-modified-p)
+                        (if (y-or-n-p (format "Save pending changes in %s? " (buffer-name)))
+                            (with-current-buffer buffer
+                              (save-buffer)
+                              t)
+                          t)
+                      t))
+                  nil t))
+      (switch-to-buffer buffer)))
+
   (defun adviced:org-yank (orig-fun &rest r)
     "Advice `adviced:org-yank' to align tables (ORIG-FUN and R)."
     (apply orig-fun r)
