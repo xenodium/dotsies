@@ -97,23 +97,19 @@ With PREFIX, create a new org scratch buffer."
       (switch-to-buffer buffer)))
 
   (defun ar/ndjson-to-org-table (ndjson)
-    "Convert NDJSON to an org mode table string."
-    (let* ((lines (split-string ndjson "\n" t))
-           (json-objects (mapcar #'json-read-from-string lines))
-           (keys (mapcar #'symbol-name (mapcar #'car (cdr (car json-objects)))))
-           (table (cons keys (mapcar (lambda (obj)
-                                       (mapcar (lambda (key)
-                                                 (alist-get (intern key) obj))
-                                               keys))
-                                     json-objects))))
-      (with-output-to-string
-        (princ "|")
-        (dolist (header keys) (princ (format " %s |" header)))
-        (princ "\n|-\n")
-        (dolist (row (cdr table))
-          (princ "|")
-          (dolist (cell row) (princ (format " %s |" cell)))
-          (princ "\n")))))
+    "Convert NDJSON log string to an Org mode table."
+    (let* ((rows (mapcar #'json-read-from-string (split-string ndjson "\n" t)))
+           (fields (read-string "Fields: " (mapconcat 'identity (mapcar #'symbol-name (mapcar #'car (car rows))) " ")))
+           (header (split-string fields)))
+      (orgtbl-to-orgtbl
+       (append
+        (list header)
+        '(hline)
+        (mapcar (lambda (obj)
+                  (mapcar (lambda (key)
+                            (alist-get (intern key) obj))
+                          header))
+                rows)) nil)))
 
   (defun ar/insert-ndjson-org-table ()
     "Convert ndjson kill ring or file to an org table and insert."
@@ -124,7 +120,7 @@ With PREFIX, create a new org scratch buffer."
             (insert (ar/ndjson-to-org-table (car kill-ring)))
             (org-table-align))
         (error
-         (let ((file (ar/read-file-name "NDJSON file: ")))
+         (let ((file (read-file-name "NDJSON file: ")))
            (insert (ndjson-to-org-table
                     (with-temp-buffer
                       (insert-file-contents file)
