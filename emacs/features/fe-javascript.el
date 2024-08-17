@@ -8,6 +8,10 @@
   :validate-custom
   (js-indent-level 2))
 
+(use-package js-comint
+  :ensure t
+  :commands js-comint-repl)
+
 (use-package typescript-mode
   :ensure t
   :validate-custom
