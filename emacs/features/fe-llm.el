@@ -24,9 +24,9 @@
                             (window--display-buffer buffer
                                                     (car (window-at-side-list nil 'left))
                                                     'reuse alist)))
-                        display-buffer-in-side-window)
+                        display-buffer-in-direction)
                        (window-width . 0.35)
-                       (side . left)))))
+                       (direction . left)))))
 
 (use-package ob-chatgpt-shell
   :commands (org-babel-execute:chatgpt-shell)
