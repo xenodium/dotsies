@@ -141,11 +141,8 @@ With PREFIX, create a new org scratch buffer."
     (end-of-line)
     (if (org-at-heading-p)
         (let* ((element (org-element-at-point))
-               (level (plist-get (cadr element) :level))
-               (keyword (plist-get (cadr element) :todo-keyword)))
+               (keyword (org-element-property :todo-keyword element)))
           (org-insert-heading)
-          (while (> (org-current-level) level)
-            (org-do-demote))
           (when keyword
             (org-todo keyword)))
       (call-interactively 'org-meta-return)))
