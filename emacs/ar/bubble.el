@@ -20,6 +20,8 @@
 ;; Expand region with "p", "C-p", or "<up>"
 ;; Shrink region with "n", "C-n", or "<down>"
 
+;;; Code:
+
 (define-minor-mode bubble-mode
   "A minor to grow region in both vertical directions."
   :lighter " jump last"
@@ -29,11 +31,11 @@
             (define-key map (kbd "<down>") #'bubble-shrink-region)
             (define-key map (kbd "S-<down>") #'bubble-expand-region-bottom)
             (define-key map (kbd "C-p") #'bubble-expand-region)
+            (define-key map (kbd "S-C-p") #'bubble-move-region-up)
+            (define-key map (kbd "S-C-n") #'bubble-move-region-down)
             (define-key map (kbd "p") #'bubble-expand-region)
-            (define-key map (kbd "S-C-p") #'bubble-expand-region-top)
             (define-key map (kbd "n") #'bubble-shrink-region)
             (define-key map (kbd "C-n") #'bubble-shrink-region)
-            (define-key map (kbd "S-C-n") #'bubble-expand-region-bottom)
             map)
   (if bubble-mode
       (progn
@@ -51,7 +53,10 @@
     (message "bubble-mode disabled")))
 
 (defun bubble--post-command-hook ()
+  "Post command hook."
   (unless (memq this-command '(bubble-mode
+                               bubble-move-region-up
+                               bubble-move-region-down
                                bubble-expand-region
                                bubble-expand-region-top
                                bubble-expand-region-bottom
@@ -59,6 +64,7 @@
     (bubble-mode -1)))
 
 (defun bubble--pre-command-hook ()
+  "Pre command hook."
   (cond ((or (eq this-command 'newline)
              (eq this-command 'newline-and-indent))
          (setq this-command 'ignore)
@@ -69,38 +75,76 @@
          (setq this-command 'bubble-expand-region))))
 
 (defun bubble-expand-region (&optional count)
+  "Expand region by COUNT lines."
   (interactive)
   (unless count
     (setq count 1))
   (when (eq count 0)
     (setq count 10))
-  (when (>= (point) (mark))  ;; Ensure point is above mark
+  (when (>= (point) (mark))
     (exchange-point-and-mark))
+  ;; Move start up
   (forward-line (- count))
   (forward-char 0)
   (exchange-point-and-mark)
+  ;; Move start down
   (forward-line count)
   (forward-char 0)
   (exchange-point-and-mark))
 
 (defun bubble-expand-region-top ()
+  "Expand region top."
   (interactive)
   (when (>= (point) (mark))
     (exchange-point-and-mark))
-  (previous-line))
+  (forward-line -1))
 
 (defun bubble-expand-region-bottom ()
+  "Expand region bottom."
   (interactive)
   (when (<= (point) (mark))
     (exchange-point-and-mark))
-  (next-line))
+  (forward-line))
 
 (defun bubble-shrink-region ()
+  "Shrink region."
   (interactive)
-  (when (<= (point) (mark))
+  (when (< (point) (mark))
     (exchange-point-and-mark))
+  ;; Move start down
   (forward-line -1)
   (forward-char 0)
   (exchange-point-and-mark)
+  ;; Move end up
   (forward-line 1)
   (forward-char 0))
+
+(defun bubble-move-region-up ()
+  "Shift the region up by one line."
+  (interactive)
+  (when (> (point) (mark))
+    (exchange-point-and-mark))
+  (forward-line -1)
+  (forward-line 0)
+  (exchange-point-and-mark)
+  (forward-line -1)
+  (end-of-line)
+  (activate-mark)
+  (exchange-point-and-mark))
+
+(defun bubble-move-region-down ()
+  "Shift the region down by one line."
+  (interactive)
+  (when (> (point) (mark))
+    (exchange-point-and-mark))
+  (forward-line)
+  (forward-line 0)
+  (exchange-point-and-mark)
+  (forward-line)
+  (end-of-line)
+  (activate-mark)
+  (exchange-point-and-mark))
+
+(provide 'bubble)
+
+;;; bubble.el ends here
