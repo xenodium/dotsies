@@ -54,7 +54,7 @@
     (backward-char (length (file-name-nondirectory start-fname)))
     closest-fname))
 
-(defvar ar/file-build-file-names '("BUILD" "SConstruct" "Makefile" "Package.swift"))
+(defvar ar/file-build-file-names '("package.json" "SConstruct" "Makefile" "Package.swift" "BUILD"))
 
 (defun ar/file-open-closest-build-file ()
   "Open the closest build file in current or parent directory.
