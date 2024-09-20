@@ -20,7 +20,7 @@
   (auto-save-default nil)
   ;; I've inadvertedly exited Emacs far too many times.
   ;; Ask for confirmation.
-  (confirm-kill-emacs 'yes-or-no-p)
+  (confirm-kill-emacs 'y-or-n-p)
   ;; Open that large file! YOLO. Ok, got `openwith' to handle it.
   (large-file-warning-threshold nil)
   :config
