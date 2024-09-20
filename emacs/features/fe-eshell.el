@@ -65,9 +65,10 @@
     ;; Use native 'sudo', system sudo asks for password every time.
     (require 'em-tramp)
 
-    (use-package esh-autosuggest
-      :hook (eshell-mode . esh-autosuggest-mode)
-      :ensure t)
+    (when (< emacs-major-version 30)
+      (use-package esh-autosuggest
+        :hook (eshell-mode . esh-autosuggest-mode)
+        :ensure t))
 
     (use-package em-hist
       :validate-custom
