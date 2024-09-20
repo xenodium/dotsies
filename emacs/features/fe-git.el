@@ -86,24 +86,25 @@ on the current line, if any."
     (interactive)
     (magit-reset-soft "HEAD~1"))
 
-  (use-package git-commit
-    :ensure t
-    :bind (:map git-commit-mode-map
-                ("M-r" . ar/M-r-commit-message-history))
-    :init
-    (defun ar/M-r-commit-message-history ()
-      "Search and insert commit message from history."
-      (interactive)
-      (require 'dash)
-      (insert (completing-read "History: "
-                               (-remove
-                                (lambda (item)
-                                  (s-contains-p "Summary: " item))
-                                (delete-dups
-                                 ;; Remove unnecessary newlines (at beg and end).
-                                 (mapcar (lambda (text)
-                                           (string-trim text))
-                                         (ring-elements log-edit-comment-ring))))))))
+  (when (< emacs-major-version 30)
+    (use-package git-commit
+      :ensure t
+      :bind (:map git-commit-mode-map
+                  ("M-r" . ar/M-r-commit-message-history))
+      :init
+      (defun ar/M-r-commit-message-history ()
+        "Search and insert commit message from history."
+        (interactive)
+        (require 'dash)
+        (insert (completing-read "History: "
+                                 (-remove
+                                  (lambda (item)
+                                    (s-contains-p "Summary: " item))
+                                  (delete-dups
+                                   ;; Remove unnecessary newlines (at beg and end).
+                                   (mapcar (lambda (text)
+                                             (string-trim text))
+                                           (ring-elements log-edit-comment-ring)))))))))
 
   (use-package log-edit
     :validate-custom
