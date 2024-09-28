@@ -318,36 +318,92 @@ Patch .bash_profile and .bashrc.
                               }
                           ]
                       },
-                      {
-                          "description": "Ctrl+G to Escape",
-                          "manipulators": [
-                              {
-                                  "description": "Emacs-like escape",
-                                  "from": {
-                                      "key_code": "g",
-                                      "modifiers": {
-                                          "mandatory": [
-                                              "left_control"
-                                          ]
-                                      }
-                                  },
-                                  "to": [
-                                      {
-                                          "key_code": "escape"
-                                      }
-                                  ],
-                                  "conditions": [
-                                      {
-                                          "type": "frontmost_application_unless",
-                                          "bundle_identifiers": [
-                                              "^org\\.gnu\\.Emacs"
-                                          ]
-                                      }
-                                  ],
-                                  "type": "basic"
-                              }
-                          ]
-                      }
+                    {
+                      "description": "Ctrl+G to Escape",
+                      "manipulators": [
+                        {
+                          "description": "Emacs-like escape",
+                          "from": {
+                            "key_code": "g",
+                            "modifiers": {
+                              "mandatory": [
+                                "left_control"
+                              ]
+                            }
+                          },
+                          "to": [
+                            {
+                              "key_code": "escape"
+                            }
+                          ],
+                          "conditions": [
+                            {
+                              "type": "frontmost_application_unless",
+                              "bundle_identifiers": [
+                                "^org\\.gnu\\.Emacs"
+                              ]
+                            }
+                          ],
+                          "type": "basic"
+                        }
+                      ]
+                    },
+                    {
+                      "description": "Emacs-like page scrolling",
+                      "manipulators": [
+                        {
+                          "description": "Page Down with Control-v",
+                          "from": {
+                            "key_code": "v",
+                            "modifiers": {
+                              "mandatory": [
+                                "left_control"
+                              ]
+                            }
+                          },
+                          "to": [
+                            {
+                              "key_code": "page_down"
+                            }
+                          ],
+                          "conditions": [
+                            {
+                              "type": "frontmost_application_unless",
+                              "bundle_identifiers": [
+                                "^org\\.gnu\\.Emacs"
+                              ]
+                            }
+                          ],
+                          "type": "basic"
+                        },
+                        {
+                          "description": "Page Up with Control-Shift-v",
+                          "from": {
+                            "key_code": "v",
+                            "modifiers": {
+                              "mandatory": [
+                                "left_control",
+                                "shift"
+                              ]
+                            }
+                          },
+                          "to": [
+                            {
+                              "key_code": "page_up"
+                            }
+                          ],
+                          "conditions": [
+                            {
+                              "type": "frontmost_application_unless",
+                              "bundle_identifiers": [
+                                "^org\\.gnu\\.Emacs"
+                              ]
+                            }
+                          ],
+                          "type": "basic"
+                        }
+                      ]
+                    }
                   ]
               },
               "devices": [],
