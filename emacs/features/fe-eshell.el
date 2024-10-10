@@ -125,13 +125,30 @@
     (use-package em-banner
       :validate-custom
       (eshell-banner-message "
-  Welcome to the Emacs
+\x1b[32m                             'c.                    \x1b[0m
+\x1b[32m                          ,xNMM.                    \x1b[0m
+\x1b[32m                        .OMMMMo                     \x1b[0m
+\x1b[32m                        OMMM0,                      \x1b[0m
+\x1b[32m              .;loddo:' loolloddol;.                \x1b[0m
+\x1b[32m            cKMMMMMMMMMMNWMMMMMMMMMM0:              \x1b[0m
+\x1b[33m          .KMMMMMMMMMMMMMMMMMMMMMMMWd.              \x1b[0m
+\x1b[33m          XMMMMMMMMMMMMMMMMMMMMMMMX.                \x1b[0m
+\x1b[31m        ;MMMMMMMMMMMMMMMMMMMMMMMM:                  \x1b[0m
+\x1b[31m        :MMMMMMMMMMMMMMMMMMMMMMMM:                  \x1b[0m
+\x1b[31m        .MMMMMMMMMMMMMMMMMMMMMMMMX.                 \x1b[0m
+\x1b[31m         kMMMMMMMMMMMMMMMMMMMMMMMMWd.               \x1b[0m
+\x1b[35m          .XMMMMMMMMMMMMMMMMMMMMMMMMMMk             \x1b[0m
+\x1b[35m           .XMMMMMMMMMMMMMMMMMMMMMMMMK.             \x1b[0m
+\x1b[34m             kMMMMMMMMMMMMMMMMMMMMMMd               \x1b[0m
+\x1b[34m              ;KMMMMMMMWXXWMMMMMMMk.                \x1b[0m
+\x1b[34m                .cooc,.    .,coo:.                  \x1b[0m
 
-                         _/                  _/  _/
-      _/_/      _/_/_/  _/_/_/      _/_/    _/  _/
-   _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/
-  _/            _/_/  _/    _/  _/        _/  _/
-   _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/
+\x1b[34m                        _/                  _/  _/  \x1b[0m
+\x1b[34m     _/_/      _/_/_/  _/_/_/      _/_/    _/  _/   \x1b[0m
+\x1b[34m  _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/    \x1b[0m
+\x1b[34m _/            _/_/  _/    _/  _/        _/  _/     \x1b[0m
+\x1b[34m  _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/      \x1b[0m
+
 
 "))
 
