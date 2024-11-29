@@ -12,6 +12,7 @@
   (compilation-scroll-output t)
   (compilation-skip-threshold 2)
   (compilation-auto-jump-to-first-error t)
+  (compilation-max-output-line-length nil)
   :bind (:map
          compilation-mode-map
          ("p" . previous-error-no-select)
@@ -23,8 +24,6 @@
          prog-mode-map
          ("C-c C-c" . ar/compile))
   :config
-  (when (>= emacs-major-version 29)
-    (setq compilation-max-output-line-length nil))
   (defun ar/compile (prefix)
     (interactive "p")
     (if (and (eq prefix 1)
@@ -97,29 +96,23 @@
 
   (defun ar/compile-autoclose (buffer string)
     "Hide successful builds window with BUFFER and STRING."
-    (cond ((string-match "finished" string)
-           (message "Build finished")
-           (when (and (> (count-windows) 1)
-                      (get-buffer-window buffer t))
-             (run-with-timer 2 nil
-                             #'delete-window
-                             (get-buffer-window buffer t))))
-          (t
-           (message "Compilation exited abnormally: %s" string))))
+    (if (string-match "finished" string)
+        (progn
+          (message "Build finished :)")
+          (run-with-timer 3 nil
+                          (lambda ()
+                            (when-let* ((multi-window (> (count-windows) 1))
+                                        (live (buffer-live-p buffer))
+                                        (window (get-buffer-window buffer t)))
+                              (delete-window window)))))
+      (message "Compilation %s" string)))
 
   ;; Automatically hide successful builds window.
   ;; Trying out without for a little while.
   (setq compilation-finish-functions (list #'ar/compile-cache-env #'ar/compile-autoclose))
 
-  ;; http://ivanmalison.github.io/dotfiles/#colorizecompliationbuffers
   (defun ar/colorize-compilation-buffer ()
-    (let ((was-read-only buffer-read-only))
-      (unwind-protect
-          (progn
-            (when was-read-only
-              (read-only-mode -1))
-            (ansi-color-apply-on-region (point-min) (point-max)))
-        (when was-read-only
-          (read-only-mode +1)))))
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max))))
 
   (add-hook 'compilation-filter-hook 'ar/colorize-compilation-buffer))
