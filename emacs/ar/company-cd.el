@@ -19,7 +19,7 @@
 (defun company-cd (command &optional arg &rest ignored)
   "Company shell completion for `cd' shell or terminal prefixes."
   (interactive (list 'interactive))
-  (case command
+  (cl-case command
     (interactive (company-begin-backend 'company-cd))
     (prefix
      (company-cd--prefix))
