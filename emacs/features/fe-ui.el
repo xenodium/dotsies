@@ -321,3 +321,10 @@
         ("M-±" . winner-redo))
   :config
   (winner-mode +1))
+
+(use-package keycast
+  :ensure t
+  :commands keycast-mode-line-mode
+  :config
+  (setq keycast-mode-line-format "%10s%k%r"))
+
