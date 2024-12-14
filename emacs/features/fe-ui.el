@@ -93,16 +93,14 @@
 
       ;; Hardcode region theme color.
       (set-face-attribute 'region nil :background "#3f464c" :foreground "#eeeeec" :underline nil)
-      (set-face-attribute 'mode-line nil :background "#191919" :box nil)
 
       ;; Styling moody https://github.com/tarsius/moody
       (let ((line (face-attribute 'mode-line :underline)))
-        (set-face-attribute 'mode-line nil :overline   line)
-        (set-face-attribute 'mode-line-inactive nil :overline   line)
-        (set-face-attribute 'mode-line-inactive nil :underline  line)
-        (set-face-attribute 'mode-line nil :box nil)
-        (set-face-attribute 'mode-line-inactive nil :box nil)
-        (set-face-attribute 'mode-line-inactive nil :background "#212121" :foreground "#5B6268")))
+        (set-face-attribute 'mode-line nil :background "#191919" :box nil :overline line)
+        (set-face-attribute 'mode-line-inactive nil
+                            :background "#212121"
+                            :foreground "#5B6268"
+                            :box nil :overline line :underline line)))
 
     (with-eval-after-load 'font-lock
       ;; brew install font-iosevka-aile
