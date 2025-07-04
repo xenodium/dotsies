@@ -6,8 +6,8 @@
   :hook (magit-mode . visual-line-mode)
   :validate-custom
   (magit-diff-refine-hunk 'all)
-  (magit-status-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
   (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  (magit-git-executable (executable-find "git"))
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
