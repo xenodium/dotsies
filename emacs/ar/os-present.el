@@ -38,8 +38,8 @@
      (select-frame frame)
      (select-frame-set-input-focus frame)
      (switch-to-buffer buffer)
-     ;; (with-selected-frame frame
-     ;;   (switch-to-buffer buffer))
+     (with-selected-frame frame
+       (switch-to-buffer buffer))
      (if ,sync-body
          (progn
            (when (null ',body)
