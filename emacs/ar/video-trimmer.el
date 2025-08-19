@@ -96,8 +96,7 @@
               ((< video-trimmer-move-by-increment 1.0) 1.0)
               ((< video-trimmer-move-by-increment 10.0) 10.0)
               ((< video-trimmer-move-by-increment 60.0) 60.0)
-              (t video-trimmer-move-by-increment)))
-  (message "Increment: %.1fs" video-trimmer-move-by-increment))
+              (t video-trimmer-move-by-increment))))
 
 (defun video-trimmer-decrement-increment ()
   "Decrement the trimming increment."
@@ -106,8 +105,7 @@
         (cond ((> video-trimmer-move-by-increment 10.0) 10.0)
               ((> video-trimmer-move-by-increment 1.0) 1.0)
               ((> video-trimmer-move-by-increment 0.1) 0.1)
-              (t video-trimmer-move-by-increment)))
-  (message "Increment: %.1fs" video-trimmer-move-by-increment))
+              (t video-trimmer-move-by-increment))))
 
 (defun video-trimmer-move-front-forward ()
   "Move video front forward."
@@ -329,8 +327,7 @@ If FILE-PATH already contains a number in the format (n), set counter to n.
   "Set a custom increment."
   (interactive)
   (let ((val (read-number "Set custom increment (seconds): " video-trimmer-move-by-increment)))
-    (setq video-trimmer-move-by-increment val)
-    (message "Increment is now %.1fs" video-trimmer-move-by-increment)))
+    (setq video-trimmer-move-by-increment val)))
 
 (defun video-trimmer--is-video-p (file)
   "Return non-nil if FILE extension is found in `video-trimmer-supported-video'."
