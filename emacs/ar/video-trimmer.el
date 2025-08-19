@@ -196,11 +196,11 @@
     ]
    [""
     ("RET" "Save copy" video-trimmer-save-trimmed-copy :transient nil)
-    ("t" "Tutorial" video-trimmer--open-tutorial)]
+    ("t" "Tutorial" video-trimmer-open-tutorial)]
    [""
     ("q" "Quit" video-trimmer-quit :transient nil)]])
 
-(defun video-trimmer--open-tutorial ()
+(defun video-trimmer-open-tutorial ()
   "Open ffmpeg tutorial."
   (interactive)
   (browse-url "https://www.youtube.com/watch?v=9kaIXkImCAM"))
