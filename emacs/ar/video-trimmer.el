@@ -48,7 +48,7 @@
 (defvar-local video-trimmer--trim-front 0.0)
 (defvar-local video-trimmer--trim-back 0.0)
 (defvar-local video-trimmer--filename nil)
-(defvar-local video-trimmer--last-temp-file nil)
+(defvar-local video-trimmer--frame-file nil)
 
 (define-derived-mode video-trimmer-mode special-mode "Video trimmer"
   "Mode for trimming videos."
@@ -256,13 +256,14 @@
 
 (defun video-trimmer--extract-frame (timestamp)
   "Extract frame at TIMESTAMP and display in buffer."
-  ;; Delete previous temp file if it exists
-  (when (and video-trimmer--last-temp-file (file-exists-p video-trimmer--last-temp-file))
-    (delete-file video-trimmer--last-temp-file))
   (unless (executable-find "ffmpeg")
     (user-error "Ffmpeg not found"))
-  (let ((temp-file (make-temp-file "video-trimmer-frame-" nil ".jpg")))
-    (setq video-trimmer--last-temp-file temp-file)
+  (let ((temp-file (expand-file-name "video-trimmer-frame.jpg" temporary-file-directory)))
+    (when (and video-trimmer--frame-file
+               (file-exists-p video-trimmer--frame-file))
+      (delete-file video-trimmer--frame-file)
+      (image-flush (create-image temp-file 'jpeg nil :max-height (frame-pixel-height))))
+    (setq video-trimmer--frame-file temp-file)
     (let ((result (call-process "ffmpeg" nil nil nil
                                "-ss" (format "%.2f" timestamp)
                                "-i" video-trimmer--filename
