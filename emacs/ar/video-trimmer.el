@@ -67,7 +67,9 @@
 (define-key video-trimmer-mode-map (kbd "?") #'video-trimmer-menu)
 
 (defun video-trimmer-trim()
-  "Create or switch to *clipper* buffer with timeline controls."
+  "Open a video file for trimming.
+
+If point is on a `dired' file, open for trimming."
   (interactive)
   (let* ((filename (if (= 1 (length (dired-get-marked-files nil nil nil t)))
                        (nth 0 (dired-get-marked-files nil nil nil t))
