@@ -146,17 +146,18 @@ If point is on a `dired' file, open for trimming."
     (user-error "Ffmpeg not found"))
   (unless video-trimmer--filename
     (user-error "File no found"))
+  ;; (message "VIDEO TRIM: ffmpeg %s" params)
   (let* ((start-time video-trimmer--trim-front)
          (duration (- video-trimmer--total video-trimmer--trim-front video-trimmer--trim-back))
-         (output-file (video-trimmer--unique-new-file-path video-trimmer--filename)))
-    (message "Trimming video...")
-    (let ((result (call-process "ffmpeg" nil nil nil
-                                "-ss" (format "%.2f" start-time)
-                                "-t" (format "%.2f" duration)
-                                "-i" video-trimmer--filename
-                                "-c" "copy"
-                                "-avoid_negative_ts" "make_zero"
-                                "-y" output-file)))
+         (output-file (video-trimmer--unique-new-file-path video-trimmer--filename))
+         (params `("-i" ,video-trimmer--filename
+                   "-ss" ,(format "%.2f" start-time)
+                   "-t" ,(format "%.2f" duration)
+                   "-c:v" "libx264"
+                   "-c:a" "aac"
+                   "-y",output-file)))
+    (message "Trimming video (re-encoding)...")
+    (let ((result (apply #'call-process "ffmpeg" nil nil nil params)))
       (kill-buffer)
       (if (= result 0)
           (progn
@@ -260,19 +261,20 @@ If point is on a `dired' file, open for trimming."
   "Extract frame at TIMESTAMP and display in buffer."
   (unless (executable-find "ffmpeg")
     (user-error "Ffmpeg not found"))
-  (let ((temp-file (expand-file-name "video-trimmer-frame.jpg" temporary-file-directory)))
+  (let* ((temp-file (expand-file-name "video-trimmer-frame.jpg" temporary-file-directory))
+         (params `("-ss" ,(format "%.2f" timestamp)
+                   "-i" ,video-trimmer--filename
+                   "-vframes" "1"
+                   "-vcodec" "mjpeg"
+                   "-f" "image2"
+                   "-y" ,temp-file)))
+    ;; (message "FRAME EXTRACT: ffmpeg %s" params)
     (when (and video-trimmer--frame-file
                (file-exists-p video-trimmer--frame-file))
       (delete-file video-trimmer--frame-file)
       (image-flush (create-image temp-file 'jpeg nil :max-height (frame-pixel-height))))
     (setq video-trimmer--frame-file temp-file)
-    (let ((result (call-process "ffmpeg" nil nil nil
-                               "-ss" (format "%.2f" timestamp)
-                               "-i" video-trimmer--filename
-                               "-vframes" "1"
-                               "-vcodec" "mjpeg"
-                               "-f" "image2"
-                               "-y" temp-file)))
+    (let ((result (apply #'call-process "ffmpeg" nil nil nil params)))
       (when (= result 0)
         (let ((inhibit-read-only t))
           (erase-buffer)
