@@ -95,17 +95,24 @@ If point is on a `dired' file, open for trimming."
   (interactive)
   (setq video-trimmer-move-by-increment
         (cond ((< video-trimmer-move-by-increment 0.1) 0.1)
-              ((< video-trimmer-move-by-increment 1.0) 1.0)
-              ((< video-trimmer-move-by-increment 10.0) 10.0)
-              ((< video-trimmer-move-by-increment 60.0) 60.0)
+              ((< video-trimmer-move-by-increment 0.5) 0.5)
+              ((< video-trimmer-move-by-increment 5.0) 5.0)
+              ((< video-trimmer-move-by-increment 20.0) 20.0)
+              ((< video-trimmer-move-by-increment 50.0) 50.0)
+              ((< video-trimmer-move-by-increment 300.0) 300.0)
+              ((< video-trimmer-move-by-increment 600.0) 600.0)
               (t video-trimmer-move-by-increment))))
 
 (defun video-trimmer-decrement-increment ()
   "Decrement the trimming increment."
   (interactive)
   (setq video-trimmer-move-by-increment
-        (cond ((> video-trimmer-move-by-increment 10.0) 10.0)
-              ((> video-trimmer-move-by-increment 1.0) 1.0)
+        (cond ((> video-trimmer-move-by-increment 600.0) 600.0)
+              ((> video-trimmer-move-by-increment 300.0) 300.0)
+              ((> video-trimmer-move-by-increment 50.0) 50.0)
+              ((> video-trimmer-move-by-increment 20.0) 20.0)
+              ((> video-trimmer-move-by-increment 5.0) 5.0)
+              ((> video-trimmer-move-by-increment 0.5) 0.5)
               ((> video-trimmer-move-by-increment 0.1) 0.1)
               (t video-trimmer-move-by-increment))))
 
@@ -186,7 +193,7 @@ If point is on a `dired' file, open for trimming."
                  ("]" "Move Forward" video-trimmer-move-back-forward)
                  ("[" "Move Backward" video-trimmer-move-back-backward)]
    [:description
-    (lambda () (format "Increment (%.1fs)" video-trimmer-move-by-increment))
+    (lambda () (format "Increment (%s)" (video-trimmer--format-time video-trimmer-move-by-increment)))
     ("+" "Increase" video-trimmer-increment-increment)
     ("-" "Decrease" video-trimmer-decrement-increment)]
    ["Custom"
