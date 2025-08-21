@@ -344,7 +344,7 @@ If FILE-PATH already contains a number in the format (n), set counter to n.
 (defun video-trimmer--is-video-p (file)
   "Return non-nil if FILE extension is found in `video-trimmer-supported-video'."
   (if (file-name-extension file)
-      (seq-contains-p ready-player-supported-video
+      (seq-contains-p video-trimmer-supported-video
                       (file-name-extension file)
                       (lambda (a b)
                         (string-equal (downcase a) (downcase b))))))
