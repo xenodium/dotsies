@@ -7,6 +7,7 @@
   :bind (:map org-mode-map
               ("M-<RET>" . ar/org-meta-return)
               ("C-x C-q" . view-mode)
+              ("C-c C-w" . bubble-mode)
               ("C-c C-l" . ar/org-insert-link-dwim)
               ("M-[" . org-metaleft)
               ("M-]" . org-metaright)
