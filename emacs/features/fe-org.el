@@ -1126,8 +1126,8 @@ If VANILLA is non-nil, run the standard `org-capture'."
   (org-capture-templates
    '(("t" "Todo" entry (file+headline "~/stuff/active/agenda.org" "INBOX")
       "* TODO %?\nSCHEDULED: %t" :prepend t)
-     ("j" "Journelly" entry (file "~/Documents/My org files/Journelly/Journelly.org")
-      "* %U @ Home\n%?" :prepend t)))
+     ("j" "Journelly" entry (file "~/Library/Mobile Documents/iCloud~com~xenodium~Journelly/Documents/Journelly.org")
+      "* %U @ %(journelly-generate-metadata)\n%?" :prepend t)))
   :config
   (defun ar/org-capture-finalize-dwim (prefix)
     "With prefix, invoke `org-capture-finalize' else invoke `org-capture-finalize'."
@@ -1179,4 +1179,9 @@ If VANILLA is non-nil, run the standard `org-capture'."
     (interactive "P")
     (if vanilla
         (org-capture)
-      (org-capture nil "t"))))
+      (org-capture nil "t")))
+
+  (defun ar/org-capture-journelly-entry ()
+    "Capture a Journelly entry."
+    (interactive)
+    (org-capture nil "j")))
