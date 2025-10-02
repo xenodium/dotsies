@@ -85,6 +85,8 @@
   (recentf-max-saved-items 1000
                            recentf-max-menu-items 50)
   :config
+  ;; From https://fosstodon.org/@yugaego/110791166459483565
+  (setq recentf-auto-cleanup 'never)
   ;; Adds dired buffers to recentf.
   (use-package recentf-ext
     :ensure t
