@@ -344,6 +344,7 @@ Also allow dragging items up and down via M-<up> and M-x<down>."
     :bind (:map dired-filter-map
                 ("v" . dired-filter-by-videos))
     :config
+    (setq dired-filter-header-line-format '((:eval (format "→ Active filters: %s" (dired-filter--describe-filters)))))
     (dired-filter-define videos
         "Toggle current view to video files."
       (:description "videos")
