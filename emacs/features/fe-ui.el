@@ -190,6 +190,7 @@
 (use-package ultra-scroll
   :ensure t
   :init
+  :defer 20
   :validate-custom
   (scroll-conservatively 3)
   (scroll-margin 0)
