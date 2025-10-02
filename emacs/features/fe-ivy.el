@@ -332,7 +332,7 @@ For example:
     (setq ivy-height (round (* 0.01666 (display-pixel-height)))))
 
   (defun ar/ivy-keyboard-quit-dwim ()
-    "If region active, deactivate. If there's content, minibuffer. Otherwise quit."
+    "If region active, deactivate. If there's content, clear minibuffer. Otherwise quit."
     (interactive)
     (cond ((and delete-selection-mode (region-active-p))
            (setq deactivate-mark t))
