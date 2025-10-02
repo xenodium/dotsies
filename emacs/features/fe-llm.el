@@ -1,5 +1,27 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package acp
+  :config
+  (use-package agent-shell
+    :commands
+    (agent-shell-anthropic-start-claude-code
+     agent-shell-google-start-gemini
+     agent-shell-openai-start-codex
+     agent-shell-goose-start-agent)
+    :config
+    (setq agent-shell-google-authentication
+          (agent-shell-google-make-authentication
+           :api-key (lambda () (nth 0 (process-lines "pass" "show" "google-key")))))
+    (setq agent-shell-anthropic-authentication
+          (agent-shell-anthropic-make-authentication
+           :api-key (lambda () (nth 0 (process-lines "pass" "show" "anthropic-key")))))
+    (setq agent-shell-openai-authentication
+          (agent-shell-openai-make-authentication
+           :api-key (lambda () (nth 0 (process-lines "pass" "show" "openai-key")))))
+    (setq agent-shell-goose-authentication
+          (agent-shell-make-goose-authentication
+           :openai-api-key (lambda () (nth 0 (process-lines "pass" "show" "openai-key")))))))
+
 (use-package chatgpt-shell
   :commands
   (chatgpt-shell
