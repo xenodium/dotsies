@@ -286,6 +286,13 @@ For example:
   :ensure t
   :bind ("C-x f" . counsel-projectile-find-file))
 
+(use-package ivy-xref
+  :ensure t
+  :after xref
+  :validate-custom
+  (xref-show-xrefs-function #'ivy-xref-show-xrefs)
+  (xref-show-definitions-function #'ivy-xref-show-defs))
+
 (use-package ivy
   :ensure t
   :bind ("C-x b" . ivy-switch-buffer)
