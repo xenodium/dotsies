@@ -304,10 +304,14 @@
   :ensure t
   :commands hide-mode-line-mode)
 
-(use-package pixel-scroll
-  :defer 20
+(use-package ultra-scroll
+  :ensure t
+  :init
+  :validate-custom
+  (scroll-conservatively 3)
+  (scroll-margin 0)
   :config
-  (pixel-scroll-precision-mode +1))
+  (ultra-scroll-mode +1))
 
 (use-package winner
   :bind(("M-<escape>" . winner-undo)
