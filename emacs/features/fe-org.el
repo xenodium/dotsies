@@ -20,9 +20,9 @@
    '((sequence
       "TODO(t)"
       "STARTED(s)"
-      "WAITING(w!)" ;; Use @/! to log note and timestamp
+      "WAITING(w)" ;; Use @/! to log note and timestamp
       "|"
-      "DONE(d!)"
+      "DONE(d)"
       "OBSOLETE(o)"
       "CANCELLED(c)")))
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
@@ -48,7 +48,7 @@
                         (?B . "#ff5900")
                         (?C . "#ff9200")
                         (?D . "#747474")))
-  (org-log-done 'time)
+  (org-log-done nil)
   (org-ellipsis " …")
   (org-fontify-emphasized-text t)
 
