@@ -13,6 +13,7 @@
   (compilation-skip-threshold 2)
   (compilation-auto-jump-to-first-error t)
   (compilation-max-output-line-length nil)
+  (compilation-ask-about-save nil)
   :bind (:map
          compilation-mode-map
          ("p" . previous-error-no-select)
