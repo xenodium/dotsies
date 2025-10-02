@@ -390,6 +390,7 @@ With prefix, don't confirm text."
      'org-babel-load-languages
      '((R . t)
        (ditaa . t)
+       (clojure . t)
        (dot . t)
        (emacs-lisp . t)
        (gnuplot . t)
