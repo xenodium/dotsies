@@ -27,7 +27,7 @@
 (setq idle-update-delay 1.0)
 
 ;; Don't want a mode line while loading init.
-(setq mode-line-format nil)
+(setq-default mode-line-format nil)
 
 ;; No scrollbar by default.
 (when (fboundp 'scroll-bar-mode)
