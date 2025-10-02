@@ -48,11 +48,10 @@
 
 
   (use-package ready-player
-    :bind (("C-c m n" . ready-player-next)
-           ("C-c m p" . ready-player-previous)
-           ("C-c m SPC" . ready-player-toggle-play-stop)
-           ("C-c m r" . ready-player-toggle-repeat))
+    :validate-custom
+    (ready-player-my-media-collection-location "~/Music/Music/Media.localized/Music")
     :config
+    (ready-player-macos-use-sf-symbols)
     (ready-player-mode +1))
 
   (use-package macos
