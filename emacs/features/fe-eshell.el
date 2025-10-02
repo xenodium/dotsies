@@ -72,6 +72,18 @@
         :hook (eshell-mode . esh-autosuggest-mode)
         :ensure t))
 
+    (use-package em-prompt
+      :validate-custom
+      (eshell-prompt-function
+       (lambda ()
+         (let* ((pwd (abbreviate-file-name (eshell/pwd)))
+                (parent (file-name-nondirectory
+                         (directory-file-name (file-name-directory pwd))))
+                (current (file-name-nondirectory pwd)))
+           (concat current " $ ")
+           ;; (concat parent "/" current " $ ")
+           ))))
+
     (use-package em-hist
       :validate-custom
       (eshell-history-size (* 10 1024))
