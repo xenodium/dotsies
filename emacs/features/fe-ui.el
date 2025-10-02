@@ -324,5 +324,6 @@
   :ensure t
   :commands keycast-mode-line-mode
   :config
+  (setq keycast-mode-line-insert-after 'mode-line-position)
   (setq keycast-mode-line-format "%10s%k%r"))
 
