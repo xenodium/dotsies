@@ -11,6 +11,14 @@
   :config
   (pcre-mode +1))
 
+(use-package slime
+  :ensure t
+  :validate-custom
+  (inferior-lisp-program (or (executable-find "sbcl")
+                             (error "brew install sbcl (for CL)")))
+  :config
+  (slime-setup))
+
 (use-package elisp-mode
   :bind ("C-x C-e" . ar/eval-last-sexp)
   :hook ((emacs-lisp-mode . ar/emacs-lisp-mode-hook-function)
