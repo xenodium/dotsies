@@ -571,7 +571,7 @@ line instead."
 
   (use-package region-bindings-mode
     :ensure t
-    :demand
+    :demand t
     :bind (:map region-bindings-mode-map
                 ("a" . mc/mark-all-dwim)
                 ("p" . mc/mark-previous-like-this)
