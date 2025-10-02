@@ -62,7 +62,7 @@
   ;; Prevent inadvertently editing invisible areas in Org.
   (org-catch-invisible-edits 'error)
   (org-cycle-separator-lines 2)
-  (org-image-actual-width nil)
+  (org-image-actual-width 500)
   (org-hide-emphasis-markers t)
 
   ;; All Org leading stars become invisible.
