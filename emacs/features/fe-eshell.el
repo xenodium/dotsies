@@ -176,12 +176,6 @@
     (use-package shrink-path
       :ensure t)
 
-    (use-package esh-help
-      :ensure t
-      :config
-      ;; Eldoc support.
-      (setup-esh-help-eldoc))
-
     (use-package esh-mode
       :validate-custom
       (eshell-scroll-to-bottom-on-input 'all)

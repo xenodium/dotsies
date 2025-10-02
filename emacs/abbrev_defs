@@ -78,5 +78,7 @@
     ("phyciscal" "physical" nil :count 0)
     ("typcially" "typically" nil :count 0)
     ("availble" "available" nil :count 0)
+    ("artivle" "article" nil :count 0)
+    ("inspirted" "inspired" nil :count 0)
    ))
 
