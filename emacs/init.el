@@ -9,7 +9,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; init.el gc values (faster loading) ;;;;
 
-(setq gc-cons-threshold (* 384 1024 1024)
+(setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6)
 
 ;; Do not load outdated byte code files.
