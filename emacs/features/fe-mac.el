@@ -4,9 +4,6 @@
   ;; No icon on window.
   (setq ns-use-proxy-icon nil)
 
-  ;; Fixes mode line separator issues on macOS.
-  (setq ns-use-srgb-colorspace nil)
-
   ;; Make ⌘ meta modifier.
   (setq mac-command-modifier 'meta)
   ;; Don't use ⌥ for any binding.
