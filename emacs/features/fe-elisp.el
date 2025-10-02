@@ -29,7 +29,7 @@
   ;; Highlight bound variables and quoted exprs.
   (use-package lisp-extra-font-lock
     :ensure t
-    :demand
+    :demand t
     :hook ((emacs-lisp-mode . lisp-extra-font-lock-global-mode)))
 
   (use-package edebug
@@ -91,7 +91,7 @@
   ;; Apply face to face symbols themselves.
   (use-package fontify-face
     :ensure t
-    :demand
+    :demand t
     :commands fontify-face-mode)
 
   ;; Better M-. elisp navigation (enabled with smart jump).
