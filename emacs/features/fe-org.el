@@ -548,6 +548,51 @@ With prefix, don't confirm text."
   :hook ((org-present-mode . ar/org-present-mode-hook)
          (org-present-mode-quit . ar/org-present-mode-quit))
   :init
+  (defun ar/org-tab-next (&optional backward)
+    "Present and reveal next item."
+    (interactive "P")
+    (let* ((heading-pos (ar/org-next-visible-heading-pos backward))
+           (link-pos (ar/org-next-link-pos backward))
+           (block-pos (ar/org-next-block-pos backward))
+           (closest-pos (when (or heading-pos link-pos block-pos)
+                          (apply (if backward #'max #'min)
+                                 (seq-filter #'identity
+                                             (list heading-pos
+                                                   link-pos
+                                                   block-pos))))))
+      (when closest-pos
+        (cond ((eq heading-pos closest-pos)
+               (goto-char heading-pos))
+              ((eq link-pos closest-pos)
+               (goto-char link-pos))
+              ((eq block-pos closest-pos)
+               (goto-char block-pos)))
+        ;; Reveal relevant content.
+        (cond ((> (org-current-level) 1)
+               (ar/org-present-reveal-level2))
+              ((eq (org-current-level) 1)
+               ;; At level 1. Collapse children.
+               (org-overview)
+               (org-show-entry)
+               (org-show-children)
+               (run-hook-with-args 'org-cycle-hook 'children)))))
+    (ar/org-tab-highlight-current-heading))
+
+  (defun ar/org-tab-highlight-current-heading ()
+    (unless (derived-mode-p 'org-mode)
+      (error "Not in org mode"))
+    (remove-overlays (point-min) (point-max) 'org-closest-heading-overlay 'org-closest-heading)
+    (save-excursion
+      (when-let ((pos (ignore-errors (org-back-to-heading) (point))))
+        (goto-char pos)
+        (let ((ov (make-overlay (line-beginning-position) (line-end-position))))
+          (overlay-put ov 'face '(:foreground "yellow" :box t))
+          (overlay-put ov 'org-closest-heading-overlay 'org-closest-heading)))))
+
+  (defun ar/org-tab-previous ()
+    (interactive)
+    (ar/org-tab-next t))
+
   (defun ar/org-present-next-item (&optional backward)
     "Present and reveal next item."
     (interactive "P")
