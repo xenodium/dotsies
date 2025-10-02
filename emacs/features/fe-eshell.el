@@ -9,6 +9,8 @@
   ;;                              "terminal"
   ;;                              (lambda
   ;;                                nil (ansi-term shell-pop-term-shell))))
+  ;; (shell-pop-window-size 50)
+  ;; (shell-pop-window-position "right")
   (shell-pop-window-position "full")
   (shell-pop-shell-type '("eshell" "*eshell*" (lambda ()
                                                 (eshell))))
