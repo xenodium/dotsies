@@ -43,11 +43,29 @@
   :defer
   :ensure t)
 
-(use-package material-theme
-  :ensure t
+(use-package materialized-theme
   :config
-  (load-theme 'material t)
-  (ar/load-materialized-tweaks)
+  (load-theme 'materialized t)
+  (with-eval-after-load 'faces
+    (set-face-attribute 'default nil :stipple nil :inverse-video nil
+                        ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
+                        ;; :family "Hack" ;; brew tap homebrew/cask-fonts && brew cask install font-hack
+                        ;; :family "Sarasa Mono J" ;; brew install --cask font-sarasa-gothic
+                        ;; :family "mononoki" ;; https://madmalik.github.io/mononoki/ or sudo apt-get install fonts-mononoki
+                        :family "JetBrains Mono" ;; brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono
+                        :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
+                        :width 'normal :foundry "nil")
+
+    (when (memq system-type '(darwin))
+      ;; Enable rendering SF symbols on macOS.
+      (set-fontset-font t nil "SF Pro Display" nil 'append)
+      ;; Emoji's.
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)))
+
+  (with-eval-after-load 'font-lock
+    ;; brew install font-iosevka-aile
+    ;; (set-face-attribute 'font-lock-comment-face nil :font "Iosevka Aile")
+    (set-face-attribute 'font-lock-comment-face nil :font "Sarasa Mono J"))
   :init
   (defun ar/load-material-org-present-tweaks ()
     (with-eval-after-load 'faces
@@ -57,9 +75,7 @@
       (set-face-attribute 'org-meta-line nil :inherit 'lisp-extra-font-lock-quoted :foreground 'unspecified :background 'unspecified :box nil)
       (set-face-attribute 'org-level-1 nil :foreground "#ff69b4" :background 'unspecified :box nil)
       (set-face-attribute 'org-level-2 nil :inherit 'lisp-extra-font-lock-quoted :foreground 'unspecified :background 'unspecified :box nil)
-      (set-face-attribute 'org-block nil :background "grey11" :box nil)
-      (set-face-attribute 'read-multiple-choice-face nil :background "#212121" :box nil :underline nil)
-      ))
+      (set-face-attribute 'org-block nil :background "grey11" :box nil)))
 
   (defun ar/drop-material-org-present-tweaks ()
     (with-eval-after-load 'frame
@@ -68,37 +84,7 @@
     (with-eval-after-load 'faces
       (set-face-attribute 'org-level-1 nil :foreground 'unspecified :background 'unspecified :box nil)
       (set-face-attribute 'org-level-2 nil :inherit nil :foreground 'unspecified :background 'unspecified :box nil)
-      (set-face-attribute 'org-block nil :background 'unspecified :box nil)))
-
-  (defun ar/load-materialized-tweaks ()
-    (with-eval-after-load 'frame
-      (set-cursor-color "orange"))
-
-    (with-eval-after-load 'faces
-      ;; From https://gist.github.com/huytd/6b785bdaeb595401d69adc7797e5c22c#file-customized-org-mode-theme-el
-      (set-face-attribute 'default nil :stipple nil :background "#212121" :foreground "#eeffff" :inverse-video nil
-                          ;; :family "Menlo" ;; or Meslo if unavailable: https://github.com/andreberg/Meslo-Font
-                          ;; :family "Hack" ;; brew tap homebrew/cask-fonts && brew cask install font-hack
-                          ;; :family "Sarasa Mono J" ;; brew install --cask font-sarasa-gothic
-                          :family "JetBrains Mono" ;; brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono
-                          ;; :family "mononoki" ;; https://madmalik.github.io/mononoki/ or sudo apt-get install fonts-mononoki
-                          :box nil :strike-through nil :overline nil :underline nil :slant 'normal :weight 'normal
-                          :width 'normal :foundry "nil")
-
-      ;; (set-fontset-font t nil "Sarasa Mono J" nil 'append)
-      ;; (set-fontset-font t 'kana (font-spec :family "Sarasa Mono J") nil 'prepend) ;; Hiragana & Katakana
-      ;; (set-fontset-font t 'han (font-spec :family "Sarasa Mono J") nil 'prepend)  ;; Kanji
-
-      (when (memq system-type '(darwin))
-        ;; Enable rendering SF symbols on macOS.
-        (set-fontset-font t nil "SF Pro Display" nil 'append)
-        ;; Emoji's.
-        (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)))
-
-    (with-eval-after-load 'font-lock
-      ;; brew install font-iosevka-aile
-      ;; (set-face-attribute 'font-lock-comment-face nil :font "Iosevka Aile")
-      (set-face-attribute 'font-lock-comment-face nil :font "Sarasa Mono J"))))
+      (set-face-attribute 'org-block nil :background 'unspecified :box nil))))
 
 (use-package moody
   :ensure t
