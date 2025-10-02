@@ -6,6 +6,9 @@
    chatgpt-shell-prompt-compose)
   :validate-custom
   ((chatgpt-shell-model-version "chatgpt-4o-latest")
+   (chatgpt-shell-deepseek-key
+    (lambda ()
+      (nth 0 (process-lines "pass" "show" "deepseek-key"))))
    (chatgpt-shell-openai-key
     (lambda ()
       (nth 0 (process-lines "pass" "show" "openai-key"))))
