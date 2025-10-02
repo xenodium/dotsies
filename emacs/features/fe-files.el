@@ -67,6 +67,8 @@
 
 (use-package recentf
   :defer 10
+  ;; From https://fosstodon.org/@yugaego/110791166459483565
+  :hook ((buffer-list-update . recentf-track-opened-file))
   :validate-custom
   (recentf-exclude '("/auto-install/"
                      ".recentf"
