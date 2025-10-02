@@ -56,7 +56,8 @@
 
   (use-package macos
     :commands (macos-reveal-in-finder
-               macos-share)
+               macos-share
+               macos-load-module)
     :config
     (macos-load-module))
 
