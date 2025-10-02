@@ -388,9 +388,9 @@ Also allow dragging items up and down via M-<up> and M-x<down>."
       (dwim-shell-command-on-marked-files
        "Set git name and email"
        (format "set -o errexit
-              git config user.name xenodium
-              git config user.email %s"
-               (replace-regexp-in-string "/" "" "me/+/gh/@/xenodium/./com"))
+          git config user.name xenodium
+          git config user.email %s"
+               (replace-regexp-in-string "_at_" "@" "8107219+xenodium_at_users.noreply.github.com"))
        :utils "git"
        :error-autofocus t
        :silent-success t))))
