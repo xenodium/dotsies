@@ -45,7 +45,6 @@ reuse it's window, otherwise create new one."
              tldr-update-docs))
 
 (use-package which-key
-  :ensure t
   :defer 20
   :validate-custom
   ;; Make which key panel only appear after C-h.

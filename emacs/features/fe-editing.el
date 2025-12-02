@@ -101,7 +101,7 @@
   (whitespace-line-column nil)
   ;; Highlight empty lines, TABs, blanks at beginning/end, lines
   ;; longer than fill-column, and trailing blanks.
-  (whitespace-style '(face empty tabs lines-tail trailing))
+  (whitespace-style '(face tabs lines-tail trailing))
   :config
   (defun ar/whitespace-mode-enable ()
     "Delayed enabling of whitespace-mode to ensure fill-column is set for loaded buffer."

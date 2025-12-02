@@ -377,6 +377,10 @@ Also allow dragging items up and down via M-<up> and M-x<down>."
   :config
   (use-package dwim-shell-commands
     :demand t
+    :validate-custom (dwim-shell-commands-git-clone-dirs
+                      '("~/stuff/active/code/third_party"
+                        "~/Downloads"
+                        "~/Desktop"))
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)
            ("C-c (" . dwim-shell-commands-macos-start-recording-window)
            ("C-c )" . dwim-shell-commands-macos-end-recording-window)

@@ -1,5 +1,15 @@
 ;;; -*- lexical-binding: t; -*-
 
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/chatgpt-shell/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/shell-maker/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/ob-chatgpt-shell/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/ob-dall-e-shell/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/dall-e-shell/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/acp.el/")
+(add-to-list 'load-path "/Users/alvaro/stuff/active/code/agent-shell/")
+
+(use-package eca :ensure t)
+
 (use-package acp
   :config
   (use-package agent-shell
@@ -7,14 +17,15 @@
     (agent-shell-anthropic-start-claude-code
      agent-shell-google-start-gemini
      agent-shell-openai-start-codex
-     agent-shell-goose-start-agent)
+     agent-shell-goose-start-agent
+     agent-shell)
     :config
     (setq agent-shell-google-authentication
           (agent-shell-google-make-authentication
            :api-key (lambda () (nth 0 (process-lines "pass" "show" "google-key")))))
     (setq agent-shell-anthropic-authentication
           (agent-shell-anthropic-make-authentication
-           :api-key (lambda () (nth 0 (process-lines "pass" "show" "anthropic-key")))))
+           :login t))
     (setq agent-shell-openai-authentication
           (agent-shell-openai-make-authentication
            :api-key (lambda () (nth 0 (process-lines "pass" "show" "openai-key")))))

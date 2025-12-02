@@ -83,7 +83,7 @@
       (insert (make-string left-margin ?\ ))
       (insert-image image)
       (insert "\n\n\n")
-      (insert (make-string (floor (/ (- (window-width window) (* (string-width title) 1.2)) 2)) ?\ ))
+      (insert (make-string (- (floor (/ (- (window-width window) (string-width title)) 2)) 1) ?\ ))
       (insert (propertize title 'face '(:height 1.2))))))
 
 (setq initial-scratch-message nil)

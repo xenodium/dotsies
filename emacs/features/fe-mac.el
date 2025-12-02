@@ -44,12 +44,16 @@
     :commands color-picker)
 
 
+  (add-to-list 'load-path "/Users/alvaro/stuff/active/code/ready-player")
+
   (use-package ready-player
     :validate-custom
     (ready-player-my-media-collection-location "~/Music/Music/Media.localized/Music")
     :config
     (ready-player-macos-use-sf-symbols)
     (ready-player-mode +1))
+
+  (add-to-list 'load-path "/Users/alvaro/stuff/active/code/EmacsMacOSModule")
 
   (use-package macos
     :commands (macos-reveal-in-finder

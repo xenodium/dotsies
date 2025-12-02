@@ -322,4 +322,24 @@ obj.prevDisplay = function(windowFrame, screenFrame)
   return newFrame
 end
 
+--- Command:cycleHalves(windowFrame, screenFrame)
+--- Method
+--- Cycles through left half, right half, and fullscreen configurations
+---
+--- Returns:
+--- * A screenFrame to be rendered
+obj.cycleHalves = function(windowFrame, screenFrame)
+  local newFrame
+
+  if Validate:leftHalf(windowFrame, screenFrame) then
+    newFrame = Resize:rightHalf(windowFrame, screenFrame)
+  elseif Validate:rightHalf(windowFrame, screenFrame) then
+    newFrame = Resize:fullScreen(windowFrame, screenFrame)
+  else
+    newFrame = Resize:leftHalf(windowFrame, screenFrame)
+  end
+
+  return newFrame
+end
+
 return obj

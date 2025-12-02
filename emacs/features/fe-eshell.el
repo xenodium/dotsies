@@ -76,13 +76,7 @@
       :validate-custom
       (eshell-prompt-function
        (lambda ()
-         (let* ((pwd (abbreviate-file-name (eshell/pwd)))
-                (parent (file-name-nondirectory
-                         (directory-file-name (file-name-directory pwd))))
-                (current (file-name-nondirectory pwd)))
-           (concat current " $ ")
-           ;; (concat parent "/" current " $ ")
-           ))))
+         (concat (file-name-nondirectory (abbreviate-file-name (eshell/pwd))) " $ "))))
 
     (use-package em-hist
       :validate-custom
@@ -270,6 +264,56 @@ So if we're connected with sudo to 'remotehost'
     (defun eshell/c ()
       "Change PWD to active dir."
       (eshell/cd "~/stuff/active/code/"))
+
+    (defun eshell/catimg (&rest args)
+      "Display image(s) inline in Eshell using Emacs's image support.
+
+Usage: catimg path/to/image.png
+
+Supports any image format your Emacs can display: SVG, PNG, JPG, etc.
+Optional: resize via :max-height / :max-width in `create-image`."
+      (if (not args)
+          (error "catimg: no image path provided"))
+      (with-temp-buffer
+        (insert "\n")
+        (dolist (path args)
+          (let* ((image-path (expand-file-name path))
+                 (image-type (image-type-from-file-name image-path)))
+            (unless (file-exists-p image-path)
+              (error "catimg: file not found: %s" image-path))
+            (unless (image-type-available-p image-type)
+              (error "catimg: unsupported image type: %s" image-type))
+            (insert-image (create-image image-path image-type nil
+                                        :max-width 400 :max-height 300))
+            (insert "\n")))
+        (insert "\n")
+        (buffer-string)))
+
+    (defun eshell/rinku (&rest args)
+      "Fetch link preview with rinku and display image inline.
+
+Usage: rinku https://soundcloud.com/shehackedyou
+       rinku --render https://soundcloud.com/shehackedyou"
+      (unless args
+        (error "rinku: no arguments provided"))
+      (let* ((cmd (format "rinku %s" (mapconcat #'shell-quote-argument args " ")))
+             (output (shell-command-to-string cmd))
+             (json-object-type 'alist)
+             (json-array-type 'list)
+             (json-key-type 'symbol)
+             (data (condition-case nil
+                       (json-read-from-string output)
+                     (error nil)))
+             (image-path (when data (map-elt data 'image)))
+             (title (when data (map-elt data 'title))))
+        (if (and data (or image-path title))
+            (concat
+             (when image-path
+               (eshell/catimg image-path))
+             (when title
+               (concat title "\n\n")))
+          ;; If no image/title or JSON parsing failed, just return the rinku output
+          output)))
 
     (defun eshell/emacs (&rest args)
       "Open a file (ARGS) in Emacs.  Some habits die hard."

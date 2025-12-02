@@ -2,7 +2,7 @@
 
 (when (display-graphic-p)
   ;; No title. See init.el for initial value.
-  (setq-default frame-title-format nil)
+  (setq-default frame-title-format "%b")
   ;; Hide the cursor in inactive windows.
   (setq cursor-in-non-selected-windows nil)
   ;; Avoid native dialogs.
@@ -43,6 +43,9 @@
   :defer
   :ensure t)
 
+(add-to-list 'custom-theme-load-path "~/stuff/active/code/emacs-materialized-theme/")
+(add-to-list 'load-path "~/stuff/active/code/emacs-materialized-theme/")
+
 (use-package materialized-theme
   :config
   (load-theme 'materialized t)
@@ -65,7 +68,7 @@
   (with-eval-after-load 'font-lock
     ;; brew install font-iosevka-aile
     ;; (set-face-attribute 'font-lock-comment-face nil :font "Iosevka Aile")
-    (set-face-attribute 'font-lock-comment-face nil :font "Sarasa Mono J"))
+    (set-face-attribute 'font-lock-comment-face nil :font "JetBrains Mono"))
   :init
   (defun ar/load-material-org-present-tweaks ()
     (with-eval-after-load 'faces
@@ -200,4 +203,3 @@
   :config
   (setq keycast-mode-line-insert-after 'mode-line-position)
   (setq keycast-mode-line-format "%10s%k%r"))
-

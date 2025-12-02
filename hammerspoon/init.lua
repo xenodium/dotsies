@@ -32,7 +32,7 @@ spoon.Lunette:bindHotkeys({
   topRight = {{"alt"}, "Right"},
   bottomLeft = {{"alt", "shift"}, "Left"},
   bottomRight = {{"alt", "shift"}, "Right"},
-  fullScreen = false,
+  cycleHalves = {{"cmd", "alt"}, "e"},
   center = false,
   nextThird = false,
   prevThird = false,
@@ -40,7 +40,6 @@ spoon.Lunette:bindHotkeys({
   shrink = false,
   undo = false,
   redo = false,
-  nextDisplay = false,
   prevDisplay = false,
 })
 
@@ -212,7 +211,7 @@ end
 
 hs.hotkey.bind({"alt"}, "T", addEmacsOrgModeTODO)
 hs.hotkey.bind({"alt"}, "W", searchEmacsBrowserBookmarks)
-hs.hotkey.bind({"alt"}, "I", launchEmacsKeybindingI)
+hs.hotkey.bind({"ctrl"}, "I", launchEmacsKeybindingI)
 hs.hotkey.bind({"alt"}, "R", launchEmacsKeybindingR)
 hs.hotkey.bind({"alt"}, "V", launchEmacsKeybindingV)
 hs.hotkey.bind({"alt"}, "L", searchEmacsOrgShortLinks)
