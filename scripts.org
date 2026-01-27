@@ -1,0 +1,22 @@
+* Convert new to old Reddit URLs
+#+begin_src text :tangle ~/local/bin/reddit-to-old
+  #!/bin/bash
+
+  # Convert any Reddit URL to old.reddit.com format
+  # Usage: ./reddit-to-old.sh <reddit-url>
+
+  URL="$1"
+
+  if [ -z "$URL" ]; then
+    echo "Usage: $0 <reddit-url>"
+    exit 1
+  fi
+
+  # If it's a share URL (/s/), follow the redirect to get canonical URL
+  if echo "$URL" | grep -q '/s/'; then
+    URL=$(curl -s -I -L -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "$URL" 2>/dev/null | grep -i "^location:" | tail -1 | sed 's/location: //i' | tr -d '\r')
+  fi
+
+  # Convert to old.reddit.com and strip query params
+  echo "$URL" | sed 's/www\.reddit\.com/old.reddit.com/' | sed 's/m\.reddit\.com/old.reddit.com/' | cut -d'?' -f1
+#+end_src
