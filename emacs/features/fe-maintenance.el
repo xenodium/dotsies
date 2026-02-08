@@ -11,19 +11,6 @@
     :ensure t
     :commands restart-emacs))
 
-;; Safely delete packages without breaking depending packages.
-(use-package package-safe-delete
-  :ensure t
-  :commands (package-safe-delete
-             ar/reinstall-package)
-  :config
-  ;; https://emacsredux.com/blog/2020/09/12/reinstalling-emacs-packages/
-  (defun ar/reinstall-package (package)
-    (interactive (list (intern (completing-read "reinstall: "
-                                                (mapcar #'car package-alist)))))
-    (unload-feature package)
-    (package-reinstall package)))
-
 (use-package esup
   :ensure t
   :commands esup)
