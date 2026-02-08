@@ -154,10 +154,15 @@ on the current line, if any."
   (vc-handled-backends '(Git))
   :config
   (defun ar/apply-git-patch-from-clipboard-url ()
-    "Download and apply patch from clipboard URL to current git repo."
+    "Download and apply GitHub patch from clipboard URL to current git repo.
+Appends .diff to GitHub URLs if not already present."
     (interactive)
     (let* ((git-root (vc-git-root default-directory))
-           (url (current-kill 0))
+           (raw-url (current-kill 0))
+           (url (if (and (string-match "github\\.com" raw-url)
+                         (not (string-suffix-p ".diff" raw-url)))
+                    (concat raw-url ".diff")
+                  raw-url))
            (patch-name (file-name-nondirectory
                         (url-filename
                          (url-generic-parse-url url))))
