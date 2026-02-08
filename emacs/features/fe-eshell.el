@@ -267,29 +267,29 @@ So if we're connected with sudo to 'remotehost'
       "Change PWD to active dir."
       (eshell/cd "~/stuff/active/code/"))
 
-    (defun eshell/catimg (&rest args)
-      "Display image(s) inline in Eshell using Emacs's image support.
+    (defun adviced:eshell/cat (orig-fun &rest args)
+      "Like `eshell/cat' but with image support."
+      (if (seq-every-p (lambda (arg)
+                         (and (stringp arg)
+                              (file-exists-p arg)
+                              (image-supported-file-p arg)))
+                       args)
+          (with-temp-buffer
+            (insert "\n")
+            (dolist (path args)
+              (let ((spec (create-image
+                           (expand-file-name path)
+                           (image-type-from-file-name path)
+                           nil :max-width 350
+                           :conversion (lambda (data) data))))
+                (image-flush spec)
+                (insert-image spec))
+              (insert "\n"))
+            (insert "\n")
+            (buffer-string))
+        (apply orig-fun args)))
 
-Usage: catimg path/to/image.png
-
-Supports any image format your Emacs can display: SVG, PNG, JPG, etc.
-Optional: resize via :max-height / :max-width in `create-image`."
-      (if (not args)
-          (error "catimg: no image path provided"))
-      (with-temp-buffer
-        (insert "\n")
-        (dolist (path args)
-          (let* ((image-path (expand-file-name path))
-                 (image-type (image-type-from-file-name image-path)))
-            (unless (file-exists-p image-path)
-              (error "catimg: file not found: %s" image-path))
-            (unless (image-type-available-p image-type)
-              (error "catimg: unsupported image type: %s" image-type))
-            (insert-image (create-image image-path image-type nil
-                                        :max-width 400 :max-height 300))
-            (insert "\n")))
-        (insert "\n")
-        (buffer-string)))
+    (advice-add #'eshell/cat :around #'adviced:eshell/cat)
 
     (defun eshell/rinku (&rest args)
       "Fetch link preview with rinku and display image inline.
@@ -298,23 +298,20 @@ Usage: rinku https://soundcloud.com/shehackedyou
        rinku --render https://soundcloud.com/shehackedyou"
       (unless args
         (error "rinku: no arguments provided"))
-      (let* ((cmd (format "rinku %s" (mapconcat #'shell-quote-argument args " ")))
-             (output (shell-command-to-string cmd))
-             (json-object-type 'alist)
-             (json-array-type 'list)
-             (json-key-type 'symbol)
-             (data (condition-case nil
-                       (json-read-from-string output)
-                     (error nil)))
-             (image-path (when data (map-elt data 'image)))
-             (title (when data (map-elt data 'title))))
-        (if (and data (or image-path title))
+      (let* ((output (with-temp-buffer
+                       (apply #'call-process "rinku" nil t nil args)
+                       (buffer-string)))
+             (metadata (condition-case nil
+                           (json-read-from-string output)
+                         (error nil))))
+        (if metadata
             (concat
-             (when image-path
-               (eshell/catimg image-path))
-             (when title
-               (concat title "\n\n")))
-          ;; If no image/title or JSON parsing failed, just return the rinku output
+             (if (map-elt metadata 'image)
+                 (eshell/cat (map-elt metadata 'image))
+               "\n")
+             (when (map-elt metadata 'title)
+               (concat (map-elt metadata 'title)
+                       "\n\n")))
           output)))
 
     (defun eshell/emacs (&rest args)
