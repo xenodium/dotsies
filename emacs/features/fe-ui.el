@@ -111,6 +111,7 @@
                   (vc-mode vc-mode)
                   (multiple-cursors-mode mc/mode-line)
                   " " mode-line-modes
+                  mode-line-misc-info
                   mode-line-end-spaces))
 
   (use-package minions
