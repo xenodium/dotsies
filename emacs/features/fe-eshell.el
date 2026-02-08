@@ -76,7 +76,9 @@
       :validate-custom
       (eshell-prompt-function
        (lambda ()
-         (concat (file-name-nondirectory (abbreviate-file-name (eshell/pwd))) " $ "))))
+         (concat (file-name-nondirectory
+                  (abbreviate-file-name (eshell/pwd)))
+                 " $ "))))
 
     (use-package em-hist
       :validate-custom
