@@ -53,7 +53,7 @@
                                     company-files
                                     company-capf))))
 
-  ;; Based on https://emacsredux.com/blog/2013/06/21/eval-and-replace
+  ;; Inspired by https://emacsredux.com/blog/2013/06/21/eval-and-replace
   (defun ar/eval-last-sexp (arg)
     "Replace the preceding sexp with its value."
     (interactive "P")
@@ -65,14 +65,9 @@
                      (current-buffer))
             (error (message "Invalid expression")
                    (insert (current-kill 0)))))
-      (let ((current-prefix-arg nil)
-            (buffer-name "*Pp Eval Output*"))
-        (call-interactively 'pp-eval-last-sexp)
-        ;; New window? Select and make read-only (q closes window).
-        (when (get-buffer-window buffer-name)
-          (with-current-buffer buffer-name
-            (view-mode +1)
-            (select-window (get-buffer-window buffer-name)))))))
+      (eros--make-result-overlay (format "%s"(eval (elisp--preceding-sexp)))
+        :where (point)
+        :duration eros-eval-result-duration)))
 
   (defun ar/eval-uncommented-region (start end)
     (interactive "r")
