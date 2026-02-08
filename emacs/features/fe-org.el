@@ -1123,6 +1123,7 @@ If VANILLA is non-nil, run the standard `org-capture'."
          ("M-<left>"  . ar/org-capture-schedule-day-earlier-dwim)
          ("C-c C-c" . ar/org-capture-finalize-dwim))
   :commands (ar/org-capture-todo
+             ar/org-capture-journelly-entry
              org-capture)
   :custom
   (org-capture-templates
