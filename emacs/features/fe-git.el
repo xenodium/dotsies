@@ -114,7 +114,102 @@ on the current line, if any."
   (use-package log-edit
     :validate-custom
     ;; Remember more commit messages.
-    (log-edit-comment-ring (make-ring 1000))))
+    (log-edit-comment-ring (make-ring 1000)))
+
+  (defun ar/gh-owner-repo ()
+    "Return ((:owner . OWNER) (:repo . REPO)) from the git remote, or nil."
+    (with-temp-buffer
+      (when-let* ((exit (call-process "gh" nil t nil "repo" "view" "--json" "nameWithOwner" "--jq" ".nameWithOwner"))
+                  ((zerop exit))
+                  (url (string-trim (buffer-string)))
+                  ((string-match "\\`\\([^/]+\\)/\\([^/]+\\)\\'" url)))
+        `((:owner . ,(match-string 1 url))
+          (:repo  . ,(match-string 2 url))))))
+
+  (defun ar/gh-fetch-topics ()
+    "Fetch issues and PRs via gh CLI."
+    (let ((json-array-type 'list)
+          (json-object-type 'alist)
+          result)
+      (dolist (type '("issue" "pr"))
+        (when-let* ((output (with-temp-buffer
+                              (when (zerop (call-process "gh" nil t nil type
+                                                         "list"
+                                                         "--state" "all"
+                                                         "--limit" "100"
+                                                         "--json" "number,title,state"))
+                                (buffer-string))))
+                    ((not (string-empty-p (string-trim output)))))
+          (condition-case nil
+              (dolist (item (json-read-from-string output))
+                (push `((:number . ,(map-elt item 'number))
+                        (:title  . ,(map-elt item 'title))
+                        (:state  . ,(map-elt item 'state)))
+                      result))
+            (error nil))))
+      (nreverse result)))
+
+  (defun ar/gh-insert-issue-or-pr-number ()
+    (interactive)
+    (if-let* ((topics (ar/gh-fetch-topics))
+              (max-state (seq-max (mapcar (lambda (topic)
+                                            (length (map-elt topic :state)))
+                                          topics)))
+              (fmt (format "%%-%ds  %%s  %%s" max-state))
+              (candidates (mapcar (lambda (topic)
+                                    (let* ((state (propertize (downcase (map-elt topic :state))
+                                                              'face (if (string-equal (downcase (map-elt topic :state))
+                                                                                      "open")
+                                                                        'success 'error)))
+                                           (number (propertize (number-to-string (map-elt topic :number))
+                                                               'face 'font-lock-comment-face))
+                                           (candidate (format fmt state number (map-elt topic :title))))
+                                      (put-text-property 0 1 :number (map-elt topic :number) candidate)
+                                      candidate))
+                                  topics))
+              (choice (completing-read "Topic: " candidates nil t)))
+        (insert (format "#%s" (get-text-property 0 :number choice)))
+      (user-error "No topics found")))
+
+  (defun ar/gh-fetch-contributors ()
+    "Fetch mentionable users via gh CLI GraphQL API."
+    (let ((json-array-type 'list)
+          (json-object-type 'alist))
+      (when-let* ((owner-repo (ar/gh-owner-repo))
+                  (output (with-temp-buffer
+                            (when (zerop (call-process
+                                          "gh" nil t nil
+                                          "api" "graphql"
+                                          "-f" (format "query={ repository(owner: \"%s\", name: \"%s\") { mentionableUsers(first: 100) { nodes { login name } } } }"
+                                                       (map-elt owner-repo :owner) (map-elt owner-repo :repo))
+                                          "--jq" ".data.repository.mentionableUsers.nodes"))
+                              (buffer-string))))
+                  ((not (string-empty-p (string-trim output)))))
+        (condition-case nil
+            (json-read-from-string output)
+          (error nil)))))
+
+  (defun ar/gh-insert-contributor ()
+    (interactive)
+    (if-let* ((users (ar/gh-fetch-contributors))
+              (max-login (seq-max (mapcar (lambda (user)
+                                            (length (map-elt user 'login)))
+                                          users)))
+              (fmt (format "%%-%ds  %%s" max-login))
+              (candidates (mapcar (lambda (user)
+                                    (let* ((login (map-elt user 'login))
+                                           (name (map-elt user 'name))
+                                           (name-str (when (and name (not (string-empty-p name)))
+                                                       (propertize name 'face 'font-lock-comment-face)))
+                                           (candidate (if name-str
+                                                          (format fmt login name-str)
+                                                        login)))
+                                      (put-text-property 0 1 :login login candidate)
+                                      candidate))
+                                  users))
+              (choice (completing-read "Contributor: " candidates nil t)))
+        (insert (format "@%s" (get-text-property 0 :login choice)))
+      (user-error "No contributors found"))))
 
 (use-package igist
   :ensure t
