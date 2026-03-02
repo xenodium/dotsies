@@ -5,6 +5,7 @@
   :bind (("C-x g" . magit-status))
   :hook (magit-mode . visual-line-mode)
   :validate-custom
+  (magit-diff-visit-prefer-worktree t)
   (magit-diff-refine-hunk 'all)
   (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   (magit-git-executable (executable-find "git"))
