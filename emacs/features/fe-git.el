@@ -12,6 +12,10 @@
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
 
+  (use-package forge
+    :ensure t
+    :config)
+
   ;; Stop asking for GitHub ssh passwords
   (use-package ssh-agency
     :ensure t)
