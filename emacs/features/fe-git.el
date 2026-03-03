@@ -126,18 +126,20 @@ on the current line, if any."
         `((:owner . ,(match-string 1 url))
           (:repo  . ,(match-string 2 url))))))
 
-  (defun ar/gh-fetch-topics ()
-    "Fetch issues and PRs via gh CLI."
+  (cl-defun ar/gh-fetch-topics (&key author (limit 100))
+    "Fetch issues and PRs via gh CLI.
+Optionally filter by AUTHOR and set a LIMIT (default 100)."
     (let ((json-array-type 'list)
           (json-object-type 'alist)
           result)
       (dolist (type '("issue" "pr"))
-        (when-let* ((output (with-temp-buffer
-                              (when (zerop (call-process "gh" nil t nil type
-                                                         "list"
-                                                         "--state" "all"
-                                                         "--limit" "100"
-                                                         "--json" "number,title,state"))
+        (when-let* ((args `(,type "list"
+                                  "--state" "all"
+                                  "--limit" ,(number-to-string limit)
+                                  "--json" "number,title,state"
+                                  ,@(when author `("--author" ,author))))
+                    (output (with-temp-buffer
+                              (when (zerop (apply #'call-process "gh" nil t nil args))
                                 (buffer-string))))
                     ((not (string-empty-p (string-trim output)))))
           (condition-case nil
@@ -149,24 +151,28 @@ on the current line, if any."
             (error nil))))
       (nreverse result)))
 
+  (defun ar/gh--topic-candidates (topics)
+    "Return a list of candidate strings built from TOPICS."
+    (when-let* ((topics topics)
+                (max-state (seq-max (mapcar (lambda (topic)
+                                              (length (map-elt topic :state)))
+                                            topics)))
+                (fmt (format "%%-%ds  %%s  %%s" max-state)))
+      (mapcar (lambda (topic)
+                (let* ((state (propertize (downcase (map-elt topic :state))
+                                          'face (if (string-equal (downcase (map-elt topic :state)) "open")
+                                                    'success 'error)))
+                       (number (propertize (number-to-string (map-elt topic :number))
+                                           'face 'font-lock-comment-face))
+                       (candidate (format fmt state number (map-elt topic :title))))
+                  (put-text-property 0 1 :number (map-elt topic :number) candidate)
+                  candidate))
+              topics)))
+
   (defun ar/gh-insert-issue-or-pr-number ()
     (interactive)
     (if-let* ((topics (ar/gh-fetch-topics))
-              (max-state (seq-max (mapcar (lambda (topic)
-                                            (length (map-elt topic :state)))
-                                          topics)))
-              (fmt (format "%%-%ds  %%s  %%s" max-state))
-              (candidates (mapcar (lambda (topic)
-                                    (let* ((state (propertize (downcase (map-elt topic :state))
-                                                              'face (if (string-equal (downcase (map-elt topic :state))
-                                                                                      "open")
-                                                                        'success 'error)))
-                                           (number (propertize (number-to-string (map-elt topic :number))
-                                                               'face 'font-lock-comment-face))
-                                           (candidate (format fmt state number (map-elt topic :title))))
-                                      (put-text-property 0 1 :number (map-elt topic :number) candidate)
-                                      candidate))
-                                  topics))
+              (candidates (ar/gh--topic-candidates topics))
               (choice (completing-read "Topic: " candidates nil t)))
         (insert (format "#%s" (get-text-property 0 :number choice)))
       (user-error "No topics found")))
@@ -189,27 +195,69 @@ on the current line, if any."
             (json-read-from-string output)
           (error nil)))))
 
+  (defun ar/gh--contributor-candidates (users)
+    "Return a list of candidate strings built from USERS."
+    (when-let* ((users users)
+                (max-login (seq-max (mapcar (lambda (user)
+                                              (length (map-elt user 'login)))
+                                            users)))
+                (fmt (format "%%-%ds  %%s" max-login)))
+      (mapcar (lambda (user)
+                (let* ((login (map-elt user 'login))
+                       (name (map-elt user 'name))
+                       (name-str (when (and name (not (string-empty-p name)))
+                                   (propertize name 'face 'font-lock-comment-face)))
+                       (candidate (if name-str
+                                      (format fmt login name-str)
+                                    login)))
+                  (put-text-property 0 1 :login login candidate)
+                  candidate))
+              users)))
+
   (defun ar/gh-insert-contributor ()
     (interactive)
     (if-let* ((users (ar/gh-fetch-contributors))
-              (max-login (seq-max (mapcar (lambda (user)
-                                            (length (map-elt user 'login)))
-                                          users)))
-              (fmt (format "%%-%ds  %%s" max-login))
-              (candidates (mapcar (lambda (user)
-                                    (let* ((login (map-elt user 'login))
-                                           (name (map-elt user 'name))
-                                           (name-str (when (and name (not (string-empty-p name)))
-                                                       (propertize name 'face 'font-lock-comment-face)))
-                                           (candidate (if name-str
-                                                          (format fmt login name-str)
-                                                        login)))
-                                      (put-text-property 0 1 :login login candidate)
-                                      candidate))
-                                  users))
+              (candidates (ar/gh--contributor-candidates users))
               (choice (completing-read "Contributor: " candidates nil t)))
         (insert (format "@%s" (get-text-property 0 :login choice)))
-      (user-error "No contributors found"))))
+      (user-error "No contributors found")))
+
+  (defun ar/gh-fetch-topic-authors ()
+    "Return unique author logins from all issues and PRs."
+    (let ((json-array-type 'list)
+          (json-object-type 'alist)
+          result)
+      (dolist (type '("issue" "pr"))
+        (when-let* ((output (with-temp-buffer
+                              (when (zerop (call-process "gh" nil t nil type
+                                                         "list"
+                                                         "--state" "all"
+                                                         "--limit" "100"
+                                                         "--json" "author"))
+                                (buffer-string))))
+                    ((not (string-empty-p (string-trim output)))))
+          (condition-case nil
+              (dolist (item (json-read-from-string output))
+                (push (map-elt (map-elt item 'author) 'login) result))
+            (error nil))))
+      (seq-uniq (seq-filter #'identity result))))
+
+  (defun ar/gh-open-issue-by ()
+    "Pick a contributor, then select one of their issues/PRs and open it in the browser."
+    (interactive)
+    (if-let* ((owner-repo (ar/gh-owner-repo))
+              (authors (ar/gh-fetch-topic-authors))
+              (contributor-choice (completing-read "Contributor: " authors nil t))
+              (login contributor-choice)
+              (topics (ar/gh-fetch-topics :author login))
+              (topic-candidates (ar/gh--topic-candidates topics))
+              (topic-choice (completing-read (format "Topics by %s: " login) topic-candidates nil t))
+              (number (get-text-property 0 :number topic-choice)))
+        (browse-url (format "https://github.com/%s/%s/issues/%s"
+                            (map-elt owner-repo :owner)
+                            (map-elt owner-repo :repo)
+                            number))
+      (user-error "No topics found"))))
 
 (use-package igist
   :ensure t
