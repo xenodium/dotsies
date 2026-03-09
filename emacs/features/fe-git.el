@@ -126,13 +126,14 @@ on the current line, if any."
         `((:owner . ,(match-string 1 url))
           (:repo  . ,(match-string 2 url))))))
 
-  (cl-defun ar/gh-fetch-topics (&key author (limit 100))
+  (cl-defun ar/gh-fetch-topics (&key author (limit 100) (types '("issue" "pr")))
     "Fetch issues and PRs via gh CLI.
-Optionally filter by AUTHOR and set a LIMIT (default 100)."
+Optionally filter by AUTHOR, set a LIMIT (default 100),
+or restrict TYPES (default both \"issue\" and \"pr\")."
     (let ((json-array-type 'list)
           (json-object-type 'alist)
           result)
-      (dolist (type '("issue" "pr"))
+      (dolist (type types)
         (when-let* ((args `(,type "list"
                                   "--state" "all"
                                   "--limit" ,(number-to-string limit)
@@ -176,6 +177,28 @@ Optionally filter by AUTHOR and set a LIMIT (default 100)."
               (choice (completing-read "Topic: " candidates nil t)))
         (insert (format "#%s" (get-text-property 0 :number choice)))
       (user-error "No topics found")))
+
+  (defun ar/gh-apply-pr-patch ()
+    "Pick a PR via completing-read and apply its patch locally."
+    (interactive)
+    (let* ((git-root (or (vc-git-root default-directory)
+                         (user-error "Not in a git repo")))
+           (topics (or (ar/gh-fetch-topics :types '("pr"))
+                       (user-error "No PRs found")))
+           (candidates (ar/gh--topic-candidates topics))
+           (choice (completing-read "PR: " candidates nil t))
+           (number (get-text-property 0 :number choice))
+           (default-directory git-root)
+           (patch-name (format "%s.diff" number)))
+      (with-temp-buffer
+        (unless (zerop (call-process "gh" nil t nil "pr" "diff" (number-to-string number)))
+          (user-error "Failed to fetch diff for PR #%s" number))
+        (write-region (point-min) (point-max) patch-name))
+      (with-temp-buffer
+        (if (zerop (call-process "git" nil t nil "apply" "--3way" patch-name))
+            (message "Applied PR #%s" number)
+          (let ((output (string-trim (buffer-string))))
+            (user-error "Failed to apply PR #%s:\n%s" number output))))))
 
   (defun ar/gh-fetch-contributors ()
     "Fetch mentionable users via gh CLI GraphQL API."
@@ -242,7 +265,7 @@ Optionally filter by AUTHOR and set a LIMIT (default 100)."
             (error nil))))
       (seq-uniq (seq-filter #'identity result))))
 
-  (defun ar/gh-open-issue-by ()
+  (defun ar/gh-open-issue-or-pr-by ()
     "Pick a contributor, then select one of their issues/PRs and open it in the browser."
     (interactive)
     (if-let* ((owner-repo (ar/gh-owner-repo))
