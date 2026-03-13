@@ -1,24 +1,28 @@
 ;;; -*- lexical-binding: t; -*-
 
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/chatgpt-shell/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/shell-maker/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/ob-chatgpt-shell/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/ob-dall-e-shell/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/dall-e-shell/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/acp.el/")
-(add-to-list 'load-path "/Users/alvaro/stuff/active/code/agent-shell/")
-
 (use-package eca :ensure t)
 
 (use-package acp
   :config
   (use-package agent-shell
+    :bind (("C-c C-w" . agent-shell)
+           :map agent-shell-mode-map
+           (("C-c C-w" . agent-shell))
+           :map org-mode-map
+           (("C-c C-w" . agent-shell))
+           :map objc-mode-map
+           (("C-c C-w" . agent-shell))
+           :map emacs-lisp-mode-map
+           (("C-c C-w" . agent-shell)))
     :commands
     (agent-shell-anthropic-start-claude-code
      agent-shell-google-start-gemini
      agent-shell-openai-start-codex
      agent-shell-goose-start-agent
      agent-shell)
+    :validate-custom
+    ((agent-shell-prefer-viewport-interaction t)
+     (agent-shell-session-strategy 'prompt))
     :config
     (setq agent-shell-google-authentication
           (agent-shell-google-make-authentication
