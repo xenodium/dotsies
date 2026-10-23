@@ -115,4 +115,4 @@ With PREFIX, change `ar/unique-log-word'."
   :commands (re-builder
              regexp-builder)
   :validate-custom
-  (reb-re-syntax 'string))
+  (reb-re-syntax 'rx))
