@@ -7,7 +7,7 @@
   :validate-custom
   (magit-diff-visit-prefer-worktree t)
   (magit-diff-refine-hunk 'all)
-  (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-git-executable (executable-find "git"))
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes)
