@@ -24,12 +24,16 @@
     ((agent-shell-prefer-viewport-interaction t)
      (agent-shell-session-strategy 'prompt))
     :config
+    (setq agent-shell-session-restore-verbosity 'first-last)
     (setq agent-shell-google-authentication
           (agent-shell-google-make-authentication
            :api-key (lambda () (nth 0 (process-lines "pass" "show" "google-key")))))
     (setq agent-shell-anthropic-authentication
           (agent-shell-anthropic-make-authentication
            :login t))
+    (setq agent-shell-deepseek-authentication
+          (agent-shell-openai-make-authentication
+           :api-key (lambda () (nth 0 (process-lines "pass" "show" "deepseek-key")))))
     (setq agent-shell-openai-authentication
           (agent-shell-openai-make-authentication
            :api-key (lambda () (nth 0 (process-lines "pass" "show" "openai-key")))))
