@@ -1,5 +1,4 @@
-;;; os-present.el --- Presents non-decorated frames.
-;;; -*- lexical-binding: t; -*-
+;;; os-present.el --- Presents non-decorated frames  -*- lexical-binding: t; -*-
 
 
 ;;; Commentary:
@@ -17,7 +16,7 @@
           (options (append '((auto-raise . t)
                              (font . "Menlo 15")
                              (top . 200)
-                             (height . 20)
+                             (height . 21)
                              (width . 110)
                              (internal-border-width . 20)
                              (left . 0.33)
@@ -32,28 +31,25 @@
                            (when ,minibuffer-only
                              '((minibuffer . only)))))
           (frame (make-frame options)))
+     (select-frame-set-input-focus frame)
      (set-face-attribute 'ivy-current-match frame
                          :background "#2a2a2a"
                          :foreground 'unspecified)
-     (select-frame frame)
-     (select-frame-set-input-focus frame)
-     (switch-to-buffer buffer)
      (with-selected-frame frame
-       (switch-to-buffer buffer))
-     (if ,sync-body
-         (progn
-           (when (null ',body)
-             (user-error "Must have a body to execute as sync."))
-           (with-current-buffer buffer
-             (condition-case nil
-                 (unwind-protect
-                     ,@body
-                   (delete-frame frame)
-                   (kill-buffer buffer))
-               (quit (delete-frame frame)
-                     (kill-buffer buffer)))
-             ))
-       ,@body)))
+       (unless ,minibuffer-only
+         (switch-to-buffer buffer))
+       (if ,sync-body
+           (condition-case nil
+               (unwind-protect
+                   (progn
+                     (when (null ',body)
+                       (user-error "Must have a body to execute as sync."))
+                     ,@body)
+                 (delete-frame frame)
+                 (kill-buffer buffer))
+             (quit (delete-frame frame)
+                   (kill-buffer buffer)))
+         ,@body))))
 
 (defun os-present-clipboard-manager ()
   "Search all my org links."
