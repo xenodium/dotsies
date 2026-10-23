@@ -32,6 +32,15 @@
   (add-to-list 'exec-path
                (expand-file-name "~/go/bin"))
 
+  ;; go-mode's global go-test regexp lets \s-+ span newlines and
+  ;; accepts any file name, so it misparses byte-compile "Compiling
+  ;; file X at HH:MM:SS" headers in *Compile-Log* as errors (and
+  ;; auto-jump prompts for a bogus file). Require same-line
+  ;; indentation and .go files.
+  (with-eval-after-load 'compile
+    (setf (alist-get 'go-test compilation-error-regexp-alist-alist)
+          '("^[ \t]+\\([^()\t\n]+\\.go\\):\\([0-9]+\\):? .*$" 1 2)))
+
   (use-package go-snippets
     :ensure t
     :config
