@@ -268,7 +268,8 @@ So if we're connected with sudo to 'remotehost'
       (eshell/cd "~/stuff/active/code/"))
 
     (defun adviced:eshell/cat (orig-fun &rest args)
-      "Like `eshell/cat' but with image support."
+      "Like `eshell/cat' but with image support.
+Inserted images carry a keymap so RET or mouse-1 opens the file."
       (if (seq-every-p (lambda (arg)
                          (and (stringp arg)
                               (file-exists-p arg)
@@ -277,13 +278,23 @@ So if we're connected with sudo to 'remotehost'
           (with-temp-buffer
             (insert "\n")
             (dolist (path args)
-              (let ((spec (create-image
-                           (expand-file-name path)
-                           (image-type-from-file-name path)
-                           nil :max-width 350
-                           :conversion (lambda (data) data))))
+              (let* ((expanded (expand-file-name path))
+                     (spec (create-image
+                            expanded
+                            (image-type-from-file-name path)
+                            nil :max-width 350
+                            :conversion (lambda (data) data)))
+                     (start (point)))
                 (image-flush spec)
-                (insert-image spec))
+                (insert-image spec)
+                (let ((map (make-sparse-keymap))
+                      (open (lambda () (interactive) (find-file expanded))))
+                  (define-key map (kbd "RET") open)
+                  (define-key map [mouse-1] open)
+                  (define-key map [remap self-insert-command] 'ignore)
+                  (put-text-property start (point) 'keymap map)
+                  (put-text-property start (point) 'mouse-face 'highlight)
+                  (put-text-property start (point) 'help-echo expanded)))
               (insert "\n"))
             (insert "\n")
             (buffer-string))
@@ -330,13 +341,20 @@ Usage: rinku https://soundcloud.com/shehackedyou
     (defalias 'eshell/ec 'eshell/emacs))
 
   (defun ar/shell-pop (prefix)
-    "Shell pop with PREFIX to cd to working dir. Else use existing location."
+    "Toggle between current buffer and eshell in the same window.
+With PREFIX, cd to the current buffer's directory."
     (interactive "P")
-    ;; Overriding shell-pop-autocd-to-working-dir with `prefix' value.
-    (let ((shell-pop-autocd-to-working-dir prefix))
-      (if (string= (buffer-name) shell-pop-last-shell-buffer-name)
-          (shell-pop-out)
-        (shell-pop-up shell-pop-last-shell-buffer-index)))))
+    (if (eq major-mode 'eshell-mode)
+        (switch-to-prev-buffer)
+      (let ((dir default-directory)
+            (buf (get-buffer "*eshell*")))
+        (if buf
+            (switch-to-buffer buf)
+          (eshell))
+        (when prefix
+          (goto-char (point-max))
+          (eshell/cd dir)
+          (eshell-reset))))))
 
 (use-package shell
   ;; Mostly for `async-shell-command'.
