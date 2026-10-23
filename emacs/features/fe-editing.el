@@ -670,15 +670,31 @@ parameter is the buffer, which is the `car' or ARGS."
           (add-hook 'after-change-functions #'accent-menu-monitor--text-change 0 t))
       (remove-hook 'after-change-functions #'accent-menu-monitor--text-change t)))
 
+  (defun accent-menu-monitor--user-insertion-p (beginning end length)
+    "Return non-nil if change BEGINNING, END, and LENGTH was typed by user.
+
+Programmatic insertions (process filters, timers, etc.) are excluded."
+    (and (eq length 0)
+         (eq (- end beginning) 1)
+         (memq this-command '(self-insert-command org-self-insert-command))
+         (characterp last-command-event)
+         (eq (char-after beginning) last-command-event)
+         (eq (current-buffer) (window-buffer (selected-window)))))
+
   (defun accent-menu-monitor--text-change (beginning end length)
     "Monitors text change BEGINNING, END, and LENGTH."
+    (if (not (accent-menu-monitor--user-insertion-p beginning end length))
+        ;; Non-user change: reset so it can't pair up with the next keystroke.
+        (setq accent-menu-monitor--last-edit-time nil)
+      (accent-menu-monitor--handle-user-insertion beginning)))
+
+  (defun accent-menu-monitor--handle-user-insertion (beginning)
+    "Show `accent-menu' if insertion at BEGINNING is a fast repeat."
     (let ((last-edit-time accent-menu-monitor--last-edit-time)
           (edit-time (float-time))
           (insertion (accent-menu-monitor--buffer-char-string beginning))
           (previous-insertion (accent-menu-monitor--buffer-char-string (1- beginning))))
-      (when (and (> end beginning)
-                 (eq length 0)
-                 last-edit-time
+      (when (and last-edit-time
                  (not undo-in-progress)
                  ;; 0.27 seems to work for my macOS keyboard settings.
                  ;; Key Repeat: Fast | Delay Until Repeat: Short.
