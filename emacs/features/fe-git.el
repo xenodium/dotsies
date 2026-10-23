@@ -329,7 +329,7 @@ or restrict TYPES (default both \"issue\" and \"pr\")."
 Appends .diff to GitHub URLs if not already present."
     (interactive)
     (let* ((git-root (vc-git-root default-directory))
-           (raw-url (current-kill 0))
+           (raw-url (string-trim-right (current-kill 0) "/"))
            (url (if (and (string-match "github\\.com" raw-url)
                          (not (string-suffix-p ".diff" raw-url)))
                     (concat raw-url ".diff")
