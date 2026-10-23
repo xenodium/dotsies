@@ -21,6 +21,7 @@
   ;; Mispressing C-z or C-x C-z invokes `suspend-frame' (disable).
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-x C-z"))
+  :bind (("M-o" . next-window-any-frame))
   :config
   ;; Enable expanding frame to end of screen.
   (setq frame-resize-pixelwise t)
