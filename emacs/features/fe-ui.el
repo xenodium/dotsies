@@ -145,8 +145,8 @@
   (moody-replace-vc-mode))
 
 ;; Use y/n instead of yes/no confirms.
-;; From http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-4-8
-(fset 'yes-or-no-p 'y-or-n-p)
+;; From https://emacsredux.com/blog/2026/03/15/use-short-answers/
+(setopt use-short-answers t)
 
 (use-package fullframe
   :ensure t
