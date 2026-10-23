@@ -160,6 +160,12 @@ Version 2015-02-07."
   (interactive)
   (kill-new (file-name-nondirectory (buffer-file-name))))
 
+(defun ar/buffer-copy-name ()
+  "Copy the current buffer's name."
+  (interactive)
+  (kill-new (buffer-name))
+  (message "Copied"))
+
 (defun ar/buffer-groups-of (re)
   "Return a list of any RE consecutive match separated by two or more newlines.
 
