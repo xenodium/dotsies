@@ -1,7 +1,8 @@
-;;-*-coding: utf-8;-*-
+;; -*- coding: utf-8; lexical-binding: t -*-
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("accomodate" "accommodate" nil :count 0)
-    ("automatcially" "automatically" nil :count 0)
+    ("dissapears" "dissipaters" nil :count 0)
+    ("prerequesite" "prerequisite" nil :count 0)
+    ("responsiblity" "responsibility" nil :count 0)
    ))
 
