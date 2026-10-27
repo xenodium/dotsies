@@ -413,7 +413,24 @@ Patch .bash_profile and .bashrc.
                   "delay_milliseconds_before_open_device": 1000
               },
               "selected": true,
-              "simple_modifications": [],
+              "simple_modifications": [
+                  {
+                      "from": { "key_code": "caps_lock" },
+                      "to": [ { "key_code": "vk_none" } ]
+                  },
+                  {
+                      "from": { "key_code": "left_option" },
+                      "to": [ { "key_code": "left_control" } ]
+                  },
+                  {
+                      "from": { "key_code": "left_command" },
+                      "to": [ { "key_code": "left_option" } ]
+                  },
+                  {
+                      "from": { "key_code": "japanese_eisuu" },
+                      "to": [ { "key_code": "left_command" } ]
+                  }
+              ],
               "virtual_hid_keyboard": {
                   "country_code": 0,
                   "mouse_key_xy_scale": 100
