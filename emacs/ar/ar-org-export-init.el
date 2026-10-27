@@ -22,17 +22,15 @@
 
 (use-package whitespace)
 
-(use-package github-theme
-  :ensure t
-  :config
-  (load-theme 'github t)
+;; github-theme is no longer available. Use built-in light theme.
+(load-theme 'modus-operandi t)
 
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-link nil :underline nil)
-    ;; Disable whitespace mode.
-    (set-face-attribute 'whitespace-line nil
-                        :foreground nil
-                        :background nil)))
+(with-eval-after-load 'org-faces
+  (set-face-attribute 'org-link nil :underline nil)
+  ;; Disable whitespace mode.
+  (set-face-attribute 'whitespace-line nil
+                      :foreground nil
+                      :background nil))
 
 (use-package org-compat
   :config
