@@ -7,12 +7,12 @@
   :validate-custom
   (projectile-dynamic-mode-line nil)
   (projectile-enable-caching t)
-  (projectile-completion-system 'ivy)
+  (projectile-completion-system 'default)
   ;; Use `hybrid' since `alien' ignores .projectile file, which is
   ;; handy for very large repositories.
   (projectile-indexing-method 'hybrid)
   ;; fd is super fast. Use it if available.
-  (projectile-project-root-files-functions
+  (projectile-project-root-functions
    '(projectile-root-local
      projectile-root-bottom-up))
   :config
