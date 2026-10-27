@@ -16,13 +16,19 @@
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
-  (setq trash-directory "~/.Trash")
+  (setq delete-by-moving-to-trash t)
 
-  ;; See `trash-directory' as it requires defining `system-move-file-to-trash'.
+  ;; Overrides Emacs's built-in `system-move-file-to-trash'.
+  ;; Only used while `trash-directory' is nil.
   (defun system-move-file-to-trash (file)
-    "Use \"trash\" to move FILE to the system trash."
-    (cl-assert (executable-find "trash") nil "'trash' must be installed. Needs \"brew install trash\"")
-    (call-process "trash" nil 0 nil "-F"  file))
+    "Use Homebrew's trash to move FILE to the system trash via Finder."
+    (let ((trash "/opt/homebrew/opt/trash/bin/trash"))
+      (unless (file-executable-p trash)
+        (error "%s not found. Needs \"brew install trash\"" trash))
+      (with-temp-buffer
+        (unless (zerop (call-process trash nil t nil
+                                     "-F" (expand-file-name file)))
+          (error "trash failed: %s" (string-trim (buffer-string)))))))
 
   (use-package ns-win
     ;; Easily insert # on macOS/UK keyboard.
