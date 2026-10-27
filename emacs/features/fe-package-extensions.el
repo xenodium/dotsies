@@ -5,9 +5,6 @@
   :config
   (gcmh-mode +1))
 
-(use-package use-package-ensure-system-package
-  :ensure t)
-
 (use-package use-package-chords
   :ensure t
   :config
@@ -46,6 +43,11 @@
 	(setq comp-deferred-compilation t)
         (setq comp-speed 3))
     (message "Native comp is *not* available")))
+
+;; Needed by use-package's :ensure-system-package to install missing
+;; binaries (via brew on macOS). Must come after exec-path-from-shell.
+(use-package system-packages
+  :ensure t)
 
 (use-package auto-compile
   :ensure t
