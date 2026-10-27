@@ -304,7 +304,7 @@ For example:
                               (org-capture-refile . "^")
                               (Man-completion-table . "^")
                               (woman . "^")))
-  (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
+  (ivy-re-builders-alist '((t . ar/ivy-regex-char-fold)))
   (ivy-count-format "")
   (ivy-use-virtual-buffers t)
   (ivy-display-style 'fancy)
@@ -325,6 +325,16 @@ For example:
             (defun ar/update-ivy-height (&optional _)
               ;; Make ivy-height proportional to frame size.
               (setq ivy-height (round (* 0.01666 (frame-pixel-height))))))
+  (defun ar/ivy-regex-char-fold (str)
+    "Like `ivy--regex-ignore-order' but with diacritic character folding.
+Words after \"!\" are excluded from matches."
+    (let ((parts (split-string str "!")))
+      (or (append
+           (mapcar (lambda (part) (cons (char-fold-to-regexp part) t))
+                   (split-string (car parts) " +" t))
+           (mapcar (lambda (part) (cons (char-fold-to-regexp part) nil))
+                   (split-string (string-join (cdr parts) " ") " +" t)))
+          "")))
 
   (defun ar/ivy-reset-height ()
     "Reset ivy height considering frame height."
