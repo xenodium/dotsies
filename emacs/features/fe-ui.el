@@ -39,13 +39,8 @@
 ;;   :ensure t
 ;;   :hook (window-setup . maximize-frame))
 
-;; Used when exporting org source blocks.
-(use-package github-theme
-  :defer
-  :ensure t)
-
-(add-to-list 'custom-theme-load-path "~/stuff/active/code/emacs-materialized-theme/")
-(add-to-list 'load-path "~/stuff/active/code/emacs-materialized-theme/")
+(add-to-list 'custom-theme-load-path "~/stuff/code/emacs-materialized-theme/")
+(add-to-list 'load-path "~/stuff/code/emacs-materialized-theme/")
 
 (use-package materialized-theme
   :config

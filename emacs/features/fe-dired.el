@@ -384,7 +384,7 @@ Also allow dragging items up and down via M-<up> and M-x<down>."
   (use-package dwim-shell-commands
     :demand t
     :validate-custom (dwim-shell-commands-git-clone-dirs
-                      '("~/stuff/active/code/third_party"
+                      '("~/stuff/code/third_party"
                         "~/Downloads"
                         "~/Desktop"))
     :bind (("C-c _" . dwim-shell-commands-macos-screenshot-window)

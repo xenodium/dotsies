@@ -22,7 +22,7 @@
 
   (use-package abbrev
     :validate-custom
-    (abbrev-file-name "~/stuff/active/code/dots/emacs/abbrev_defs")
+    (abbrev-file-name "~/stuff/code/dots/emacs/abbrev_defs")
     (save-abbrevs 'silently)
     :config
     (setq-default abbrev-mode t))

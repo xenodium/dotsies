@@ -50,7 +50,7 @@
     :commands color-picker)
 
 
-  (add-to-list 'load-path "/Users/alvaro/stuff/active/code/ready-player")
+  (add-to-list 'load-path "/Users/alvaro/stuff/code/ready-player")
 
   (use-package ready-player
     :validate-custom
@@ -59,7 +59,7 @@
     (ready-player-macos-use-sf-symbols)
     (ready-player-mode +1))
 
-  (add-to-list 'load-path "/Users/alvaro/stuff/active/code/EmacsMacOSModule")
+  (add-to-list 'load-path "/Users/alvaro/stuff/code/EmacsMacOSModule")
 
   (use-package macos
     :commands (macos-reveal-in-finder

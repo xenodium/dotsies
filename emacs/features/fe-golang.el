@@ -24,10 +24,10 @@
     (setq-local tab-width 2 indent-tabs-mode t)
     (add-hook 'before-save-hook #'gofmt-before-save t t))
   :config
-  (setenv "GOPATH" (expand-file-name "~/stuff/active/code/gopath"))
+  (setenv "GOPATH" (expand-file-name "~/stuff/code/gopath"))
 
   (add-to-list 'exec-path
-               (expand-file-name "~/stuff/active/code/gopath/bin"))
+               (expand-file-name "~/stuff/code/gopath/bin"))
 
   (add-to-list 'exec-path
                (expand-file-name "~/go/bin"))

@@ -265,7 +265,7 @@ So if we're connected with sudo to 'remotehost'
 
     (defun eshell/c ()
       "Change PWD to active dir."
-      (eshell/cd "~/stuff/active/code/"))
+      (eshell/cd "~/stuff/code/"))
 
     (defun adviced:eshell/cat (orig-fun &rest args)
       "Like `eshell/cat' but with image support.
