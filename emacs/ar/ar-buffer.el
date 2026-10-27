@@ -8,6 +8,7 @@
 
 (require 'ar-string)
 (require 'goto-addr)
+(require 'sort) ;; So `sort-fold-case' let-binding is dynamic.
 (require 'url)
 (require 'url-http)
 
@@ -43,11 +44,12 @@
     (goto-char 0)
     (let ((results '()))
       (while (search-forward-regexp re nil t)
-        (add-to-list 'results (if match-fn
-                                  (funcall match-fn)
-                                (match-string-no-properties 0))))
+        (push (if match-fn
+                  (funcall match-fn)
+                (match-string-no-properties 0))
+              results))
       (when (> (length results) 0)
-        results))))
+        (delete-dups results)))))
 
 (defun ar/buffer-string-match-p (re)
   "Return t if RE matches current buffer.  nil otherwise."
@@ -59,9 +61,7 @@
   (interactive)
   (mapc 'kill-buffer
         (delq (current-buffer)
-              ;; Disables "required at runtime" warning for cl package.
-              (with-no-warnings
-                (remove-if-not 'buffer-file-name (buffer-list))))))
+              (seq-filter #'buffer-file-name (buffer-list)))))
 
 (defun ar/buffer-switch-to-file (file-path)
   "Switch to buffer with FILE-PATH."
@@ -149,11 +149,12 @@ Version 2015-02-07."
     (goto-char (point-min))
     (let ((results '()))
       (while (re-search-forward re nil t)
-        (add-to-list 'results (buffer-substring-no-properties
-                               (line-beginning-position)
-                               (line-end-position))))
+        (push (buffer-substring-no-properties
+               (line-beginning-position)
+               (line-end-position))
+              results))
       (when (> (length results) 0)
-        results))))
+        (delete-dups results)))))
 
 (defun ar/buffer-copy-file-name ()
   "Copy the current buffer's file name."
