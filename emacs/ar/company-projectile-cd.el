@@ -1,4 +1,4 @@
-;;; company-projectile-cd.el --- Company projectile directory completion.
+;;; company-projectile-cd.el --- Company projectile directory completion.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Company projectile directory completion.

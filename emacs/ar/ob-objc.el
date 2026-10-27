@@ -1,4 +1,4 @@
-;;; ob-objc.el --- Org babel Objectve-C support.
+;;; ob-objc.el --- Org babel Objectve-C support.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Org babel Objectve-C helpers.

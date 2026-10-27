@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Match theme color early on (smoother transition).
 ;; Theme loaded in features/ui.el.
 

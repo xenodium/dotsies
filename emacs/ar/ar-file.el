@@ -1,4 +1,4 @@
-;;; ar-file.el --- File support.
+;;; ar-file.el --- File support.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; File helpers.

@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (use-package calendar
   :commands ar/year-calendar
   :bind (:map calendar-mode-map

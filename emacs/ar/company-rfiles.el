@@ -1,4 +1,4 @@
-;;; company-rfiles.el --- Company recursive file support.
+;;; company-rfiles.el --- Company recursive file support.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Company recursive file helpers.

@@ -1,4 +1,4 @@
-;;; ar-string.el --- String support.
+;;; ar-string.el --- String support.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; String helpers.

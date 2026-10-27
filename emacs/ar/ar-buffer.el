@@ -1,4 +1,4 @@
-;;; ar-buffer.el --- Query and manipulate buffer text.
+;;; ar-buffer.el --- Query and manipulate buffer text.  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Buffer text helpers.
