@@ -170,6 +170,12 @@ If `universal-argument' is called, copy only the dir path."
             (seq-reverse paths))
       (message "Copied (%d): %s" (seq-length paths) (current-kill 0))))
 
+  (defun ar/copy-buffer-name ()
+    "Copy the current buffer's name."
+    (interactive)
+    (kill-new (buffer-name))
+    (message "Copied: %s" (buffer-name)))
+
   (defun ar/dired--paths-in-region ()
     (when mark-active
       (let ((start (region-beginning))
